@@ -15,9 +15,9 @@ For leveraging [Mollie Connect](https://docs.mollie.com/oauth/overview) (advance
 ## Roadmap
 - [x] Project setup
 - [x] Base HTTP Client
-- [ ] Authentication
-    - [ ] API token
-    - [ ] Organization token
+- [x] Authentication
+    - [x] API token
+    - [x] Organization token
 - [ ] Payments
     - [ ] Recurring payments
     - [ ] Multicurrency payments
