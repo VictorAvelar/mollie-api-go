@@ -14,7 +14,7 @@ For leveraging [Mollie Connect](https://docs.mollie.com/oauth/overview) (advance
 
 ## Roadmap
 - [x] Project setup
-- [ ] Base HTTP Client
+- [x] Base HTTP Client
 - [ ] Authentication
     - [ ] API token
     - [ ] Organization token
