@@ -13,8 +13,13 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Deprecated
 - Nothing
 
+### Changed
+- ClientContext for Ctx in APIClient
+
 ### Fixed
-- Nothing
+- Missing types for MOLLIE env variables
+- Named variable reference on NewClient method
+- Typos and spelling errors on method's comments
 
 ### Removed
 - Nothing

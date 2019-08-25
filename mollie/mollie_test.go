@@ -53,7 +53,7 @@ func TestNewClient(t *testing.T) {
 		t.Fail()
 	}
 	want := &APIClient{
-		ClientContext:     context.Background(),
+		Ctx:               context.Background(),
 		HTTPClient:        http.DefaultClient,
 		BaseURL:           u,
 		APIKey:            "",
@@ -115,7 +115,7 @@ func TestNewClient_WithEnvVars(t *testing.T) {
 		t.Fail()
 	}
 	want := &APIClient{
-		ClientContext:     context.Background(),
+		Ctx:               context.Background(),
 		HTTPClient:        http.DefaultClient,
 		BaseURL:           u,
 		APIKey:            "token_X12b31ggg23",
