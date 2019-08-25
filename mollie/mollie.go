@@ -10,14 +10,14 @@ import (
 	"strings"
 )
 
-// Mollie  constanst holding values to initialize the client and create requests.
+// Mollie  constants holding values to initialize the client and create requests.
 const (
 	BaseURL     string = "https://api.mollie.com"
 	APIVersion  string = "v2"
 	AuthHeader  string = "authorization"
 	TokenType   string = "Bearer"
-	APITokenEnv        = "MOLLIE_API_TOKEN"
-	OrgTokenEnv        = "MOLLIE_ORG_TOKEN"
+	APITokenEnv string = "MOLLIE_API_TOKEN"
+	OrgTokenEnv string = "MOLLIE_ORG_TOKEN"
 )
 
 var (
@@ -28,10 +28,10 @@ type httpClient interface {
 	Do(req *http.Request) (res *http.Response, err error)
 }
 
-//APIClient struct contains the httpClient plus information related to the
+//APIClient for Mollie API plus information related to the
 // different authentication methods provided by the API.
 type APIClient struct {
-	ClientContext     context.Context
+	Ctx               context.Context
 	HTTPClient        httpClient
 	BaseURL           *url.URL
 	APIKey            string
@@ -47,7 +47,7 @@ func (c *APIClient) WithAPIKey(k string) error {
 		return errEmptyAPIKey
 	}
 
-	c.APIKey = strings.Trim(k, " ")
+	c.APIKey = strings.TrimSpace(k)
 
 	return nil
 }
@@ -60,16 +60,13 @@ func (c *APIClient) WithOrganizationToken(t string) error {
 	if t == "" {
 		return errEmptyAPIKey
 	}
-
-	c.OrganizationToken = t
-
+	c.OrganizationToken = strings.TrimSpace(t)
 	return nil
 }
 
-//NewAPIRequest is a wrapper arount the http.NewRequest function.
+//NewAPIRequest is a wrapper around the http.NewRequest function.
 //It takes the same parameters plus a flag to indicate if the request needs
 //to have the authorization headers.
-//The http request method defaults to GET if no method is set.
 //For setting up the headers it takes a hierarchical approach, this meaning that
 //if set the APIClient.OrganizationToken will be used, if this value is empty then
 //it will attemp to use the APIClient.APIKey, and if this value is also empty it
@@ -83,9 +80,9 @@ func (c *APIClient) NewAPIRequest(m string, uri string, body io.Reader, auth boo
 	rel, _ := url.Parse(uri)
 
 	uri = c.BaseURL.ResolveReference(rel).String()
-	req, bErr := http.NewRequest(m, uri, body)
+	req, err = http.NewRequest(m, uri, body)
 	if err != nil {
-		return nil, bErr
+		return
 	}
 
 	req.Header.Add("accept", "application/json")
@@ -120,7 +117,6 @@ func NewClient(ctx context.Context, baseClient httpClient, uri string) (mollie *
 	if ctx == nil {
 		ctx = context.Background()
 	}
-
 	if baseClient == nil {
 		baseClient = http.DefaultClient
 	}
@@ -130,19 +126,16 @@ func NewClient(ctx context.Context, baseClient httpClient, uri string) (mollie *
 		return
 	}
 
-	c := &APIClient{
-		ClientContext: ctx,
-		HTTPClient:    baseClient,
-		BaseURL:       u,
+	mollie = &APIClient{
+		Ctx:        ctx,
+		HTTPClient: baseClient,
+		BaseURL:    u,
 	}
-
 	if tkn, ok := os.LookupEnv(APITokenEnv); ok {
-		c.APIKey = tkn
+		mollie.APIKey = tkn
 	}
-
 	if orgTkn, ok := os.LookupEnv(OrgTokenEnv); ok {
-		c.OrganizationToken = orgTkn
+		mollie.OrganizationToken = orgTkn
 	}
-
-	return c, nil
+	return
 }
