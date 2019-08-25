@@ -11,3 +11,23 @@ To use the Mollie API client, the following things are required:
 + Up-to-date OpenSSL (or other SSL/TLS toolkit)
 
 For leveraging [Mollie Connect](https://docs.mollie.com/oauth/overview) (advanced use cases only), it is recommended to be familiar with the OAuth2 protocol.
+
+## Roadmap
+- [x] Project setup
+- [ ] Base HTTP Client
+- [ ] Authentication
+    - [ ] API token
+    - [ ] Organization token
+- [ ] Payments
+    - [ ] Recurring payments
+    - [ ] Multicurrency payments
+    - [ ] QR Codes
+    - [ ] Gift cards
+    - [ ] Webhook (Status changes)
+- [ ] Orders
+    - [ ] Discounts
+- [ ] Wallets
+    - [ ] Apple pay
+- [ ] Mollie Connect
+    - [ ] App fees
+    - [ ] Onboarding
