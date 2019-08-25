@@ -1,4 +1,4 @@
-dist: precise
+dist: xenial
 
 language: go
 
@@ -6,7 +6,7 @@ language: go
 # These will both be unnecessary when Go 1.13 lands.
 env:
   - GO111MODULE=on
-  - GOFLAGS='-mod vendor'
+  # - GOFLAGS='-mod vendor'
 
 # Only clone the most recent commit.
 git:
