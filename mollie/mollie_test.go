@@ -3,6 +3,8 @@ package mollie
 import (
 	"context"
 	"errors"
+	"fmt"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -210,7 +212,7 @@ func TestWithOrganizationToken(t *testing.T) {
 	}
 }
 
-func TestNewAPIRequest_WellformedRequest(t *testing.T) {
+func TestNewAPIRequest_WellFormedRequest(t *testing.T) {
 	setup()
 	defer teardown()
 
@@ -237,7 +239,7 @@ func TestNewAPIRequest_WithAPIKeyAuthHeader(t *testing.T) {
 
 	var testKey = "test_demoAPIKey1234"
 
-	testClient.WithAPIKey(testKey)
+	_ = testClient.WithAPIKey(testKey)
 
 	req, err := testClient.NewAPIRequest("", "/testing", nil, true)
 	if err != nil {
@@ -258,9 +260,9 @@ func TestNewAPIRequest_WithOrgTokenAuthHeader(t *testing.T) {
 	var apiKey = "test_demoAPIKey1234"
 	var orgToken = "token_demoOrgToken"
 
-	// Accoring to the token hierarchy Org Token should be used.
-	testClient.WithOrganizationToken(orgToken)
-	testClient.WithAPIKey(apiKey)
+	// According to the token hierarchy Org Token should be used.
+	_ = testClient.WithOrganizationToken(orgToken)
+	_ = testClient.WithAPIKey(apiKey)
 
 	req, err := testClient.NewAPIRequest("", "/testing", nil, true)
 	if err != nil {
@@ -283,4 +285,26 @@ func TestNewAPIRequest_AuthError(t *testing.T) {
 	if err != errEmptyAPIKey {
 		t.Fatalf("mismatching error message: got %v, want %v", err, errEmptyAPIKey)
 	}
+}
+
+func TestNewAPIRequest_RequestError(t *testing.T) {
+	setup()
+	defer teardown()
+	m := "\\\\\\"
+	want := fmt.Errorf("net/http: invalid method %q", m)
+	_, err := testClient.NewAPIRequest(m, "https://google.com", nil, false)
+
+	if err.Error() != want.Error() {
+		t.Errorf("wrong expected error, got: %v, want: %v", err, want)
+	}
+}
+
+// ----- mollie examples -----
+
+func ExampleNewClient() {
+	var ctx context.Context
+	c, err := NewClient(ctx, nil, BaseURL)
+	log.Printf("%+v", c)
+	fmt.Println(err == nil)
+	// Output: true
 }
