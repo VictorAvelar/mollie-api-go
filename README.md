@@ -1,7 +1,17 @@
 # Mollie API Golang client 
 
+#### Travis CI
 [![Build Status](https://travis-ci.org/VictorAvelar/mollie-api-go.svg?branch=master)](https://travis-ci.org/VictorAvelar/mollie-api-go)
-<a href='https://github.com/jpoles1/gopherbadger' target='_blank'>![gopherbadger-tag-do-not-edit](https://img.shields.io/badge/Go%20Coverage-97%25-brightgreen.svg?longCache=true&style=flat-square)</a>
+
+#### Scrutinizer CI
+
+[![Build Status](https://scrutinizer-ci.com/g/VictorAvelar/mollie-api-go/badges/build.png?b=master)](https://scrutinizer-ci.com/g/VictorAvelar/mollie-api-go/build-status/master)
+[![Code Coverage](https://scrutinizer-ci.com/g/VictorAvelar/mollie-api-go/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/VictorAvelar/mollie-api-go/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/VictorAvelar/mollie-api-go/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/VictorAvelar/mollie-api-go/?branch=master)
+
+#### Go ecosystem
+[![GoDoc](https://godoc.org/github.com/VictorAvelar/mollie-api-go/mollie?status.svg)](https://godoc.org/github.com/VictorAvelar/mollie-api-go/mollie)
+[![Go Report Card](https://goreportcard.com/badge/github.com/VictorAvelar/mollie-api-go)](https://goreportcard.com/report/github.com/VictorAvelar/mollie-api-go)
 
 Accepting [iDEAL](https://www.mollie.com/payments/ideal/), [Apple Pay](https://www.mollie.com/payments/apple-pay), [Bancontact](https://www.mollie.com/payments/bancontact/), [SOFORT Banking](https://www.mollie.com/payments/sofort/), [Creditcard](https://www.mollie.com/payments/credit-card/), [SEPA Bank transfer](https://www.mollie.com/payments/bank-transfer/), [SEPA Direct debit](https://www.mollie.com/payments/direct-debit/), [PayPal](https://www.mollie.com/payments/paypal/), [Belfius Direct Net](https://www.mollie.com/payments/belfius/), [KBC/CBC](https://www.mollie.com/payments/kbc-cbc/), [paysafecard](https://www.mollie.com/payments/paysafecard/), [ING Home'Pay](https://www.mollie.com/payments/ing-homepay/), [Giftcards](https://www.mollie.com/payments/gift-cards/), [Giropay](https://www.mollie.com/payments/giropay/), [EPS](https://www.mollie.com/payments/eps/) and [Przelewy24](https://www.mollie.com/payments/przelewy24/) online payments without fixed monthly costs or any punishing registration procedures. Just use the Mollie API to receive payments directly on your website or easily refund transactions to your customers.
 
