@@ -22,7 +22,7 @@ notifications:
 go:
   - 1.11.x
   - 1.12.x
-  - master
+  - 1.13.x
 
 # script always runs to completion (set +e). If we have linter issues AND a
 # failing test, we want to see both. Configure golangci-lint with a

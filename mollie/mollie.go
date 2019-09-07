@@ -40,6 +40,7 @@ type APIClient struct {
 
 //WithAPIKey offers a convenient setter with some base validation to attach
 //an API key to an APIClient.
+//
 //Ideally your API key will be provided from and environment variable or
 //a secret management engine.
 func (c *APIClient) WithAPIKey(k string) error {
@@ -54,6 +55,7 @@ func (c *APIClient) WithAPIKey(k string) error {
 
 //WithOrganizationToken offers a convenient token with some base validation to
 //attach a Mollie Organization Token to an APIClient.
+//
 //Ideally your API key will be provided from and environment variable or
 //a secret management engine.
 func (c *APIClient) WithOrganizationToken(t string) error {
@@ -67,9 +69,10 @@ func (c *APIClient) WithOrganizationToken(t string) error {
 //NewAPIRequest is a wrapper around the http.NewRequest function.
 //It takes the same parameters plus a flag to indicate if the request needs
 //to have the authorization headers.
+//
 //For setting up the headers it takes a hierarchical approach, this meaning that
 //if set the APIClient.OrganizationToken will be used, if this value is empty then
-//it will attemp to use the APIClient.APIKey, and if this value is also empty it
+//it will attempt to use the APIClient.APIKey, and if this value is also empty it
 //will return an error.
 func (c *APIClient) NewAPIRequest(m string, uri string, body io.Reader, auth bool) (req *http.Request, err error) {
 	uri = strings.Trim(uri, "/")
@@ -106,11 +109,14 @@ func (c *APIClient) NewAPIRequest(m string, uri string, body io.Reader, auth boo
 //NewClient returns a fully qualified Mollie HTTP API client with context.
 //It receives a context, a httpClient and a uri to initialize the client
 //but also accepts nil in some cases.
+//
 //If nil is passed to context, context.Background will be initialized.
 //if nil is passed as httpClient then the http.DefaultClient will be initialized.
-//The uri will be parsed with url.Parse() function.
+//The uri will be parsed with url.Parse function.
+//
 //By default NewClient will lookup the environment for values to assign to the
-//API token (MOLLIE_API_TOKEN) and the Organization token (MOLLIE_ORG_TOKEN).
+//API token (`MOLLIE_API_TOKEN`) and the Organization token (`MOLLIE_ORG_TOKEN`).
+//
 //You can also set the token values programmatically by using the APIClient
 //WithAPIKey and WithOrganizationKey functions.
 func NewClient(ctx context.Context, baseClient httpClient, uri string) (mollie *APIClient, err error) {

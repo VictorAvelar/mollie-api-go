@@ -1,0 +1,27 @@
+checks:
+  go: true
+filter:
+  excluded_paths:
+    - "mollie/*_test.go"
+    - "mollie/testdata/"
+build:
+  environment:
+    variables:
+      GO111MODULES: 'on'
+  nodes:
+    analysis:
+      project_setup:
+        override:
+          - 'true'
+      environment:
+        go:
+          version: go1.12.9
+      tests:
+        override:
+          - go-scrutinizer-run
+          - govet-run
+          - golint-run
+          - command: 'go test ./... -coverprofile=cover.out'
+            coverage:
+              file: 'cover.out'
+              format: 'go-cc'
