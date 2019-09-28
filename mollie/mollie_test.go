@@ -134,16 +134,6 @@ func TestClient_NewAPIRequest_HTTPReqNativeError(t *testing.T) {
 	}
 }
 
-func TestClient_NewAPIRequest_NoAuthKey(t *testing.T) {
-	setup()
-	defer teardown()
-	_, err := tClient.NewAPIRequest("GET", "test", nil)
-
-	if err != errEmptyAPIKey {
-		t.Errorf("unexpected error %v", err)
-	}
-}
-
 func TestClient_NewAPIRequest_OrgTokenOverApiKey(t *testing.T) {
 	setup()
 	defer teardown()
@@ -151,6 +141,16 @@ func TestClient_NewAPIRequest_OrgTokenOverApiKey(t *testing.T) {
 	req, _ := tClient.NewAPIRequest("GET", "test", nil)
 
 	testHeader(t, req, AuthHeader, "Bearer org_token")
+}
+
+func TestClient_WithAuthenticationValue_Error(t *testing.T) {
+	setup()
+	defer teardown()
+	err := tClient.WithAuthenticationValue("")
+
+	if !reflect.DeepEqual(err, errEmptyAPIKey) {
+		t.Errorf("unexpected error, want %v and got %v", errEmptyAPIKey, err)
+	}
 }
 
 func TestClient_NewAPIRequest_ErrorBodySerialization(t *testing.T) {
@@ -201,6 +201,45 @@ func TestClient_Do(t *testing.T) {
 
 	if res.StatusCode != http.StatusOK {
 		t.Errorf("request failed: %+v", res)
+	}
+}
+
+func TestCheckResponse(t *testing.T) {
+	res1 := &http.Response{
+		StatusCode: http.StatusNotFound,
+		Status:     http.StatusText(http.StatusNotFound),
+	}
+
+	res2 := &http.Response{
+		StatusCode: http.StatusOK,
+		Status:     http.StatusText(http.StatusOK),
+	}
+
+	tests := []struct {
+		name string
+		code string
+		arg  *http.Response
+	}{
+		{
+			"successful response",
+			"",
+			res2,
+		},
+		{
+			"not found response",
+			"Not Found",
+			res1,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := CheckResponse(tt.arg); err != nil {
+				if !strings.Contains(err.Error(), tt.code) {
+					t.Error(err)
+				}
+			}
+		})
 	}
 }
 
