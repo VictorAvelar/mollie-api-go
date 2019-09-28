@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -27,49 +28,38 @@ var (
 	errBadBaseURL  = errors.New("malformed base url, it must contain a trailing slash")
 )
 
-// Client for Mollie API plus information related to the
-// different authentication methods provided by the API.
+// Client manages communication with Mollie's API.
 type Client struct {
-	client            *http.Client
-	BaseURL           *url.URL
-	APIKey            string
-	OrganizationToken string
+	BaseURL        *url.URL
+	authentication string
+	client         *http.Client
+	common         service // Reuse a single struct instead of allocating one for each service on the heap.
+	config         *Config
 }
 
-//WithAPIKey offers a convenient setter with some base validation to attach
-//an API key to an Client.
+type service struct {
+	client *Client
+}
+
+// WithAuthenticationValue offers a convenient setter for any of the valid authentication
+// tokens provided by Mollie.
 //
-//Ideally your API key will be provided from and environment variable or
-//a secret management engine.
-func (c *Client) WithAPIKey(k string) error {
+// Ideally your API key will be provided from and environment variable or
+// a secret management engine.
+// This should only be used when environment variables are "impossible" to be used.
+func (c *Client) WithAuthenticationValue(k string) error {
 	if k == "" {
 		return errEmptyAPIKey
 	}
 
-	c.APIKey = strings.TrimSpace(k)
+	c.authentication = strings.TrimSpace(k)
 
 	return nil
 }
 
-//WithOrganizationToken offers a convenient token with some base validation to
-//attach a Mollie Organization Token to an Client.
+// NewAPIRequest is a wrapper around the http.NewRequest function.
 //
-//Ideally your API key will be provided from and environment variable or
-//a secret management engine.
-func (c *Client) WithOrganizationToken(t string) error {
-	if t == "" {
-		return errEmptyAPIKey
-	}
-	c.OrganizationToken = strings.TrimSpace(t)
-	return nil
-}
-
-//NewAPIRequest is a wrapper around the http.NewRequest function.
-//
-//For setting up the headers it takes a hierarchical approach, this meaning that
-//if set the Client.OrganizationToken will be used, if this value is empty then
-//it will attempt to use the Client.APIKey, and if this value is also empty it
-//will return an error.
+// It will setup the authentication headers/parameters according to the client config.
 func (c *Client) NewAPIRequest(method string, uri string, body interface{}) (req *http.Request, err error) {
 	if !strings.HasSuffix(c.BaseURL.Path, "/") {
 		return nil, errBadBaseURL
@@ -78,6 +68,10 @@ func (c *Client) NewAPIRequest(method string, uri string, body interface{}) (req
 	u, err := c.BaseURL.Parse(uri)
 	if err != nil {
 		return nil, err
+	}
+
+	if c.config.testing == true {
+		u.Query().Add("testmode", "true")
 	}
 
 	var buf io.ReadWriter
@@ -96,17 +90,8 @@ func (c *Client) NewAPIRequest(method string, uri string, body interface{}) (req
 		return nil, err
 	}
 
-	var parts = []string{TokenType}
-	if c.OrganizationToken != "" {
-		parts = append(parts, c.OrganizationToken)
-	} else if c.APIKey != "" {
-		parts = append(parts, c.APIKey)
-	} else {
-		return nil, errEmptyAPIKey
-	}
+	req.Header.Add(AuthHeader, strings.Join([]string{TokenType, c.authentication}, " "))
 
-	v := strings.Join(parts, " ")
-	req.Header.Add(AuthHeader, v)
 	if body != nil {
 		req.Header.Set("Content-Type", RequestContentType)
 	}
@@ -117,29 +102,32 @@ func (c *Client) NewAPIRequest(method string, uri string, body interface{}) (req
 
 // Do sends an API request and returns the API response or returned as an
 // error if an API error has occurred.
-func (c *Client) Do(req *http.Request) (*http.Response, error) {
+func (c *Client) Do(req *http.Request) (*Response, error) {
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
+	response := newResponse(resp)
 	err = CheckResponse(resp)
 	if err != nil {
 		return nil, err
 	}
 
-	return resp, nil
+	return response, nil
 }
 
-//NewClient returns a new Mollie HTTP API client.
+// NewClient returns a new Mollie HTTP API client.
 // You can pass a previously build http client, if none is provided then
 // http.DefaultClient will be used.
 //
-//By default NewClient will lookup the environment for values to assign to the
-//API token (`MOLLIE_API_TOKEN`) and the Organization token (`MOLLIE_ORG_TOKEN`).
+// NewClient will lookup the environment for values to assign to the
+// API token (`MOLLIE_API_TOKEN`) and the Organization token (`MOLLIE_ORG_TOKEN`)
+// according to the provided Config object.
 //
-//You can also set the token values programmatically by using the Client
-//WithAPIKey and WithOrganizationKey functions.
-func NewClient(baseClient *http.Client) (mollie *Client, err error) {
+// You can also set the token values programmatically by using the Client
+// WithAPIKey and WithOrganizationKey functions.
+func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
 	if baseClient == nil {
 		baseClient = http.DefaultClient
 	}
@@ -147,16 +135,16 @@ func NewClient(baseClient *http.Client) (mollie *Client, err error) {
 	u, _ := url.Parse(BaseURLV2)
 
 	mollie = &Client{
-		client:  baseClient,
 		BaseURL: u,
+		client:  baseClient,
+		config:  c,
 	}
 
-	// Try to parse tokens from environment
+	mollie.common.client = mollie
+
+	// Parse authorization from environment
 	if tkn, ok := os.LookupEnv(APITokenEnv); ok {
-		mollie.APIKey = tkn
-	}
-	if orgTkn, ok := os.LookupEnv(OrgTokenEnv); ok {
-		mollie.OrganizationToken = orgTkn
+		mollie.authentication = tkn
 	}
 	return
 }
@@ -188,6 +176,24 @@ func newError(r *http.Response) *Error {
 	e.Code = r.StatusCode
 	e.Message = r.Status
 	return &e
+}
+
+// Response is a Mollie API response. This wraps the standard http.Response
+// returned from Mollie and provides convenient access to things like
+// pagination links.
+type Response struct {
+	*http.Response
+	content []byte
+}
+
+func newResponse(r *http.Response) *Response {
+	var res Response
+	if c, err := ioutil.ReadAll(r.Body); err == nil {
+		res.content = c
+	}
+	json.NewDecoder(r.Body).Decode(&res)
+	res.Response = r
+	return &res
 }
 
 // CheckResponse checks the API response for errors, and returns them if

@@ -36,9 +36,11 @@ func TestNewClient(t *testing.T) {
 		},
 	}
 
+	conf := NewConfig(true, APITokenEnv)
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := NewClient(tt.client)
+			_, err := NewClient(tt.client, conf)
 			if err != nil {
 				t.Errorf("not nil error received: %v", err)
 			}
@@ -71,17 +73,13 @@ func TestNewClientWithEnvVars(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := NewClient(tt.client)
+			got, err := NewClient(tt.client, tConf)
 			if err != nil {
 				t.Errorf("not nil error received: %v", err)
 			}
 
-			if got.OrganizationToken == "" {
-				t.Errorf("got empty org token %v, value %s expected", got.OrganizationToken, "ey1923n23123n1k3b123jv12g312h31v32g13")
-			}
-
-			if got.APIKey == "" {
-				t.Errorf("got empty api key %v, value %s expected", got.APIKey, "token_X12b31ggg23")
+			if got.authentication == "" {
+				t.Errorf("got empty api key %v, value %s expected", got.authentication, "token_X12b31ggg23")
 			}
 		})
 	}
@@ -93,7 +91,7 @@ func TestClient_NewAPIRequest(t *testing.T) {
 	b := []string{"hello", "bye"}
 	inURL, outURL := "test", tServer.URL+"/test"
 	inBody, outBody := b, `["hello","bye"]`+"\n"
-	_ = tClient.WithAPIKey("test_token")
+	_ = tClient.WithAuthenticationValue("test_token")
 	req, _ := tClient.NewAPIRequest("GET", inURL, inBody)
 
 	testHeader(t, req, "Accept", RequestContentType)
@@ -149,8 +147,7 @@ func TestClient_NewAPIRequest_NoAuthKey(t *testing.T) {
 func TestClient_NewAPIRequest_OrgTokenOverApiKey(t *testing.T) {
 	setup()
 	defer teardown()
-	_ = tClient.WithAPIKey("test_token")
-	_ = tClient.WithOrganizationToken("org_token")
+	_ = tClient.WithAuthenticationValue("org_token")
 	req, _ := tClient.NewAPIRequest("GET", "test", nil)
 
 	testHeader(t, req, AuthHeader, "Bearer org_token")
@@ -194,7 +191,7 @@ func TestClient_Do(t *testing.T) {
 		testHeader(t, r, AuthHeader, "Bearer test_token")
 		w.WriteHeader(http.StatusOK)
 	})
-	_ = tClient.WithAPIKey("test_token")
+	_ = tClient.WithAuthenticationValue("test_token")
 	req, _ := tClient.NewAPIRequest("GET", "test", nil)
 	res, err := tClient.Do(req)
 
@@ -209,7 +206,10 @@ func TestClient_Do(t *testing.T) {
 
 // ----- mollie examples -----
 func ExampleNewClient() {
-	c, err := NewClient(nil)
+	c, err := NewClient(nil, &Config{
+		testing: false,
+		auth:    APITokenEnv,
+	})
 	log.Printf("%+v", c)
 	fmt.Println(err == nil)
 	// Output: true
@@ -221,6 +221,7 @@ var (
 	tMux    *http.ServeMux
 	tServer *httptest.Server
 	tClient *Client
+	tConf   *Config
 )
 
 // the parameter indicates if you want to prepare your tests against the US sandbox
@@ -228,7 +229,8 @@ var (
 func setup() {
 	tMux = http.NewServeMux()
 	tServer = httptest.NewServer(tMux)
-	tClient, _ = NewClient(nil)
+	tConf = NewConfig(true, APITokenEnv)
+	tClient, _ = NewClient(nil, tConf)
 	u, _ := url.Parse(tServer.URL + "/")
 	tClient.BaseURL = u
 }
