@@ -1,9 +1,12 @@
 package mollie
 
 import (
-	"context"
+	"bytes"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -12,136 +15,195 @@ import (
 
 // Mollie  constants holding values to initialize the client and create requests.
 const (
-	BaseURL     string = "https://api.mollie.com"
-	APIVersion  string = "v2"
-	AuthHeader  string = "authorization"
-	TokenType   string = "Bearer"
-	APITokenEnv string = "MOLLIE_API_TOKEN"
-	OrgTokenEnv string = "MOLLIE_ORG_TOKEN"
+	BaseURLV2          string = "https://api.mollie.com/v2/"
+	AuthHeader         string = "authorization"
+	TokenType          string = "Bearer"
+	APITokenEnv        string = "MOLLIE_API_TOKEN"
+	OrgTokenEnv        string = "MOLLIE_ORG_TOKEN"
+	RequestContentType string = "application/json"
 )
 
 var (
 	errEmptyAPIKey = errors.New("you must provide a non-empty API key")
+	errBadBaseURL  = errors.New("malformed base url, it must contain a trailing slash")
 )
 
-type httpClient interface {
-	Do(req *http.Request) (res *http.Response, err error)
+// Client manages communication with Mollie's API.
+type Client struct {
+	BaseURL        *url.URL
+	authentication string
+	client         *http.Client
+	common         service // Reuse a single struct instead of allocating one for each service on the heap.
+	config         *Config
 }
 
-//APIClient for Mollie API plus information related to the
-// different authentication methods provided by the API.
-type APIClient struct {
-	Ctx               context.Context
-	HTTPClient        httpClient
-	BaseURL           *url.URL
-	APIKey            string
-	OrganizationToken string
+type service struct {
+	client *Client
 }
 
-//WithAPIKey offers a convenient setter with some base validation to attach
-//an API key to an APIClient.
+// WithAuthenticationValue offers a convenient setter for any of the valid authentication
+// tokens provided by Mollie.
 //
-//Ideally your API key will be provided from and environment variable or
-//a secret management engine.
-func (c *APIClient) WithAPIKey(k string) error {
+// Ideally your API key will be provided from and environment variable or
+// a secret management engine.
+// This should only be used when environment variables are "impossible" to be used.
+func (c *Client) WithAuthenticationValue(k string) error {
 	if k == "" {
 		return errEmptyAPIKey
 	}
 
-	c.APIKey = strings.TrimSpace(k)
+	c.authentication = strings.TrimSpace(k)
 
 	return nil
 }
 
-//WithOrganizationToken offers a convenient token with some base validation to
-//attach a Mollie Organization Token to an APIClient.
+// NewAPIRequest is a wrapper around the http.NewRequest function.
 //
-//Ideally your API key will be provided from and environment variable or
-//a secret management engine.
-func (c *APIClient) WithOrganizationToken(t string) error {
-	if t == "" {
-		return errEmptyAPIKey
+// It will setup the authentication headers/parameters according to the client config.
+func (c *Client) NewAPIRequest(method string, uri string, body interface{}) (req *http.Request, err error) {
+	if !strings.HasSuffix(c.BaseURL.Path, "/") {
+		return nil, errBadBaseURL
 	}
-	c.OrganizationToken = strings.TrimSpace(t)
-	return nil
-}
 
-//NewAPIRequest is a wrapper around the http.NewRequest function.
-//It takes the same parameters plus a flag to indicate if the request needs
-//to have the authorization headers.
-//
-//For setting up the headers it takes a hierarchical approach, this meaning that
-//if set the APIClient.OrganizationToken will be used, if this value is empty then
-//it will attempt to use the APIClient.APIKey, and if this value is also empty it
-//will return an error.
-func (c *APIClient) NewAPIRequest(m string, uri string, body io.Reader, auth bool) (req *http.Request, err error) {
-	uri = strings.Trim(uri, "/")
-	uri = strings.Join([]string{
-		APIVersion,
-		uri,
-	}, "/")
-	rel, _ := url.Parse(uri)
-
-	uri = c.BaseURL.ResolveReference(rel).String()
-	req, err = http.NewRequest(m, uri, body)
+	u, err := c.BaseURL.Parse(uri)
 	if err != nil {
-		return
+		return nil, err
 	}
 
-	req.Header.Add("accept", "application/json")
+	if c.config.testing == true {
+		u.Query().Add("testmode", "true")
+	}
 
-	if auth {
-		var parts = []string{TokenType}
-		if c.OrganizationToken != "" {
-			parts = append(parts, c.OrganizationToken)
-		} else if c.APIKey != "" {
-			parts = append(parts, c.APIKey)
-		} else {
-			return nil, errEmptyAPIKey
+	var buf io.ReadWriter
+	if body != nil {
+		buf = new(bytes.Buffer)
+		enc := json.NewEncoder(buf)
+		enc.SetEscapeHTML(false)
+		err := enc.Encode(body)
+		if err != nil {
+			return nil, err
 		}
-
-		v := strings.Join(parts, " ")
-		req.Header.Add(AuthHeader, v)
 	}
+
+	req, err = http.NewRequest(method, u.String(), buf)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add(AuthHeader, strings.Join([]string{TokenType, c.authentication}, " "))
+
+	if body != nil {
+		req.Header.Set("Content-Type", RequestContentType)
+	}
+	req.Header.Set("Accept", RequestContentType)
+
 	return
 }
 
-//NewClient returns a fully qualified Mollie HTTP API client with context.
-//It receives a context, a httpClient and a uri to initialize the client
-//but also accepts nil in some cases.
-//
-//If nil is passed to context, context.Background will be initialized.
-//if nil is passed as httpClient then the http.DefaultClient will be initialized.
-//The uri will be parsed with url.Parse function.
-//
-//By default NewClient will lookup the environment for values to assign to the
-//API token (`MOLLIE_API_TOKEN`) and the Organization token (`MOLLIE_ORG_TOKEN`).
-//
-//You can also set the token values programmatically by using the APIClient
-//WithAPIKey and WithOrganizationKey functions.
-func NewClient(ctx context.Context, baseClient httpClient, uri string) (mollie *APIClient, err error) {
-	if ctx == nil {
-		ctx = context.Background()
+// Do sends an API request and returns the API response or returned as an
+// error if an API error has occurred.
+func (c *Client) Do(req *http.Request) (*Response, error) {
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return nil, err
 	}
+	defer resp.Body.Close()
+	response := newResponse(resp)
+	err = CheckResponse(resp)
+	if err != nil {
+		return nil, err
+	}
+
+	return response, nil
+}
+
+// NewClient returns a new Mollie HTTP API client.
+// You can pass a previously build http client, if none is provided then
+// http.DefaultClient will be used.
+//
+// NewClient will lookup the environment for values to assign to the
+// API token (`MOLLIE_API_TOKEN`) and the Organization token (`MOLLIE_ORG_TOKEN`)
+// according to the provided Config object.
+//
+// You can also set the token values programmatically by using the Client
+// WithAPIKey and WithOrganizationKey functions.
+func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
 	if baseClient == nil {
 		baseClient = http.DefaultClient
 	}
 
-	u, err := url.Parse(uri)
-	if err != nil {
-		return
+	u, _ := url.Parse(BaseURLV2)
+
+	mollie = &Client{
+		BaseURL: u,
+		client:  baseClient,
+		config:  c,
 	}
 
-	mollie = &APIClient{
-		Ctx:        ctx,
-		HTTPClient: baseClient,
-		BaseURL:    u,
-	}
+	mollie.common.client = mollie
+
+	// Parse authorization from environment
 	if tkn, ok := os.LookupEnv(APITokenEnv); ok {
-		mollie.APIKey = tkn
-	}
-	if orgTkn, ok := os.LookupEnv(OrgTokenEnv); ok {
-		mollie.OrganizationToken = orgTkn
+		mollie.authentication = tkn
 	}
 	return
+}
+
+/*
+Error reports details on a failed API request.
+The success or failure of each HTTP request is shown in the status field of the HTTP response header,
+which contains standard HTTP status codes:
+- a 2xx code for success
+- a 4xx or 5xx code for failure
+*/
+type Error struct {
+	Code     int            `json:"code"`
+	Message  string         `json:"message"`
+	Response *http.Response `json:"response"` // the full response that produced the error
+}
+
+// Error functions implement the Error interface on the zuora.Error struct.
+func (e *Error) Error() string {
+	return fmt.Sprintf("response failed with status %v", e.Message)
+}
+
+/*
+Constructor for Error
+*/
+func newError(r *http.Response) *Error {
+	var e Error
+	e.Response = r
+	e.Code = r.StatusCode
+	e.Message = r.Status
+	return &e
+}
+
+// Response is a Mollie API response. This wraps the standard http.Response
+// returned from Mollie and provides convenient access to things like
+// pagination links.
+type Response struct {
+	*http.Response
+	content []byte
+}
+
+func newResponse(r *http.Response) *Response {
+	var res Response
+	if c, err := ioutil.ReadAll(r.Body); err == nil {
+		res.content = c
+	}
+	json.NewDecoder(r.Body).Decode(&res)
+	res.Response = r
+	return &res
+}
+
+// CheckResponse checks the API response for errors, and returns them if
+// present. A response is considered an error if it has a status code outside
+// the 200 range.
+// API error responses are expected to have either no response
+// body, or a JSON response body.
+func CheckResponse(r *http.Response) error {
+	if r.StatusCode >= http.StatusMultipleChoices {
+		return newError(r)
+	}
+	return nil
 }

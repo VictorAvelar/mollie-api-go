@@ -1,33 +1,281 @@
 package mollie
 
 import (
-	"context"
-	"errors"
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"os"
 	"reflect"
+	"strings"
 	"testing"
+	"time"
 )
 
-// ---------- testing utilities ----------
+func TestNewClient(t *testing.T) {
+	var c = http.DefaultClient
+	{
+		c.Timeout = 25 * time.Second
+	}
+
+	tests := []struct {
+		name   string
+		client *http.Client
+	}{
+		{
+			"nil returns a valid client",
+			nil,
+		},
+		{
+			"a passed client is decorated",
+			c,
+		},
+	}
+
+	conf := NewConfig(true, APITokenEnv)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := NewClient(tt.client, conf)
+			if err != nil {
+				t.Errorf("not nil error received: %v", err)
+			}
+		})
+	}
+}
+
+func TestNewClientWithEnvVars(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
+	var c = http.DefaultClient
+	{
+		c.Timeout = 25 * time.Second
+	}
+
+	tests := []struct {
+		name   string
+		client *http.Client
+	}{
+		{
+			"nil returns a valid client",
+			nil,
+		},
+		{
+			"a passed client is decorated",
+			c,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := NewClient(tt.client, tConf)
+			if err != nil {
+				t.Errorf("not nil error received: %v", err)
+			}
+
+			if got.authentication == "" {
+				t.Errorf("got empty api key %v, value %s expected", got.authentication, "token_X12b31ggg23")
+			}
+		})
+	}
+}
+
+func TestClient_NewAPIRequest(t *testing.T) {
+	setup()
+	defer teardown()
+	b := []string{"hello", "bye"}
+	inURL, outURL := "test", tServer.URL+"/test"
+	inBody, outBody := b, `["hello","bye"]`+"\n"
+	_ = tClient.WithAuthenticationValue("test_token")
+	req, _ := tClient.NewAPIRequest("GET", inURL, inBody)
+
+	testHeader(t, req, "Accept", RequestContentType)
+	testHeader(t, req, AuthHeader, "Bearer test_token")
+	// test that relative URL was expanded
+	if got, want := req.URL.String(), outURL; got != want {
+		t.Errorf("NewRequest(%q) URL is %v, want %v", inURL, got, want)
+	}
+
+	// test that body was JSON encoded
+	body, _ := ioutil.ReadAll(req.Body)
+	if got, want := string(body), outBody; got != want {
+		t.Errorf("NewRequest(%q) Body is %v, want %v", inBody, got, want)
+	}
+}
+
+func TestClient_NewAPIRequest_ErrTrailingSlash(t *testing.T) {
+	uri, _ := url.Parse("http://localhost")
+	tClient = &Client{
+		BaseURL: uri,
+	}
+	_, err := tClient.NewAPIRequest("GET", "test", nil)
+
+	if !reflect.DeepEqual(err, errBadBaseURL) {
+		t.Errorf("expected error %v not ocurred, got %v", errBadBaseURL, err)
+	}
+}
+
+func TestClient_NewAPIRequest_HTTPReqNativeError(t *testing.T) {
+	setup()
+	defer teardown()
+	_, err := tClient.NewAPIRequest("\\\\\\", "test", nil)
+
+	if err == nil {
+		t.Fatal("nil error produced")
+	}
+
+	if !strings.Contains(err.Error(), "invalid method") {
+		t.Errorf("unexpected err received %v", err)
+	}
+}
+
+func TestClient_NewAPIRequest_OrgTokenOverApiKey(t *testing.T) {
+	setup()
+	defer teardown()
+	_ = tClient.WithAuthenticationValue("org_token")
+	req, _ := tClient.NewAPIRequest("GET", "test", nil)
+
+	testHeader(t, req, AuthHeader, "Bearer org_token")
+}
+
+func TestClient_WithAuthenticationValue_Error(t *testing.T) {
+	setup()
+	defer teardown()
+	err := tClient.WithAuthenticationValue("")
+
+	if !reflect.DeepEqual(err, errEmptyAPIKey) {
+		t.Errorf("unexpected error, want %v and got %v", errEmptyAPIKey, err)
+	}
+}
+
+func TestClient_NewAPIRequest_ErrorBodySerialization(t *testing.T) {
+	setup()
+	defer teardown()
+	b := make(chan int)
+	_, err := tClient.NewAPIRequest("GET", "test", b)
+
+	if err == nil {
+		t.Fatal("nil error produced")
+	}
+
+	if !strings.Contains(err.Error(), "unsupported type") {
+		t.Errorf("unexpected err received %v", err)
+	}
+}
+
+func TestClient_NewAPIRequest_NativeURLParseError(t *testing.T) {
+	setup()
+	defer teardown()
+	_, err := tClient.NewAPIRequest("GET", ":", nil)
+
+	if err == nil {
+		t.Fatal("nil error produced")
+	}
+
+	if !strings.Contains(err.Error(), "parse") {
+		t.Errorf("unexpected err received %v", err)
+	}
+}
+
+func TestClient_Do(t *testing.T) {
+	setup()
+	defer teardown()
+
+	tMux.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testHeader(t, r, AuthHeader, "Bearer test_token")
+		w.WriteHeader(http.StatusOK)
+	})
+	_ = tClient.WithAuthenticationValue("test_token")
+	req, _ := tClient.NewAPIRequest("GET", "test", nil)
+	res, err := tClient.Do(req)
+
+	if err != nil {
+		t.Errorf("unexpected error received: %v", err)
+	}
+
+	if res.StatusCode != http.StatusOK {
+		t.Errorf("request failed: %+v", res)
+	}
+}
+
+func TestCheckResponse(t *testing.T) {
+	res1 := &http.Response{
+		StatusCode: http.StatusNotFound,
+		Status:     http.StatusText(http.StatusNotFound),
+	}
+
+	res2 := &http.Response{
+		StatusCode: http.StatusOK,
+		Status:     http.StatusText(http.StatusOK),
+	}
+
+	tests := []struct {
+		name string
+		code string
+		arg  *http.Response
+	}{
+		{
+			"successful response",
+			"",
+			res2,
+		},
+		{
+			"not found response",
+			"Not Found",
+			res1,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := CheckResponse(tt.arg); err != nil {
+				if !strings.Contains(err.Error(), tt.code) {
+					t.Error(err)
+				}
+			}
+		})
+	}
+}
+
+// ----- mollie examples -----
+func ExampleNewClient() {
+	c, err := NewClient(nil, &Config{
+		testing: false,
+		auth:    APITokenEnv,
+	})
+	log.Printf("%+v", c)
+	fmt.Println(err == nil)
+	// Output: true
+}
+
+// <----- Testing helpers ----->
+
 var (
-	testMux    *http.ServeMux
-	testClient *APIClient
-	testServer *httptest.Server
+	tMux    *http.ServeMux
+	tServer *httptest.Server
+	tClient *Client
+	tConf   *Config
 )
 
+// the parameter indicates if you want to prepare your tests against the US sandbox
+// just to be used when doing integration testing.
 func setup() {
-	testMux = http.NewServeMux()
-	testServer = httptest.NewServer(testMux)
-	testClient, _ = NewClient(nil, nil, testServer.URL)
+	tMux = http.NewServeMux()
+	tServer = httptest.NewServer(tMux)
+	tConf = NewConfig(true, APITokenEnv)
+	tClient, _ = NewClient(nil, tConf)
+	u, _ := url.Parse(tServer.URL + "/")
+	tClient.BaseURL = u
 }
 
 func teardown() {
-	testServer.Close()
+	tServer.Close()
 }
 
 func setEnv() {
@@ -40,271 +288,62 @@ func unsetEnv() {
 	_ = os.Unsetenv(OrgTokenEnv)
 }
 
-// ---------- .testing utilities ----------
-
-func TestNewClient(t *testing.T) {
-
-	type args struct {
-		ctx context.Context
-		cl  httpClient
-		uri string
+func testMethod(t *testing.T, r *http.Request, want string) {
+	if got := r.Method; got != want {
+		t.Errorf("Request method: %v, want %v", got, want)
 	}
+}
 
-	u, err := url.Parse("http://localhost")
+func testHeader(t *testing.T, r *http.Request, header string, want string) {
+	if got := r.Header.Get(header); got != want {
+		t.Errorf("Header.Get(%q) returned %q, want %q", header, got, want)
+	}
+}
+
+func testURLParseError(t *testing.T, err error) {
+	if err == nil {
+		t.Errorf("Expected error to be returned")
+	}
+	if err, ok := err.(*url.Error); !ok || err.Op != "parse" {
+		t.Errorf("Expected URL parse error, got %+v", err)
+	}
+}
+
+func testBody(t *testing.T, r *http.Request, want string) {
+	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		t.Fail()
+		t.Errorf("Error reading request body: %v", err)
 	}
-	want := &APIClient{
-		Ctx:               context.Background(),
-		HTTPClient:        http.DefaultClient,
-		BaseURL:           u,
-		APIKey:            "",
-		OrganizationToken: "",
-	}
-
-	tests := []struct {
-		name      string
-		check     *APIClient
-		arguments args
-		wantErr   bool
-		err       error
-	}{
-		{
-			name:  "test client is build properly",
-			check: want,
-			arguments: args{
-				ctx: nil,
-				cl:  nil,
-				uri: "http://localhost",
-			},
-			wantErr: false,
-			err:     nil,
-		},
-		{
-			name:  "test url parser breaks",
-			check: want,
-			arguments: args{
-				ctx: nil,
-				cl:  nil,
-				uri: " http:/:/localhost",
-			},
-			wantErr: true,
-			err:     errors.New("parse  http:/:/localhost: first path segment in URL cannot contain colon"),
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := NewClient(tt.arguments.ctx, tt.arguments.cl, tt.arguments.uri)
-			if tt.wantErr {
-				if err.Error() != tt.err.Error() {
-					t.Fatalf("failed while initializing the client: got: %v, want: %v", err, tt.err)
-				}
-			} else {
-				if !reflect.DeepEqual(got, tt.check) {
-					t.Fatalf("failed while initializing the client: got: %v, want: %v", got, tt.check)
-				}
-			}
-		})
+	if got := string(b); got != want {
+		t.Errorf("request Body is %s, want %s", got, want)
 	}
 }
 
-func TestNewClient_WithEnvVars(t *testing.T) {
-	setEnv()
-	defer unsetEnv()
-	u, err := url.Parse("http://localhost:3000")
+func testJSONMarshal(t *testing.T, v interface{}, want string) {
+	j, err := json.Marshal(v)
 	if err != nil {
-		t.Fail()
-	}
-	want := &APIClient{
-		Ctx:               context.Background(),
-		HTTPClient:        http.DefaultClient,
-		BaseURL:           u,
-		APIKey:            "token_X12b31ggg23",
-		OrganizationToken: "ey1923n23123n1k3b123jv12g312h31v32g13",
-	}
-	got, _ := NewClient(nil, nil, "http://localhost:3000")
-
-	if !reflect.DeepEqual(got, want) {
-		t.Fatalf("client initialization error, got: %v, want %v", got, want)
-	}
-}
-
-func TestWithAPIToken(t *testing.T) {
-	setup()
-	defer teardown()
-	tests := []struct {
-		name       string
-		check      string
-		wantErr    bool
-		err        error
-		afterTest  func()
-		beforeTest func()
-	}{
-		{
-			name:    "test an empty string returns an error",
-			check:   "",
-			wantErr: true,
-			err:     errEmptyAPIKey,
-		},
-		{
-			name:    "test a valid test token is set",
-			check:   "test_$DJAO@A##MKao23u#N",
-			wantErr: false,
-			err:     nil,
-		},
+		t.Errorf("Unable to marshal JSON for %v", v)
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := testClient.WithAPIKey(tt.check)
-			if tt.wantErr {
-				if !reflect.DeepEqual(got, tt.err) {
-					t.Fatalf("failed while attaching API key, got: %v, want: %v", got, tt.err)
-				}
-			} else {
-				if testClient.APIKey != tt.check {
-					t.Fail()
-				}
-			}
-		})
-	}
-}
-
-func TestWithOrganizationToken(t *testing.T) {
-	setup()
-	defer teardown()
-	tests := []struct {
-		name       string
-		check      string
-		wantErr    bool
-		err        error
-		afterTest  func()
-		beforeTest func()
-	}{
-		{
-			name:    "test an empty string returns an error",
-			check:   "",
-			wantErr: true,
-			err:     errEmptyAPIKey,
-		},
-		{
-			name:    "test a valid test token is set",
-			check:   "styduasjkdlmqwhdbw",
-			wantErr: false,
-			err:     nil,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := testClient.WithOrganizationToken(tt.check)
-			if tt.wantErr {
-				if !reflect.DeepEqual(got, tt.err) {
-					t.Fatalf("failed while attaching API key, got: %v, want: %v", got, tt.err)
-				}
-			} else {
-				if testClient.OrganizationToken != tt.check {
-					t.Fail()
-				}
-			}
-		})
-	}
-}
-
-func TestNewAPIRequest_WellFormedRequest(t *testing.T) {
-	setup()
-	defer teardown()
-
-	inURI, outURI := "/testing", testServer.URL+"/v2/testing"
-	inMethod, outMethod := "", http.MethodGet
-
-	got, err := testClient.NewAPIRequest(inMethod, inURI, nil, false)
+	w := new(bytes.Buffer)
+	err = json.Compact(w, []byte(want))
 	if err != nil {
-		t.Fatalf("failed while building the API Request: %v", err)
+		t.Errorf("String is not valid json: %s", want)
 	}
 
-	if got.URL.String() != outURI {
-		t.Fatalf("mailformed request uri: want: %v, got: %v", outURI, got.URL)
+	if w.String() != string(j) {
+		t.Errorf("json.Marshal(%q) returned %s, want %s", v, j, w)
 	}
 
-	if got.Method != outMethod {
-		t.Fatalf("method assignment failed: got: %v, want: %v", got.Method, outMethod)
+	// now go the other direction and make sure things unmarshal as expected
+	u := reflect.ValueOf(v).Interface()
+	if err := json.Unmarshal([]byte(want), u); err != nil {
+		t.Errorf("Unable to unmarshal JSON for %v: %v", want, err)
 	}
-}
 
-func TestNewAPIRequest_WithAPIKeyAuthHeader(t *testing.T) {
-	setup()
-	defer teardown()
-
-	var testKey = "test_demoAPIKey1234"
-
-	_ = testClient.WithAPIKey(testKey)
-
-	req, err := testClient.NewAPIRequest("", "/testing", nil, true)
-	if err != nil {
-		t.Fatalf("failed while building the API Request: %v", err)
-	}
-	got := req.Header.Get(AuthHeader)
-	want := "Bearer " + testKey
-
-	if got != want {
-		t.Fatalf("API Key header is not set: got %v, want %v", got, want)
+	if !reflect.DeepEqual(v, u) {
+		t.Errorf("json.Unmarshal(%q) returned %s, want %s", want, u, v)
 	}
 }
 
-func TestNewAPIRequest_WithOrgTokenAuthHeader(t *testing.T) {
-	setup()
-	defer teardown()
-
-	var apiKey = "test_demoAPIKey1234"
-	var orgToken = "token_demoOrgToken"
-
-	// According to the token hierarchy Org Token should be used.
-	_ = testClient.WithOrganizationToken(orgToken)
-	_ = testClient.WithAPIKey(apiKey)
-
-	req, err := testClient.NewAPIRequest("", "/testing", nil, true)
-	if err != nil {
-		t.Fatalf("failed while building the API Request: %v", err)
-	}
-	got := req.Header.Get(AuthHeader)
-	want := "Bearer " + orgToken
-
-	if got != want {
-		t.Fatalf("API Key header is not set: got %v, want %v", got, want)
-	}
-}
-
-func TestNewAPIRequest_AuthError(t *testing.T) {
-	setup()
-	defer teardown()
-
-	_, err := testClient.NewAPIRequest("", "/testing", nil, true)
-
-	if err != errEmptyAPIKey {
-		t.Fatalf("mismatching error message: got %v, want %v", err, errEmptyAPIKey)
-	}
-}
-
-func TestNewAPIRequest_RequestError(t *testing.T) {
-	setup()
-	defer teardown()
-	m := "\\\\\\"
-	want := fmt.Errorf("net/http: invalid method %q", m)
-	_, err := testClient.NewAPIRequest(m, "https://google.com", nil, false)
-
-	if err.Error() != want.Error() {
-		t.Errorf("wrong expected error, got: %v, want: %v", err, want)
-	}
-}
-
-// ----- mollie examples -----
-
-func ExampleNewClient() {
-	var ctx context.Context
-	c, err := NewClient(ctx, nil, BaseURL)
-	log.Printf("%+v", c)
-	fmt.Println(err == nil)
-	// Output: true
-}
+// <----- .Testing helpers ----->
