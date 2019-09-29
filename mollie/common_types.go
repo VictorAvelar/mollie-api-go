@@ -77,14 +77,14 @@ const (
 // PhoneNumber represents a phone number in the E.164 format.
 type PhoneNumber string
 
-// QR code object represents an image of a QR code.
+// QRCode object represents an image of a QR code.
 type QRCode struct {
 	Height int    `json:"height,omitempty"`
 	Width  int    `json:"width,omitempty"`
 	Src    string `json:"src,omitempty"`
 }
 
-// URLs in Mollie are commonly represented as objects with an href and type field.
+// URL in Mollie are commonly represented as objects with an href and type field.
 type URL struct {
 	Href string `json:"href,omitempty"`
 	Type string `json:"type,omitempty"`

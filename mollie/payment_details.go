@@ -12,8 +12,10 @@ const (
 	Other           FeeRegion = "other"
 )
 
+// FailureReason provides a description on a failed payment
 type FailureReason string
 
+// Possible failure reasons
 const (
 	ReasonInvalidCardNumber     FailureReason = "invalid_card_number"
 	ReasonInvalidCCV            FailureReason = "invalid_ccv"
@@ -34,7 +36,7 @@ type UsedGiftCard struct {
 	VoucherNumber string  `json:"voucherNumber,omitempty"`
 }
 
-// BankTransferDetails contains details for the specified payment method
+// PaymentDetails contains details for the specified payment method
 type PaymentDetails struct {
 	BankAccount        string         `json:"bankAccount,omitempty"`
 	BankBIC            string         `json:"bankBic,omitempty"`
