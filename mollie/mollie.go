@@ -15,8 +15,8 @@ import (
 
 // Mollie  constants holding values to initialize the client and create requests.
 const (
-	BaseURLV2          string = "https://api.mollie.com/v2/"
-	AuthHeader         string = "authorization"
+	BaseURL            string = "https://api.mollie.com/"
+	AuthHeader         string = "Authorization"
 	TokenType          string = "Bearer"
 	APITokenEnv        string = "MOLLIE_API_TOKEN"
 	OrgTokenEnv        string = "MOLLIE_ORG_TOKEN"
@@ -35,6 +35,8 @@ type Client struct {
 	client         *http.Client
 	common         service // Reuse a single struct instead of allocating one for each service on the heap.
 	config         *Config
+	// Services
+	Payments *PaymentsService
 }
 
 type service struct {
@@ -132,7 +134,7 @@ func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
 		baseClient = http.DefaultClient
 	}
 
-	u, _ := url.Parse(BaseURLV2)
+	u, _ := url.Parse(BaseURL)
 
 	mollie = &Client{
 		BaseURL: u,
@@ -141,6 +143,9 @@ func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
 	}
 
 	mollie.common.client = mollie
+
+	// services for resources
+	mollie.Payments = (*PaymentsService)(&mollie.common)
 
 	// Parse authorization from environment
 	if tkn, ok := os.LookupEnv(APITokenEnv); ok {

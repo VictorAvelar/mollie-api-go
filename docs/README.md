@@ -1,6 +1,6 @@
 # mollie
 --
-    import "github.com/VictorAvelar/mollie-api-go/mollie"
+    import "github.com/VictorAvelar/molli-api-go/mollie"
 
 Package mollie is a wrapper around Mollie's REST API.
 
@@ -20,181 +20,223 @@ the name of the resource you want to interact with.
 
 ```go
 const (
-	BaseURL     string = "https://api.mollie.com"
-	APIVersion  string = "v2"
-	AuthHeader  string = "authorization"
-	TokenType   string = "Bearer"
-	APITokenEnv string = "MOLLIE_API_TOKEN"
-	OrgTokenEnv string = "MOLLIE_ORG_TOKEN"
+	BaseURL            string = "https://api.mollie.com/"
+	AuthHeader         string = "Authorization"
+	TokenType          string = "Bearer"
+	APITokenEnv        string = "MOLLIE_API_TOKEN"
+	OrgTokenEnv        string = "MOLLIE_ORG_TOKEN"
+	RequestContentType string = "application/json"
 )
 ```
 Mollie constants holding values to initialize the client and create requests.
 
-#### type APIClient
+#### func  CheckResponse
 
 ```go
-type APIClient struct {
-	Ctx               context.Context
-	HTTPClient        httpClient
-	BaseURL           *url.URL
-	APIKey            string
-	OrganizationToken string
-}
+func CheckResponse(r *http.Response) error
 ```
-
-APIClient for Mollie API plus information related to the different
-authentication methods provided by the API.
-
-#### func  NewClient
-
-```go
-func NewClient(ctx context.Context, baseClient httpClient, uri string) (mollie *APIClient, err error)
-```
-NewClient returns a fully qualified Mollie HTTP API client with context. It
-receives a context, a httpClient and a uri to initialize the client but also
-accepts nil in some cases.
-
-If nil is passed to context, context.Background will be initialized. if nil is
-passed as httpClient then the http.DefaultClient will be initialized. The uri
-will be parsed with url.Parse function.
-
-By default NewClient will lookup the environment for values to assign to the API
-token (`MOLLIE_API_TOKEN`) and the Organization token (`MOLLIE_ORG_TOKEN`).
-
-You can also set the token values programmatically by using the APIClient
-WithAPIKey and WithOrganizationKey functions.
-
-#### func (*APIClient) NewAPIRequest
-
-```go
-func (c *APIClient) NewAPIRequest(m string, uri string, body io.Reader, auth bool) (req *http.Request, err error)
-```
-NewAPIRequest is a wrapper around the http.NewRequest function. It takes the
-same parameters plus a flag to indicate if the request needs to have the
-authorization headers.
-
-For setting up the headers it takes a hierarchical approach, this meaning that
-if set the APIClient.OrganizationToken will be used, if this value is empty then
-it will attempt to use the APIClient.APIKey, and if this value is also empty it
-will return an error.
-
-#### func (*APIClient) WithAPIKey
-
-```go
-func (c *APIClient) WithAPIKey(k string) error
-```
-WithAPIKey offers a convenient setter with some base validation to attach an API
-key to an APIClient.
-
-Ideally your API key will be provided from and environment variable or a secret
-management engine.
-
-#### func (*APIClient) WithOrganizationToken
-
-```go
-func (c *APIClient) WithOrganizationToken(t string) error
-```
-WithOrganizationToken offers a convenient token with some base validation to
-attach a Mollie Organization Token to an APIClient.
-
-Ideally your API key will be provided from and environment variable or a secret
-management engine.
+CheckResponse checks the API response for errors, and returns them if present. A
+response is considered an error if it has a status code outside the 200 range.
+API error responses are expected to have either no response body, or a JSON
+response body.
 
 #### type Address
 
 ```go
 type Address struct {
-	StreetAndNumber  string `json:"streetAndNumber"`
-	PostalCode       string `json:"postalCode"`
-	City             string `json:"city"`
-	Country          string `json:"country"`
-	Region           string `json:"region,omitempty"`
+	StreetAndNumber  string `json:"streetAndNumber,omitempty"`
 	StreetAdditional string `json:"streetAdditional,omitempty"`
+	PostalCode       string `json:"postalCode,omitempty"`
+	City             string `json:"city,omitempty"`
+	Region           string `json:"region,omitempty"`
+	Country          string `json:"country,omitempty"`
 }
 ```
 
-Address contains information to provide a means of physically locating a place
-in the urban geographical space.
+Address provides a human friendly representation of a geographical space.
 
-For Mollie the country must follow an ISO 3166-1 alpha-2 format, postal codes
-must belong to the specified city and country. When providing an address object
-as parameter to a request, the following conditions must be met:
+When providing an address object as parameter to a request, the following
+conditions must be met:
 
-    - If any of the fields is provided, all fields have to be provided
-      with exception of the region field.
-    - If only the region field is given, one should provide all the other
-      fields as per the previous condition.
-    - For certain PayPal payments the region field is required.
+-If any of the fields is provided, all fields have to be provided with exception
+of the region field. -If only the region field is given, one should provide all
+the other fields as per the previous condition. -For certain PayPal payments the
+region field is required.
 
 #### type Amount
 
 ```go
 type Amount struct {
-	Currency string `json:"currency"`
-	Value    string `json:"value"`
+	Currency string `json:"currency,omitempty"`
+	Value    string `json:"value,omitempty"`
 }
 ```
 
-Amount contains a currency code compliant to the ISO 4217 specification and a
-value with the exact amount in the given currency.
+Amount represents a currency and value pair.
 
-#### type Date
+#### type ApplicationFee
 
 ```go
-type Date struct {
-	time.Time
+type ApplicationFee struct {
+	Amount      Amount `json:"amount,omitempty"`
+	Description string `json:"description,omitempty"`
 }
 ```
 
-Date is represented on `YYYY-MM-DD` format for Mollie requests, in order to
-comply with this the time.Time struct is embedded on Date and custom marshal and
-unmarshal will be provided.
+ApplicationFee allows you to split a payment between a platform and connected
+merchant accounts.
 
-#### func (*Date) UnmarshalJSON
-
-```go
-func (d *Date) UnmarshalJSON(b []byte) error
-```
-UnmarshalJSON overrides the default unmarshal action for the Date struct, as we
-need links to be pointers to the time.Time struct.
-
-#### type HAL
+#### type Client
 
 ```go
-type HAL map[string]Link
-```
+type Client struct {
+	BaseURL *url.URL
 
-HAL is a map of Links that contains relevant resources according to the
-response.
-
-#### type HalURL
-
-```go
-type HalURL struct {
-	*url.URL
+	// Services
+	Payments *PaymentsService
 }
 ```
 
-HalURL has url.URL embedded to modify the default json marshal behaviour.
+Client manages communication with Mollie's API.
 
-#### func (*HalURL) UnmarshalJSON
+#### func  NewClient
 
 ```go
-func (hl *HalURL) UnmarshalJSON(b []byte) error
+func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error)
 ```
-UnmarshalJSON overrides the default unmarshal action for the HalURL struct, as
-we need links to be pointers to the url.URL struct.
+NewClient returns a new Mollie HTTP API client. You can pass a previously build
+http client, if none is provided then http.DefaultClient will be used.
 
-#### type Link
+NewClient will lookup the environment for values to assign to the API token
+(`MOLLIE_API_TOKEN`) and the Organization token (`MOLLIE_ORG_TOKEN`) according
+to the provided Config object.
+
+You can also set the token values programmatically by using the Client
+WithAPIKey and WithOrganizationKey functions.
+
+#### func (*Client) Do
 
 ```go
-type Link struct {
-	Href        HalURL `json:"href"`
-	ContentType string `json:"type"`
+func (c *Client) Do(req *http.Request) (*Response, error)
+```
+Do sends an API request and returns the API response or returned as an error if
+an API error has occurred.
+
+#### func (*Client) NewAPIRequest
+
+```go
+func (c *Client) NewAPIRequest(method string, uri string, body interface{}) (req *http.Request, err error)
+```
+NewAPIRequest is a wrapper around the http.NewRequest function.
+
+It will setup the authentication headers/parameters according to the client
+config.
+
+#### func (*Client) WithAuthenticationValue
+
+```go
+func (c *Client) WithAuthenticationValue(k string) error
+```
+WithAuthenticationValue offers a convenient setter for any of the valid
+authentication tokens provided by Mollie.
+
+Ideally your API key will be provided from and environment variable or a secret
+management engine. This should only be used when environment variables are
+"impossible" to be used.
+
+#### type Config
+
+```go
+type Config struct {
 }
 ```
 
-Link for Mollie are commonly represented as objects with an href and type field.
+Config contains information that helps during the setup of a new Mollie client.
+
+#### func  NewConfig
+
+```go
+func NewConfig(t bool, auth string) *Config
+```
+NewConfig build a Mollie configuration object, it takes t to indicate if our
+client is meant to create requests for testing and auth to indicate the
+authentication method we want to use.
+
+#### type Error
+
+```go
+type Error struct {
+	Code     int            `json:"code"`
+	Message  string         `json:"message"`
+	Response *http.Response `json:"response"` // the full response that produced the error
+}
+```
+
+Error reports details on a failed API request. The success or failure of each
+HTTP request is shown in the status field of the HTTP response header, which
+contains standard HTTP status codes: - a 2xx code for success - a 4xx or 5xx
+code for failure
+
+#### func (*Error) Error
+
+```go
+func (e *Error) Error() string
+```
+Error functions implement the Error interface on the zuora.Error struct.
+
+#### type FailureReason
+
+```go
+type FailureReason string
+```
+
+
+```go
+const (
+	ReasonInvalidCardNumber     FailureReason = "invalid_card_number"
+	ReasonInvalidCCV            FailureReason = "invalid_ccv"
+	ReasonInvalidCardHolderName FailureReason = "invalid_card_holder_name"
+	ReasonCardExpired           FailureReason = "card_expired"
+	ReasonInvalidCardType       FailureReason = "invalid_card_type"
+	ReasonRefusedByIssuer       FailureReason = "refused_by_issuer"
+	ReasonInsufficientFunds     FailureReason = "insufficient_funds"
+	ReasonInactiveCard          FailureReason = "inactive_card"
+	ReasonUnknown               FailureReason = "unknown_reason"
+	ReasonPossibleFraud         FailureReason = "possible_fraud"
+)
+```
+
+#### type FeeRegion
+
+```go
+type FeeRegion string
+```
+
+FeeRegion contains the fee region for the payment.
+
+```go
+const (
+	AmericanExpress FeeRegion = "american-express"
+	CarteBancaire   FeeRegion = "carte-bancaire"
+	IntraEU         FeeRegion = "intra-eu"
+	MaestroRegion   FeeRegion = "maestro"
+	Other           FeeRegion = "other"
+)
+```
+Valid Fee regions
+
+#### type ListPaymentOptions
+
+```go
+type ListPaymentOptions struct {
+	Include   string `url:"include,omitempty"`
+	Embed     string `url:"embed,omitempty"`
+	ProfileID string `url:"profileId,omitempty"`
+}
+```
+
+ListPaymentOptions describes list payments endpoint valid query string
+parameters.
 
 #### type Locale
 
@@ -202,7 +244,280 @@ Link for Mollie are commonly represented as objects with an href and type field.
 type Locale string
 ```
 
-Locale is a string representing the country and language in ISO 15897 format.
+Locale represents a country and language in ISO-15897 format.
+
+```go
+const (
+	English       Locale = "en_US"
+	Dutch         Locale = "nl_NL"
+	DutchBelgium  Locale = "nl_BE"
+	French        Locale = "fr_FR"
+	FrenchBelgium Locale = "fr_BE"
+	German        Locale = "de_DE"
+	GermanAustria Locale = "de_AT"
+	GermanSwiss   Locale = "de_CH"
+	Spanish       Locale = "es_ES"
+	Catalan       Locale = "ca_ES"
+	Portuguese    Locale = "pt_PT"
+	Italian       Locale = "it_IT"
+	Norwegian     Locale = "nb_NO"
+	Swedish       Locale = "sv_SE"
+	Finish        Locale = "fi_FI"
+	Danish        Locale = "da_DK"
+	Icelandic     Locale = "is_IS"
+	Hungarian     Locale = "hu_HU"
+	Polish        Locale = "pl_PL"
+	Latvian       Locale = "lv_LV"
+	Lithuanian    Locale = "lt_LT"
+)
+```
+Mollie supported locales
+
+#### type Mode
+
+```go
+type Mode string
+```
+
+Mode contains information about the payment creation environment.
+
+```go
+const (
+	LiveMode Mode = "live"
+	TestMode Mode = "test"
+)
+```
+Valid modes
+
+#### type PaginationLinks
+
+```go
+type PaginationLinks struct {
+	Self     *URL `json:"self,omitempty"`
+	Previous *URL `json:"previous,omitempty"`
+	Next     *URL `json:"next,omitempty"`
+	Docs     *URL `json:"documentation,omitempty"`
+}
+```
+
+PaginationLinks describes the hal component of paginated responses.
+
+#### type Payment
+
+```go
+type Payment struct {
+	Resource         string          `json:"resource,omitempty"`
+	ID               string          `json:"id,omitempty"`
+	Mode             Mode            `json:"mode,omitempty"`
+	CreatedAt        *time.Time      `json:"createdAt,omitempty"`
+	Status           string          `json:"status,omitempty"`
+	IsCancellable    bool            `json:"isCancellable,omitempty"`
+	AuthorizedAt     *time.Time      `json:"authorizedAt,omitempty"`
+	PaidAt           *time.Time      `json:"paidAt,omitempty"`
+	CanceledAt       *time.Time      `json:"canceledAt,omitempty"`
+	ExpiresAt        *time.Time      `json:"expiresAt,omitempty"`
+	ExpiredAt        *time.Time      `json:"expiredAt,omitempty"`
+	FailedAt         *time.Time      `json:"failedAt,omitempty"`
+	Amount           *Amount         `json:"amount,omitempty"`
+	AmountRefunded   *Amount         `json:"amountRefunded,omitempty"`
+	AmountRemaining  *Amount         `json:"amountRemaining,omitempty"`
+	AmountCaptured   *Amount         `json:"amountCaptured,omitempty"`
+	Description      string          `json:"description,omitempty"`
+	RedirectURL      string          `json:"redirectUrl,omitempty"`
+	WebhookURL       string          `json:"webhookUrl,omitempty"`
+	Method           *PaymentMethod  `json:"method,omitempty"`
+	Metadata         interface{}     `json:"metadata,omitempty"`
+	Locale           *Locale         `json:"locale,omitempty"`
+	CountryCode      string          `json:"countryCode,omitempty"`
+	ProfileID        string          `json:"profileId,omitempty"`
+	SettlementAmount *Amount         `json:"settlementAmount,omitempty"`
+	SettlementID     string          `json:"settlementId,omitempty"`
+	CustomerID       string          `json:"customerId,omitempty"`
+	SequenceType     *SequenceType   `json:"sequenceType,omitempty"`
+	MandateID        string          `json:"mandateId,omitempty"`
+	OrderID          string          `json:"orderId,omitempty"`
+	ApplicationFee   *ApplicationFee `json:"applicationFee,omitempty"`
+	Links            *PaymentLinks   `json:"_links,omitempty"`
+	Details          *PaymentDetails `json:"details,omitempty"`
+}
+```
+
+
+#### type PaymentDetails
+
+```go
+type PaymentDetails struct {
+	BankAccount        string         `json:"bankAccount,omitempty"`
+	BankBIC            string         `json:"bankBic,omitempty"`
+	BankName           string         `json:"bankName,omitempty"`
+	BankReason         string         `json:"bankReason,omitempty"`
+	BatchReference     string         `json:"batchReference,omitempty"`
+	BillingEmail       string         `json:"billingEmail,omitempty"`
+	CardAudience       string         `json:"cardAudience,omitempty"`
+	CardCountryCode    string         `json:"cardCountryCode,omitempty"`
+	CardFingerPrint    string         `json:"cardFingerPrint,omitempty"`
+	CardHolder         string         `json:"cardHolder,omitempty"`
+	CardLabel          string         `json:"cardLabel,omitempty"`
+	CardNumber         string         `json:"cardNumber,omitempty"`
+	CardSecurity       string         `json:"cardSecurity,omitempty"`
+	ConsumerAccount    string         `json:"consumerAccount,omitempty"`
+	ConsumerBIC        string         `json:"consumerBic,omitempty"`
+	ConsumerName       string         `json:"consumerName,omitempty"`
+	ConsumerReference  string         `json:"consumerReference,omitempty"`
+	CreditorIdentifier string         `json:"creditorIdentifier,omitempty"`
+	DueDate            *ShortDate     `json:"dueDate,omitempty"`
+	EndToEndIdentifier string         `json:"endToEndIdentifier,omitempty"`
+	FailureReason      *FailureReason `json:"failureReason,omitempty"`
+	FeeRegion          *FeeRegion     `json:"feeRegion,omitempty"`
+	FileReference      string         `json:"fileReference,omitempty"`
+	GiftCards          []UsedGiftCard `json:"giftCards,omitempty"`
+	MandateReference   string         `json:"mandateReference,omitempty"`
+	PayPalReference    string         `json:"payPalReference,omitempty"`
+	QRCode             *QRCode        `json:"qrCode,omitempty"`
+	RemainderAmount    *Amount        `json:"remainderAmount,omitempty"`
+	RemainderMethod    *PaymentMethod `json:"remainderMethod,omitempty"`
+	SignatureDate      *ShortDate     `json:"signatureDate,omitempty"`
+	TransferReference  string         `json:"transferReference,omitempty"`
+	VoucherNumber      string         `json:"voucherNumber,omitempty"`
+	Wallet             string         `json:"wallet,omitempty"`
+	Links              struct {
+		Status    URL `json:"status,omitempty"`
+		PayOnline URL `json:"payOnline,omitempty"`
+	} `json:"_links,omitempty"`
+}
+```
+
+BankTransferDetails contains details for the specified payment method
+
+#### type PaymentLinks
+
+```go
+type PaymentLinks struct {
+	Self               URL `json:"self,omitempty"`
+	Checkout           URL `json:"checkout,omitempty"`
+	ChangePaymentState URL `json:"changePaymentState,omitempty"`
+	Refunds            URL `json:"refunds,omitempty"`
+	ChargeBacks        URL `json:"chargebacks,omitempty"`
+	Captures           URL `json:"captures,omitempty"`
+	Settlement         URL `json:"settlement,omitempty"`
+	Documentation      URL `json:"documentation,omitempty"`
+	Mandate            URL `json:"mandate,omitempty"`
+	Subscription       URL `json:"subscription,omitempty"`
+	Customer           URL `json:"customer,omitempty"`
+	Order              URL `json:"order,omitempty"`
+}
+```
+
+PaymentLinks describes all the possible links to be returned with a payment
+object.
+
+#### type PaymentList
+
+```go
+type PaymentList struct {
+	Count    int `json:"count,omitempty"`
+	Embedded struct {
+		Payments []Payment
+	} `json:"_embedded,omitempty"`
+	Links PaginationLinks `json:"_links,omitempty"`
+}
+```
+
+PaymentList describes how a list of payments will be retrieved by Mollie.
+
+#### type PaymentMethod
+
+```go
+type PaymentMethod string
+```
+
+
+```go
+const (
+	Bancontact     PaymentMethod = "bancontact"
+	BankTransfer   PaymentMethod = "banktransfer"
+	Belfius        PaymentMethod = "belfius"
+	CreditCard     PaymentMethod = "creditcard"
+	DirectDebit    PaymentMethod = "directdebit"
+	EPS            PaymentMethod = "eps"
+	GiftCard       PaymentMethod = "giftcard"
+	GiroPay        PaymentMethod = "giropay"
+	IDeal          PaymentMethod = "ideal"
+	INGHomePay     PaymentMethod = "inghomepay"
+	KBC            PaymentMethod = "kbc"
+	KlarnaPayLater PaymentMethod = "klarnapaylater"
+	KlarnaLiceit   PaymentMethod = "klarnaliceit"
+	MyBank         PaymentMethod = "mybank"
+	PayPal         PaymentMethod = "paypal"
+	PaySafeCard    PaymentMethod = "paysafecard"
+	PRZelewy24     PaymentMethod = "przelewy24"
+	Sofort         PaymentMethod = "sofort"
+)
+```
+
+#### type PaymentOptions
+
+```go
+type PaymentOptions struct {
+	Include string `url:"include,omitempty"`
+	Embed   string `url:"embed,omitempty"`
+}
+```
+
+PaymentOptions describes payments endpoint valid query string parameters.
+
+See: https://docs.mollie.com/reference/v2/payments-api/get-payment
+
+#### type PaymentsService
+
+```go
+type PaymentsService service
+```
+
+PaymentsService instance operates over payment resources
+
+#### func (*PaymentsService) Cancel
+
+```go
+func (ps *PaymentsService) Cancel(id string) (p Payment, err error)
+```
+Cancel removes a payment (if possible) from your Mollie account.
+
+See: https://docs.mollie.com/reference/v2/payments-api/cancel-payment
+
+#### func (*PaymentsService) Create
+
+```go
+func (ps *PaymentsService) Create(p Payment) (np Payment, err error)
+```
+Create stores a new payment object attached to your Mollie account.
+
+See: https://docs.mollie.com/reference/v2/payments-api/create-payment#
+
+#### func (*PaymentsService) Get
+
+```go
+func (ps *PaymentsService) Get(id string, options *PaymentOptions) (p Payment, err error)
+```
+Get retrieves a single payment object by its payment token.
+
+#### func (*PaymentsService) List
+
+```go
+func (ps *PaymentsService) List(options *ListPaymentOptions) (pl PaymentList, err error)
+```
+List retrieves a list of payments associated with your account/organization.
+
+See: https://docs.mollie.com/reference/v2/payments-api/list-payments
+
+#### func (*PaymentsService) Update
+
+```go
+func (ps *PaymentsService) Update(id string, up Payment) (p Payment, err error)
+```
+Update can be used to update some details of a created payment.
+
+See: https://docs.mollie.com/reference/v2/payments-api/update-payment#
 
 #### type PhoneNumber
 
@@ -210,31 +525,86 @@ Locale is a string representing the country and language in ISO 15897 format.
 type PhoneNumber string
 ```
 
-PhoneNumber is a string in the E.164 format. For example, `+31208202070`.
+PhoneNumber represents a phone number in the E.164 format.
 
 #### type QRCode
 
 ```go
 type QRCode struct {
-	Height int `json:"height"`
-	Width  int `json:"width"`
-	Source int `json:"src"`
+	Height int    `json:"height,omitempty"`
+	Width  int    `json:"width,omitempty"`
+	Src    string `json:"src,omitempty"`
 }
 ```
 
-QRCode represents an image of a QR code.
+QR code object represents an image of a QR code.
 
-#### type ResponseErr
+#### type Response
 
 ```go
-type ResponseErr struct {
-	Status int    `json:"status"`
-	Title  string `json:"title"`
-	Detail string `json:"detail"`
-	Field  string `json:"field,omitempty"`
-	Links  HAL    `json:"_links"`
+type Response struct {
+	*http.Response
 }
 ```
 
-ResponseErr describes the content of the response body when the http call to
-Mollie API is not successful.
+Response is a Mollie API response. This wraps the standard http.Response
+returned from Mollie and provides convenient access to things like pagination
+links.
+
+#### type SequenceType
+
+```go
+type SequenceType string
+```
+
+SequenceType indicates which type of payment this is in a recurring sequence.
+
+```go
+const (
+	OneOffSequence    SequenceType = "oneoff"
+	FirstSequence     SequenceType = "first"
+	RecurringSequence SequenceType = "recurring"
+)
+```
+Valid sequence types
+
+#### type ShortDate
+
+```go
+type ShortDate struct {
+	time.Time
+}
+```
+
+ShortDate is a string representing a date in YYYY-MM-DD format.
+
+#### func (*ShortDate) UnmarshalJSON
+
+```go
+func (d *ShortDate) UnmarshalJSON(b []byte) error
+```
+UnmarshalJSON overrides the default unmarshal action for the Date struct, as we
+need links to be pointers to the time.Time struct.
+
+#### type URL
+
+```go
+type URL struct {
+	Href string `json:"href,omitempty"`
+	Type string `json:"type,omitempty"`
+}
+```
+
+URLs in Mollie are commonly represented as objects with an href and type field.
+
+#### type UsedGiftCard
+
+```go
+type UsedGiftCard struct {
+	Issuer        string  `json:"issuer,omitempty"`
+	Amount        *Amount `json:"amount,omitempty"`
+	VoucherNumber string  `json:"voucherNumber,omitempty"`
+}
+```
+
+UsedGiftCard describes a used gift card.
