@@ -94,6 +94,7 @@ type Client struct {
 
 	// Services
 	Payments *PaymentsService
+	Methods  *MethodsService
 }
 ```
 
@@ -190,6 +191,7 @@ Error functions implement the Error interface on the zuora.Error struct.
 type FailureReason string
 ```
 
+FailureReason provides a description on a failed payment
 
 ```go
 const (
@@ -205,6 +207,7 @@ const (
 	ReasonPossibleFraud         FailureReason = "possible_fraud"
 )
 ```
+Possible failure reasons
 
 #### type FeeRegion
 
@@ -224,6 +227,32 @@ const (
 )
 ```
 Valid Fee regions
+
+#### type Image
+
+```go
+type Image struct {
+	Size1x string `json:"size1X,omitempty"`
+	Size2X string `json:"size2X,omitempty"`
+	Svg    string `json:"svg,omitempty"`
+}
+```
+
+Image describes a generic image resource retrieved by Mollie.
+
+#### type ListMethods
+
+```go
+type ListMethods struct {
+	Count    int `json:"count,omitempty"`
+	Embedded struct {
+		Methods []PaymentMethodInfo
+	} `json:"_embedded,omitempty"`
+	Links PaginationLinks `json:"_links,omitempty"`
+}
+```
+
+ListMethods describes a list of paginated payment methods.
 
 #### type ListPaymentOptions
 
@@ -272,6 +301,74 @@ const (
 )
 ```
 Mollie supported locales
+
+#### type MethodsLinks
+
+```go
+type MethodsLinks struct {
+	Self URL `json:"self,omitempty"`
+	Docs URL `json:"documentation,omitempty"`
+}
+```
+
+MethodsLinks describes links attached to methods service responses.
+
+#### type MethodsOptions
+
+```go
+type MethodsOptions struct {
+	Locale    Locale `url:"locale,omitempty"`
+	Currency  string `url:"currency,omitempty"`
+	ProfileID string `url:"profileId,omitempty"`
+	Include   string `url:"include,omitempty"`
+	// Use for List method only
+	SequenceType   SequenceType `url:"sequenceType,omitempty"`
+	Amount         Amount       `url:"amount,omitempty"`
+	Resource       string       `url:"resource,omitempty"`
+	BillingCountry string       `url:"billingCountry,omitempty"`
+	IncludeWallets string       `json:"includeWallets,omitempty"`
+}
+```
+
+MethodsOptions are applicable query string parameters to methods service
+endpoints.
+
+#### type MethodsService
+
+```go
+type MethodsService service
+```
+
+MethodsService operates on methods endpoints
+
+#### func (*MethodsService) All
+
+```go
+func (ms *MethodsService) All(options *MethodsOptions) (pm *ListMethods, err error)
+```
+All retrieves all the payment methods enabled for your account/organization
+
+See: https://docs.mollie.com/reference/v2/methods-api/list-all-methods
+
+#### func (*MethodsService) Get
+
+```go
+func (ms *MethodsService) Get(id string, options *MethodsOptions) (pmi *PaymentMethodInfo, err error)
+```
+Get returns information about the payment method specified by id, it also
+receives a pointer to the method options containing applicable query string
+parameters
+
+See: https://docs.mollie.com/reference/v2/methods-api/get-method
+
+#### func (*MethodsService) List
+
+```go
+func (ms *MethodsService) List(options *MethodsOptions) (pm *ListMethods, err error)
+```
+List retrieves all enabled payment methods. The results are not paginated.
+
+See: https://docs.mollie.com/reference/v2/methods-api/list-methods
 
 #### type Mode
 
@@ -342,6 +439,7 @@ type Payment struct {
 }
 ```
 
+Payment describes a transaction between a customer and a merchant
 
 #### type PaymentDetails
 
@@ -387,7 +485,7 @@ type PaymentDetails struct {
 }
 ```
 
-BankTransferDetails contains details for the specified payment method
+PaymentDetails contains details for the specified payment method
 
 #### type PaymentLinks
 
@@ -431,6 +529,7 @@ PaymentList describes how a list of payments will be retrieved by Mollie.
 type PaymentMethod string
 ```
 
+PaymentMethod is a payment method supported by Mollie.
 
 ```go
 const (
@@ -454,6 +553,37 @@ const (
 	Sofort         PaymentMethod = "sofort"
 )
 ```
+Supported payment methods
+
+#### type PaymentMethodInfo
+
+```go
+type PaymentMethodInfo struct {
+	Resource      string                 `json:"resource,omitempty"`
+	ID            string                 `json:"id,omitempty"`
+	Description   string                 `json:"description,omitempty"`
+	MinimumAmount *Amount                `json:"minimumAmount,omitempty"`
+	MaximumAmount *Amount                `json:"maximumAmount,omitempty"`
+	Image         Image                  `json:"image,omitempty"`
+	Pricing       []PaymentMethodPricing `json:"pricing,omitempty"`
+	Links         MethodsLinks           `json:"_links,omitempty"`
+}
+```
+
+PaymentMethodInfo describes a single method with details.
+
+#### type PaymentMethodPricing
+
+```go
+type PaymentMethodPricing struct {
+	Description string  `json:"description,omitempty"`
+	Fixed       *Amount `json:"fixed,omitempty"`
+	Variable    string  `json:"variable,omitempty"`
+}
+```
+
+PaymentMethodPricing contains information about commissions and fees applicable
+to a payment method.
 
 #### type PaymentOptions
 
@@ -537,7 +667,7 @@ type QRCode struct {
 }
 ```
 
-QR code object represents an image of a QR code.
+QRCode object represents an image of a QR code.
 
 #### type Response
 
@@ -595,7 +725,7 @@ type URL struct {
 }
 ```
 
-URLs in Mollie are commonly represented as objects with an href and type field.
+URL in Mollie are commonly represented as objects with an href and type field.
 
 #### type UsedGiftCard
 
