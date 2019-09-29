@@ -11,6 +11,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 - Tests for the added code
 - 8e3130d Added scrutinizer check for code style and coverage
 - dbaf84f Added Mollie standard types
+- 1b53ea9-payments resource implementation
 
 ### Deprecated
 - Nothing
