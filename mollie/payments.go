@@ -18,8 +18,10 @@ const (
 	TestMode Mode = "test"
 )
 
+// PaymentMethod is a payment method supported by Mollie.
 type PaymentMethod string
 
+// Supported payment methods
 const (
 	Bancontact     PaymentMethod = "bancontact"
 	BankTransfer   PaymentMethod = "banktransfer"
@@ -51,6 +53,7 @@ const (
 	RecurringSequence SequenceType = "recurring"
 )
 
+// Payment describes a transaction between a customer and a merchant
 type Payment struct {
 	Resource         string          `json:"resource,omitempty"`
 	ID               string          `json:"id,omitempty"`

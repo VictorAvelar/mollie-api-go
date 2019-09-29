@@ -37,6 +37,7 @@ type Client struct {
 	config         *Config
 	// Services
 	Payments *PaymentsService
+	Methods  *MethodsService
 }
 
 type service struct {
@@ -146,6 +147,7 @@ func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
 
 	// services for resources
 	mollie.Payments = (*PaymentsService)(&mollie.common)
+	mollie.Methods = (*MethodsService)(&mollie.common)
 
 	// Parse authorization from environment
 	if tkn, ok := os.LookupEnv(APITokenEnv); ok {
