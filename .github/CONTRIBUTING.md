@@ -2,7 +2,7 @@
 
 Contributions are **welcome** and will be fully **credited**.
 
-We accept contributions via Pull Requests on [Github](https://github.com/victoravelar/devto-api-go).
+We accept contributions via Pull Requests on [Github](https://github.com/victoravelar/mollie-api-go).
 
 
 ## Pull Requests
