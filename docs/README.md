@@ -86,21 +86,117 @@ type ApplicationFee struct {
 ApplicationFee allows you to split a payment between a platform and connected
 merchant accounts.
 
+#### type Chargeback
+```go
+type Chargeback struct {
+	Resource         string           `json:"resource,omitempty"`
+	ID               string           `json:"id,omitempty"`
+	Amount           *Amount          `json:"amount,omitempty"`
+	SettlementAmount *Amount          `json:"settlementAmount,omitempty"`
+	CreatedAt        *time.Time       `json:"createdAt,omitempty"`
+	ReversedAt       *time.Time       `json:"reversedAt,omitempty"`
+	ChargebackID     string           `json:"chargebackId,omitempty"`
+	Links            *ChargebackLinks `json:"_links,omitempty"`
+}
+```
+
+Chargeback describes a forced transaction reversal initiated by the cardholder's bank
+
+#### type ChargebackLinks
+
+```go
+type ChargebackLinks struct {
+	Self          URL `json:"self,omitempty"`
+	Chargeback    URL `json:"chargeback,omitempty"`
+	Settlement    URL `json:"settlement,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
+}
+```
+
+ChargebackLinks describes all the possible links to be returned with
+a chargeback object.
+
+#### type ChargebackList
+
+```go
+type ChargebackList struct {
+	Count    int `json:"count,omitempty"`
+	Embedded struct {
+		Chargebacks []Chargeback
+	} `json:"_embedded,omitempty"`
+	Links PaginationLinks `json:"_links,omitempty"`
+}
+```
+
+ChargebackList describes how a list of chargebacks will be retrieved by Mollie.
+
+#### type ChargebackOptions
+
+```go
+type ChargebackOptions struct {
+	Include string `url:"include,omitempty"`
+	Embed   string `url:"embed,omitempty"`
+}
+```
+
+ChargebackOptions describes chargeback endpoint valid query string parameters.
+
+See: https://docs.mollie.com/reference/v2/chargebacks-api/get-chargeback
+
+#### type ChargebacksService
+
+```go
+type ChargebacksService service
+```
+
+ChargebacksService instance operates over chargeback resources
+
+#### func (\*ChargebacksService) Get
+
+```go
+func (cs *ChargebacksService) Get(paymentID, chargebackID string, options *ChargebackOptions) (p Chargeback, err error)
+```
+
+Get retrieves a single chargeback by its ID. Note the original payment’s ID is needed as well.
+
+If you do not know the original payment’s ID, you can use the List function
+
+#### func (\*ChargebacksService) List
+
+```go
+func (cs *ChargebacksService) List(options *ListChargebackOptions) (pl ChargebackList, err error)
+```
+
+List retrieves a list of chargebacks associated with your account/organization.
+
+See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
+
+#### func (\*ChargebacksService) ListForPayment
+
+```go
+func (cs *ChargebacksService) ListForPayment(paymentID string, options *ListChargebackOptions) (pl ChargebackList, err error)
+```
+
+ListForPayment retrieves a list of chargebacks associated with a single payment.
+
+See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
+
 #### type Client
 
 ```go
 type Client struct {
 	BaseURL *url.URL
 
-	// Services
-	Payments *PaymentsService
-	Methods  *MethodsService
+  // Services
+	Payments    *PaymentsService
+	Chargebacks *ChargebacksService
+	Methods     *MethodsService
 }
 ```
 
 Client manages communication with Mollie's API.
 
-#### func  NewClient
+#### func NewClient
 
 ```go
 func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error)
@@ -115,7 +211,7 @@ to the provided Config object.
 You can also set the token values programmatically by using the Client
 WithAPIKey and WithOrganizationKey functions.
 
-#### func (*Client) Do
+#### func (\*Client) Do
 
 ```go
 func (c *Client) Do(req *http.Request) (*Response, error)
@@ -123,7 +219,7 @@ func (c *Client) Do(req *http.Request) (*Response, error)
 Do sends an API request and returns the API response or returned as an error if
 an API error has occurred.
 
-#### func (*Client) NewAPIRequest
+#### func (\*Client) NewAPIRequest
 
 ```go
 func (c *Client) NewAPIRequest(method string, uri string, body interface{}) (req *http.Request, err error)
@@ -133,7 +229,7 @@ NewAPIRequest is a wrapper around the http.NewRequest function.
 It will setup the authentication headers/parameters according to the client
 config.
 
-#### func (*Client) WithAuthenticationValue
+#### func (\*Client) WithAuthenticationValue
 
 ```go
 func (c *Client) WithAuthenticationValue(k string) error
@@ -178,7 +274,7 @@ HTTP request is shown in the status field of the HTTP response header, which
 contains standard HTTP status codes: - a 2xx code for success - a 4xx or 5xx
 code for failure
 
-#### func (*Error) Error
+#### func (\*Error) Error
 
 ```go
 func (e *Error) Error() string
@@ -239,6 +335,18 @@ type Image struct {
 ```
 
 Image describes a generic image resource retrieved by Mollie.
+
+#### type ListChargebackOptions
+
+```go
+type ListChargebackOptions struct {
+	Include   string `url:"include,omitempty"`
+	Embed     string `url:"embed,omitempty"`
+	ProfileID string `url:"profileId,omitempty"`
+}
+```
+
+ListChargebackOptions describes list chargebacks endpoint valid query string parameters.
 
 #### type ListMethods
 
@@ -341,7 +449,7 @@ type MethodsService service
 
 MethodsService operates on methods endpoints
 
-#### func (*MethodsService) All
+#### func (\*MethodsService) All
 
 ```go
 func (ms *MethodsService) All(options *MethodsOptions) (pm *ListMethods, err error)
@@ -350,7 +458,7 @@ All retrieves all the payment methods enabled for your account/organization
 
 See: https://docs.mollie.com/reference/v2/methods-api/list-all-methods
 
-#### func (*MethodsService) Get
+#### func (\*MethodsService) Get
 
 ```go
 func (ms *MethodsService) Get(id string, options *MethodsOptions) (pmi *PaymentMethodInfo, err error)
@@ -361,7 +469,7 @@ parameters
 
 See: https://docs.mollie.com/reference/v2/methods-api/get-method
 
-#### func (*MethodsService) List
+#### func (\*MethodsService) List
 
 ```go
 func (ms *MethodsService) List(options *MethodsOptions) (pm *ListMethods, err error)
@@ -606,7 +714,7 @@ type PaymentsService service
 
 PaymentsService instance operates over payment resources
 
-#### func (*PaymentsService) Cancel
+#### func (\*PaymentsService) Cancel
 
 ```go
 func (ps *PaymentsService) Cancel(id string) (p Payment, err error)
@@ -615,7 +723,7 @@ Cancel removes a payment (if possible) from your Mollie account.
 
 See: https://docs.mollie.com/reference/v2/payments-api/cancel-payment
 
-#### func (*PaymentsService) Create
+#### func (\*PaymentsService) Create
 
 ```go
 func (ps *PaymentsService) Create(p Payment) (np Payment, err error)
@@ -624,14 +732,14 @@ Create stores a new payment object attached to your Mollie account.
 
 See: https://docs.mollie.com/reference/v2/payments-api/create-payment#
 
-#### func (*PaymentsService) Get
+#### func (\*PaymentsService) Get
 
 ```go
 func (ps *PaymentsService) Get(id string, options *PaymentOptions) (p Payment, err error)
 ```
 Get retrieves a single payment object by its payment token.
 
-#### func (*PaymentsService) List
+#### func (\*PaymentsService) List
 
 ```go
 func (ps *PaymentsService) List(options *ListPaymentOptions) (pl PaymentList, err error)
@@ -640,7 +748,7 @@ List retrieves a list of payments associated with your account/organization.
 
 See: https://docs.mollie.com/reference/v2/payments-api/list-payments
 
-#### func (*PaymentsService) Update
+#### func (\*PaymentsService) Update
 
 ```go
 func (ps *PaymentsService) Update(id string, up Payment) (p Payment, err error)
@@ -708,7 +816,7 @@ type ShortDate struct {
 
 ShortDate is a string representing a date in YYYY-MM-DD format.
 
-#### func (*ShortDate) UnmarshalJSON
+#### func (\*ShortDate) UnmarshalJSON
 
 ```go
 func (d *ShortDate) UnmarshalJSON(b []byte) error

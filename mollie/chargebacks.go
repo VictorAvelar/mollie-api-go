@@ -60,17 +60,17 @@ type ChargebacksService service
 // Get retrieves a single chargeback by its ID. Note the original payment’s ID is needed as well.
 //
 //If you do not know the original payment’s ID, you can use the List function
-func (ps *ChargebacksService) Get(paymentID, chargebackID string, options *ChargebackOptions) (p Chargeback, err error) {
+func (cs *ChargebacksService) Get(paymentID, chargebackID string, options *ChargebackOptions) (p Chargeback, err error) {
 	u := fmt.Sprintf("v2/payments/%s/chargebacks/%s", paymentID, chargebackID)
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
-	req, err := ps.client.NewAPIRequest(http.MethodGet, u, nil)
+	req, err := cs.client.NewAPIRequest(http.MethodGet, u, nil)
 	if err != nil {
 		return
 	}
-	res, err := ps.client.Do(req)
+	res, err := cs.client.Do(req)
 	if err != nil {
 		return
 	}
@@ -83,17 +83,17 @@ func (ps *ChargebacksService) Get(paymentID, chargebackID string, options *Charg
 // List retrieves a list of chargebacks associated with your account/organization.
 //
 // See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
-func (ps *ChargebacksService) List(options *ListChargebackOptions) (pl ChargebackList, err error) {
+func (cs *ChargebacksService) List(options *ListChargebackOptions) (pl ChargebackList, err error) {
 	u := fmt.Sprint("v2/chargebacks")
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
-	req, err := ps.client.NewAPIRequest(http.MethodGet, u, nil)
+	req, err := cs.client.NewAPIRequest(http.MethodGet, u, nil)
 	if err != nil {
 		return
 	}
-	res, err := ps.client.Do(req)
+	res, err := cs.client.Do(req)
 	if err != nil {
 		return
 	}
@@ -106,17 +106,17 @@ func (ps *ChargebacksService) List(options *ListChargebackOptions) (pl Chargebac
 // ListForPayment retrieves a list of chargebacks associated with a single payment.
 //
 // See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
-func (ps *ChargebacksService) ListForPayment(paymentID string, options *ListChargebackOptions) (pl ChargebackList, err error) {
+func (cs *ChargebacksService) ListForPayment(paymentID string, options *ListChargebackOptions) (pl ChargebackList, err error) {
 	u := fmt.Sprintf("v2/payments/%s/chargebacks", paymentID)
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
-	req, err := ps.client.NewAPIRequest(http.MethodGet, u, nil)
+	req, err := cs.client.NewAPIRequest(http.MethodGet, u, nil)
 	if err != nil {
 		return
 	}
-	res, err := ps.client.Do(req)
+	res, err := cs.client.Do(req)
 	if err != nil {
 		return
 	}
