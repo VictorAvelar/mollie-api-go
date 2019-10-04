@@ -97,3 +97,12 @@ type PaginationLinks struct {
 	Next     *URL `json:"next,omitempty"`
 	Docs     *URL `json:"documentation,omitempty"`
 }
+
+// Mode contains information about the payment creation environment.
+type Mode string
+
+// Valid modes
+const (
+	LiveMode Mode = "live"
+	TestMode Mode = "test"
+)
