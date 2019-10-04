@@ -31,7 +31,7 @@ type Customer struct {
 func (sv *CustomersService) Get(ID string) (c Customer, err error) {
 	path := fmt.Sprintf("/v2/customers/%s", ID)
 
-	req, err := sv.client.NewAPIRequest(http.MethodGet, path)
+	req, err := sv.client.NewAPIRequest(http.MethodGet, path, nil)
 	if err != nil {
 		return
 	}
@@ -106,7 +106,7 @@ func (sv *CustomersService) Update(ID string, reqBody UpdateCustomerReq) (c Cust
 func (sv *CustomersService) Delete(ID string) (err error) {
 	path := fmt.Sprintf("/v2/customers/%s", ID)
 
-	req, err := sv.client.NewAPIRequest(http.MethodDelete, path)
+	req, err := sv.client.NewAPIRequest(http.MethodDelete, path, nil)
 	if err != nil {
 		return
 	}
