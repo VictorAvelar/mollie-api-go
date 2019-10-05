@@ -1,7 +1,7 @@
 package testdata
 
 // GetPaymentResponse example
-var GetPaymentResponse = `{
+const GetPaymentResponse = `{
     "resource": "payment",
     "id": "tr_WDqYK6vllg",
     "mode": "test",
@@ -40,7 +40,7 @@ var GetPaymentResponse = `{
 }`
 
 // CancelPaymentResponse example
-var CancelPaymentResponse = `{
+const CancelPaymentResponse = `{
     "resource": "payment",
     "id": "tr_WDqYK6vllg",
     "mode": "live",
@@ -76,7 +76,7 @@ var CancelPaymentResponse = `{
 }`
 
 // UpdatePaymentResponse example
-var UpdatePaymentResponse = `{
+const UpdatePaymentResponse = `{
     "resource": "payment",
     "id": "tr_7UhSN1zuXS",
     "mode": "test",
@@ -116,7 +116,7 @@ var UpdatePaymentResponse = `{
 `
 
 // ListPaymentsResponse example
-var ListPaymentsResponse = `{
+const ListPaymentsResponse = `{
     "count": 5,
     "_embedded": {
         "payments": [

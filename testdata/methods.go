@@ -1,7 +1,7 @@
 package testdata
 
 // ListMethodsResponse example
-var ListMethodsResponse = `{
+const ListMethodsResponse = `{
     "count": 13,
     "_embedded": {
         "methods": [
@@ -104,7 +104,7 @@ var ListMethodsResponse = `{
 }`
 
 // GetMethodResponse example
-var GetMethodResponse = `{
+const GetMethodResponse = `{
      "resource": "method",
      "id": "ideal",
      "description": "iDEAL",
