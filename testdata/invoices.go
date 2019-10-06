@@ -1,7 +1,7 @@
 package testdata
 
 // GetInvoiceResponse example
-var GetInvoiceResponse = `{
+const GetInvoiceResponse = `{
     "resource": "invoice",
     "id": "inv_xBEbP9rvAq",
     "reference": "2016.10000",
@@ -47,7 +47,7 @@ var GetInvoiceResponse = `{
 }`
 
 // ListInvoicesResponse example
-var ListInvoicesResponse = `{
+const ListInvoicesResponse = `{
     "count": 5,
     "_embedded": {
         "invoices": [

@@ -7,8 +7,10 @@ import (
 	"net/http"
 )
 
+// InvoiceStatus status of the invoice
 type InvoiceStatus string
 
+// Valid status of the invoice
 const (
 	InvoiceStatusOpen    InvoiceStatus = "open"
 	InvoiceStatusPaid    InvoiceStatus = "paid"
