@@ -4,6 +4,13 @@ Contributions are **welcome** and will be fully **credited**.
 
 We accept contributions via Pull Requests on [Github](https://github.com/victoravelar/mollie-api-go).
 
+## Before starting to code
+
+If you are contributing based on an issue, please drop a comment in the issue so that it can be labeled as `in progress` and assigned to you, this provides everyone visiting the repository with a clear overview of what is up for grabs and what is already taken.
+
+Also be sure to ask and clarify all your questions so that your coding experience is as smooth as possible.
+
+If your PR is not based on an issue, then please provide a relevant and descriptive PR description and branch name.
 
 ## Pull Requests
 
