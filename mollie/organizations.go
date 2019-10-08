@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// Organization describes a organization detail
+// Organization describes an organization detail
 type Organization struct {
 	Resource           string             `json:"resource,omitempty"`
 	ID                 string             `json:"id,omitempty"`
@@ -38,36 +38,36 @@ type OrganizationLinks struct {
 type OrganizationsService service
 
 // Get retrieve an organization by its id.
-func (is *OrganizationsService) Get(id string) (i Organization, err error) {
+func (os *OrganizationsService) Get(id string) (o *Organization, err error) {
 	getURL := fmt.Sprintf("v2/organizations/%s", id)
 
-	req, err := is.client.NewAPIRequest(http.MethodGet, getURL, nil)
+	req, err := os.client.NewAPIRequest(http.MethodGet, getURL, nil)
 	if err != nil {
 		return
 	}
-	res, err := is.client.Do(req)
+	res, err := os.client.Do(req)
 	if err != nil {
 		return
 	}
-	if err = json.Unmarshal(res.content, &i); err != nil {
+	if err = json.Unmarshal(res.content, &o); err != nil {
 		return
 	}
 	return
 }
 
 // GetCurrent retrieve the currently authenticated organization
-func (is *OrganizationsService) GetCurrent() (i Organization, err error) {
+func (os *OrganizationsService) GetCurrent() (o *Organization, err error) {
 	getURL := "v2/organizations/me"
 
-	req, err := is.client.NewAPIRequest(http.MethodGet, getURL, nil)
+	req, err := os.client.NewAPIRequest(http.MethodGet, getURL, nil)
 	if err != nil {
 		return
 	}
-	res, err := is.client.Do(req)
+	res, err := os.client.Do(req)
 	if err != nil {
 		return
 	}
-	if err = json.Unmarshal(res.content, &i); err != nil {
+	if err = json.Unmarshal(res.content, &o); err != nil {
 		return
 	}
 	return

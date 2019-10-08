@@ -3,6 +3,8 @@ package mollie
 import (
 	"github.com/VictorAvelar/mollie-api-go/testdata"
 	"net/http"
+	"net/url"
+	"strings"
 	"testing"
 )
 
@@ -55,5 +57,60 @@ func TestOrganizationsService_GetCurrent(t *testing.T) {
 
 	if res.ID != id {
 		t.Errorf("mismatching info. want %v, got %v", id, res.ID)
+	}
+}
+
+func TestOrganizationsService_HttpRequestErrors(t *testing.T) {
+	setup()
+	defer teardown()
+	tMux.HandleFunc("/v2/organizations/", errorHandler)
+
+	_, gerr := tClient.Organizations.Get("org_12345678")
+	_, gcerr := tClient.Organizations.GetCurrent()
+
+	tests := []error{gerr, gcerr}
+
+	for _, tt := range tests {
+		if tt == nil {
+			t.Fail()
+		}
+	}
+}
+
+func TestOrganizationsService_NewAPIRequestErrors(t *testing.T) {
+	setup()
+	defer teardown()
+	u, _ := url.Parse(tServer.URL)
+	tClient.BaseURL = u
+	tMux.HandleFunc("/v2/organizations/", errorHandler)
+
+	_, gerr := tClient.Organizations.Get("org_12345678")
+	_, gcerr := tClient.Organizations.GetCurrent()
+
+	tests := []error{gerr, gcerr}
+
+	for _, tt := range tests {
+		if tt != errBadBaseURL {
+			t.Fail()
+		}
+	}
+}
+
+func TestOrganizationsService_EncodingResponseErrors(t *testing.T) {
+	setup()
+	defer teardown()
+	tMux.HandleFunc("/v2/organizations/", encodingHandler)
+
+	_, gerr := tClient.Organizations.Get("org_12345678")
+	_, gcerr := tClient.Organizations.GetCurrent()
+
+	tests := []error{gerr, gcerr}
+
+	for _, tt := range tests {
+		if tt == nil {
+			t.Fail()
+		} else if !strings.Contains(tt.Error(), "invalid character") {
+			t.Errorf("unexpected error %v", tt)
+		}
 	}
 }
