@@ -1,9 +1,16 @@
 package mollie
 
-import "time"
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"time"
 
-// Refunds describe a refund for a certain payment
-type Refunds struct {
+	"github.com/google/go-querystring/query"
+)
+
+// Refund describe a refund for a certain payment
+type Refund struct {
 	Resource         string        `json:"resource,omitempty"`
 	ID               string        `json:"id,omitempty"`
 	Amount           *Amount       `json:"amount,omitempty"`
@@ -54,4 +61,34 @@ type RefundLinks struct {
 type RefundOptions struct {
 	Embed    string `url:"embed,omitempty"`
 	TestMode bool   `url:"testmode,omitempty"`
+}
+
+// RefundsService instance operates over refund resources
+type RefundsService service
+
+// Get Retrieve a single refund by its ID
+//
+// If you do not know the original payment’s ID, you can use the List payment refunds endpoint.
+func (rs *RefundsService) Get(paymentID, refundID string, options *RefundOptions) (refund Refund, err error) {
+	u := fmt.Sprintf("v2/payments/%s/refunds/%s", paymentID, refundID)
+	if options != nil {
+		v, _ := query.Values(options)
+		u = fmt.Sprintf("%s?%s", u, v)
+	}
+
+	req, err := rs.client.NewAPIRequest(http.MethodGet, u, nil)
+	if err != nil {
+		return
+	}
+
+	res, err := rs.client.Do(req)
+	if err != nil {
+		return
+	}
+
+	if err = json.Unmarshal(res.content, &refund); err != nil {
+		return
+	}
+
+	return
 }

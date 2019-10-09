@@ -41,7 +41,11 @@ type Client struct {
 	Methods       *MethodsService
 	Invoices      *InvoicesService
 	Organizations *OrganizationsService
+<<<<<<< HEAD
 	Profiles    *ProfilesService
+=======
+	Refunds       *RefundsService
+>>>>>>> Implements the Get method and add Refund Services into Client Struct
 }
 
 type service struct {
