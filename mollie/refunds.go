@@ -98,7 +98,9 @@ var (
 )
 
 // Create request a payment refund
-func (rs *RefundsService) Create(paymentID string, re Refund) (rf Refund, err error) {
+//
+// See https://docs.mollie.com/reference/v2/refunds-api/create-refund
+func (rs *RefundsService) Create(paymentID string, re Refund, options *RefundOptions) (rf Refund, err error) {
 	if re.Amount == nil {
 		return re, fmt.Errorf(requiredCreateParamRefund, re.Amount)
 	}
@@ -112,6 +114,10 @@ func (rs *RefundsService) Create(paymentID string, re Refund) (rf Refund, err er
 	}
 
 	u := fmt.Sprintf("v2/payments/%s/refunds", paymentID)
+	if options != nil {
+		v, _ := query.Values(options)
+		u = fmt.Sprintf("%s?%s", u, v)
+	}
 
 	req, err := rs.client.NewAPIRequest(http.MethodPost, u, re)
 	if err != nil {
@@ -124,6 +130,29 @@ func (rs *RefundsService) Create(paymentID string, re Refund) (rf Refund, err er
 	}
 
 	if err = json.Unmarshal(res.content, &rf); err != nil {
+		return
+	}
+
+	return
+}
+
+// Cancel try to cancel the refund request
+// The refund can only be canceled while the refund’s status is either queued or pending
+// See https://docs.mollie.com/reference/v2/refunds-api/cancel-refund
+func (rs *RefundsService) Cancel(paymentID, refundID string, options *RefundOptions) (err error) {
+	u := fmt.Sprintf("v2/payments/%s/refunds/%s", paymentID, refundID)
+	if options != nil {
+		v, _ := query.Values(options)
+		u = fmt.Sprintf("%s?%s", u, v)
+	}
+
+	req, err := rs.client.NewAPIRequest(http.MethodDelete, u, nil)
+	if err != nil {
+		return
+	}
+
+	_, err = rs.client.Do(req)
+	if err != nil {
 		return
 	}
 
