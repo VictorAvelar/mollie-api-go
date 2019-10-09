@@ -41,6 +41,7 @@ type Client struct {
 	Methods       *MethodsService
 	Invoices      *InvoicesService
 	Organizations *OrganizationsService
+	Refunds       *RefundsService
 }
 
 type service struct {
