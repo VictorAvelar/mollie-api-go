@@ -92,3 +92,40 @@ func (rs *RefundsService) Get(paymentID, refundID string, options *RefundOptions
 
 	return
 }
+
+var (
+	requiredCreateParamRefund = "Parameter required for creating a refund: %+v"
+)
+
+// Create request a payment refund
+func (rs *RefundsService) Create(paymentID string, re Refund) (rf Refund, err error) {
+	if re.Amount == nil {
+		return re, fmt.Errorf(requiredCreateParamRefund, re.Amount)
+	}
+
+	if re.Amount.Currency == "" {
+		return re, fmt.Errorf(requiredCreateParamRefund, re.Amount.Currency)
+	}
+
+	if re.Amount.Value == "" {
+		return re, fmt.Errorf(requiredCreateParamRefund, re.Amount.Value)
+	}
+
+	u := fmt.Sprintf("v2/payments/%s/refunds", paymentID)
+
+	req, err := rs.client.NewAPIRequest(http.MethodPost, u, re)
+	if err != nil {
+		return
+	}
+
+	res, err := rs.client.Do(req)
+	if err != nil {
+		return
+	}
+
+	if err = json.Unmarshal(res.content, &rf); err != nil {
+		return
+	}
+
+	return
+}
