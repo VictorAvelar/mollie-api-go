@@ -26,6 +26,15 @@ type Refund struct {
 	Links            *RefundLinks  `json:"_links,omitempty"`
 }
 
+// RefundList describes how a list of refunds will be retrieved by Mollie.
+type RefundList struct {
+	Count    int `json:"count,omitempty"`
+	Embedded struct {
+		Refunds []Refund
+	} `json:"_embedded,omitempty"`
+	Links PaginationLinks `json:"_links,omitempty"`
+}
+
 // RefundStatus describes the status of the refund
 type RefundStatus string
 
@@ -59,8 +68,27 @@ type RefundLinks struct {
 //
 // See: https://docs.mollie.com/reference/v2/refunds-api/get-refund
 type RefundOptions struct {
-	Embed    string `url:"embed,omitempty"`
-	TestMode bool   `url:"testmode,omitempty"`
+	Embed    EmbedValue `url:"embed,omitempty"`
+	TestMode bool       `url:"testmode,omitempty"`
+}
+
+// EmbedValue describes the valid value of embed query string
+type EmbedValue string
+
+// Valid Embed query string value
+const (
+	EmbedPayment EmbedValue = "payment"
+)
+
+// ListRefundOptions describes list refund endpoint valid query string parameters
+//
+// See: https://docs.mollie.com/reference/v2/refunds-api/list-refunds
+type ListRefundOptions struct {
+	From      string     `url:"from,omitempty"`
+	Limit     string     `url:"limit,omitempty"`
+	ProfileID string     `url:"profileId,omitempty"`
+	TestMode  bool       `url:"testmode,omitempty"`
+	Embed     EmbedValue `url:"embed,omitempty"`
 }
 
 // RefundsService instance operates over refund resources
@@ -97,7 +125,7 @@ var (
 	requiredCreateParamRefund = "Parameter required for creating a refund: %+v"
 )
 
-// Create request a payment refund
+// Create a refund payment request
 //
 // See https://docs.mollie.com/reference/v2/refunds-api/create-refund
 func (rs *RefundsService) Create(paymentID string, re Refund, options *RefundOptions) (rf Refund, err error) {
@@ -153,6 +181,61 @@ func (rs *RefundsService) Cancel(paymentID, refundID string, options *RefundOpti
 
 	_, err = rs.client.Do(req)
 	if err != nil {
+		return
+	}
+
+	return
+}
+
+// ListRefund calls the top level https://api.mollie.com/v2/refunds
+//
+// See https://docs.mollie.com/reference/v2/refunds-api/list-refunds
+func (rs *RefundsService) ListRefund(options *ListRefundOptions) (rl RefundList, err error) {
+	u := fmt.Sprintf("v2/refunds")
+	if options != nil {
+		v, _ := query.Values(options)
+		u = fmt.Sprintf("%s?%s", u, v)
+	}
+
+	req, err := rs.client.NewAPIRequest(http.MethodGet, u, nil)
+	if err != nil {
+		return
+	}
+
+	res, err := rs.client.Do(req)
+	if err != nil {
+		return
+	}
+
+	if err = json.Unmarshal(res.content, &rl); err != nil {
+		return
+	}
+
+	return
+}
+
+// ListRefundPayment calls the payment-specific
+// https://api.mollie.com/v2/payments/*paymentId*/refunds
+// Only refunds for that specific payment are returned
+// See https://docs.mollie.com/reference/v2/refunds-api/list-refunds
+func (rs *RefundsService) ListRefundPayment(paymentID string, options *ListRefundOptions) (rl RefundList, err error) {
+	u := fmt.Sprintf("v2/payments/%s/refunds", paymentID)
+	if options != nil {
+		v, _ := query.Values(options)
+		u = fmt.Sprintf("%s?%s", u, v)
+	}
+
+	req, err := rs.client.NewAPIRequest(http.MethodGet, u, nil)
+	if err != nil {
+		return
+	}
+
+	res, err := rs.client.Do(req)
+	if err != nil {
+		return
+	}
+
+	if err = json.Unmarshal(res.content, &rl); err != nil {
 		return
 	}
 
