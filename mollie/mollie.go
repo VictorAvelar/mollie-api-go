@@ -159,7 +159,11 @@ func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
 	mollie.Methods = (*MethodsService)(&mollie.common)
 	mollie.Invoices = (*InvoicesService)(&mollie.common)
 	mollie.Organizations = (*OrganizationsService)(&mollie.common)
+<<<<<<< HEAD
 	mollie.Profiles = (*ProfilesService)(&mollie.common)
+=======
+	mollie.Refunds = (*RefundsService)(&mollie.common)
+>>>>>>> Add new service to mollie.go and add .Encode() on options parsing
 
 	// Parse authorization from environment
 	if tkn, ok := os.LookupEnv(APITokenEnv); ok {

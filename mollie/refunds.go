@@ -101,10 +101,10 @@ func (rs *RefundsService) Get(paymentID, refundID string, options *RefundOptions
 	u := fmt.Sprintf("v2/payments/%s/refunds/%s", paymentID, refundID)
 	if options != nil {
 		v, _ := query.Values(options)
-		u = fmt.Sprintf("%s?%s", u, v)
+		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
 
-	req, err := rs.client.NewAPIRequest(http.MethodGet, u, nil)
+	req, err := rs.client.NewAPIRequest(http.MethodGet, u, options)
 	if err != nil {
 		return
 	}
