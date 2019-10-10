@@ -144,7 +144,7 @@ func (rs *RefundsService) Create(paymentID string, re Refund, options *RefundOpt
 	u := fmt.Sprintf("v2/payments/%s/refunds", paymentID)
 	if options != nil {
 		v, _ := query.Values(options)
-		u = fmt.Sprintf("%s?%s", u, v)
+		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
 
 	req, err := rs.client.NewAPIRequest(http.MethodPost, u, re)
@@ -171,7 +171,7 @@ func (rs *RefundsService) Cancel(paymentID, refundID string, options *RefundOpti
 	u := fmt.Sprintf("v2/payments/%s/refunds/%s", paymentID, refundID)
 	if options != nil {
 		v, _ := query.Values(options)
-		u = fmt.Sprintf("%s?%s", u, v)
+		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
 
 	req, err := rs.client.NewAPIRequest(http.MethodDelete, u, nil)
@@ -194,7 +194,7 @@ func (rs *RefundsService) ListRefund(options *ListRefundOptions) (rl RefundList,
 	u := fmt.Sprintf("v2/refunds")
 	if options != nil {
 		v, _ := query.Values(options)
-		u = fmt.Sprintf("%s?%s", u, v)
+		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
 
 	req, err := rs.client.NewAPIRequest(http.MethodGet, u, nil)
@@ -222,7 +222,7 @@ func (rs *RefundsService) ListRefundPayment(paymentID string, options *ListRefun
 	u := fmt.Sprintf("v2/payments/%s/refunds", paymentID)
 	if options != nil {
 		v, _ := query.Values(options)
-		u = fmt.Sprintf("%s?%s", u, v)
+		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
 
 	req, err := rs.client.NewAPIRequest(http.MethodGet, u, nil)
