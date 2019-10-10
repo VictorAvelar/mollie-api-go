@@ -41,3 +41,44 @@ func TestRefundsService_Get(t *testing.T) {
 		t.Errorf("mismatching info. want %v got %v", refundID, res.ID)
 	}
 }
+
+func TestRefundsService_Create(t *testing.T) {
+	setup()
+	defer teardown()
+
+	paymentID := "tr_WDqYK6vllg"
+
+	_ = tClient.WithAuthenticationValue("test_token")
+	tMux.HandleFunc("/v2/payments/"+paymentID+"/refunds", func(w http.ResponseWriter, r *http.Request) {
+		testHeader(t, r, AuthHeader, "Bearer test_token")
+		testMethod(t, r, http.MethodPost)
+
+		if _, ok := r.Header[AuthHeader]; !ok {
+			w.WriteHeader(http.StatusUnauthorized)
+		}
+
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(testdata.GetRefundResponse))
+	})
+
+	opt := &RefundOptions{
+		TestMode: true,
+	}
+
+	refund := &Refund{
+		Amount: &Amount{
+			Currency: "EUR",
+			Value:    "20",
+		},
+		Description: "Order #33",
+	}
+
+	res, err := tClient.Refunds.Create(paymentID, *refund, opt)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if res.Description != refund.Description {
+		t.Errorf("mismatching info. want %s got %s", refund.Description, res.Description)
+	}
+}
