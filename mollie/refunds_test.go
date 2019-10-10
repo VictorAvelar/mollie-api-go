@@ -1,0 +1,43 @@
+package mollie
+
+import (
+	"net/http"
+	"testing"
+
+	"github.com/VictorAvelar/mollie-api-go/testdata"
+)
+
+func TestRefundsService_Get(t *testing.T) {
+	setup()
+	defer teardown()
+
+	paymentID := "tr_WDqYK6vllg"
+	refundID := "re_4qqhO89gsT"
+
+	_ = tClient.WithAuthenticationValue("test_token")
+	tMux.HandleFunc("/v2/payments/"+paymentID+"/refunds/"+refundID, func(w http.ResponseWriter, r *http.Request) {
+		testHeader(t, r, AuthHeader, "Bearer test_token")
+		testMethod(t, r, http.MethodGet)
+
+		if _, ok := r.Header[AuthHeader]; !ok {
+			w.WriteHeader(http.StatusUnauthorized)
+		}
+
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(testdata.GetRefundResponse))
+	})
+
+	opt := &RefundOptions{
+		Embed:    EmbedPayment,
+		TestMode: true,
+	}
+
+	res, err := tClient.Refunds.Get(paymentID, refundID, opt)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if res.ID != refundID {
+		t.Errorf("mismatching info. want %v got %v", refundID, res.ID)
+	}
+}
