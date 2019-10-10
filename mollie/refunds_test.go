@@ -111,3 +111,34 @@ func TestRefundsService_Cancel(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestRefundsService_List(t *testing.T) {
+	setup()
+	defer teardown()
+
+	_ = tClient.WithAuthenticationValue("test_token")
+	tMux.HandleFunc("/v2/refunds", func(w http.ResponseWriter, r *http.Request) {
+		testHeader(t, r, AuthHeader, "Bearer test_token")
+		testMethod(t, r, http.MethodGet)
+
+		if _, ok := r.Header[AuthHeader]; !ok {
+			w.WriteHeader(http.StatusUnauthorized)
+		}
+
+		_, _ = w.Write([]byte(testdata.GetRefundListResponse))
+	})
+
+	opt := &ListRefundOptions{
+		ProfileID: "pfl_3RkSN1zuPE",
+		TestMode:  true,
+	}
+
+	res, err := tClient.Refunds.ListRefund(opt)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if res.Count == 0 {
+		t.Errorf("mismatching info. want >0 got %v", res.Count)
+	}
+}
