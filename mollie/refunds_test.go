@@ -142,3 +142,37 @@ func TestRefundsService_List(t *testing.T) {
 		t.Errorf("mismatching info. want >0 got %v", res.Count)
 	}
 }
+
+func TestServiceRefunds_ListPayment(t *testing.T) {
+	setup()
+	defer teardown()
+
+	paymentID := "tr_7UhSN1zuXS"
+
+	_ = tClient.WithAuthenticationValue("test_token")
+	tMux.HandleFunc("/v2/payments/"+paymentID+"/refunds", func(w http.ResponseWriter, r *http.Request) {
+		testHeader(t, r, AuthHeader, "Bearer test_token")
+		testMethod(t, r, http.MethodGet)
+
+		if _, ok := r.Header[AuthHeader]; !ok {
+			w.WriteHeader(http.StatusUnauthorized)
+		}
+
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(testdata.GetRefundListResponse))
+	})
+
+	opt := &ListRefundOptions{
+		From:  "re_4qqhO89gsT",
+		Limit: "100",
+	}
+
+	res, err := tClient.Refunds.ListRefundPayment(paymentID, opt)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if res.Count == 0 {
+		t.Errorf("mismatching info. want >0 got %v", res.Count)
+	}
+}
