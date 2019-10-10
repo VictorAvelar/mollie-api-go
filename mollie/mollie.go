@@ -155,6 +155,7 @@ func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
 	mollie.Methods = (*MethodsService)(&mollie.common)
 	mollie.Invoices = (*InvoicesService)(&mollie.common)
 	mollie.Organizations = (*OrganizationsService)(&mollie.common)
+	mollie.Refunds = (*RefundsService)(&mollie.common)
 
 	// Parse authorization from environment
 	if tkn, ok := os.LookupEnv(APITokenEnv); ok {
