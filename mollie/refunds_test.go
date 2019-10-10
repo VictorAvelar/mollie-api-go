@@ -2,6 +2,7 @@ package mollie
 
 import (
 	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/testdata"
@@ -80,6 +81,55 @@ func TestRefundsService_Create(t *testing.T) {
 
 	if res.Description != refund.Description {
 		t.Errorf("mismatching info. want %s got %s", refund.Description, res.Description)
+	}
+}
+
+func TestRefundsService_CreateInvalidParams(t *testing.T) {
+	setup()
+	defer teardown()
+
+	paymentID := "tr_WDqYK6vllg"
+
+	_ = tClient.WithAuthenticationValue("test_token")
+	tMux.HandleFunc("/v2/payments/"+paymentID+"/refunds", func(w http.ResponseWriter, r *http.Request) {
+		testHeader(t, r, AuthHeader, "Bearer test_token")
+		testMethod(t, r, http.MethodPost)
+
+		if _, ok := r.Header[AuthHeader]; !ok {
+			w.WriteHeader(http.StatusUnauthorized)
+		}
+
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(testdata.GetRefundResponse))
+	})
+
+	opt := &RefundOptions{
+		TestMode: true,
+	}
+
+	refcurr := Refund{
+		Amount: &Amount{
+			Currency: "IDR",
+		},
+	}
+
+	refval := Refund{
+		Amount: &Amount{
+			Value: "100000",
+		},
+	}
+
+	_, errcurr := tClient.Refunds.Create(paymentID, refcurr, opt)
+	_, errval := tClient.Refunds.Create(paymentID, refval, opt)
+
+	tests := []error{errcurr, errval}
+
+	for _, test := range tests {
+		if test == nil {
+			t.Fail()
+		} else if !strings.Contains(test.Error(), "parameter required") {
+			t.Errorf("unexpected error %v", test)
+		}
 	}
 }
 

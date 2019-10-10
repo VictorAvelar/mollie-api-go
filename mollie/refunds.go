@@ -122,7 +122,7 @@ func (rs *RefundsService) Get(paymentID, refundID string, options *RefundOptions
 }
 
 var (
-	requiredCreateParamRefund = "Parameter required for creating a refund: %+v"
+	requiredCreateParamRefund = "parameter required for creating a refund: %+v"
 )
 
 // Create a refund payment request
