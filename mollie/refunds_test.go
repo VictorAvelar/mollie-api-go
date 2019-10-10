@@ -2,6 +2,7 @@ package mollie
 
 import (
 	"net/http"
+	"net/url"
 	"strings"
 	"testing"
 
@@ -224,5 +225,98 @@ func TestServiceRefunds_ListPayment(t *testing.T) {
 
 	if res.Count == 0 {
 		t.Errorf("mismatching info. want >0 got %v", res.Count)
+	}
+}
+
+func TestRefundsService_HttpRequestErrors(t *testing.T) {
+	setup()
+	defer teardown()
+	tMux.HandleFunc("/v2/refunds/", errorHandler)
+
+	refund := Refund{
+		Amount: &Amount{
+			Currency: "IDR",
+			Value:    "100000",
+		},
+		Description: "Order #12345",
+	}
+
+	_, cerr := tClient.Refunds.Create("123132", refund, nil)
+	_, rerr1 := tClient.Refunds.ListRefund(nil)
+	_, rerr2 := tClient.Refunds.ListRefundPayment("123132", nil)
+	derr := tClient.Refunds.Cancel("12123", "123123", nil)
+	_, rerr3 := tClient.Refunds.Get("1212", "12312", nil)
+
+	tests := []error{cerr, rerr1, rerr2, derr, rerr3}
+
+	for _, tt := range tests {
+		if tt == nil {
+			t.Fail()
+		}
+	}
+}
+
+func TestRefundsService_NewAPIRequestErrors(t *testing.T) {
+	setup()
+	defer teardown()
+	u, _ := url.Parse(tServer.URL)
+	tClient.BaseURL = u
+	tMux.HandleFunc("/v2/refunds/", errorHandler)
+
+	refund := Refund{
+		Amount: &Amount{
+			Currency: "IDR",
+			Value:    "100000",
+		},
+		Description: "Order #12345",
+	}
+
+	_, cerr := tClient.Refunds.Create("123132", refund, nil)
+	_, rerr1 := tClient.Refunds.ListRefund(nil)
+	_, rerr2 := tClient.Refunds.ListRefundPayment("123132", nil)
+	derr := tClient.Refunds.Cancel("12123", "123123", nil)
+	_, rerr3 := tClient.Refunds.Get("1212", "12312", nil)
+
+	tests := []error{cerr, rerr1, rerr2, derr, rerr3}
+
+	for _, tt := range tests {
+		if tt != errBadBaseURL {
+			t.Fail()
+		}
+	}
+}
+
+func TestRefundsService_EncodingResponseErrors(t *testing.T) {
+	setup()
+	defer teardown()
+
+	paymentID := "tr_7UhSN1zuXS"
+	refundID := "re_4qqhO89gsT"
+
+	tMux.HandleFunc("/v2/payments/"+paymentID+"/refunds", encodingHandler)
+	tMux.HandleFunc("/v2/refunds/", encodingHandler)
+	tMux.HandleFunc("/v2/payments/"+paymentID+"/refunds/"+refundID, encodingHandler)
+
+	refund := Refund{
+		Amount: &Amount{
+			Currency: "IDR",
+			Value:    "100000",
+		},
+		Description: "Order #12345",
+	}
+
+	_, cerr := tClient.Refunds.Create(paymentID, refund, nil)
+	_, rerr1 := tClient.Refunds.ListRefund(nil)
+	_, rerr2 := tClient.Refunds.ListRefundPayment(paymentID, nil)
+	_, rerr3 := tClient.Refunds.Get(paymentID, refundID, nil)
+
+	tests := []error{cerr, rerr1, rerr2, rerr3}
+
+	for _, tt := range tests {
+		if tt == nil {
+			t.Fail()
+		} else if !strings.Contains(tt.Error(), "invalid character") {
+			t.Errorf("unexpected error %v", tt)
+		}
 	}
 }
