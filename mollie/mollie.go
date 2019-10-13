@@ -36,10 +36,11 @@ type Client struct {
 	common         service // Reuse a single struct instead of allocating one for each service on the heap.
 	config         *Config
 	// Services
-	Payments    *PaymentsService
-	Chargebacks *ChargebacksService
-	Methods     *MethodsService
-	Invoices    *InvoicesService
+	Payments      *PaymentsService
+	Chargebacks   *ChargebacksService
+	Methods       *MethodsService
+	Invoices      *InvoicesService
+	Organizations *OrganizationsService
 	Profiles    *ProfilesService
 }
 
@@ -153,6 +154,7 @@ func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
 	mollie.Chargebacks = (*ChargebacksService)(&mollie.common)
 	mollie.Methods = (*MethodsService)(&mollie.common)
 	mollie.Invoices = (*InvoicesService)(&mollie.common)
+	mollie.Organizations = (*OrganizationsService)(&mollie.common)
 	mollie.Profiles = (*ProfilesService)(&mollie.common)
 
 	// Parse authorization from environment
