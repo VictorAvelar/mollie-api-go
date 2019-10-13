@@ -66,13 +66,6 @@ type profiles struct {
 	Profiles []Profile `json:"profiles,omitempty"`
 }
 
-type profileListLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Previous      *URL `json:"previous,omitempty"`
-	Next          *URL `json:"next,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
-}
-
 // ProfilesService operates over profile resource
 type ProfilesService service
 
