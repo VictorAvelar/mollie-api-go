@@ -19,7 +19,7 @@ type Refund struct {
 	Description      string        `json:"description,omitempty"`
 	Metadata         interface{}   `json:"metadata,omitempty"`
 	Status           *RefundStatus `json:"status,omitempty"`
-	Lines            *OrderLines   `json:"lines,omitempty"` //TODO: this property should be from order.go
+	Lines            *OrderLines   `json:"lines,omitempty"`
 	PaymentID        string        `json:"paymentId,omitempty"`
 	OrderID          string        `json:"orderId,omitempty"`
 	CreatedAt        *time.Time    `json:"createdAt,omitempty"`
@@ -47,14 +47,6 @@ const (
 	Failed     RefundStatus = "failed"
 )
 
-// OrderLines describes an array of order line objects.
-type OrderLines struct {
-	Quantity       int     `json:"quantity,omitempty"`
-	DiscountAmount *Amount `json:"discountAmount,omitempty"`
-	VatAmount      *Amount `json:"vatAmount,omitempty"`
-	TotalAmount    *Amount `json:"totalAmount,omitempty"`
-}
-
 // RefundLinks describes all the possible links to be returned with
 // a Refund object.
 type RefundLinks struct {
@@ -68,8 +60,7 @@ type RefundLinks struct {
 //
 // See: https://docs.mollie.com/reference/v2/refunds-api/get-refund.
 type RefundOptions struct {
-	Embed    EmbedValue `url:"embed,omitempty"`
-	TestMode bool       `url:"testmode,omitempty"`
+	Embed EmbedValue `url:"embed,omitempty"`
 }
 
 // EmbedValue describes the valid value of embed query string.
@@ -87,7 +78,6 @@ type ListRefundOptions struct {
 	From      string     `url:"from,omitempty"`
 	Limit     string     `url:"limit,omitempty"`
 	ProfileID string     `url:"profileId,omitempty"`
-	TestMode  bool       `url:"testmode,omitempty"`
 	Embed     EmbedValue `url:"embed,omitempty"`
 }
 
@@ -129,16 +119,9 @@ var (
 //
 // See https://docs.mollie.com/reference/v2/refunds-api/create-refund.
 func (rs *RefundsService) Create(paymentID string, re Refund, options *RefundOptions) (rf Refund, err error) {
-	if re.Amount == nil {
-		return re, fmt.Errorf(requiredCreateParamRefund, re.Amount)
-	}
-
-	if re.Amount.Currency == "" {
-		return re, fmt.Errorf(requiredCreateParamRefund, re.Amount.Currency)
-	}
-
-	if re.Amount.Value == "" {
-		return re, fmt.Errorf(requiredCreateParamRefund, re.Amount.Value)
+	err = re.checkMandatoryParam()
+	if err != nil {
+		return re, err
 	}
 
 	u := fmt.Sprintf("v2/payments/%s/refunds", paymentID)
@@ -240,4 +223,20 @@ func (rs *RefundsService) ListRefundPayment(paymentID string, options *ListRefun
 	}
 
 	return
+}
+
+func (re *Refund) checkMandatoryParam() (err error) {
+	if re.Amount == nil {
+		return fmt.Errorf(requiredCreateParamRefund, re.Amount)
+	}
+
+	if re.Amount.Currency == "" {
+		return fmt.Errorf(requiredCreateParamRefund, re.Amount.Currency)
+	}
+
+	if re.Amount.Value == "" {
+		return fmt.Errorf(requiredCreateParamRefund, re.Amount.Value)
+	}
+
+	return nil
 }
