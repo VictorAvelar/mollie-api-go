@@ -98,7 +98,6 @@ type PaginationLinks struct {
 	Docs     *URL `json:"documentation,omitempty"`
 }
 
-<<<<<<< HEAD
 // CategoryCode specifies an industry or category
 type CategoryCode uint
 
@@ -124,7 +123,8 @@ const (
 	CharityAndDonations             CategoryCode = 8398
 	PoliticalParties                CategoryCode = 8699
 	Others                          CategoryCode = 0
-=======
+)
+
 // Mode contains information about the creation environment.
 type Mode string
 
@@ -132,5 +132,4 @@ type Mode string
 const (
 	LiveMode Mode = "live"
 	TestMode Mode = "test"
->>>>>>> Remove the Mode struct from payments.go to common_types.go because it's not just used by payments
 )
