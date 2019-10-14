@@ -30,8 +30,7 @@ func TestRefundsService_Get(t *testing.T) {
 	})
 
 	opt := &RefundOptions{
-		Embed:    EmbedPayment,
-		TestMode: true,
+		Embed: EmbedPayment,
 	}
 
 	res, err := tClient.Refunds.Get(paymentID, refundID, opt)
@@ -63,10 +62,6 @@ func TestRefundsService_Create(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetRefundResponse))
 	})
 
-	opt := &RefundOptions{
-		TestMode: true,
-	}
-
 	refund := &Refund{
 		Amount: &Amount{
 			Currency: "EUR",
@@ -75,7 +70,7 @@ func TestRefundsService_Create(t *testing.T) {
 		Description: "Order #33",
 	}
 
-	res, err := tClient.Refunds.Create(paymentID, *refund, opt)
+	res, err := tClient.Refunds.Create(paymentID, *refund, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -104,10 +99,6 @@ func TestRefundsService_CreateInvalidParams(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetRefundResponse))
 	})
 
-	opt := &RefundOptions{
-		TestMode: true,
-	}
-
 	refcurr := Refund{
 		Amount: &Amount{
 			Currency: "IDR",
@@ -120,8 +111,8 @@ func TestRefundsService_CreateInvalidParams(t *testing.T) {
 		},
 	}
 
-	_, errcurr := tClient.Refunds.Create(paymentID, refcurr, opt)
-	_, errval := tClient.Refunds.Create(paymentID, refval, opt)
+	_, errcurr := tClient.Refunds.Create(paymentID, refcurr, nil)
+	_, errval := tClient.Refunds.Create(paymentID, refval, nil)
 
 	tests := []error{errcurr, errval}
 
@@ -153,11 +144,7 @@ func TestRefundsService_Cancel(t *testing.T) {
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	opt := &RefundOptions{
-		TestMode: true,
-	}
-
-	err := tClient.Refunds.Cancel(paymentID, refundID, opt)
+	err := tClient.Refunds.Cancel(paymentID, refundID, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -181,7 +168,6 @@ func TestRefundsService_List(t *testing.T) {
 
 	opt := &ListRefundOptions{
 		ProfileID: "pfl_3RkSN1zuPE",
-		TestMode:  true,
 	}
 
 	res, err := tClient.Refunds.ListRefund(opt)
