@@ -34,7 +34,7 @@ type Orders struct {
 	CompletedAt         *time.Time     `json:"completedAt,omitempty"`
 	Embedded            struct {
 		Payments []Payment `json:"payments,omitempty"`
-		Refunds  []Refund  `json:"refunds,omitempry"`
+		Refunds  []Refund  `json:"refunds,omitempty"`
 	} `json:"_embedded,omitempty"`
 	Links *OrderLinks `json:"_links,omitempty"`
 }
