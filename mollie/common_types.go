@@ -124,3 +124,12 @@ const (
 	PoliticalParties                CategoryCode = 8699
 	Others                          CategoryCode = 0
 )
+
+// Mode contains information about the creation environment.
+type Mode string
+
+// Valid modes
+const (
+	LiveMode Mode = "live"
+	TestMode Mode = "test"
+)

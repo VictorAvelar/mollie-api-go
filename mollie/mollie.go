@@ -41,7 +41,8 @@ type Client struct {
 	Methods       *MethodsService
 	Invoices      *InvoicesService
 	Organizations *OrganizationsService
-	Profiles    *ProfilesService
+	Profiles      *ProfilesService
+	Refunds       *RefundsService
 }
 
 type service struct {
@@ -156,6 +157,7 @@ func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
 	mollie.Invoices = (*InvoicesService)(&mollie.common)
 	mollie.Organizations = (*OrganizationsService)(&mollie.common)
 	mollie.Profiles = (*ProfilesService)(&mollie.common)
+	mollie.Refunds = (*RefundsService)(&mollie.common)
 
 	// Parse authorization from environment
 	if tkn, ok := os.LookupEnv(APITokenEnv); ok {

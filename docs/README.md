@@ -188,9 +188,12 @@ type Client struct {
 	BaseURL *url.URL
 
   // Services
-	Payments    *PaymentsService
-	Chargebacks *ChargebacksService
-	Methods     *MethodsService
+	Payments    	*PaymentsService
+	Chargebacks 	*ChargebacksService
+	Methods     	*MethodsService
+	Invoices      	*InvoicesService
+	Organizations 	*OrganizationsService
+	Refunds       	*RefundsService
 }
 ```
 
@@ -846,3 +849,174 @@ type UsedGiftCard struct {
 ```
 
 UsedGiftCard describes a used gift card.
+
+#### type Refund
+
+```go
+type Refund struct {
+	Resource         string        `json:"resource,omitempty"`
+	ID               string        `json:"id,omitempty"`
+	Amount           *Amount       `json:"amount,omitempty"`
+	SettlementID     string        `json:"settlementId,omitempty"`
+	SettlementAmount *Amount       `json:"settlementAmount,omitempty"`
+	Description      string        `json:"description,omitempty"`
+	Metadata         interface{}   `json:"metadata,omitempty"`
+	Status           *RefundStatus `json:"status,omitempty"`
+	Lines            *OrderLines   `json:"lines,omitempty"`
+	PaymentID        string        `json:"paymentId,omitempty"`
+	OrderID          string        `json:"orderId,omitempty"`
+	CreatedAt        *time.Time    `json:"createdAt,omitempty"`
+	Links            *RefundLinks  `json:"_links,omitempty"`
+}
+```
+
+Refund describe a refund for a certain payment.
+
+#### type RefundList
+
+```go
+type RefundList struct {
+	Count    int `json:"count,omitempty"`
+	Embedded struct {
+		Refunds []Refund
+	} `json:"_embedded,omitempty"`
+	Links PaginationLinks `json:"_links,omitempty"`
+}
+```
+
+RefundList describes how a list of refunds will be retrieved by Mollie.
+
+#### type RefundStatus
+
+```go
+type RefundStatus string
+```
+
+RefundStatus describes the status of the refund.
+
+```go
+const (
+	Queued     RefundStatus = "queued"
+	Pending    RefundStatus = "pending"
+	Processing RefundStatus = "processing"
+	Refunded   RefundStatus = "refunded"
+	Failed     RefundStatus = "failed"
+)
+```
+
+Valid refund status.
+
+#### type OrderLines
+
+```go
+type OrderLines struct {
+	Quantity       int     `json:"quantity,omitempty"`
+	DiscountAmount *Amount `json:"discountAmount,omitempty"`
+	VatAmount      *Amount `json:"vatAmount,omitempty"`
+	TotalAmount    *Amount `json:"totalAmount,omitempty"`
+}
+```
+
+OrderLines describes an array of order line objects.
+
+#### type RefundLinks
+
+```go
+type RefundLinks struct {
+	Self       *URL `json:"self,omitempty"`
+	Payment    *URL `json:"payment,omitempty"`
+	Settlement *URL `json:"settlement,omitempty"`
+	Order      *URL `json:"order,omitempty"`
+}
+```
+
+RefundLinks describes all the possible links to be returned with a Refund object.
+
+#### type RefundOptions
+
+```go
+type RefundOptions struct {
+	Embed    EmbedValue `url:"embed,omitempty"`
+	TestMode bool       `url:"testmode,omitempty"`
+}
+```
+
+RefundOptions describes refund endpoint valid query string parameters. See: https://docs.mollie.com/reference/v2/refunds-api/get-refund.
+
+#### type EmbedValue
+
+```go
+type EmbedValue string
+```
+
+EmbedValue describes the valid value of embed query string.
+
+```go
+const (
+	EmbedPayment EmbedValue = "payment"
+)
+```
+
+Valid Embed query string value.
+
+#### type ListRefundOptions
+
+```go
+type ListRefundOptions struct {
+	From      string     `url:"from,omitempty"`
+	Limit     string     `url:"limit,omitempty"`
+	ProfileID string     `url:"profileId,omitempty"`
+	TestMode  bool       `url:"testmode,omitempty"`
+	Embed     EmbedValue `url:"embed,omitempty"`
+}
+```
+
+ListRefundOptions describes list refund endpoint valid query string parameters. See: https://docs.mollie.com/reference/v2/refunds-api/list-refunds.
+
+#### type RefundsService
+
+```go
+type RefundsService service
+```
+
+RefundsService instance operates over refund resources.
+
+#### func (\*RefundsService) Get
+
+```go
+func (rs *RefundsService) Get(paymentID, refundID string, options *RefundOptions) (refund Refund, err error)
+```
+
+Retrieve a single refund by its ID. If you do not know the original payment’s ID, you can use the List payment refunds endpoint.
+
+#### func (\*RefundsService) Create
+
+```go
+func (rs *RefundsService) Create(paymentID string, re Refund, options *RefundOptions) (rf Refund, err error)
+```
+
+Create a refund payment request. See https://docs.mollie.com/reference/v2/refunds-api/create-refund.
+
+#### func (\*RefundsService) Cancel
+
+```go
+func (rs *RefundsService) Cancel(paymentID, refundID string, options *RefundOptions) (err error)
+```
+
+Cancel try to cancel the refund request. The refund can only be canceled while the refund’s status is either queued or pending. See https://docs.mollie.com/reference/v2/refunds-api/cancel-refund
+
+#### func (\*RefundService) ListRefund
+
+```go
+func (rs *RefundsService) ListRefund(options *ListRefundOptions) (rl RefundList, err error)
+```
+
+ListRefund calls the top level https://api.mollie.com/v2/refunds. See https://docs.mollie.com/reference/v2/refunds-api/list-refunds.
+
+#### func (\*RefundService) ListRefundPayment
+
+```go
+func (rs *RefundsService) ListRefundPayment(paymentID string, options *ListRefundOptions) (rl RefundList, err error)
+```
+
+ListRefundPayment calls the payment-specific https://api.mollie.com/v2/payments/*paymentId*/refunds. Only refunds for that specific payment are returned. See https://docs.mollie.com/reference/v2/refunds-api/list-refunds

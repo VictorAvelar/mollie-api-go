@@ -9,15 +9,6 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
-// Mode contains information about the payment creation environment.
-type Mode string
-
-// Valid modes
-const (
-	LiveMode Mode = "live"
-	TestMode Mode = "test"
-)
-
 // PaymentMethod is a payment method supported by Mollie.
 type PaymentMethod string
 

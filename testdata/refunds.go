@@ -1,0 +1,87 @@
+package testdata
+
+// GetRefundResponse example
+const GetRefundResponse = `{
+    "resource": "refund",
+    "id": "re_4qqhO89gsT",
+    "amount": {
+        "currency": "EUR",
+        "value": "5.95"
+    },
+    "status": "pending",
+    "createdAt": "2018-03-14T17:09:02.0Z",
+    "description": "Order #33",
+    "metadata": {
+         "bookkeeping_id": 12345
+    },
+    "paymentId": "tr_WDqYK6vllg",
+    "_links": {
+        "self": {
+            "href": "https://api.mollie.com/v2/payments/tr_WDqYK6vllg/refunds/re_4qqhO89gsT",
+            "type": "application/hal+json"
+        },
+        "payment": {
+            "href": "https://api.mollie.com/v2/payments/tr_WDqYK6vllg",
+            "type": "application/hal+json"
+        },
+        "documentation": {
+            "href": "https://docs.mollie.com/reference/v2/refunds-api/get-refund",
+            "type": "text/html"
+        }
+    }
+}`
+
+// GetRefundListResponse example
+const GetRefundListResponse = `{
+    "count": 5,
+    "_embedded": {
+        "refunds": [
+            {
+                "resource": "refund",
+                "id": "re_4qqhO89gsT",
+                "amount": {
+                    "currency": "EUR",
+                    "value": "5.95"
+                },
+                "status": "pending",
+                "createdAt": "2018-03-14T17:09:02.0Z",
+                "description": "Order",
+                "metadata": {
+                     "bookkeeping_id": 12345
+                },
+                "paymentId": "tr_WDqYK6vllg",
+                "_links": {
+                    "self": {
+                        "href": "https://api.mollie.com/v2/payments/tr_WDqYK6vllg/refunds/re_4qqhO89gsT",
+                        "type": "application/hal+json"
+                    },
+                    "payment": {
+                        "href": "https://api.mollie.com/v2/payments/tr_WDqYK6vllg",
+                        "type": "application/hal+json"
+                    },
+                    "documentation": {
+                        "href": "https://docs.mollie.com/reference/v2/refunds-api/get-refund",
+                        "type": "text/html"
+                    }
+                }
+            },
+            { },
+            { }
+        ]
+    },
+    "_links": {
+        "self": {
+            "href": "https://api.mollie.com/v2/payments/tr_7UhSN1zuXS/refunds?limit=5",
+            "type": "application/hal+json"
+        },
+        "previous": null,
+        "next": {
+            "href": "https://api.mollie.com/v2/payments/tr_7UhSN1zuXS/refunds?from=re_APBiGPH2vV&limit=5",
+            "type": "application/hal+json"
+        },
+        "documentation": {
+            "href": "https://docs.mollie.com/reference/v2/refunds-api/list-refunds",
+            "type": "text/html"
+        }
+    }
+}`
