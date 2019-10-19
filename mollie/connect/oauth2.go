@@ -10,7 +10,7 @@ const (
 	TokensURL = "https://api.mollie.com/oauth2/tokens"
 )
 
-//  Endpoint is Mollies's OAuth 2.0 endpoint.
+// Endpoint is Mollies's OAuth 2.0 endpoint.
 var Endpoint = oauth2.Endpoint{
 	AuthURL:   AuthURL,
 	TokenURL:  TokensURL,
