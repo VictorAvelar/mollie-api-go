@@ -6,6 +6,7 @@ import (
 	"github.com/VictorAvelar/mollie-api-go/mollie"
 )
 
+// Available authentication options using static keys
 const (
 	APIKey string = "your api key here"
 	OrgKey string = "your org key here"

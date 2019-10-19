@@ -116,7 +116,7 @@ func TestClient_NewAPIRequest_ErrTrailingSlash(t *testing.T) {
 	_, err := tClient.NewAPIRequest("GET", "test", nil)
 
 	if !reflect.DeepEqual(err, errBadBaseURL) {
-		t.Errorf("expected error %v not ocurred, got %v", errBadBaseURL, err)
+		t.Errorf("expected error %v not occurred, got %v", errBadBaseURL, err)
 	}
 }
 
