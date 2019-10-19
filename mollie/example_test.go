@@ -10,42 +10,41 @@ import (
 )
 
 // ----- mollie examples -----
-func ExampleAPITokenClient() {
-	c, err := NewClient(nil, &Config{
+func ExampleNewClient() {
+	// using api token
+	apiTokenClient, err := NewClient(nil, &Config{
 		testing: false,
 		auth:    APITokenEnv,
 	})
 	if err != nil {
 		return
 	}
-	fmt.Printf("%v", c)
-}
 
-func ExampleOrganizationTokenClient() {
-	c, err := NewClient(nil, &Config{
+	// using an organization token
+	orgTokenClient, err := NewClient(nil, &Config{
 		testing: false,
 		auth:    OrgTokenEnv,
 	})
 	if err != nil {
 		return
 	}
-	fmt.Printf("%v", c)
-}
 
-func ExampleOAuth2Client() {
-	c := oauth2.Config{
+	// using mollie connect
+	oauthConfig := oauth2.Config{
 		ClientID:     "your client id",
 		ClientSecret: "your client secret",
 		Endpoint:     connect.Endpoint,
 	}
-	secured := c.Client(context.TODO(), nil)
+	secured := oauthConfig.Client(context.TODO(), nil)
 
 	config := NewConfig(true, "")
 
-	client, err := NewClient(secured, config)
+	oauthClient, err := NewClient(secured, config)
 	if err != nil {
 		return
 	}
 
-	fmt.Printf("%v", client)
+	fmt.Printf("%v\n", apiTokenClient)
+	fmt.Printf("%v\n", orgTokenClient)
+	fmt.Printf("%v\n", oauthClient)
 }
