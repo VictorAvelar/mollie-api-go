@@ -3,9 +3,7 @@ package mollie
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -257,17 +255,6 @@ func TestCheckResponse(t *testing.T) {
 			}
 		})
 	}
-}
-
-// ----- mollie examples -----
-func ExampleNewClient() {
-	c, err := NewClient(nil, &Config{
-		testing: false,
-		auth:    APITokenEnv,
-	})
-	log.Printf("%+v", c)
-	fmt.Println(err == nil)
-	// Output: true
 }
 
 // <----- Testing helpers ----->
