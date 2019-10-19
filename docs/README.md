@@ -86,7 +86,42 @@ type ApplicationFee struct {
 ApplicationFee allows you to split a payment between a platform and connected
 merchant accounts.
 
+#### type CategoryCode
+
+```go
+type CategoryCode uint
+```
+
+CategoryCode specifies an industry or category
+
+```go
+const (
+	BookMagazinesAndNewspapers      CategoryCode = 5192
+	GeneralMerchandise              CategoryCode = 5399
+	FoodAndDrinks                   CategoryCode = 5499
+	AutomotiveProducts              CategoryCode = 5533
+	ChildrenProducts                CategoryCode = 5641
+	ClothingAndShoes                CategoryCode = 5651
+	ElectronicsComputersAndSoftware CategoryCode = 5732
+	HostingOrVpnServices            CategoryCode = 5734
+	Entertainment                   CategoryCode = 5735
+	CreditsOrVouchersOrGiftCards    CategoryCode = 5815
+	Alcohol                         CategoryCode = 5921
+	JewelryAndAccessories           CategoryCode = 5944
+	HealthAndBeautyProducts         CategoryCode = 5977
+	FinancialServices               CategoryCode = 6012
+	Consultancy                     CategoryCode = 7299
+	TravelRentalAndTransportation   CategoryCode = 7999
+	AdvisingOrCoachingOrTraining    CategoryCode = 8299
+	CharityAndDonations             CategoryCode = 8398
+	PoliticalParties                CategoryCode = 8699
+	Others                          CategoryCode = 0
+)
+```
+Available category codes
+
 #### type Chargeback
+
 ```go
 type Chargeback struct {
 	Resource         string           `json:"resource,omitempty"`
@@ -100,7 +135,8 @@ type Chargeback struct {
 }
 ```
 
-Chargeback describes a forced transaction reversal initiated by the cardholder's bank
+Chargeback describes a forced transaction reversal initiated by the cardholder's
+bank
 
 #### type ChargebackLinks
 
@@ -113,8 +149,8 @@ type ChargebackLinks struct {
 }
 ```
 
-ChargebackLinks describes all the possible links to be returned with
-a chargeback object.
+ChargebackLinks describes all the possible links to be returned with a
+chargeback object.
 
 #### type ChargebackList
 
@@ -151,32 +187,30 @@ type ChargebacksService service
 
 ChargebacksService instance operates over chargeback resources
 
-#### func (\*ChargebacksService) Get
+#### func (*ChargebacksService) Get
 
 ```go
 func (cs *ChargebacksService) Get(paymentID, chargebackID string, options *ChargebackOptions) (p Chargeback, err error)
 ```
-
-Get retrieves a single chargeback by its ID. Note the original payment’s ID is needed as well.
+Get retrieves a single chargeback by its ID. Note the original payment’s ID is
+needed as well.
 
 If you do not know the original payment’s ID, you can use the List function
 
-#### func (\*ChargebacksService) List
+#### func (*ChargebacksService) List
 
 ```go
 func (cs *ChargebacksService) List(options *ListChargebackOptions) (pl ChargebackList, err error)
 ```
-
 List retrieves a list of chargebacks associated with your account/organization.
 
 See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
 
-#### func (\*ChargebacksService) ListForPayment
+#### func (*ChargebacksService) ListForPayment
 
 ```go
 func (cs *ChargebacksService) ListForPayment(paymentID string, options *ListChargebackOptions) (pl ChargebackList, err error)
 ```
-
 ListForPayment retrieves a list of chargebacks associated with a single payment.
 
 See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
@@ -187,19 +221,21 @@ See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
 type Client struct {
 	BaseURL *url.URL
 
-  // Services
-	Payments    	*PaymentsService
-	Chargebacks 	*ChargebacksService
-	Methods     	*MethodsService
-	Invoices      	*InvoicesService
-	Organizations 	*OrganizationsService
-	Refunds       	*RefundsService
+	// Services
+	Payments      *PaymentsService
+	Chargebacks   *ChargebacksService
+	Methods       *MethodsService
+	Invoices      *InvoicesService
+	Organizations *OrganizationsService
+	Profiles      *ProfilesService
+	Refunds       *RefundsService
+	Shipments     *ShipmentsService
 }
 ```
 
 Client manages communication with Mollie's API.
 
-#### func NewClient
+#### func  NewClient
 
 ```go
 func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error)
@@ -214,7 +250,7 @@ to the provided Config object.
 You can also set the token values programmatically by using the Client
 WithAPIKey and WithOrganizationKey functions.
 
-#### func (\*Client) Do
+#### func (*Client) Do
 
 ```go
 func (c *Client) Do(req *http.Request) (*Response, error)
@@ -222,7 +258,7 @@ func (c *Client) Do(req *http.Request) (*Response, error)
 Do sends an API request and returns the API response or returned as an error if
 an API error has occurred.
 
-#### func (\*Client) NewAPIRequest
+#### func (*Client) NewAPIRequest
 
 ```go
 func (c *Client) NewAPIRequest(method string, uri string, body interface{}) (req *http.Request, err error)
@@ -232,7 +268,7 @@ NewAPIRequest is a wrapper around the http.NewRequest function.
 It will setup the authentication headers/parameters according to the client
 config.
 
-#### func (\*Client) WithAuthenticationValue
+#### func (*Client) WithAuthenticationValue
 
 ```go
 func (c *Client) WithAuthenticationValue(k string) error
@@ -262,6 +298,32 @@ NewConfig build a Mollie configuration object, it takes t to indicate if our
 client is meant to create requests for testing and auth to indicate the
 authentication method we want to use.
 
+#### type CreateShipmentRequest
+
+```go
+type CreateShipmentRequest struct {
+	Lines    []OrderLines     `json:"lines,omitempty"`
+	Tracking ShipmentTracking `json:"tracking,omitempty"`
+}
+```
+
+CreateShipmentRequest defines information required to create a new shipment
+
+#### type EmbedValue
+
+```go
+type EmbedValue string
+```
+
+EmbedValue describes the valid value of embed query string.
+
+```go
+const (
+	EmbedPayment EmbedValue = "payment"
+)
+```
+Valid Embed query string value.
+
 #### type Error
 
 ```go
@@ -277,7 +339,7 @@ HTTP request is shown in the status field of the HTTP response header, which
 contains standard HTTP status codes: - a 2xx code for success - a 4xx or 5xx
 code for failure
 
-#### func (\*Error) Error
+#### func (*Error) Error
 
 ```go
 func (e *Error) Error() string
@@ -339,6 +401,108 @@ type Image struct {
 
 Image describes a generic image resource retrieved by Mollie.
 
+#### type Invoice
+
+```go
+type Invoice struct {
+	Resource    string        `json:"resource,omitempty"`
+	ID          string        `json:"id,omitempty"`
+	Reference   string        `json:"reference,omitempty"`
+	VatNumber   string        `json:"vatNumber,omitempty"`
+	Status      InvoiceStatus `json:"status,omitempty"`
+	IssuedAt    string        `json:"issuedAt,omitempty"`
+	PaidAt      string        `json:"paidAt,omitempty"`
+	DueAt       string        `json:"dueAt,omitempty"`
+	NetAmount   Amount        `json:"netAmount,omitempty"`
+	VatAmount   Amount        `json:"vatAmount,omitempty"`
+	GrossAmount Amount        `json:"grossAmount,omitempty"`
+	Lines       []*LineItem   `json:"lines,omitempty"`
+	Links       *InvoiceLinks `json:"_links,omitempty"`
+}
+```
+
+Invoice describes a invoice detail
+
+#### type InvoiceLinks
+
+```go
+type InvoiceLinks struct {
+	Self          URL `json:"self,omitempty"`
+	PDF           URL `json:"pdf,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
+}
+```
+
+InvoiceLinks describes all the possible links to be returned with a invoice
+object.
+
+#### type InvoiceList
+
+```go
+type InvoiceList struct {
+	Count    int `json:"count,omitempty"`
+	Embedded struct {
+		Invoices []Invoice `json:"invoices"`
+	} `json:"_embedded,omitempty"`
+	Links PaginationLinks `json:"_links,omitempty"`
+}
+```
+
+InvoiceList describes how a list of invoices will be retrieved by Mollie.
+
+#### type InvoiceStatus
+
+```go
+type InvoiceStatus string
+```
+
+InvoiceStatus status of the invoice
+
+```go
+const (
+	InvoiceStatusOpen    InvoiceStatus = "open"
+	InvoiceStatusPaid    InvoiceStatus = "paid"
+	InvoiceStatusOverdue InvoiceStatus = "overdue"
+)
+```
+Valid status of the invoice
+
+#### type InvoicesService
+
+```go
+type InvoicesService service
+```
+
+InvoicesService instance operates over invoice resources
+
+#### func (*InvoicesService) Get
+
+```go
+func (is *InvoicesService) Get(id string) (i Invoice, err error)
+```
+Get retrieve details of an invoice, using the invoice’s identifier.
+
+#### func (*InvoicesService) List
+
+```go
+func (is *InvoicesService) List(options *ListInvoiceOptions) (il InvoiceList, err error)
+```
+List retrieves a list of invoices associated with your account/organization.
+
+#### type LineItem
+
+```go
+type LineItem struct {
+	Period        string  `json:"period,omitempty"`
+	Description   string  `json:"description,omitempty"`
+	Count         int64   `json:"count,omitempty"`
+	VatPercentage float64 `json:"vatPercentage,omitempty"`
+	Amount        Amount  `json:"amount,omitempty"`
+}
+```
+
+LineItem product detail
+
 #### type ListChargebackOptions
 
 ```go
@@ -349,7 +513,22 @@ type ListChargebackOptions struct {
 }
 ```
 
-ListChargebackOptions describes list chargebacks endpoint valid query string parameters.
+ListChargebackOptions describes list chargebacks endpoint valid query string
+parameters.
+
+#### type ListInvoiceOptions
+
+```go
+type ListInvoiceOptions struct {
+	Reference string `json:"reference,omitempty"`
+	Year      string `json:"year,omitempty"`
+	From      int64  `json:"from,omitempty"`
+	Limit     int64  `json:"limit,omitempty"`
+}
+```
+
+ListInvoiceOptions describes list invoices endpoint valid query string
+parameters.
 
 #### type ListMethods
 
@@ -377,6 +556,21 @@ type ListPaymentOptions struct {
 
 ListPaymentOptions describes list payments endpoint valid query string
 parameters.
+
+#### type ListRefundOptions
+
+```go
+type ListRefundOptions struct {
+	From      string     `url:"from,omitempty"`
+	Limit     string     `url:"limit,omitempty"`
+	ProfileID string     `url:"profileId,omitempty"`
+	Embed     EmbedValue `url:"embed,omitempty"`
+}
+```
+
+ListRefundOptions describes list refund endpoint valid query string parameters.
+
+See: https://docs.mollie.com/reference/v2/refunds-api/list-refunds.
 
 #### type Locale
 
@@ -452,7 +646,7 @@ type MethodsService service
 
 MethodsService operates on methods endpoints
 
-#### func (\*MethodsService) All
+#### func (*MethodsService) All
 
 ```go
 func (ms *MethodsService) All(options *MethodsOptions) (pm *ListMethods, err error)
@@ -461,7 +655,7 @@ All retrieves all the payment methods enabled for your account/organization
 
 See: https://docs.mollie.com/reference/v2/methods-api/list-all-methods
 
-#### func (\*MethodsService) Get
+#### func (*MethodsService) Get
 
 ```go
 func (ms *MethodsService) Get(id string, options *MethodsOptions) (pmi *PaymentMethodInfo, err error)
@@ -472,7 +666,7 @@ parameters
 
 See: https://docs.mollie.com/reference/v2/methods-api/get-method
 
-#### func (\*MethodsService) List
+#### func (*MethodsService) List
 
 ```go
 func (ms *MethodsService) List(options *MethodsOptions) (pm *ListMethods, err error)
@@ -487,7 +681,7 @@ See: https://docs.mollie.com/reference/v2/methods-api/list-methods
 type Mode string
 ```
 
-Mode contains information about the payment creation environment.
+Mode contains information about the creation environment.
 
 ```go
 const (
@@ -496,6 +690,228 @@ const (
 )
 ```
 Valid modes
+
+#### type OrderAddress
+
+```go
+type OrderAddress struct {
+	OrganizationName string       `json:"organizationName,omitempty"`
+	Title            string       `json:"title,omitempty"`
+	GivenName        string       `json:"givenName,omitempty"`
+	FamilyName       string       `json:"familyName,omitempty"`
+	Email            string       `json:"email,omitempty"`
+	Phone            *PhoneNumber `json:"phone,omitempty"`
+	StreetAndNumber  string       `json:"stringAndNumber,omitempty"`
+	StreetAdditional string       `json:"streetAdditional,omitempty"`
+	PostalCode       string       `json:"postalCode,omitempty"`
+	City             string       `json:"city,omitempty"`
+	Region           string       `json:"region,omitempty"`
+	Country          string       `json:"country,omitempty"`
+}
+```
+
+OrderAddress identify both the address and the person the order is billed or
+shipped to.
+
+#### type OrderLineLinks
+
+```go
+type OrderLineLinks struct {
+	ProductURL *URL `json:"productUrl,omitempty"`
+	ImageURL   *URL `json:"imageUrl,omitempty"`
+}
+```
+
+OrderLineLinks describes object with several URL objects relevant to the order
+line
+
+#### type OrderLineStatus
+
+```go
+type OrderLineStatus string
+```
+
+OrderLineStatus describes status of the order line
+
+```go
+const (
+	OrderLineCreated    OrderLineStatus = "created"
+	OrderLineAuthorized OrderLineStatus = "authorized"
+	OrderLinePaid       OrderLineStatus = "paid"
+	OrderLineShipping   OrderLineStatus = "shipping"
+	OrderLineCanceled   OrderLineStatus = "canceled"
+	OrderLineCompleted  OrderLineStatus = "completed"
+)
+```
+Valid order line status
+
+#### type OrderLines
+
+```go
+type OrderLines struct {
+	Resource           string           `json:"resource,omitempty"`
+	ID                 string           `json:"id,omitempty"`
+	OrderID            string           `json:"orderId,omitempty"`
+	ProductType        *ProductType     `json:"type,omitempty"`
+	Name               string           `json:"name,omitempty"`
+	Status             *OrderLineStatus `json:"status,omitempty"`
+	IsCancelable       bool             `json:"isCancelable,omitempty"`
+	Quantity           int              `json:"quantity,omitempty"`
+	QuantityShipped    int              `json:"quantityShipped,omitempty"`
+	AmountShipped      *Amount          `json:"amountShipped,omitempty"`
+	QuantityRefunded   int              `json:"quantityRefunded,omitempty"`
+	AmountRefunded     *Amount          `json:"amountRefunded,omitempty"`
+	QuantityCanceled   int              `json:"quantityCanceled,omitempty"`
+	AmountCanceled     *Amount          `json:"amountCanceled,omitempty"`
+	ShippableQuantity  int              `json:"shippableQuantity,omitempty"`
+	RefundableQuantity int              `json:"refundableQuantity,omitempty"`
+	CancelableQuantity int              `json:"cancelableQuantity,omitempty"`
+	UnitPrice          *Amount          `json:"unitPrice,omitempty"`
+	DiscountAmount     *Amount          `json:"discountAmount,omitempty"`
+	TotalAmount        *Amount          `json:"totalAmount,omitempty"`
+	VatRate            string           `json:"vatRate,omitempty"`
+	VatAmount          *Amount          `json:"vatAmount,omitempty"`
+	SKU                string           `json:"sku,omitempty"`
+	CreatedAt          *time.Time       `json:"createdAt,omitempty"`
+	Links              *OrderLineLinks  `json:"_links,omitempty"`
+}
+```
+
+OrderLines contain the actual things the customer bought.
+
+#### type OrderLinks
+
+```go
+type OrderLinks struct {
+	Self          *URL `json:"self,omitempty"`
+	Checkout      *URL `json:"checkout,omitempty"`
+	Documentation *URL `json:"documentation,omitempty"`
+}
+```
+
+OrderLinks describes an object with several URL objects relevant to the order.
+Every URL object will contain an href and a type field.
+
+#### type OrderStatus
+
+```go
+type OrderStatus string
+```
+
+OrderStatus describes the valid order status
+
+```go
+const (
+	Created    OrderStatus = "created"
+	Paid       OrderStatus = "paid"
+	Authorized OrderStatus = "authorized"
+	Canceled   OrderStatus = "canceled"
+	Shipping   OrderStatus = "shipping"
+	Completed  OrderStatus = "completed"
+	Expired    OrderStatus = "expired"
+)
+```
+Valid order status
+
+#### type Orders
+
+```go
+type Orders struct {
+	Resource            string         `json:"resource,omitempty"`
+	ID                  string         `json:"id,omitempty"`
+	ProfileID           string         `json:"profileId,omitempty"`
+	Method              *PaymentMethod `json:"method,omitempty"`
+	Mode                *Mode          `json:"mode,omitempty"`
+	Amount              *Amount        `json:"amount,omitempty"`
+	AmountCaptured      *Amount        `json:"amountCaptured,omitempty"`
+	AmountRefunded      *Amount        `json:"amountRefunded,omitempty"`
+	Status              *OrderStatus   `json:"status,omitempty"`
+	IsCancelable        bool           `json:"isCancelable,omitempty"`
+	BillingAddress      *OrderAddress  `json:"billingAddress,omitempty"`
+	ConsumerDateOfBirth *time.Time     `json:"consumerDateOfBirth,omitempty"`
+	OrderNumber         string         `json:"orderNumber,omitempty"`
+	ShippingAddress     *OrderAddress  `json:"shippingAddress,omitempty"`
+	Locale              *Locale        `json:"locale,omitempty"`
+	Metadata            interface{}    `json:"metadata,omitempty"`
+	RedirectURL         string         `json:"redirectUrl,omitempty"`
+	Lines               *OrderLines    `json:"lines,omitempty"`
+	WebhookURL          string         `json:"webhookUrl,omitempty"`
+	CreatedAt           *time.Time     `json:"createdAt,omitempty"`
+	ExpiresAt           *time.Time     `json:"expiresAt,omitempty"`
+	ExpiredAt           *time.Time     `json:"expiredAt,omitempty"`
+	PaidAt              *time.Time     `json:"paidAt,omitempty"`
+	AuthorizedAt        *time.Time     `json:"authorizedAt,omitempty"`
+	CanceledAt          *time.Time     `json:"canceledAt,omitempty"`
+	CompletedAt         *time.Time     `json:"completedAt,omitempty"`
+	Embedded            struct {
+		Payments []Payment `json:"payments,omitempty"`
+		Refunds  []Refund  `json:"refunds,omitempty"`
+	} `json:"_embedded,omitempty"`
+	Links *OrderLinks `json:"_links,omitempty"`
+}
+```
+
+Orders explain the items that customers need to pay for
+
+#### type Organization
+
+```go
+type Organization struct {
+	Resource           string             `json:"resource,omitempty"`
+	ID                 string             `json:"id,omitempty"`
+	Name               string             `json:"name,omitempty"`
+	Email              string             `json:"email,omitempty"`
+	Locale             string             `json:"locale,omitempty"`
+	Address            *Address           `json:"address,omitempty"`
+	RegistrationNumber string             `json:"registrationNumber,omitempty"`
+	VatNumber          string             `json:"vatNumber,omitempty"`
+	VatRegulation      string             `json:"vatRegulation,omitempty"`
+	Links              *OrganizationLinks `json:"_links,omitempty"`
+}
+```
+
+Organization describes an organization detail
+
+#### type OrganizationLinks
+
+```go
+type OrganizationLinks struct {
+	Self          URL `json:"self,omitempty"`
+	Chargebacks   URL `json:"chargebacks,omitempty"`
+	Customers     URL `json:"customers,omitempty"`
+	Invoices      URL `json:"invoices,omitempty"`
+	Payments      URL `json:"payments,omitempty"`
+	Profiles      URL `json:"profiles,omitempty"`
+	Refunds       URL `json:"refunds,omitempty"`
+	Settlements   URL `json:"settlements,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
+}
+```
+
+OrganizationLinks describes all the possible links to be returned with a
+organization object.
+
+#### type OrganizationsService
+
+```go
+type OrganizationsService service
+```
+
+OrganizationsService instance operates over organization resources
+
+#### func (*OrganizationsService) Get
+
+```go
+func (os *OrganizationsService) Get(id string) (o *Organization, err error)
+```
+Get retrieve an organization by its id.
+
+#### func (*OrganizationsService) GetCurrent
+
+```go
+func (os *OrganizationsService) GetCurrent() (o *Organization, err error)
+```
+GetCurrent retrieve the currently authenticated organization
 
 #### type PaginationLinks
 
@@ -717,7 +1133,7 @@ type PaymentsService service
 
 PaymentsService instance operates over payment resources
 
-#### func (\*PaymentsService) Cancel
+#### func (*PaymentsService) Cancel
 
 ```go
 func (ps *PaymentsService) Cancel(id string) (p Payment, err error)
@@ -726,7 +1142,7 @@ Cancel removes a payment (if possible) from your Mollie account.
 
 See: https://docs.mollie.com/reference/v2/payments-api/cancel-payment
 
-#### func (\*PaymentsService) Create
+#### func (*PaymentsService) Create
 
 ```go
 func (ps *PaymentsService) Create(p Payment) (np Payment, err error)
@@ -735,14 +1151,14 @@ Create stores a new payment object attached to your Mollie account.
 
 See: https://docs.mollie.com/reference/v2/payments-api/create-payment#
 
-#### func (\*PaymentsService) Get
+#### func (*PaymentsService) Get
 
 ```go
 func (ps *PaymentsService) Get(id string, options *PaymentOptions) (p Payment, err error)
 ```
 Get retrieves a single payment object by its payment token.
 
-#### func (\*PaymentsService) List
+#### func (*PaymentsService) List
 
 ```go
 func (ps *PaymentsService) List(options *ListPaymentOptions) (pl PaymentList, err error)
@@ -751,7 +1167,7 @@ List retrieves a list of payments associated with your account/organization.
 
 See: https://docs.mollie.com/reference/v2/payments-api/list-payments
 
-#### func (\*PaymentsService) Update
+#### func (*PaymentsService) Update
 
 ```go
 func (ps *PaymentsService) Update(id string, up Payment) (p Payment, err error)
@@ -768,6 +1184,176 @@ type PhoneNumber string
 
 PhoneNumber represents a phone number in the E.164 format.
 
+#### type ProductType
+
+```go
+type ProductType string
+```
+
+ProductType describes the type of product bought, for example, a physical or a
+digital product.
+
+```go
+const (
+	Physical        ProductType = "physical"
+	Discount        ProductType = "discount"
+	Digital         ProductType = "digital"
+	ShippingFee     ProductType = "shipping_fee"
+	StoreCredit     ProductType = "store_credit"
+	GiftCardProduct ProductType = "gift_card"
+	Surcharge       ProductType = "surcharge"
+)
+```
+Valid product type
+
+#### type Profile
+
+```go
+type Profile struct {
+	ID           string       `json:"id,omitempty"`
+	CategoryCode CategoryCode `json:"categoryCode,omitempty"`
+	CreatedAt    *time.Time   `json:"createdAt,omitempty"`
+	Email        string       `json:"email,omitempty"`
+	Mode         Mode         `json:"mode,omitempty"`
+	Name         string       `json:"name,omitempty"`
+	Phone        PhoneNumber  `json:"phone,omitempty"`
+	Resource     string       `json:"resource,omitempty"`
+	Review       struct {
+		Status string `json:"status,omitempty"`
+	} `json:"review,omitempty"`
+	Status  ProfileStatus `json:"status,omitempty"`
+	Website string        `json:"website,omitempty"`
+	Links   ProfileLinks  `json:"_links,omitempty"`
+}
+```
+
+Profile will usually reflect the trademark or brand name of the profile’s
+website or application.
+
+#### type ProfileLinks
+
+```go
+type ProfileLinks struct {
+	Self               URL `json:"self,omitempty"`
+	Chargebacks        URL `json:"chargebacks,omitempty"`
+	Methods            URL `json:"methods,omitempty"`
+	Refunds            URL `json:"refunds,omitempty"`
+	CheckoutPreviewURL URL `json:"checkoutPreviewUrl,omitempty"`
+	Documentation      URL `json:"documentation,omitempty"`
+}
+```
+
+ProfileLinks contains URL's to relevant information related to a profile.
+
+#### type ProfileList
+
+```go
+type ProfileList struct {
+	Count    int             `json:"count,omitempty"`
+	Embedded profiles        `json:"_embedded,omitempty"`
+	Links    PaginationLinks `json:"_links,omitempty"`
+}
+```
+
+ProfileList contains a list of profiles for your account.
+
+#### type ProfileListOptions
+
+```go
+type ProfileListOptions struct {
+	From  string `url:"from,omitempty"`
+	Limit uint   `url:"limit,omitempty"`
+}
+```
+
+ProfileListOptions are optional query string parameters for the list profiles
+request
+
+#### type ProfileStatus
+
+```go
+type ProfileStatus string
+```
+
+ProfileStatus determines whether the profile is able to receive live payments
+
+```go
+const (
+	StatusUnverified ProfileStatus = "unverified"
+	StatusVerified   ProfileStatus = "verified"
+	StatusBlocked    ProfileStatus = "blocked"
+)
+```
+Possible profile statuses
+
+#### type ProfilesService
+
+```go
+type ProfilesService service
+```
+
+ProfilesService operates over profile resource
+
+#### func (*ProfilesService) Create
+
+```go
+func (ps *ProfilesService) Create(np *Profile) (p *Profile, err error)
+```
+Create stores a new profile in your Mollie account.
+
+#### func (*ProfilesService) Current
+
+```go
+func (ps *ProfilesService) Current() (p *Profile, err error)
+```
+Current returns the profile belonging to the API key. This method only works
+when using API keys.
+
+#### func (*ProfilesService) Delete
+
+```go
+func (ps *ProfilesService) Delete(id string) (err error)
+```
+Delete enables profile deletions, rendering the profile unavailable for further
+API calls and transactions.
+
+#### func (*ProfilesService) DisablePaymentMethod
+
+```go
+func (ps *ProfilesService) DisablePaymentMethod(id string, pm PaymentMethod) (err error)
+```
+DisablePaymentMethod disables a payment method on a specific or authenticated
+profile. If you're using API tokens for authentication, pass "me" as id.
+
+#### func (*ProfilesService) EnablePaymentMethod
+
+```go
+func (ps *ProfilesService) EnablePaymentMethod(id string, pm PaymentMethod) (pmi *PaymentMethodInfo, err error)
+```
+EnablePaymentMethod enables a payment method on a specific or authenticated
+profile. If you're using API tokens for authentication, pass "me" as id.
+
+#### func (*ProfilesService) Get
+
+```go
+func (ps *ProfilesService) Get(id string) (p *Profile, err error)
+```
+Get retrieves the a profile by ID.
+
+#### func (*ProfilesService) List
+
+```go
+func (ps *ProfilesService) List(options *ProfileListOptions) (pl *ProfileList, err error)
+```
+List returns all the profiles for the authenticated account
+
+#### func (*ProfilesService) Update
+
+```go
+func (ps *ProfilesService) Update(id string, up *Profile) (p *Profile, err error)
+```
+Update allows you to perform mutations on a profile
+
 #### type QRCode
 
 ```go
@@ -779,6 +1365,142 @@ type QRCode struct {
 ```
 
 QRCode object represents an image of a QR code.
+
+#### type Refund
+
+```go
+type Refund struct {
+	Resource         string        `json:"resource,omitempty"`
+	ID               string        `json:"id,omitempty"`
+	Amount           *Amount       `json:"amount,omitempty"`
+	SettlementID     string        `json:"settlementId,omitempty"`
+	SettlementAmount *Amount       `json:"settlementAmount,omitempty"`
+	Description      string        `json:"description,omitempty"`
+	Metadata         interface{}   `json:"metadata,omitempty"`
+	Status           *RefundStatus `json:"status,omitempty"`
+	Lines            *OrderLines   `json:"lines,omitempty"`
+	PaymentID        string        `json:"paymentId,omitempty"`
+	OrderID          string        `json:"orderId,omitempty"`
+	CreatedAt        *time.Time    `json:"createdAt,omitempty"`
+	Links            *RefundLinks  `json:"_links,omitempty"`
+}
+```
+
+Refund describe a refund for a certain payment.
+
+#### type RefundLinks
+
+```go
+type RefundLinks struct {
+	Self       *URL `json:"self,omitempty"`
+	Payment    *URL `json:"payment,omitempty"`
+	Settlement *URL `json:"settlement,omitempty"`
+	Order      *URL `json:"order,omitempty"`
+}
+```
+
+RefundLinks describes all the possible links to be returned with a Refund
+object.
+
+#### type RefundList
+
+```go
+type RefundList struct {
+	Count    int `json:"count,omitempty"`
+	Embedded struct {
+		Refunds []Refund
+	} `json:"_embedded,omitempty"`
+	Links PaginationLinks `json:"_links,omitempty"`
+}
+```
+
+RefundList describes how a list of refunds will be retrieved by Mollie.
+
+#### type RefundOptions
+
+```go
+type RefundOptions struct {
+	Embed EmbedValue `url:"embed,omitempty"`
+}
+```
+
+RefundOptions describes refund endpoint valid query string parameters.
+
+See: https://docs.mollie.com/reference/v2/refunds-api/get-refund.
+
+#### type RefundStatus
+
+```go
+type RefundStatus string
+```
+
+RefundStatus describes the status of the refund.
+
+```go
+const (
+	Queued     RefundStatus = "queued"
+	Pending    RefundStatus = "pending"
+	Processing RefundStatus = "processing"
+	Refunded   RefundStatus = "refunded"
+	Failed     RefundStatus = "failed"
+)
+```
+Valid refund status.
+
+#### type RefundsService
+
+```go
+type RefundsService service
+```
+
+RefundsService instance operates over refund resources.
+
+#### func (*RefundsService) Cancel
+
+```go
+func (rs *RefundsService) Cancel(paymentID, refundID string, options *RefundOptions) (err error)
+```
+Cancel try to cancel the refund request. The refund can only be canceled while
+the refund’s status is either queued or pending. See
+https://docs.mollie.com/reference/v2/refunds-api/cancel-refund
+
+#### func (*RefundsService) Create
+
+```go
+func (rs *RefundsService) Create(paymentID string, re Refund, options *RefundOptions) (rf Refund, err error)
+```
+Create a refund payment request.
+
+See https://docs.mollie.com/reference/v2/refunds-api/create-refund.
+
+#### func (*RefundsService) Get
+
+```go
+func (rs *RefundsService) Get(paymentID, refundID string, options *RefundOptions) (refund Refund, err error)
+```
+Get retrieve a single refund by its ID.
+
+If you do not know the original payment’s ID, you can use the List payment
+refunds endpoint.
+
+#### func (*RefundsService) ListRefund
+
+```go
+func (rs *RefundsService) ListRefund(options *ListRefundOptions) (rl RefundList, err error)
+```
+ListRefund calls the top level https://api.mollie.com/v2/refunds.
+
+See https://docs.mollie.com/reference/v2/refunds-api/list-refunds.
+
+#### func (*RefundsService) ListRefundPayment
+
+```go
+func (rs *RefundsService) ListRefundPayment(paymentID string, options *ListRefundOptions) (rl RefundList, err error)
+```
+ListRefundPayment calls the payment-specific
+https://api.mollie.com/v2/payments/*paymentId*/refunds. Only refunds for that
+specific payment are returned. See
+https://docs.mollie.com/reference/v2/refunds-api/list-refunds
 
 #### type Response
 
@@ -809,6 +1531,107 @@ const (
 ```
 Valid sequence types
 
+#### type Shipment
+
+```go
+type Shipment struct {
+	Resource  string           `json:"resource,omitempty"`
+	ID        string           `json:"id,omitempty"`
+	OrderID   string           `json:"orderId,omitempty"`
+	CreatedAt *time.Time       `json:"createdAt,omitempty"`
+	Tracking  ShipmentTracking `json:"tracking,omitempty"`
+	Lines     []OrderLines     `json:"lines,omitempty"`
+	Links     ShipmentLinks    `json:"_links,omitempty"`
+}
+```
+
+Shipment contains information about a user service/product delivery and is used
+in the figurative sense here. It can also mean that a service was provided or
+digital content was delivered.
+
+#### type ShipmentLinks
+
+```go
+type ShipmentLinks struct {
+	Self          URL `json:"self,omitempty"`
+	Order         URL `json:"order,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
+}
+```
+
+ShipmentLinks contains URL objects with shipment relevant information for the
+user.
+
+#### type ShipmentTracking
+
+```go
+type ShipmentTracking struct {
+	Carrier string `json:"carrier,omitempty"`
+	Code    string `json:"code,omitempty"`
+	URL     string `json:"url,omitempty"`
+}
+```
+
+ShipmentTracking contains shipment tracking details.
+
+#### type ShipmentsList
+
+```go
+type ShipmentsList struct {
+	Count    int `json:"count,omitempty"`
+	Embedded struct {
+		Shipments []Shipment
+	} `json:"_embedded,omitempty"`
+	Links PaginationLinks `json:"_links,omitempty"`
+}
+```
+
+ShipmentsList describes how a list of payments will be retrieved by Mollie.
+
+#### type ShipmentsService
+
+```go
+type ShipmentsService service
+```
+
+ShipmentsService operates on shipments endpoints.
+
+#### func (*ShipmentsService) Create
+
+```go
+func (ss *ShipmentsService) Create(oID string, cs CreateShipmentRequest) (s *Shipment, err error)
+```
+Create can be used to ship order lines.
+
+See: https://docs.mollie.com/reference/v2/shipments-api/create-shipment
+
+#### func (*ShipmentsService) Get
+
+```go
+func (ss *ShipmentsService) Get(oID string, sID string) (s *Shipment, err error)
+```
+Get retrieves a single shipment and the order lines shipped by a shipment’s ID.
+
+See: https://docs.mollie.com/reference/v2/shipments-api/get-shipment#
+
+#### func (*ShipmentsService) List
+
+```go
+func (ss *ShipmentsService) List(oID string) (sl *ShipmentsList, err error)
+```
+List retrieves all shipments for an order.
+
+See: https://docs.mollie.com/reference/v2/shipments-api/list-shipments
+
+#### func (*ShipmentsService) Update
+
+```go
+func (ss *ShipmentsService) Update(oID string, sID string, st ShipmentTracking) (s *Shipment, err error)
+```
+Update can be used to update the tracking information of a shipment
+
+See: https://docs.mollie.com/reference/v2/shipments-api/update-shipment
+
 #### type ShortDate
 
 ```go
@@ -819,7 +1642,7 @@ type ShortDate struct {
 
 ShortDate is a string representing a date in YYYY-MM-DD format.
 
-#### func (\*ShortDate) UnmarshalJSON
+#### func (*ShortDate) UnmarshalJSON
 
 ```go
 func (d *ShortDate) UnmarshalJSON(b []byte) error
@@ -849,174 +1672,3 @@ type UsedGiftCard struct {
 ```
 
 UsedGiftCard describes a used gift card.
-
-#### type Refund
-
-```go
-type Refund struct {
-	Resource         string        `json:"resource,omitempty"`
-	ID               string        `json:"id,omitempty"`
-	Amount           *Amount       `json:"amount,omitempty"`
-	SettlementID     string        `json:"settlementId,omitempty"`
-	SettlementAmount *Amount       `json:"settlementAmount,omitempty"`
-	Description      string        `json:"description,omitempty"`
-	Metadata         interface{}   `json:"metadata,omitempty"`
-	Status           *RefundStatus `json:"status,omitempty"`
-	Lines            *OrderLines   `json:"lines,omitempty"`
-	PaymentID        string        `json:"paymentId,omitempty"`
-	OrderID          string        `json:"orderId,omitempty"`
-	CreatedAt        *time.Time    `json:"createdAt,omitempty"`
-	Links            *RefundLinks  `json:"_links,omitempty"`
-}
-```
-
-Refund describe a refund for a certain payment.
-
-#### type RefundList
-
-```go
-type RefundList struct {
-	Count    int `json:"count,omitempty"`
-	Embedded struct {
-		Refunds []Refund
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"_links,omitempty"`
-}
-```
-
-RefundList describes how a list of refunds will be retrieved by Mollie.
-
-#### type RefundStatus
-
-```go
-type RefundStatus string
-```
-
-RefundStatus describes the status of the refund.
-
-```go
-const (
-	Queued     RefundStatus = "queued"
-	Pending    RefundStatus = "pending"
-	Processing RefundStatus = "processing"
-	Refunded   RefundStatus = "refunded"
-	Failed     RefundStatus = "failed"
-)
-```
-
-Valid refund status.
-
-#### type OrderLines
-
-```go
-type OrderLines struct {
-	Quantity       int     `json:"quantity,omitempty"`
-	DiscountAmount *Amount `json:"discountAmount,omitempty"`
-	VatAmount      *Amount `json:"vatAmount,omitempty"`
-	TotalAmount    *Amount `json:"totalAmount,omitempty"`
-}
-```
-
-OrderLines describes an array of order line objects.
-
-#### type RefundLinks
-
-```go
-type RefundLinks struct {
-	Self       *URL `json:"self,omitempty"`
-	Payment    *URL `json:"payment,omitempty"`
-	Settlement *URL `json:"settlement,omitempty"`
-	Order      *URL `json:"order,omitempty"`
-}
-```
-
-RefundLinks describes all the possible links to be returned with a Refund object.
-
-#### type RefundOptions
-
-```go
-type RefundOptions struct {
-	Embed    EmbedValue `url:"embed,omitempty"`
-	TestMode bool       `url:"testmode,omitempty"`
-}
-```
-
-RefundOptions describes refund endpoint valid query string parameters. See: https://docs.mollie.com/reference/v2/refunds-api/get-refund.
-
-#### type EmbedValue
-
-```go
-type EmbedValue string
-```
-
-EmbedValue describes the valid value of embed query string.
-
-```go
-const (
-	EmbedPayment EmbedValue = "payment"
-)
-```
-
-Valid Embed query string value.
-
-#### type ListRefundOptions
-
-```go
-type ListRefundOptions struct {
-	From      string     `url:"from,omitempty"`
-	Limit     string     `url:"limit,omitempty"`
-	ProfileID string     `url:"profileId,omitempty"`
-	TestMode  bool       `url:"testmode,omitempty"`
-	Embed     EmbedValue `url:"embed,omitempty"`
-}
-```
-
-ListRefundOptions describes list refund endpoint valid query string parameters. See: https://docs.mollie.com/reference/v2/refunds-api/list-refunds.
-
-#### type RefundsService
-
-```go
-type RefundsService service
-```
-
-RefundsService instance operates over refund resources.
-
-#### func (\*RefundsService) Get
-
-```go
-func (rs *RefundsService) Get(paymentID, refundID string, options *RefundOptions) (refund Refund, err error)
-```
-
-Retrieve a single refund by its ID. If you do not know the original payment’s ID, you can use the List payment refunds endpoint.
-
-#### func (\*RefundsService) Create
-
-```go
-func (rs *RefundsService) Create(paymentID string, re Refund, options *RefundOptions) (rf Refund, err error)
-```
-
-Create a refund payment request. See https://docs.mollie.com/reference/v2/refunds-api/create-refund.
-
-#### func (\*RefundsService) Cancel
-
-```go
-func (rs *RefundsService) Cancel(paymentID, refundID string, options *RefundOptions) (err error)
-```
-
-Cancel try to cancel the refund request. The refund can only be canceled while the refund’s status is either queued or pending. See https://docs.mollie.com/reference/v2/refunds-api/cancel-refund
-
-#### func (\*RefundService) ListRefund
-
-```go
-func (rs *RefundsService) ListRefund(options *ListRefundOptions) (rl RefundList, err error)
-```
-
-ListRefund calls the top level https://api.mollie.com/v2/refunds. See https://docs.mollie.com/reference/v2/refunds-api/list-refunds.
-
-#### func (\*RefundService) ListRefundPayment
-
-```go
-func (rs *RefundsService) ListRefundPayment(paymentID string, options *ListRefundOptions) (rl RefundList, err error)
-```
-
-ListRefundPayment calls the payment-specific https://api.mollie.com/v2/payments/*paymentId*/refunds. Only refunds for that specific payment are returned. See https://docs.mollie.com/reference/v2/refunds-api/list-refunds

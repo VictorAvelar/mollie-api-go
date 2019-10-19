@@ -10,4 +10,4 @@
 // REST also implies a nice and clean structure for URLs or endpoints.
 // This means you can reach any part of the Mollie API on https://api.mollie.com/v2/ adding
 // the name of the resource you want to interact with.
-package mollie
+package mollie // import github.com/VictorAvelar/molli-api-go/mollie
