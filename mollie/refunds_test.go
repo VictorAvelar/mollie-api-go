@@ -70,7 +70,7 @@ func TestRefundsService_Create(t *testing.T) {
 		Description: "Order #33",
 	}
 
-	res, err := tClient.Refunds.Create(paymentID, *refund, nil)
+	res, err := tClient.Refunds.Create(paymentID, *refund, &RefundOptions{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -111,10 +111,15 @@ func TestRefundsService_CreateInvalidParams(t *testing.T) {
 		},
 	}
 
+	refamount := Refund{
+		Amount: nil,
+	}
+
 	_, errcurr := tClient.Refunds.Create(paymentID, refcurr, nil)
 	_, errval := tClient.Refunds.Create(paymentID, refval, nil)
+	_, erramount := tClient.Refunds.Create(paymentID, refamount, nil)
 
-	tests := []error{errcurr, errval}
+	tests := []error{errcurr, errval, erramount}
 
 	for _, test := range tests {
 		if test == nil {
@@ -144,7 +149,7 @@ func TestRefundsService_Cancel(t *testing.T) {
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	err := tClient.Refunds.Cancel(paymentID, refundID, nil)
+	err := tClient.Refunds.Cancel(paymentID, refundID, &RefundOptions{})
 	if err != nil {
 		t.Fatal(err)
 	}

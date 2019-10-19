@@ -204,6 +204,22 @@ func TestClient_Do(t *testing.T) {
 	}
 }
 
+func TestClient_DoErr(t *testing.T) {
+	setup()
+	defer teardown()
+	req, _ := tClient.NewAPIRequest("GET", "test", nil)
+	req.URL = nil
+	_, err := tClient.Do(req)
+
+	if err == nil {
+		t.Error(err)
+	}
+
+	if !strings.Contains(err.Error(), "nil Request.URL") {
+		t.Errorf("unexpected response, got %v", err)
+	}
+}
+
 func TestCheckResponse(t *testing.T) {
 	res1 := &http.Response{
 		StatusCode: http.StatusNotFound,
