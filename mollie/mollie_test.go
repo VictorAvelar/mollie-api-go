@@ -3,9 +3,7 @@ package mollie
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -116,7 +114,7 @@ func TestClient_NewAPIRequest_ErrTrailingSlash(t *testing.T) {
 	_, err := tClient.NewAPIRequest("GET", "test", nil)
 
 	if !reflect.DeepEqual(err, errBadBaseURL) {
-		t.Errorf("expected error %v not ocurred, got %v", errBadBaseURL, err)
+		t.Errorf("expected error %v not occurred, got %v", errBadBaseURL, err)
 	}
 }
 
@@ -204,6 +202,22 @@ func TestClient_Do(t *testing.T) {
 	}
 }
 
+func TestClient_DoErr(t *testing.T) {
+	setup()
+	defer teardown()
+	req, _ := tClient.NewAPIRequest("GET", "test", nil)
+	req.URL = nil
+	_, err := tClient.Do(req)
+
+	if err == nil {
+		t.Error(err)
+	}
+
+	if !strings.Contains(err.Error(), "nil Request.URL") {
+		t.Errorf("unexpected response, got %v", err)
+	}
+}
+
 func TestCheckResponse(t *testing.T) {
 	res1 := &http.Response{
 		StatusCode: http.StatusNotFound,
@@ -241,17 +255,6 @@ func TestCheckResponse(t *testing.T) {
 			}
 		})
 	}
-}
-
-// ----- mollie examples -----
-func ExampleNewClient() {
-	c, err := NewClient(nil, &Config{
-		testing: false,
-		auth:    APITokenEnv,
-	})
-	log.Printf("%+v", c)
-	fmt.Println(err == nil)
-	// Output: true
 }
 
 // <----- Testing helpers ----->
