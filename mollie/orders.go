@@ -377,7 +377,10 @@ func (ors *OrdersService) CancelOrderLine(orderID string, orderlines *Orders) (e
 
 	res, err := ors.client.Do(req)
 	if err != nil {
-		json.Unmarshal(res.content, &errorResponse)
+		err = json.Unmarshal(res.content, &errorResponse)
+		if err != nil {
+			return
+		}
 		return
 	}
 
