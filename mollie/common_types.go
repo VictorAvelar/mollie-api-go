@@ -133,3 +133,24 @@ const (
 	LiveMode Mode = "live"
 	TestMode Mode = "test"
 )
+
+// EmbedValue describes the valid value of embed query string.
+type EmbedValue string
+
+// Valid Embed query string value.
+const (
+	EmbedPayment EmbedValue = "payment"
+	EmbedRefund  EmbedValue = "refund"
+)
+
+// ErrorResponse describes the cancel endpoint response if there is an error
+type ErrorResponse struct {
+	Status string      `json:"status,omitempty"`
+	Title  string      `json:"title,omitempty"`
+	Detail string      `json:"detail,omitempty"`
+	Field  string      `json:"field,omitempty"`
+	Extra  interface{} `json:"extra,omitempty"`
+	Links  struct {
+		Documentation URL `json:"documentation,omitempty"`
+	} `json:"_links,omitempty"`
+}

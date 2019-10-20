@@ -19,7 +19,7 @@ type Refund struct {
 	Description      string        `json:"description,omitempty"`
 	Metadata         interface{}   `json:"metadata,omitempty"`
 	Status           *RefundStatus `json:"status,omitempty"`
-	Lines            *OrderLines   `json:"lines,omitempty"`
+	Lines            []*OrderLines `json:"lines,omitempty"`
 	PaymentID        string        `json:"paymentId,omitempty"`
 	OrderID          string        `json:"orderId,omitempty"`
 	CreatedAt        *time.Time    `json:"createdAt,omitempty"`
@@ -50,10 +50,11 @@ const (
 // RefundLinks describes all the possible links to be returned with
 // a Refund object.
 type RefundLinks struct {
-	Self       *URL `json:"self,omitempty"`
-	Payment    *URL `json:"payment,omitempty"`
-	Settlement *URL `json:"settlement,omitempty"`
-	Order      *URL `json:"order,omitempty"`
+	Self          *URL `json:"self,omitempty"`
+	Payment       *URL `json:"payment,omitempty"`
+	Settlement    *URL `json:"settlement,omitempty"`
+	Order         *URL `json:"order,omitempty"`
+	Documentation *URL `json:"documentation,omitempty"`
 }
 
 // RefundOptions describes refund endpoint valid query string parameters.
@@ -62,14 +63,6 @@ type RefundLinks struct {
 type RefundOptions struct {
 	Embed EmbedValue `url:"embed,omitempty"`
 }
-
-// EmbedValue describes the valid value of embed query string.
-type EmbedValue string
-
-// Valid Embed query string value.
-const (
-	EmbedPayment EmbedValue = "payment"
-)
 
 // ListRefundOptions describes list refund endpoint valid query string parameters.
 //
