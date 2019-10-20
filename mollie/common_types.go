@@ -154,3 +154,9 @@ type ErrorResponse struct {
 		Documentation URL `json:"documentation,omitempty"`
 	} `json:"_links,omitempty"`
 }
+
+// Rate describes service rates, further divided into fixed and percentage costs.
+type Rate struct {
+	Fixed    Amount `json:"fixed,omitempty"`
+	Variable string `json:"variable,omitempty"`
+}
