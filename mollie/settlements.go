@@ -33,6 +33,7 @@ type SettlementRevenue struct {
 	Method      PaymentMethod `json:"method,omitempty"`
 }
 
+// SettlementCosts contains information about costs related to a settlement
 type SettlementCosts struct {
 	Description string        `json:"description,omitempty"`
 	AmountNet   Amount        `json:"amountNet,omitempty"`

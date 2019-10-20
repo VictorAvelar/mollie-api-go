@@ -34,6 +34,7 @@ type Capture struct {
 	Links            CaptureLinks `json:"links,omitempty"`
 }
 
+// CapturesList describes a list of captures
 type CapturesList struct {
 	Count    int `json:"count,omitempty"`
 	Embedded struct {
