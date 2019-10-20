@@ -216,7 +216,7 @@ func TestOrdersService_CancelOrderLines(t *testing.T) {
 
 	orderID := "ord_8wmqcHMN4U"
 
-	tClient.WithAuthenticationValue("test_token")
+	_ = tClient.WithAuthenticationValue("test_token")
 	tMux.HandleFunc("/v2/orders/"+orderID+"/lines", func(w http.ResponseWriter, r *http.Request) {
 		testHeader(t, r, AuthHeader, "Bearer test_token")
 		testMethod(t, r, http.MethodDelete)
@@ -280,7 +280,7 @@ func TestOrdersService_CreatePayment(t *testing.T) {
 
 	orderID := "ord_8wmqcHMN4U"
 
-	tClient.WithAuthenticationValue("test_token")
+	_ = tClient.WithAuthenticationValue("test_token")
 	tMux.HandleFunc("/v2/orders/"+orderID+"/payments", func(w http.ResponseWriter, r *http.Request) {
 		testHeader(t, r, AuthHeader, "Bearer test_token")
 		testMethod(t, r, http.MethodPost)
@@ -314,7 +314,7 @@ func TestOrdersService_CreatePaymentFailed(t *testing.T) {
 
 	orderID := "ord_stTC2WHAuS"
 
-	tClient.WithAuthenticationValue("test_token")
+	_ = tClient.WithAuthenticationValue("test_token")
 	tMux.HandleFunc("/v2/orders/"+orderID+"/payments", func(w http.ResponseWriter, r *http.Request) {
 		testHeader(t, r, AuthHeader, "Bearer test_token")
 		testMethod(t, r, http.MethodPost)
