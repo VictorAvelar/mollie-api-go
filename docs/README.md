@@ -2049,3 +2049,20 @@ func (ors *OrdersService) ListOrderRefunds(orderID string, opt *OrderListRefundO
 ```
 
 ListOrderRefunds retrieve all order refunds. See https://docs.mollie.com/reference/v2/orders-api/list-order-refunds
+
+#### type ErrorResponse
+
+```go
+type ErrorResponse struct {
+	Status string      `json:"status,omitempty"`
+	Title  string      `json:"title,omitempty"`
+	Detail string      `json:"detail,omitempty"`
+	Field  string      `json:"field,omitempty"`
+	Extra  interface{} `json:"extra,omitempty"`
+	Links  struct {
+		Documentation URL `json:"documentation,omitempty"`
+	} `json:"_links,omitempty"`
+}
+```
+
+ErrorResponse describes the cancel endpoint response if there is an error
