@@ -46,11 +46,6 @@ type Orders struct {
 	Description  string        `json:"description,omitempty"`
 }
 
-// ConsumerBirthDate is type alias
-type ConsumerBirthDate struct {
-	time.Time
-}
-
 var requiredCreateParamOrder = "parameter required for creating an order: %+v"
 
 // OrderPayment describes payment specific parameters that can be passed during order creation
@@ -449,6 +444,7 @@ func (ors *OrdersService) CreateOrderRefund(orderID string, order *Orders) (refu
 }
 
 // ListOrderRefunds retrieve all order refunds.
+// See https://docs.mollie.com/reference/v2/orders-api/list-order-refunds
 func (ors *OrdersService) ListOrderRefunds(orderID string, opt *OrderListRefundOptions) (orderListRefund OrderListRefund, err error) {
 	u := fmt.Sprintf("v2/orders/%s/refunds", orderID)
 	if opt != nil {
