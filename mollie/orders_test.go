@@ -24,7 +24,7 @@ func TestOrdersService_Get(t *testing.T) {
 		}
 
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(testdata.GetOrderResponse))
+		_, _ = w.Write([]byte(testdata.GetOrderResponse))
 	})
 
 	opt := &OrderOptions{
@@ -97,7 +97,7 @@ func TestOrdersService_Update(t *testing.T) {
 		}
 
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(testdata.UpdateOrderResponse))
+		_, _ = w.Write([]byte(testdata.UpdateOrderResponse))
 	})
 
 	var order Orders
@@ -131,7 +131,7 @@ func TestOrdersService_Cancel(t *testing.T) {
 		}
 
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(testdata.CancelOrderResponse))
+		_, _ = w.Write([]byte(testdata.CancelOrderResponse))
 	})
 
 	res, err := tClient.Orders.Cancel(orderID)
@@ -158,7 +158,7 @@ func TestOrdersService_List(t *testing.T) {
 		}
 
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(testdata.OrderListResponse))
+		_, _ = w.Write([]byte(testdata.OrderListResponse))
 	})
 
 	opt := &OrderListOptions{
@@ -192,7 +192,7 @@ func TestOrdersService_UpdateOrderline(t *testing.T) {
 		}
 
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(testdata.UpdateOrderlineResponse))
+		_, _ = w.Write([]byte(testdata.UpdateOrderlineResponse))
 	})
 
 	var orderline OrderLines
@@ -236,14 +236,14 @@ func TestOrdersService_CancelOrderLines(t *testing.T) {
 		for _, el := range ordLines.Lines {
 			if (*el).ID == "odl_dgtwkn" {
 				w.WriteHeader(http.StatusUnprocessableEntity)
-				w.Write([]byte(testdata.CancelOrderLinesResponseCancelReject))
+				_, _ = w.Write([]byte(testdata.CancelOrderLinesResponseCancelReject))
 
 				break
 			}
 
 			if (*el).Amount == nil || (*el).Amount.Value == "0.00" || (*el).Amount.Currency == "" {
 				w.WriteHeader(http.StatusUnprocessableEntity)
-				w.Write([]byte(testdata.CancelOrderLinesResponseAmountRequired))
+				_, _ = w.Write([]byte(testdata.CancelOrderLinesResponseAmountRequired))
 
 				break
 			}
@@ -290,7 +290,7 @@ func TestOrdersService_CreatePayment(t *testing.T) {
 		}
 
 		w.WriteHeader(http.StatusCreated)
-		w.Write([]byte(testdata.CreateOrderPaymentResponse))
+		_, _ = w.Write([]byte(testdata.CreateOrderPaymentResponse))
 	})
 
 	var ordPay OrderPayment
@@ -324,7 +324,7 @@ func TestOrdersService_CreatePaymentFailed(t *testing.T) {
 		}
 
 		w.WriteHeader(http.StatusUnprocessableEntity)
-		w.Write([]byte(testdata.CreateOrderPaymentResponseFailed))
+		_, _ = w.Write([]byte(testdata.CreateOrderPaymentResponseFailed))
 	})
 
 	var ordPay OrderPayment
@@ -356,7 +356,7 @@ func TestOrdersService_CreateOrderRefund(t *testing.T) {
 		}
 
 		w.WriteHeader(http.StatusCreated)
-		w.Write([]byte(testdata.CreateOrderRefundResponse))
+		_, _ = w.Write([]byte(testdata.CreateOrderRefundResponse))
 	})
 
 	var order Orders
@@ -390,7 +390,7 @@ func TestOrdersService_CreateOrderRefundFailed(t *testing.T) {
 		}
 
 		w.WriteHeader(http.StatusUnprocessableEntity)
-		w.Write([]byte(testdata.CreateOrderRefundResponseFailed))
+		_, _ = w.Write([]byte(testdata.CreateOrderRefundResponseFailed))
 	})
 
 	var order Orders
@@ -422,7 +422,7 @@ func TestOrdersService_ListOrderRefund(t *testing.T) {
 		}
 
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(testdata.ListOrderRefundResponse))
+		_, _ = w.Write([]byte(testdata.ListOrderRefundResponse))
 	})
 
 	opt := &OrderListRefundOptions{
