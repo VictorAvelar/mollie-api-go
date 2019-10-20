@@ -2,14 +2,15 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/VictorAvelar/mollie-api-go/mollie"
 )
 
 // Available authentication options using static keys
 const (
-	APIKey string = "your api key here"
-	OrgKey string = "your org key here"
+	APIKey string = "your_api_key_here"
 )
 
 func main() {
@@ -32,19 +33,23 @@ func main() {
 	*/
 	m, err := mollie.NewClient(nil, config)
 	if err != nil {
-		return
+		log.Fatal(err)
 	}
 
 	output, err := m.Methods.List(nil)
 	if err != nil {
-		return
+		log.Fatal(err)
 	}
 
 	/*
 		Now you should see a list of the enabled payment methods for your
 		account.
 	*/
+	fmt.Printf("Receive %d payment methods\n", output.Count)
 	for _, o := range output.Embedded.Methods {
-		fmt.Printf("Id: %s | Name: %s", o.ID, o.Description)
+		fmt.Printf("- Name: %s\n", o.Description)
 	}
+
+	fmt.Printf("For detailed information see: %s", output.Links.Docs.Href)
+	os.Exit(0)
 }

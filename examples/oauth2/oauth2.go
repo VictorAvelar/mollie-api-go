@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 
 	"golang.org/x/oauth2"
 
@@ -28,14 +29,18 @@ func main() {
 
 	output, err := client.Methods.List(nil)
 	if err != nil {
-		return
+		log.Fatal(err)
 	}
 
 	/*
 		Now you should see a list of the enabled payment methods for your
 		account.
 	*/
+	fmt.Printf("Receive %d payment methods\n", output.Count)
 	for _, o := range output.Embedded.Methods {
-		fmt.Printf("Id: %s | Name: %s", o.ID, o.Description)
+		fmt.Printf("- Name: %s\n", o.Description)
 	}
+
+	fmt.Printf("For detailed information see: %s", output.Links.Docs.Href)
+	os.Exit(0)
 }

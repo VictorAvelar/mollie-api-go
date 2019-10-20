@@ -82,7 +82,7 @@ func (c *Client) NewAPIRequest(method string, uri string, body interface{}) (req
 		return nil, err
 	}
 
-	if c.config.testing == true {
+	if c.config.testing {
 		u.Query().Add("testmode", "true")
 	}
 
@@ -103,10 +103,7 @@ func (c *Client) NewAPIRequest(method string, uri string, body interface{}) (req
 	}
 
 	req.Header.Add(AuthHeader, strings.Join([]string{TokenType, c.authentication}, " "))
-
-	if body != nil {
-		req.Header.Set("Content-Type", RequestContentType)
-	}
+	req.Header.Set("Content-Type", RequestContentType)
 	req.Header.Set("Accept", RequestContentType)
 
 	return
@@ -170,6 +167,8 @@ func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
 	// Parse authorization from environment
 	if tkn, ok := os.LookupEnv(APITokenEnv); ok {
 		mollie.authentication = tkn
+	} else {
+		mollie.authentication = c.auth
 	}
 	return
 }
