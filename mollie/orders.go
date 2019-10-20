@@ -46,8 +46,6 @@ type Orders struct {
 	Description  string        `json:"description,omitempty"`
 }
 
-var requiredCreateParamOrder = "parameter required for creating an order: %+v"
-
 // OrderPayment describes payment specific parameters that can be passed during order creation
 type OrderPayment struct {
 	ConsumerAccount   string          `json:"consumerAccount,omitempty"`
