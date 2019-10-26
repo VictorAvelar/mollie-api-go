@@ -40,7 +40,7 @@ func TestCustomersService_Create(t *testing.T) {
 	setup()
 	defer teardown()
 
-	id := "cst_kEn1PlbGa"
+	id := "cst_8wmqcHMN4U"
 	_ = tClient.WithAuthenticationValue("test_token")
 	tMux.HandleFunc("/v2/customers", func(w http.ResponseWriter, r *http.Request) {
 		testHeader(t, r, AuthHeader, "Bearer test_token")
@@ -50,7 +50,7 @@ func TestCustomersService_Create(t *testing.T) {
 		}
 
 		w.WriteHeader(http.StatusCreated)
-		_, _ = w.Write([]byte(testdata.GetCustomerResponse))
+		_, _ = w.Write([]byte(testdata.CreateCustomerResponse))
 	})
 
 	c, err := tClient.Customers.Create(Customer{Locale: German})
@@ -166,7 +166,7 @@ func TestCustomersService_Update(t *testing.T) {
 	setup()
 	defer teardown()
 
-	id := "cst_kEn1PlbGa"
+	id := "cst_8wmqcHMN4U"
 	_ = tClient.WithAuthenticationValue("test_token")
 	tMux.HandleFunc("/v2/customers/"+id, func(w http.ResponseWriter, r *http.Request) {
 		testHeader(t, r, AuthHeader, "Bearer test_token")
@@ -176,7 +176,7 @@ func TestCustomersService_Update(t *testing.T) {
 		}
 
 		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetCustomerResponse))
+		_, _ = w.Write([]byte(testdata.UpdateCustomerResponse))
 	})
 
 	c, err := tClient.Customers.Update(id, Customer{
