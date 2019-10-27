@@ -3,6 +3,8 @@ package mollie
 import (
 	"encoding/json"
 	"net/http"
+	"net/url"
+	"strings"
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/testdata"
@@ -437,4 +439,78 @@ func TestOrdersService_ListOrderRefund(t *testing.T) {
 	if res.Count != 1 {
 		t.Errorf("mismatching info. want %v got %v", 1, res.Count)
 	}
+}
+
+func TestOrdersService_NewAPIRequestErrors(t *testing.T) {
+	setup()
+	defer teardown()
+
+	u, _ := url.Parse(tServer.URL)
+	tClient.BaseURL = u
+
+	tMux.HandleFunc("/v2/orders/", errorHandler)
+
+	tests := forceOrdersErrors(true)
+
+	for _, tt := range tests {
+		if tt != errBadBaseURL {
+			t.Error(tt)
+		}
+	}
+}
+
+func TestOrdersService_JsonDecodingErrors(t *testing.T) {
+	setup()
+	defer teardown()
+
+	tMux.HandleFunc("/v2/orders/", encodingHandler)
+
+	tests := forceOrdersErrors(false)
+
+	for _, tt := range tests {
+		if tt == nil {
+			t.Error(tt)
+		} else if !strings.Contains(tt.Error(), "invalid character") {
+			t.Errorf("unexpected error %v", tt)
+		}
+	}
+}
+
+func TestOrdersService_HTTPRequestErrors(t *testing.T) {
+	setup()
+	defer teardown()
+
+	tMux.HandleFunc("/v2/orders/", errorHandler)
+
+	tests := forceOrdersErrors(true)
+	for _, tt := range tests {
+		if !strings.Contains(tt.Error(), "Internal Server Error") {
+			t.Error(tt)
+		}
+	}
+}
+
+func forceOrdersErrors(del bool) []error {
+	id := "ord_8wmqcHMN4U"
+
+	_, cerr := tClient.Orders.Create(Orders{}, nil)
+	_, _, coperr := tClient.Orders.CreateOrderPayment(id, nil)
+	_, _, corerr := tClient.Orders.CreateOrderRefund(id, nil)
+	_, rerr := tClient.Orders.Get(id, nil)
+	_, lerr := tClient.Orders.List(nil)
+	_, lorerr := tClient.Orders.ListOrderRefunds(id, nil)
+	_, uerr := tClient.Orders.Update(id, Orders{})
+	_, uolerr := tClient.Orders.UpdateOrderline(id, "", OrderLines{})
+
+	errs := []error{cerr, coperr, corerr, rerr, lerr, lorerr, uerr, uolerr}
+
+	if del {
+		_, cnlerr := tClient.Orders.Cancel(id)
+		errs = append(errs, cnlerr)
+
+		_, colerr := tClient.Orders.CancelOrderLine(id, nil)
+		errs = append(errs, colerr)
+	}
+
+	return errs
 }
