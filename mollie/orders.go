@@ -377,11 +377,9 @@ func (ors *OrdersService) CancelOrderLine(orderID string, orderlines *Orders) (e
 
 	res, err := ors.client.Do(req)
 	if err != nil {
-		if len(res.content) != 0 {
-			err = json.Unmarshal(res.content, &errorResponse)
-			if err != nil {
-				return
-			}
+		err = json.Unmarshal(res.content, &errorResponse)
+		if err != nil {
+			return
 		}
 
 		return
@@ -407,11 +405,9 @@ func (ors *OrdersService) CreateOrderPayment(orderID string, ordPay *OrderPaymen
 
 	res, err := ors.client.Do(req)
 	if err != nil {
-		if len(res.content) != 0 {
-			err = json.Unmarshal(res.content, &errorResponse)
-			if err != nil {
-				return
-			}
+		err = json.Unmarshal(res.content, &errorResponse)
+		if err != nil {
+			return
 		}
 
 		return
@@ -436,11 +432,9 @@ func (ors *OrdersService) CreateOrderRefund(orderID string, order *Orders) (refu
 
 	res, err := ors.client.Do(req)
 	if err != nil {
-		if len(res.content) != 0 {
-			err = json.Unmarshal(res.content, &errorResponse)
-			if err != nil {
-				return
-			}
+		err = json.Unmarshal(res.content, &errorResponse)
+		if err != nil {
+			return
 		}
 
 		return
