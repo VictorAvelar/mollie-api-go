@@ -217,6 +217,7 @@ func TestOrdersService_CancelOrderLines(t *testing.T) {
 	defer teardown()
 
 	orderID := "ord_8wmqcHMN4U"
+	isError := false
 
 	_ = tClient.WithAuthenticationValue("test_token")
 	tMux.HandleFunc("/v2/orders/"+orderID+"/lines", func(w http.ResponseWriter, r *http.Request) {
@@ -240,6 +241,8 @@ func TestOrdersService_CancelOrderLines(t *testing.T) {
 				w.WriteHeader(http.StatusUnprocessableEntity)
 				_, _ = w.Write([]byte(testdata.CancelOrderLinesResponseCancelReject))
 
+				isError = true
+
 				break
 			}
 
@@ -247,11 +250,16 @@ func TestOrdersService_CancelOrderLines(t *testing.T) {
 				w.WriteHeader(http.StatusUnprocessableEntity)
 				_, _ = w.Write([]byte(testdata.CancelOrderLinesResponseAmountRequired))
 
+				isError = true
+
 				break
 			}
 		}
 
-		w.WriteHeader(http.StatusNoContent)
+		if !isError {
+			w.WriteHeader(http.StatusNoContent)
+		}
+
 	})
 
 	var ordLines Orders
@@ -260,7 +268,7 @@ func TestOrdersService_CancelOrderLines(t *testing.T) {
 	}
 
 	res, err := tClient.Orders.CancelOrderLine(orderID, &ordLines)
-	if err == nil {
+	if res == nil || err != nil {
 		t.Fail()
 	}
 	t.Log(res)
@@ -270,7 +278,7 @@ func TestOrdersService_CancelOrderLines(t *testing.T) {
 	}
 
 	res, err = tClient.Orders.CancelOrderLine(orderID, &ordLines)
-	if err == nil {
+	if res == nil || err != nil {
 		t.Fail()
 	}
 	t.Log(res)
