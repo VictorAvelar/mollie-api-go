@@ -343,7 +343,7 @@ func TestOrdersService_CreatePaymentFailed(t *testing.T) {
 	}
 
 	_, errResp, err := tClient.Orders.CreateOrderPayment(orderID, &ordPay)
-	if err == nil {
+	if errResp == nil || err != nil {
 		t.Fail()
 	}
 
@@ -409,7 +409,7 @@ func TestOrdersService_CreateOrderRefundFailed(t *testing.T) {
 	}
 
 	_, errResp, err := tClient.Orders.CreateOrderRefund(orderID, &order)
-	if err == nil {
+	if errResp == nil || err != nil {
 		t.Fail()
 	}
 
