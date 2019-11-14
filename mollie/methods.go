@@ -102,18 +102,8 @@ func (ms *MethodsService) All(options *MethodsOptions) (pm *ListMethods, err err
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
-	req, err := ms.client.NewAPIRequest(http.MethodGet, u, nil)
-	if err != nil {
-		return
-	}
-	res, err := ms.client.Do(req)
-	if err != nil {
-		return
-	}
-	if err = json.Unmarshal(res.content, &pm); err != nil {
-		return
-	}
-	return
+
+	return ms.list(u)
 }
 
 // List retrieves all enabled payment methods.
@@ -126,7 +116,12 @@ func (ms *MethodsService) List(options *MethodsOptions) (pm *ListMethods, err er
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
-	req, err := ms.client.NewAPIRequest(http.MethodGet, u, nil)
+
+	return ms.list(u)
+}
+
+func (ms *MethodsService) list(uri string) (pm *ListMethods, err error) {
+	req, err := ms.client.NewAPIRequest(http.MethodGet, uri, nil)
 	if err != nil {
 		return
 	}
