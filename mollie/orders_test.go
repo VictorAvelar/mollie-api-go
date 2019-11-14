@@ -63,12 +63,7 @@ func TestOrdersService_Create(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.CreateOrderResponse))
 	})
 
-	var order Orders
-	err := json.Unmarshal([]byte(testdata.CreateOrderRequest), &order)
-	if err != nil {
-		t.Error(err)
-	}
-
+	order := Order{}
 	opt := &OrderOptions{
 		ProfileID: "pfl_3RkSN1zuPE",
 	}
@@ -102,11 +97,7 @@ func TestOrdersService_Update(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.UpdateOrderResponse))
 	})
 
-	var order Orders
-	if err := json.Unmarshal([]byte(testdata.UpdateOrderRequest), &order); err != nil {
-		t.Error(err)
-	}
-
+	order := Order{}
 	res, err := tClient.Orders.Update(orderID, order)
 	if err != nil {
 		t.Error(err)
@@ -197,12 +188,12 @@ func TestOrdersService_UpdateOrderline(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.UpdateOrderlineResponse))
 	})
 
-	var orderline OrderLines
+	var orderline OrderLine
 	if err := json.Unmarshal([]byte(testdata.UpdateOrderlineRequest), &orderline); err != nil {
 		t.Error(err)
 	}
 
-	res, err := tClient.Orders.UpdateOrderline(orderID, orderlineID, orderline)
+	res, err := tClient.Orders.UpdateOrderLine(orderID, orderlineID, orderline)
 	if err != nil {
 		t.Error(err)
 	}
@@ -217,7 +208,6 @@ func TestOrdersService_CancelOrderLines(t *testing.T) {
 	defer teardown()
 
 	orderID := "ord_8wmqcHMN4U"
-	isError := false
 
 	_ = tClient.WithAuthenticationValue("test_token")
 	tMux.HandleFunc("/v2/orders/"+orderID+"/lines", func(w http.ResponseWriter, r *http.Request) {
@@ -227,61 +217,19 @@ func TestOrdersService_CancelOrderLines(t *testing.T) {
 		if _, ok := r.Header[AuthHeader]; !ok {
 			w.WriteHeader(http.StatusUnauthorized)
 		}
-
-		decoder := json.NewDecoder(r.Body)
-
-		var ordLines Orders
-		err := decoder.Decode(&ordLines)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-		}
-
-		for _, el := range ordLines.Lines {
-			if (*el).ID == "odl_dgtwkn" {
-				w.WriteHeader(http.StatusUnprocessableEntity)
-				_, _ = w.Write([]byte(testdata.CancelOrderLinesResponseCancelReject))
-
-				isError = true
-
-				break
-			}
-
-			if (*el).Amount == nil || (*el).Amount.Value == "0.00" || (*el).Amount.Currency == "" {
-				w.WriteHeader(http.StatusUnprocessableEntity)
-				_, _ = w.Write([]byte(testdata.CancelOrderLinesResponseAmountRequired))
-
-				isError = true
-
-				break
-			}
-		}
-
-		if !isError {
-			w.WriteHeader(http.StatusNoContent)
-		}
-
+		w.WriteHeader(http.StatusNoContent)
 	})
 
-	var ordLines Orders
-	if err := json.Unmarshal([]byte(testdata.CancelOrderLinesRequest), &ordLines); err != nil {
+	orderLines := []OrderLine{
+		{
+			Name: "something",
+		},
+	}
+	err := tClient.Orders.CancelOrderLines(orderID, orderLines)
+
+	if err != nil {
 		t.Error(err)
 	}
-
-	res, err := tClient.Orders.CancelOrderLine(orderID, &ordLines)
-	if res == nil || err != nil {
-		t.Fail()
-	}
-	t.Log(res)
-
-	if err := json.Unmarshal([]byte(testdata.CancelOrderLinesRejectRequest), &ordLines); err != nil {
-		t.Error(err)
-	}
-
-	res, err = tClient.Orders.CancelOrderLine(orderID, &ordLines)
-	if res == nil || err != nil {
-		t.Fail()
-	}
-	t.Log(res)
 }
 
 func TestOrdersService_CreatePayment(t *testing.T) {
@@ -308,46 +256,14 @@ func TestOrdersService_CreatePayment(t *testing.T) {
 		t.Error(err)
 	}
 
-	res, errResp, err := tClient.Orders.CreateOrderPayment(orderID, &ordPay)
+	res, err := tClient.Orders.CreateOrderPayment(orderID, &ordPay)
 	if err != nil {
-		t.Error(errResp)
+		t.Error(err)
 	}
 
 	if res.ID != "tr_WDqYK6vllg" {
 		t.Errorf("mismatching info. want %v got %v", "tr_WDqYK6vllg", res.ID)
 	}
-}
-
-func TestOrdersService_CreatePaymentFailed(t *testing.T) {
-	setup()
-	defer teardown()
-
-	orderID := "ord_stTC2WHAuS"
-
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/orders/"+orderID+"/payments", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, http.MethodPost)
-
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		_, _ = w.Write([]byte(testdata.CreateOrderPaymentResponseFailed))
-	})
-
-	var ordPay OrderPayment
-	if err := json.Unmarshal([]byte(testdata.CreateOrderPaymentRequest), &ordPay); err != nil {
-		t.Error(err)
-	}
-
-	_, errResp, err := tClient.Orders.CreateOrderPayment(orderID, &ordPay)
-	if errResp == nil || err != nil {
-		t.Fail()
-	}
-
-	t.Log(errResp)
 }
 
 func TestOrdersService_CreateOrderRefund(t *testing.T) {
@@ -369,12 +285,12 @@ func TestOrdersService_CreateOrderRefund(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.CreateOrderRefundResponse))
 	})
 
-	var order Orders
+	var order Order
 	if err := json.Unmarshal([]byte(testdata.CreateOrderRefundRequest), &order); err != nil {
 		t.Error(err)
 	}
 
-	res, _, err := tClient.Orders.CreateOrderRefund(orderID, &order)
+	res, err := tClient.Orders.CreateOrderRefund(orderID, &order)
 	if err != nil {
 		t.Error(err)
 	}
@@ -382,38 +298,6 @@ func TestOrdersService_CreateOrderRefund(t *testing.T) {
 	if res.ID != "re_4qqhO89gsT" {
 		t.Errorf("mismatching info. want %v got %v", "re_4qqhO89gsT", res.ID)
 	}
-}
-
-func TestOrdersService_CreateOrderRefundFailed(t *testing.T) {
-	setup()
-	defer teardown()
-
-	orderID := "ord_stTC2WHAuS"
-
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/orders/"+orderID+"/refunds", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, http.MethodPost)
-
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		_, _ = w.Write([]byte(testdata.CreateOrderRefundResponseFailed))
-	})
-
-	var order Orders
-	if err := json.Unmarshal([]byte(testdata.CreateOrderRefundRequest), &order); err != nil {
-		t.Error(err)
-	}
-
-	_, errResp, err := tClient.Orders.CreateOrderRefund(orderID, &order)
-	if errResp == nil || err != nil {
-		t.Fail()
-	}
-
-	t.Log(errResp)
 }
 
 func TestOrdersService_ListOrderRefund(t *testing.T) {
@@ -501,14 +385,14 @@ func TestOrdersService_HTTPRequestErrors(t *testing.T) {
 func forceOrdersErrors(del bool) []error {
 	id := "ord_8wmqcHMN4U"
 
-	_, cerr := tClient.Orders.Create(Orders{}, nil)
-	_, _, coperr := tClient.Orders.CreateOrderPayment(id, nil)
-	_, _, corerr := tClient.Orders.CreateOrderRefund(id, nil)
+	_, cerr := tClient.Orders.Create(Order{}, nil)
+	_, coperr := tClient.Orders.CreateOrderPayment(id, nil)
+	_, corerr := tClient.Orders.CreateOrderRefund(id, nil)
 	_, rerr := tClient.Orders.Get(id, nil)
 	_, lerr := tClient.Orders.List(nil)
 	_, lorerr := tClient.Orders.ListOrderRefunds(id, nil)
-	_, uerr := tClient.Orders.Update(id, Orders{})
-	_, uolerr := tClient.Orders.UpdateOrderline(id, "", OrderLines{})
+	_, uerr := tClient.Orders.Update(id, Order{})
+	_, uolerr := tClient.Orders.UpdateOrderLine(id, "", OrderLine{})
 
 	errs := []error{cerr, coperr, corerr, rerr, lerr, lorerr, uerr, uolerr}
 
@@ -516,7 +400,7 @@ func forceOrdersErrors(del bool) []error {
 		_, cnlerr := tClient.Orders.Cancel(id)
 		errs = append(errs, cnlerr)
 
-		_, colerr := tClient.Orders.CancelOrderLine(id, nil)
+		colerr := tClient.Orders.CancelOrderLines(id, []OrderLine{})
 		errs = append(errs, colerr)
 	}
 

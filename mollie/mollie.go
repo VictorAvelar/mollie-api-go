@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-// Mollie  constants holding values to initialize the client and create requests.
+// Constants holding values for client initialization and request instantiation.
 const (
 	BaseURL            string = "https://api.mollie.com/"
 	AuthHeader         string = "Authorization"
@@ -181,10 +181,6 @@ func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
 
 /*
 Error reports details on a failed API request.
-The success or failure of each HTTP request is shown in the status field of the HTTP response header,
-which contains standard HTTP status codes:
-- a 2xx code for success
-- a 4xx or 5xx code for failure
 */
 type Error struct {
 	Code     int            `json:"code"`
@@ -192,7 +188,7 @@ type Error struct {
 	Response *http.Response `json:"response"` // the full response that produced the error
 }
 
-// Error functions implement the Error interface on the zuora.Error struct.
+// Error function complies with the error interface
 func (e *Error) Error() string {
 	return fmt.Sprintf("response failed with status %v", e.Message)
 }

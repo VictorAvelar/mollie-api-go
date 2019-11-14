@@ -26,10 +26,10 @@ const (
 
 // SubscriptionLinks contains several URL objects relevant to the subscription
 type SubscriptionLinks struct {
-	Self          URL `json:"self,omitempty"`
-	Customer      URL `json:"customer,omitempty"`
-	Payments      URL `json:"payments,omitempty"`
-	Documentation URL `json:"documentation,omitempty"`
+	Self          *URL `json:"self,omitempty"`
+	Customer      *URL `json:"customer,omitempty"`
+	Payments      *URL `json:"payments,omitempty"`
+	Documentation *URL `json:"documentation,omitempty"`
 }
 
 // Subscription contains information about a customer subscription
@@ -39,7 +39,7 @@ type Subscription struct {
 	Mode            Mode                   `json:"mode,omitempty"`
 	CreatedAT       *time.Time             `json:"createdAt,omitempty"`
 	Status          SubscriptionStatus     `json:"status,omitempty"`
-	Amount          Amount                 `json:"amount,omitempty"`
+	Amount          *Amount                `json:"amount,omitempty"`
 	Times           int                    `json:"times,omitempty"`
 	TimesRemaining  int                    `json:"timesRemaining,omitempty"`
 	Interval        string                 `json:"interval,omitempty"`

@@ -41,12 +41,12 @@ type Profile struct {
 // ProfileLinks contains URL's to relevant information related to
 // a profile.
 type ProfileLinks struct {
-	Self               URL `json:"self,omitempty"`
-	Chargebacks        URL `json:"chargebacks,omitempty"`
-	Methods            URL `json:"methods,omitempty"`
-	Refunds            URL `json:"refunds,omitempty"`
-	CheckoutPreviewURL URL `json:"checkoutPreviewUrl,omitempty"`
-	Documentation      URL `json:"documentation,omitempty"`
+	Self               *URL `json:"self,omitempty"`
+	Chargebacks        *URL `json:"chargebacks,omitempty"`
+	Methods            *URL `json:"methods,omitempty"`
+	Refunds            *URL `json:"refunds,omitempty"`
+	CheckoutPreviewURL *URL `json:"checkoutPreviewUrl,omitempty"`
+	Documentation      *URL `json:"documentation,omitempty"`
 }
 
 // ProfileListOptions are optional query string parameters for the list profiles request
@@ -57,13 +57,11 @@ type ProfileListOptions struct {
 
 // ProfileList contains a list of profiles for your account.
 type ProfileList struct {
-	Count    int             `json:"count,omitempty"`
-	Embedded profiles        `json:"_embedded,omitempty"`
-	Links    PaginationLinks `json:"_links,omitempty"`
-}
-
-type profiles struct {
-	Profiles []Profile `json:"profiles,omitempty"`
+	Count    int `json:"count,omitempty"`
+	Embedded struct {
+		Profiles []Profile `json:"profiles,omitempty"`
+	} `json:"_embedded,omitempty"`
+	Links PaginationLinks `json:"_links,omitempty"`
 }
 
 // ProfilesService operates over profile resource

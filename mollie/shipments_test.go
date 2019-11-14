@@ -62,7 +62,7 @@ func TestShipmentsService_Create(t *testing.T) {
 	})
 
 	csr := CreateShipmentRequest{
-		Lines:    []OrderLines{},
+		Lines:    []OrderLine{},
 		Tracking: ShipmentTracking{},
 	}
 

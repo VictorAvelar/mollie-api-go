@@ -6,7 +6,7 @@ type Config struct {
 	auth    string
 }
 
-// NewConfig build a Mollie configuration object,
+// NewConfig builds a Mollie configuration object,
 // it takes t to indicate if our client is meant to create requests for testing
 // and auth to indicate the authentication method we want to use.
 func NewConfig(t bool, auth string) *Config {

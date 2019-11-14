@@ -15,9 +15,9 @@ type Amount struct {
 //
 // When providing an address object as parameter to a request, the following conditions must be met:
 //
-// -If any of the fields is provided, all fields have to be provided with exception of the region field.
-// -If only the region field is given, one should provide all the other fields as per the previous condition.
-// -For certain PayPal payments the region field is required.
+// If any of the fields is provided, all fields have to be provided with exception of the region field.
+// If only the region field is given, one should provide all the other fields as per the previous condition.
+// For certain PayPal payments the region field is required.
 type Address struct {
 	StreetAndNumber  string `json:"streetAndNumber,omitempty"`
 	StreetAdditional string `json:"streetAdditional,omitempty"`
@@ -33,8 +33,7 @@ type ShortDate struct {
 }
 
 // UnmarshalJSON overrides the default unmarshal action
-// for the Date struct, as we need links to be pointers
-// to the time.Time struct.
+// for the Date struct, as we need links to be pointers to the time.Time struct.
 func (d *ShortDate) UnmarshalJSON(b []byte) error {
 	s := string(b)
 	s = strings.Trim(s, "\"")
@@ -142,18 +141,6 @@ const (
 	EmbedPayment EmbedValue = "payment"
 	EmbedRefund  EmbedValue = "refund"
 )
-
-// ErrorResponse describes the cancel endpoint response if there is an error
-type ErrorResponse struct {
-	StatusCode int         `json:"status,omitempty"`
-	Title      string      `json:"title,omitempty"`
-	Detail     string      `json:"detail,omitempty"`
-	Field      string      `json:"field,omitempty"`
-	Extra      interface{} `json:"extra,omitempty"`
-	Links      struct {
-		Documentation URL `json:"documentation,omitempty"`
-	} `json:"_links,omitempty"`
-}
 
 // Rate describes service rates, further divided into fixed and percentage costs.
 type Rate struct {

@@ -72,33 +72,6 @@ func TestPaymentsService_Create(t *testing.T) {
 	}
 }
 
-func TestPaymentsService_CreateInvalidParams(t *testing.T) {
-	setup()
-	defer teardown()
-	pa := Payment{
-		Amount: &Amount{
-			Currency: "EUR",
-			Value:    "10.00",
-		},
-	}
-	pd := Payment{
-		Description: "Order #12345",
-	}
-	_, paErr := tClient.Payments.Create(pa)
-	_, pdErr := tClient.Payments.Create(pd)
-
-	tests := []error{paErr, pdErr}
-
-	for _, tt := range tests {
-		if tt == nil {
-			t.Fail()
-		} else if !strings.Contains(tt.Error(), "parameter required") {
-			t.Errorf("unexpected error %v", tt)
-		}
-	}
-
-}
-
 func TestPaymentsService_Update(t *testing.T) {
 	setup()
 	defer teardown()

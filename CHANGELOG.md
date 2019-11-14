@@ -28,6 +28,8 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 - Missing types for MOLLIE env variables
 - Named variable reference on NewClient method
 - Typos and spelling errors on method's comments
+- Refactored orders
+- Multiple typos and consistency errors
 
 ### Removed
 - Nothing
