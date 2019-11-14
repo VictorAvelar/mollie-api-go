@@ -19,7 +19,7 @@ type Shipment struct {
 	OrderID   string           `json:"orderId,omitempty"`
 	CreatedAt *time.Time       `json:"createdAt,omitempty"`
 	Tracking  ShipmentTracking `json:"tracking,omitempty"`
-	Lines     []OrderLines     `json:"lines,omitempty"`
+	Lines     []OrderLine      `json:"lines,omitempty"`
 	Links     ShipmentLinks    `json:"_links,omitempty"`
 }
 
@@ -61,7 +61,7 @@ func (ss *ShipmentsService) Get(oID string, sID string) (s *Shipment, err error)
 
 // CreateShipmentRequest defines information required to create a new shipment
 type CreateShipmentRequest struct {
-	Lines    []OrderLines     `json:"lines,omitempty"`
+	Lines    []OrderLine      `json:"lines,omitempty"`
 	Tracking ShipmentTracking `json:"tracking,omitempty"`
 }
 

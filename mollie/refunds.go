@@ -19,7 +19,7 @@ type Refund struct {
 	Description      string        `json:"description,omitempty"`
 	Metadata         interface{}   `json:"metadata,omitempty"`
 	Status           *RefundStatus `json:"status,omitempty"`
-	Lines            []*OrderLines `json:"lines,omitempty"`
+	Lines            []*OrderLine  `json:"lines,omitempty"`
 	PaymentID        string        `json:"paymentId,omitempty"`
 	OrderID          string        `json:"orderId,omitempty"`
 	CreatedAt        *time.Time    `json:"createdAt,omitempty"`
