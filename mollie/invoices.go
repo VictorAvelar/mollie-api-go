@@ -3,8 +3,9 @@ package mollie
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/google/go-querystring/query"
 	"net/http"
+
+	"github.com/google/go-querystring/query"
 )
 
 // InvoiceStatus status of the invoice
@@ -17,7 +18,7 @@ const (
 	InvoiceStatusOverdue InvoiceStatus = "overdue"
 )
 
-// Invoice describes a invoice detail
+// Invoice describes an invoice details
 type Invoice struct {
 	Resource    string        `json:"resource,omitempty"`
 	ID          string        `json:"id,omitempty"`
@@ -34,7 +35,7 @@ type Invoice struct {
 	Links       *InvoiceLinks `json:"_links,omitempty"`
 }
 
-// LineItem product detail
+// LineItem product details
 type LineItem struct {
 	Period        string  `json:"period,omitempty"`
 	Description   string  `json:"description,omitempty"`
@@ -46,9 +47,9 @@ type LineItem struct {
 // InvoiceLinks describes all the possible links to be returned with
 // a invoice object.
 type InvoiceLinks struct {
-	Self          URL `json:"self,omitempty"`
-	PDF           URL `json:"pdf,omitempty"`
-	Documentation URL `json:"documentation,omitempty"`
+	Self          *URL `json:"self,omitempty"`
+	PDF           *URL `json:"pdf,omitempty"`
+	Documentation *URL `json:"documentation,omitempty"`
 }
 
 // ListInvoiceOptions describes list invoices endpoint valid query string parameters.

@@ -33,9 +33,9 @@ type ShipmentTracking struct {
 // ShipmentLinks contains URL objects with shipment relevant
 // information for the user.
 type ShipmentLinks struct {
-	Self          URL `json:"self,omitempty"`
-	Order         URL `json:"order,omitempty"`
-	Documentation URL `json:"documentation,omitempty"`
+	Self          *URL `json:"self,omitempty"`
+	Order         *URL `json:"order,omitempty"`
+	Documentation *URL `json:"documentation,omitempty"`
 }
 
 // Get retrieves a single shipment and the order lines shipped by a shipment’s ID.
