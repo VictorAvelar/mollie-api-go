@@ -31,8 +31,6 @@ type ChargebackLinks struct {
 }
 
 // ChargebackOptions describes chargeback endpoint valid query string parameters.
-//
-// See: https://docs.mollie.com/reference/v2/chargebacks-api/get-chargeback
 type ChargebackOptions struct {
 	Include string `url:"include,omitempty"`
 	Embed   string `url:"embed,omitempty"`
@@ -57,9 +55,10 @@ type ChargebackList struct {
 // ChargebacksService instance operates over chargeback resources
 type ChargebacksService service
 
-// Get retrieves a single chargeback by its ID. Note the original payment’s ID is needed as well.
+// Get retrieves a single chargeback by its ID.
+// Note the original payment’s ID is needed as well.
 //
-//If you do not know the original payment’s ID, you can use the List function
+// See: https://docs.mollie.com/reference/v2/chargebacks-api/get-chargeback
 func (cs *ChargebacksService) Get(paymentID, chargebackID string, options *ChargebackOptions) (p Chargeback, err error) {
 	u := fmt.Sprintf("v2/payments/%s/chargebacks/%s", paymentID, chargebackID)
 	if options != nil {
@@ -83,36 +82,30 @@ func (cs *ChargebacksService) Get(paymentID, chargebackID string, options *Charg
 // List retrieves a list of chargebacks associated with your account/organization.
 //
 // See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
-func (cs *ChargebacksService) List(options *ListChargebackOptions) (pl ChargebackList, err error) {
+func (cs *ChargebacksService) List(options *ListChargebackOptions) (cl *ChargebackList, err error) {
 	u := fmt.Sprint("v2/chargebacks")
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
-	req, err := cs.client.NewAPIRequest(http.MethodGet, u, nil)
-	if err != nil {
-		return
-	}
-	res, err := cs.client.Do(req)
-	if err != nil {
-		return
-	}
-	if err = json.Unmarshal(res.content, &pl); err != nil {
-		return
-	}
-	return
+	return cs.list(u)
 }
 
 // ListForPayment retrieves a list of chargebacks associated with a single payment.
 //
 // See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
-func (cs *ChargebacksService) ListForPayment(paymentID string, options *ListChargebackOptions) (pl ChargebackList, err error) {
+func (cs *ChargebacksService) ListForPayment(paymentID string, options *ListChargebackOptions) (cl *ChargebackList, err error) {
 	u := fmt.Sprintf("v2/payments/%s/chargebacks", paymentID)
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
-	req, err := cs.client.NewAPIRequest(http.MethodGet, u, nil)
+	return cs.list(u)
+}
+
+// encapsulates the shared list methods logic
+func (cs *ChargebacksService) list(uri string) (cl *ChargebackList, err error) {
+	req, err := cs.client.NewAPIRequest(http.MethodGet, uri, nil)
 	if err != nil {
 		return
 	}
@@ -120,7 +113,7 @@ func (cs *ChargebacksService) ListForPayment(paymentID string, options *ListChar
 	if err != nil {
 		return
 	}
-	if err = json.Unmarshal(res.content, &pl); err != nil {
+	if err = json.Unmarshal(res.content, &cl); err != nil {
 		return
 	}
 	return
