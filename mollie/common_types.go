@@ -15,9 +15,9 @@ type Amount struct {
 //
 // When providing an address object as parameter to a request, the following conditions must be met:
 //
-// -If any of the fields is provided, all fields have to be provided with exception of the region field.
-// -If only the region field is given, one should provide all the other fields as per the previous condition.
-// -For certain PayPal payments the region field is required.
+// If any of the fields is provided, all fields have to be provided with exception of the region field.
+// If only the region field is given, one should provide all the other fields as per the previous condition.
+// For certain PayPal payments the region field is required.
 type Address struct {
 	StreetAndNumber  string `json:"streetAndNumber,omitempty"`
 	StreetAdditional string `json:"streetAdditional,omitempty"`
@@ -33,8 +33,7 @@ type ShortDate struct {
 }
 
 // UnmarshalJSON overrides the default unmarshal action
-// for the Date struct, as we need links to be pointers
-// to the time.Time struct.
+// for the Date struct, as we need links to be pointers to the time.Time struct.
 func (d *ShortDate) UnmarshalJSON(b []byte) error {
 	s := string(b)
 	s = strings.Trim(s, "\"")
