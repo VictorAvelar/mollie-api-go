@@ -112,11 +112,6 @@ var (
 //
 // See https://docs.mollie.com/reference/v2/refunds-api/create-refund.
 func (rs *RefundsService) Create(paymentID string, re Refund, options *RefundOptions) (rf Refund, err error) {
-	err = re.checkMandatoryParam()
-	if err != nil {
-		return re, err
-	}
-
 	u := fmt.Sprintf("v2/payments/%s/refunds", paymentID)
 	if options != nil {
 		v, _ := query.Values(options)
@@ -166,70 +161,39 @@ func (rs *RefundsService) Cancel(paymentID, refundID string, options *RefundOpti
 // ListRefund calls the top level https://api.mollie.com/v2/refunds.
 //
 // See https://docs.mollie.com/reference/v2/refunds-api/list-refunds.
-func (rs *RefundsService) ListRefund(options *ListRefundOptions) (rl RefundList, err error) {
+func (rs *RefundsService) ListRefund(options *ListRefundOptions) (rl *RefundList, err error) {
 	u := fmt.Sprintf("v2/refunds")
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
-
-	req, err := rs.client.NewAPIRequest(http.MethodGet, u, nil)
-	if err != nil {
-		return
-	}
-
-	res, err := rs.client.Do(req)
-	if err != nil {
-		return
-	}
-
-	if err = json.Unmarshal(res.content, &rl); err != nil {
-		return
-	}
-
-	return
+	return rs.list(u)
 }
 
 // ListRefundPayment calls the payment-specific
 // https://api.mollie.com/v2/payments/*paymentId*/refunds.
 // Only refunds for that specific payment are returned.
 // See https://docs.mollie.com/reference/v2/refunds-api/list-refunds
-func (rs *RefundsService) ListRefundPayment(paymentID string, options *ListRefundOptions) (rl RefundList, err error) {
+func (rs *RefundsService) ListRefundPayment(paymentID string, options *ListRefundOptions) (rl *RefundList, err error) {
 	u := fmt.Sprintf("v2/payments/%s/refunds", paymentID)
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
+	return rs.list(u)
+}
 
-	req, err := rs.client.NewAPIRequest(http.MethodGet, u, nil)
+func (rs *RefundsService) list(uri string) (rl *RefundList, err error) {
+	req, err := rs.client.NewAPIRequest(http.MethodGet, uri, nil)
 	if err != nil {
 		return
 	}
-
 	res, err := rs.client.Do(req)
 	if err != nil {
 		return
 	}
-
 	if err = json.Unmarshal(res.content, &rl); err != nil {
 		return
 	}
-
 	return
-}
-
-func (re *Refund) checkMandatoryParam() (err error) {
-	if re.Amount == nil {
-		return fmt.Errorf(requiredCreateParamRefund, re.Amount)
-	}
-
-	if re.Amount.Currency == "" {
-		return fmt.Errorf(requiredCreateParamRefund, re.Amount.Currency)
-	}
-
-	if re.Amount.Value == "" {
-		return fmt.Errorf(requiredCreateParamRefund, re.Amount.Value)
-	}
-
-	return nil
 }

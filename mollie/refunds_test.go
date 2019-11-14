@@ -80,56 +80,6 @@ func TestRefundsService_Create(t *testing.T) {
 	}
 }
 
-func TestRefundsService_CreateInvalidParams(t *testing.T) {
-	setup()
-	defer teardown()
-
-	paymentID := "tr_WDqYK6vllg"
-
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/payments/"+paymentID+"/refunds", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, http.MethodPost)
-
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetRefundResponse))
-	})
-
-	refcurr := Refund{
-		Amount: &Amount{
-			Currency: "IDR",
-		},
-	}
-
-	refval := Refund{
-		Amount: &Amount{
-			Value: "100000",
-		},
-	}
-
-	refamount := Refund{
-		Amount: nil,
-	}
-
-	_, errcurr := tClient.Refunds.Create(paymentID, refcurr, nil)
-	_, errval := tClient.Refunds.Create(paymentID, refval, nil)
-	_, erramount := tClient.Refunds.Create(paymentID, refamount, nil)
-
-	tests := []error{errcurr, errval, erramount}
-
-	for _, test := range tests {
-		if test == nil {
-			t.Fail()
-		} else if !strings.Contains(test.Error(), "parameter required") {
-			t.Errorf("unexpected error %v", test)
-		}
-	}
-}
-
 func TestRefundsService_Cancel(t *testing.T) {
 	setup()
 	defer teardown()
