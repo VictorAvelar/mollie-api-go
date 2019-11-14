@@ -137,20 +137,10 @@ func (ps *PaymentsService) Get(id string, options *PaymentOptions) (p Payment, e
 	return
 }
 
-var (
-	requiredCreateParam = "parameter required for creating a payment: %+v"
-)
-
 // Create stores a new payment object attached to your Mollie account.
 //
 // See: https://docs.mollie.com/reference/v2/payments-api/create-payment#
 func (ps *PaymentsService) Create(p Payment) (np Payment, err error) {
-	if p.Amount == nil {
-		return p, fmt.Errorf(requiredCreateParam, p.Amount)
-	}
-	if p.Description == "" {
-		return p, fmt.Errorf(requiredCreateParam, p.Description)
-	}
 	u := fmt.Sprintf("v2/payments")
 	req, err := ps.client.NewAPIRequest(http.MethodPost, u, p)
 	if err != nil {
