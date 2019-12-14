@@ -270,6 +270,18 @@ func TestPaymentsService_EncodingResponseErrors(t *testing.T) {
 	}
 }
 
+func TestPaymentFailedResponseAvailable(t *testing.T) {
+	setup()
+	defer teardown()
+	tMux.HandleFunc("/v2/payments/", unprocessableEntityHandler)
+
+	_, err := tClient.Payments.Create(Payment{})
+
+	if err == nil {
+		t.Error("expected error and got nil")
+	}
+}
+
 func errorHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusInternalServerError)
 }
@@ -277,4 +289,9 @@ func errorHandler(w http.ResponseWriter, r *http.Request) {
 func encodingHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write([]byte(`{hello: [{},]}`))
+}
+
+func unprocessableEntityHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusUnprocessableEntity)
+	_, _ = w.Write([]byte(testdata.CreateOrderPaymentResponseFailed))
 }

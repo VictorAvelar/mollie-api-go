@@ -6,6 +6,11 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## master
 
+### Fixed
+- Fixed error reported when trying to access the `mollie.Error.Response.Body` content (#47).
+
+## v1.0.0
+
 ### Added
 - Base HTTP Client for interacting with Mollie REST API
 - Tests for the added code

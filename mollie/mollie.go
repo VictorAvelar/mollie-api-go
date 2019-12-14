@@ -214,10 +214,12 @@ type Response struct {
 
 func newResponse(r *http.Response) *Response {
 	var res Response
-	if c, err := ioutil.ReadAll(r.Body); err == nil {
+	c, err := ioutil.ReadAll(r.Body)
+	if err == nil {
 		res.content = c
 	}
 	json.NewDecoder(r.Body).Decode(&res)
+	r.Body = ioutil.NopCloser(bytes.NewBuffer(c))
 	res.Response = r
 	return &res
 }
