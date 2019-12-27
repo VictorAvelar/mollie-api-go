@@ -24,3 +24,10 @@ To use the Mollie API client, the following things are required:
 + Up-to-date OpenSSL (or other SSL/TLS toolkit)
 
 For leveraging [Mollie Connect](https://docs.mollie.com/oauth/overview) (advanced use cases only), it is recommended to be familiar with the OAuth2 protocol.
+
+
+## API parity
+
+Checks to the API changelog are performed constantly to ensure API parity and compatibility, however it might happen that not all the changes are implemented right away.
+
+For checking all the related tasks you can check the issues labeled with the [API parity](https://github.com/VictorAvelar/mollie-api-go/labels/API%20parity) label.
