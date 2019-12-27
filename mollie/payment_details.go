@@ -77,6 +77,7 @@ type PaymentDetails struct {
 	FileReference      string              `json:"fileReference,omitempty"`
 	GiftCards          []UsedGiftCard      `json:"giftCards,omitempty"`
 	MandateReference   string              `json:"mandateReference,omitempty"`
+	PaypalDigitalGoods bool                `json:"digitalGoods,omitempty"`
 	PaypalFee          *Amount             `json:"paypalFee,omitempty"`
 	PaypalPayerID      string              `json:"paypalPayerId,omitempty"`
 	PaypalReference    string              `json:"paypalReference,omitempty"`
