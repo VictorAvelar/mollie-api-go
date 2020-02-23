@@ -36,6 +36,7 @@ type SubscriptionLinks struct {
 type Subscription struct {
 	Resource        string                 `json:"resource,omitempty"`
 	ID              string                 `json:"id,omitempty"`
+	MandateID       string                 `json:"mandateId,omitempty"`
 	Mode            Mode                   `json:"mode,omitempty"`
 	CreatedAT       *time.Time             `json:"createdAt,omitempty"`
 	Status          SubscriptionStatus     `json:"status,omitempty"`
