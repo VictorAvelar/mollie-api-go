@@ -50,6 +50,7 @@ type Client struct {
 	Subscriptions *SubscriptionsService
 	Customers     *CustomersService
 	Miscellaneous *MiscellaneousService
+	Mandates      *MandatesService
 }
 
 type service struct {
@@ -169,6 +170,7 @@ func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
 	mollie.Subscriptions = (*SubscriptionsService)(&mollie.common)
 	mollie.Customers = (*CustomersService)(&mollie.common)
 	mollie.Miscellaneous = (*MiscellaneousService)(&mollie.common)
+	mollie.Mandates = (*MandatesService)(&mollie.common)
 
 	// Parse authorization from environment
 	if tkn, ok := os.LookupEnv(APITokenEnv); ok {
