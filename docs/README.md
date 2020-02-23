@@ -200,6 +200,33 @@ List retrieves all captures for a certain payment
 
 See: https://docs.mollie.com/reference/v2/captures-api/list-captures
 
+#### type CardLabel
+
+```go
+type CardLabel string
+```
+
+CardLabel. Note that not all labels can be processed through Mollie.
+
+```go
+const (
+	AmericaExpress CardLabel = "American Express"
+	CartaSi        CardLabel = "Carta Si"
+	CarteBleue     CardLabel = "Carte Bleue"
+	Dankort        CardLabel = "Dankort"
+	DinersClub     CardLabel = "Diners Club"
+	Discover       CardLabel = "Discover"
+	JCB            CardLabel = "JCB"
+	Laser          CardLabel = "Laser"
+	Maestro        CardLabel = "Maestro"
+	Mastercard     CardLabel = "Mastercard"
+	Unionpay       CardLabel = "Unionpay"
+	Visa           CardLabel = "Visa"
+	Empty          CardLabel = "null"
+)
+```
+Available card labels
+
 #### type CategoryCode
 
 ```go
@@ -348,6 +375,7 @@ type Client struct {
 	Subscriptions *SubscriptionsService
 	Customers     *CustomersService
 	Miscellaneous *MiscellaneousService
+	Mandates      *MandatesService
 }
 ```
 
@@ -802,6 +830,19 @@ type ListInvoiceOptions struct {
 ListInvoiceOptions describes list invoices endpoint valid query string
 parameters.
 
+#### type ListMandatesOptions
+
+```go
+type ListMandatesOptions struct {
+	From  string `url:"from,omitempty"`
+	Limit int    `url:"limit,omitempty"`
+}
+```
+
+ListMandatesOptions contains valid query parameters to filter the List mandates
+actions. From is a mandate id to offset from (inclusive) Limit is the max number
+of mandates to retrieve
+
 #### type ListMethods
 
 ```go
@@ -878,6 +919,138 @@ const (
 )
 ```
 Mollie supported locales
+
+#### type Mandate
+
+```go
+type Mandate struct {
+	ID               string         `json:"id,omitempty"`
+	Resource         string         `json:"resource,omitempty"`
+	Method           PaymentMethod  `json:"method,omitempty"`
+	ConsumerName     string         `json:"consumerName,omitempty"`
+	ConsumerAccount  string         `json:"consumerAccount,omitempty"`
+	ConsumerBic      string         `json:"consumerBic,omitempty"`
+	SignatureDate    *ShortDate     `json:"signatureDate,omitempty"`
+	MandateReference string         `json:"mandateReference,omitempty"`
+	Mode             Mode           `json:"mode,omitempty"`
+	Status           MandateStatus  `json:"status,omitempty"`
+	CreatedAt        *time.Time     `json:"createdAt,omitempty"`
+	Details          MandateDetails `json:"details,omitempty"`
+	Links            MandateLinks   `json:"_links,omitempty"`
+}
+```
+
+Mandates allow you to charge a customer’s credit card or bank account
+recurrently.
+
+#### type MandateDetails
+
+```go
+type MandateDetails struct {
+	ConsumerName    string     `json:"consumerName,omitempty"`
+	ConsumerAccount string     `json:"consumerAccount,omitempty"`
+	ConsumerBic     string     `json:"consumerBic,omitempty"`
+	CardHolder      string     `json:"cardHolder,omitempty"`
+	CardNumber      string     `json:"cardNumber,omitempty"`
+	CardLabel       CardLabel  `json:"cardLabel,omitempty"`
+	CardFingerprint string     `json:"cardFingerprint,omitempty"`
+	CardExpiryDate  *ShortDate `json:"cardExpiryDate,omitempty"`
+}
+```
+
+MandateDetails are possible values inside the mandate.details field
+
+#### type MandateLinks
+
+```go
+type MandateLinks struct {
+	Self          *URL `json:"self,omitempty"`
+	Customer      *URL `json:"customer,omitempty"`
+	Documentation *URL `json:"documentation,omitempty"`
+}
+```
+
+MandateLinks response objects
+
+#### type MandateList
+
+```go
+type MandateList struct {
+	Count    int `json:"count,omitempty"`
+	Embedded struct {
+		Mandates []Mandate
+	} `json:"_embedded,omitempty"`
+	Links PaginationLinks `json:"_links,omitempty"`
+}
+```
+
+MandateList describes how a list of mandates will be retrieved by Mollie.
+
+#### type MandateStatus
+
+```go
+type MandateStatus string
+```
+
+MandateStatus for the Mandate object
+
+```go
+const (
+	PendingMandate MandateStatus = "pending"
+	ValidMandate   MandateStatus = "valid"
+	InvalidMandate MandateStatus = "invalid"
+)
+```
+Valid mandate statuses
+
+#### type MandatesService
+
+```go
+type MandatesService service
+```
+
+MandatesService operates over customer mandates endpoints.
+
+#### func (*MandatesService) Create
+
+```go
+func (ms *MandatesService) Create(cID string, mandate Mandate) (mr *Mandate, err error)
+```
+Create a mandate for a specific customer. Mandates allow you to charge a
+customer’s credit card or bank account recurrently.
+
+See: https://docs.mollie.com/reference/v2/mandates-api/create-mandate
+
+#### func (*MandatesService) Get
+
+```go
+func (ms *MandatesService) Get(cID, mID string) (mr *Mandate, err error)
+```
+Get retrieves a mandate by its ID and its customer’s ID. The mandate will either
+contain IBAN or credit card details, depending on the type of mandate.
+
+See: https://docs.mollie.com/reference/v2/mandates-api/get-mandate
+
+#### func (*MandatesService) List
+
+```go
+func (ms *MandatesService) List(cID string, opt *ListMandatesOptions) (ml MandateList, err error)
+```
+ListMandates retrieves all mandates for the given customerId, ordered from
+newest to oldest.
+
+See: https://docs.mollie.com/reference/v2/mandates-api/list-mandates
+
+#### func (*MandatesService) Revoke
+
+```go
+func (ms *MandatesService) Revoke(cID, mID string) (err error)
+```
+Revoke a customer’s mandate. You will no longer be able to charge the consumer’s
+bank account or credit card with this mandate and all connected subscriptions
+will be canceled.
+
+See: https://docs.mollie.com/reference/v2/mandates-api/revoke-mandate
 
 #### type MethodsLinks
 
@@ -1024,7 +1197,7 @@ type Order struct {
 }
 ```
 
-Orders explain the items that customers need to pay for.
+Order explain the items that customers need to pay for.
 
 #### type OrderAddress
 
@@ -1257,7 +1430,7 @@ See https://docs.mollie.com/reference/v2/orders-api/cancel-order
 ```go
 func (ors *OrdersService) CancelOrderLines(orderID string, orderLines []OrderLine) (err error)
 ```
-CancelOrderLine can be used to cancel one or more order lines that were
+CancelOrderLines can be used to cancel one or more order lines that were
 previously authorized using a pay after delivery payment method. Use the Cancel
 Order API if you want to cancel the entire order or the remainder of the order.
 
@@ -2363,6 +2536,7 @@ need links to be pointers to the time.Time struct.
 type Subscription struct {
 	Resource        string                 `json:"resource,omitempty"`
 	ID              string                 `json:"id,omitempty"`
+	MandateID       string                 `json:"mandateId,omitempty"`
 	Mode            Mode                   `json:"mode,omitempty"`
 	CreatedAT       *time.Time             `json:"createdAt,omitempty"`
 	Status          SubscriptionStatus     `json:"status,omitempty"`

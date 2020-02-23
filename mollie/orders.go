@@ -9,7 +9,7 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
-// Orders explain the items that customers need to pay for.
+// Order explain the items that customers need to pay for.
 type Order struct {
 	Resource            string         `json:"resource,omitempty"`
 	ID                  string         `json:"id,omitempty"`
@@ -357,7 +357,7 @@ func (ors *OrdersService) UpdateOrderLine(orderID string, orderLineID string, or
 	return
 }
 
-// CancelOrderLine can be used to cancel one or more order lines
+// CancelOrderLines can be used to cancel one or more order lines
 // that were previously authorized using a pay after delivery payment method.
 // Use the Cancel Order API if you want to cancel the entire order or the remainder of the order.
 //
