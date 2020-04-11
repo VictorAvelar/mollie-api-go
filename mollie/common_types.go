@@ -138,9 +138,10 @@ type EmbedValue string
 
 // Valid Embed query string value.
 const (
-	EmbedPayment   EmbedValue = "payment"
-	EmbedRefund    EmbedValue = "refund"
-	EmbedShipments EmbedValue = "shipments"
+	EmbedPayment     EmbedValue = "payment"
+	EmbedRefund      EmbedValue = "refund"
+	EmbedShipments   EmbedValue = "shipments"
+	EmbedChangebacks EmbedValue = "chanrgebacks"
 )
 
 // Rate describes service rates, further divided into fixed and percentage costs.
