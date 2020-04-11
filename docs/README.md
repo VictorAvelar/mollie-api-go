@@ -606,8 +606,10 @@ EmbedValue describes the valid value of embed query string.
 
 ```go
 const (
-	EmbedPayment EmbedValue = "payment"
-	EmbedRefund  EmbedValue = "refund"
+	EmbedPayment     EmbedValue = "payment"
+	EmbedRefund      EmbedValue = "refund"
+	EmbedShipments   EmbedValue = "shipments"
+	EmbedChangebacks EmbedValue = "chanrgebacks"
 )
 ```
 Valid Embed query string value.
@@ -1533,6 +1535,7 @@ type OrganizationLinks struct {
 	Self          *URL `json:"self,omitempty"`
 	Chargebacks   *URL `json:"chargebacks,omitempty"`
 	Customers     *URL `json:"customers,omitempty"`
+	Dashboard     *URL `json:"dashboard,omitempty"`
 	Invoices      *URL `json:"invoices,omitempty"`
 	Payments      *URL `json:"payments,omitempty"`
 	Profiles      *URL `json:"profiles,omitempty"`
@@ -1618,6 +1621,7 @@ type Payment struct {
 	Links                           *PaymentLinks   `json:"_links,omitempty"`
 	Details                         *PaymentDetails `json:"details,omitempty"`
 	RestrictPaymentMethodsToCountry *Locale         `json:"restrictPaymentMethodsToCountry,omitempty"`
+	SubscriptionID                  string          `json:"subscriptionId,omitempty"`
 }
 ```
 
@@ -1660,6 +1664,7 @@ type PaymentDetails struct {
 	RemainderAmount    *Amount             `json:"remainderAmount,omitempty"`
 	RemainderMethod    *PaymentMethod      `json:"remainderMethod,omitempty"`
 	SellerProtection   *EligibilityReasons `json:"sellerProtection,omitempty"`
+	ShippingAddress    string              `json:"shippingAddress,omitempty"`
 	SignatureDate      *ShortDate          `json:"signatureDate,omitempty"`
 	TransferReference  string              `json:"transferReference,omitempty"`
 	VoucherNumber      string              `json:"voucherNumber,omitempty"`
