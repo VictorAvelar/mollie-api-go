@@ -15,7 +15,7 @@ build:
           - 'true'
       environment:
         go:
-          version: go1.12.9
+          version: go1.14
       tests:
         override:
           - go-scrutinizer-run

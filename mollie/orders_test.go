@@ -33,6 +33,7 @@ func TestOrdersService_Get(t *testing.T) {
 		Embed: []EmbedValue{
 			EmbedPayment,
 			EmbedRefund,
+			EmbedShipments,
 		},
 	}
 

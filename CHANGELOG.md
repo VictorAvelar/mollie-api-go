@@ -6,6 +6,23 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## master
 
+## v1.2.1
+
+### Added
+- MandatesID added to Subscriptions resource as follow up to the previous release.
+
+## v1.2.0
+
+### Added
+- Mandates API resource
+
+## v1.1.0
+
+### Added
+- Added changes to provide API parity according to mollie's API changelog
+
+## v1.0.1
+
 ### Fixed
 - Fixed error reported when trying to access the `mollie.Error.Response.Body` content (#47).
 

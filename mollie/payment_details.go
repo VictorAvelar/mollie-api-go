@@ -85,6 +85,7 @@ type PaymentDetails struct {
 	RemainderAmount    *Amount             `json:"remainderAmount,omitempty"`
 	RemainderMethod    *PaymentMethod      `json:"remainderMethod,omitempty"`
 	SellerProtection   *EligibilityReasons `json:"sellerProtection,omitempty"`
+	ShippingAddress    string              `json:"shippingAddress,omitempty"`
 	SignatureDate      *ShortDate          `json:"signatureDate,omitempty"`
 	TransferReference  string              `json:"transferReference,omitempty"`
 	VoucherNumber      string              `json:"voucherNumber,omitempty"`
