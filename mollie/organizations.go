@@ -26,6 +26,7 @@ type OrganizationLinks struct {
 	Self          *URL `json:"self,omitempty"`
 	Chargebacks   *URL `json:"chargebacks,omitempty"`
 	Customers     *URL `json:"customers,omitempty"`
+	Dashboard     *URL `json:"dashboard,omitempty"`
 	Invoices      *URL `json:"invoices,omitempty"`
 	Payments      *URL `json:"payments,omitempty"`
 	Profiles      *URL `json:"profiles,omitempty"`
