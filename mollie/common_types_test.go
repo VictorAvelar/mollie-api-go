@@ -2,6 +2,7 @@ package mollie
 
 import (
 	"testing"
+	"time"
 )
 
 func TestShortDate_UnmarshalJSON(t *testing.T) {
@@ -32,4 +33,15 @@ func TestShortDate_UnmarshalJSON(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestShortDate_MarshalJSON(t *testing.T) {
+	t.Run("marshal is successful", func(t *testing.T) {
+		n := time.Now()
+		d := &ShortDate{}
+		d.Time = n
+		if _, err := d.MarshalJSON(); err != nil {
+			t.Errorf("MarshalJSON() error = %v", err)
+		}
+	})
 }
