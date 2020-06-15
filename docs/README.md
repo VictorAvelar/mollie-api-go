@@ -2527,6 +2527,14 @@ type ShortDate struct {
 
 ShortDate is a string representing a date in YYYY-MM-DD format.
 
+#### func (*ShortDate) MarshalJSON
+
+```go
+func (d *ShortDate) MarshalJSON() ([]byte, error)
+```
+MarshalJSON overrides the default marshal action for the Date struct. Returns
+date as YYYY-MM-DD formatted string.
+
 #### func (*ShortDate) UnmarshalJSON
 
 ```go

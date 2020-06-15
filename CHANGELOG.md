@@ -6,6 +6,18 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## master
 
+## v1.4.0
+
+### Added
+- ShortDate struct JSON Marshaler
+- Test coverage for the added code
+
+## v1.3.0
+
+### Added
+- General project housekeeping
+- Added chargebacks as possible embeded value
+
 ## v1.2.1
 
 ### Added
