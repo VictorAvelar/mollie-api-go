@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"encoding/json"
 	"strings"
 	"time"
 )
@@ -30,6 +31,12 @@ type Address struct {
 // ShortDate is a string representing a date in YYYY-MM-DD format.
 type ShortDate struct {
 	time.Time
+}
+
+// MarshalJSON overrides the default marshal action
+// for the Date struct. Returns date as YYYY-MM-DD formatted string.
+func (d *ShortDate) MarshalJSON() ([]byte, error) {
+       return json.Marshal(d.Time.Format("2006-01-02"))
 }
 
 // UnmarshalJSON overrides the default unmarshal action
