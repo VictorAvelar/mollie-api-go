@@ -98,6 +98,7 @@ type PaymentLinks struct {
 	Subscription       URL `json:"subscription,omitempty"`
 	Customer           URL `json:"customer,omitempty"`
 	Order              URL `json:"order,omitempty"`
+	Dashboard          URL `json:"dashboard,omitempty"`
 }
 
 // PaymentOptions describes payments endpoint valid query string parameters.

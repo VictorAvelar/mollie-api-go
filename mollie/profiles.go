@@ -47,6 +47,7 @@ type ProfileLinks struct {
 	Refunds            *URL `json:"refunds,omitempty"`
 	CheckoutPreviewURL *URL `json:"checkoutPreviewUrl,omitempty"`
 	Documentation      *URL `json:"documentation,omitempty"`
+	Dashboard          *URL `json:"dashboard,omitempty"`
 }
 
 // ProfileListOptions are optional query string parameters for the list profiles request

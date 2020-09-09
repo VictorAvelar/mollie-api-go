@@ -99,6 +99,7 @@ type OrderLinks struct {
 	Self          *URL `json:"self,omitempty"`
 	Checkout      *URL `json:"checkout,omitempty"`
 	Documentation *URL `json:"documentation,omitempty"`
+	Dashboard     *URL `json:"dashboard,omitempty"`
 }
 
 // OrderLine contain the actual things the customer bought.

@@ -19,6 +19,7 @@ type CustomerLinks struct {
 	Subscriptions *URL `json:"subscriptions,omitempty"`
 	Payments      *URL `json:"payments,omitempty"`
 	Documentation *URL `json:"documentation,omitempty"`
+	Dashboard     *URL `json:"dashboard,omitempty"`
 }
 
 // Customer represents buyers
