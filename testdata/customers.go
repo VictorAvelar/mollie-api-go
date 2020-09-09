@@ -15,6 +15,10 @@ const GetCustomerResponse = `{
             "href": "https://api.mollie.com/v2/customers/cst_kEn1PlbGa",
             "type": "application/hal+json"
         },
+        "dashboard": {
+            "href": "https://www.mollie.com/dashboard/org_123456789/customers/cst_kEn1PlbGa",
+            "type": "text/html"
+        },
         "mandates": {
             "href": "https://api.mollie.com/v2/customers/cst_kEn1PlbGa/mandates",
             "type": "application/hal+json"
