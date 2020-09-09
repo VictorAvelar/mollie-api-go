@@ -17,6 +17,8 @@ const GetPaymentResponse = `{
     },
     "status": "open",
     "isCancelable": false,
+    "locale": "nl_NL",
+    "restrictPaymentMethodsToCountry": "NL",
     "expiresAt": "2018-03-20T13:28:37+00:00",
     "details": null,
     "profileId": "pfl_QkEhN94Ba",
@@ -31,6 +33,10 @@ const GetPaymentResponse = `{
         "checkout": {
             "href": "https://www.mollie.com/payscreen/select-method/WDqYK6vllg",
             "type": "text/html"
+        },
+        "dashboard": {
+            "href": "https://www.mollie.com/dashboard/org_12345678/payments/tr_WDqYK6vllg",
+            "type": "application/json"
         },
         "documentation": {
             "href": "https://docs.mollie.com/reference/v2/payments-api/get-payment",
