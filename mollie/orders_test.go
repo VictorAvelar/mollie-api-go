@@ -45,10 +45,6 @@ func TestOrdersService_Get(t *testing.T) {
 	if res.ID != ordID {
 		t.Errorf("mismatching info. want %v got %v", ordID, res.ID)
 	}
-
-	if res.Links.Dashboard.Type != RequestContentType {
-		t.Error("failed to parse dashboard link")
-	}
 }
 
 func TestOrdersService_Create(t *testing.T) {

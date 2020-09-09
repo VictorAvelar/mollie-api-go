@@ -37,10 +37,6 @@ func TestPaymentsService_Get(t *testing.T) {
 	if res.ID != id {
 		t.Errorf("mismatching info. want %v, got %v", id, res.ID)
 	}
-
-	if res.Links.Dashboard.Type != RequestContentType {
-		t.Error("failed to parse new dashboard resource")
-	}
 }
 
 func TestPaymentsService_Create(t *testing.T) {
