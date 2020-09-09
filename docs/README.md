@@ -482,6 +482,7 @@ type CustomerLinks struct {
 	Subscriptions *URL `json:"subscriptions,omitempty"`
 	Payments      *URL `json:"payments,omitempty"`
 	Documentation *URL `json:"documentation,omitempty"`
+	Dashboard     *URL `json:"dashboard,omitempty"`
 }
 ```
 
@@ -1299,6 +1300,7 @@ type OrderLinks struct {
 	Self          *URL `json:"self,omitempty"`
 	Checkout      *URL `json:"checkout,omitempty"`
 	Documentation *URL `json:"documentation,omitempty"`
+	Dashboard     *URL `json:"dashboard,omitempty"`
 }
 ```
 
@@ -1694,6 +1696,7 @@ type PaymentLinks struct {
 	Subscription       URL `json:"subscription,omitempty"`
 	Customer           URL `json:"customer,omitempty"`
 	Order              URL `json:"order,omitempty"`
+	Dashboard          URL `json:"dashboard,omitempty"`
 }
 ```
 
@@ -1904,6 +1907,7 @@ type ProfileLinks struct {
 	Refunds            *URL `json:"refunds,omitempty"`
 	CheckoutPreviewURL *URL `json:"checkoutPreviewUrl,omitempty"`
 	Documentation      *URL `json:"documentation,omitempty"`
+	Dashboard          *URL `json:"dashboard,omitempty"`
 }
 ```
 
