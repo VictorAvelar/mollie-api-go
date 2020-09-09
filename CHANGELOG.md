@@ -6,6 +6,14 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## master
 
+## v1.4.1
+
+### Added
+- Dashboard URL for payments, profiles, orders, customers and organizations
+
+### Changed
+- Response samples for the aforementioned resources in this tag
+
 ## v1.4.0
 
 ### Added
