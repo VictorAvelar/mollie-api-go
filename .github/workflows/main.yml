@@ -1,11 +1,15 @@
 name: Golang testing
-on: [pull_request, push]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
 jobs:
   testing:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go: [1.14.x, 1.15.x, master]
+        go: [1.14.x, 1.15.x]
     name: Go ${{ matrix.go }} check
     steps:
       - uses: actions/checkout@v2
