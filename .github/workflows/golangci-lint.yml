@@ -17,5 +17,4 @@ jobs:
       - uses: golangci/golangci-lint-action@v2
         with:
           version: v1.29
-          args: --issues-exit-code=0 --output-format=github-actions
-          only-new-issues: true
+          args: --issues-exit-code=0 --out-format=github-actions --new=true --sort-results --skip-dirs-use-default
