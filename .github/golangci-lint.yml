@@ -1,0 +1,22 @@
+name: golangci-lint
+on:
+  push:
+    branch:
+      - master
+    pull_requests:
+      - master
+jobs:
+  golangci:
+    strategy:
+      matrix:
+        go-version: [1.14.x, 1.15.x, master]
+    name: Linter
+    runs_on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: golangci-lint
+      - uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.29
+          workdir: mollie
+          only-new-issues: true

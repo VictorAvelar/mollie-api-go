@@ -1,0 +1,19 @@
+name: Golang testing
+on:
+  push:
+    - master
+  pull_request:
+    - master
+jobs:
+  testing:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: [1.14.x, 1.15.x, master]
+    name: Go ${{ matrix.go }} check
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
+      - run: go test -v -race ./...
