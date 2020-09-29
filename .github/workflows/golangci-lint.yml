@@ -17,5 +17,6 @@ jobs:
       - uses: golangci/golangci-lint-action@v2
         with:
           version: v1.29
-          workdir: mollie
+          working-directory: mollie
+          args: --issues-exit-code=0 --output-format=github-actions
           only-new-issues: true
