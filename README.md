@@ -1,4 +1,4 @@
-# Mollie API Golang client 
+# Mollie API Golang client in would
 
 #### Travis CI
 [![Build Status](https://travis-ci.org/VictorAvelar/mollie-api-go.svg?branch=master)](https://travis-ci.org/VictorAvelar/mollie-api-go)
