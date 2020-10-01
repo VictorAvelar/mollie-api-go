@@ -202,6 +202,28 @@ func TestClient_Do(t *testing.T) {
 	}
 }
 
+func TestClient_DoErrInvalidJSON(t *testing.T) {
+	setup()
+	defer teardown()
+	tMux.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testHeader(t, r, AuthHeader, "Bearer test_token")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("{"))
+	})
+	_ = tClient.WithAuthenticationValue("test_token")
+	req, _ := tClient.NewAPIRequest("GET", "test", nil)
+	req.URL = nil
+	_, err := tClient.Do(req)
+
+	if err == nil {
+		t.Error(err)
+	}
+	if !strings.Contains(err.Error(), "nil Request.URL") {
+		t.Errorf("unexpected response, got %v", err)
+	}
+}
+
 func TestClient_DoErr(t *testing.T) {
 	setup()
 	defer teardown()
