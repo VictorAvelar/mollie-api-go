@@ -15,7 +15,7 @@ var (
 	chargebackID string = "chb_n9z0tp"
 )
 
-// Sets the mollie api token on a environment variable.
+// Sets the mollie api token on an environment variable.
 func init() {
 	_ = os.Setenv(mollie.APITokenEnv, "YOUR_API_TOKEN")
 	config = mollie.NewConfig(true, mollie.APITokenEnv)
