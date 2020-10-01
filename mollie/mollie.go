@@ -121,7 +121,7 @@ func (c *Client) Do(req *http.Request) (*Response, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	response := newResponse(resp)
+	response, _ := newResponse(resp)
 	err = CheckResponse(resp)
 	if err != nil {
 		return response, err
@@ -214,16 +214,16 @@ type Response struct {
 	content []byte
 }
 
-func newResponse(r *http.Response) *Response {
+func newResponse(r *http.Response) (*Response, error) {
 	var res Response
 	c, err := ioutil.ReadAll(r.Body)
 	if err == nil {
 		res.content = c
 	}
-	json.NewDecoder(r.Body).Decode(&res)
+	err = json.NewDecoder(r.Body).Decode(&res)
 	r.Body = ioutil.NopCloser(bytes.NewBuffer(c))
 	res.Response = r
-	return &res
+	return &res, err
 }
 
 // CheckResponse checks the API response for errors, and returns them if
