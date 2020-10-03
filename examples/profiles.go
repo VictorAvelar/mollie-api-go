@@ -103,8 +103,7 @@ func ListProfiles() {
 		log.Fatal(err)
 	}
 
-	for i := 0; i < list.Count; i++ {
-		profile := list.Embedded.Profiles[i]
+	for _, profile := range list.Embedded.Profiles{
 		fmt.Println(profile)
 	}
 }
