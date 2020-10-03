@@ -9,6 +9,8 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ## Added
 - Code samples for Chargebacks API #79
 - Playground ready example tests for GetChargeback #79
+- Dockerfile for test execution #81
+- Makefile with used commands #81
 
 ## Fixed
 - golint style errors in `mandates.go` #80
