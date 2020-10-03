@@ -6,6 +6,15 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## master
 
+## Added
+- Code samples for Chargebacks API #79
+- Playground ready example tests for GetChargeback #79
+
+## Fixed
+- golint style errors in `mandates.go` #80
+- ignored error in `newResponse` method is now properly handled #66
+- yaml files were linted #79
+
 ## v1.4.1
 
 ### Added

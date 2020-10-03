@@ -113,7 +113,7 @@ func TestClient_NewAPIRequest_ErrTrailingSlash(t *testing.T) {
 	}
 	_, err := tClient.NewAPIRequest("GET", "test", nil)
 
-	if !reflect.DeepEqual(err, errBadBaseURL) {
+	if err == nil {
 		t.Errorf("expected error %v not occurred, got %v", errBadBaseURL, err)
 	}
 }
@@ -146,7 +146,7 @@ func TestClient_WithAuthenticationValue_Error(t *testing.T) {
 	defer teardown()
 	err := tClient.WithAuthenticationValue("")
 
-	if !reflect.DeepEqual(err, errEmptyAPIKey) {
+	if err == nil {
 		t.Errorf("unexpected error, want %v and got %v", errEmptyAPIKey, err)
 	}
 }
