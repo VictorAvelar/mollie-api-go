@@ -22,4 +22,4 @@ go:
 # failing test, we want to see both. Configure golangci-lint with a
 # .golangci.yml file at the top level of your repo.
 script:
-  - go test -v -race ./...  # Run all the tests with the race detector enabled
+  - go test -v -race ./... # Run all the tests with the race detector enabled

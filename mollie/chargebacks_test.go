@@ -1,6 +1,8 @@
 package mollie
 
 import (
+	"fmt"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -38,6 +40,31 @@ func TestChargebacksService_Get(t *testing.T) {
 	if res.ID != chargebackID {
 		t.Errorf("mismatching info. want %v, got %v", chargebackID, res.ID)
 	}
+}
+
+func ExampleChargebacksService_Get() {
+	setup()
+	defer teardown()
+
+	paymentID := "tr_WDqYK6vllg"
+	chargebackID := "chb_n9z0tp"
+	_ = tClient.WithAuthenticationValue("test_token")
+	tMux.HandleFunc("/v2/payments/"+paymentID+"/chargebacks/"+chargebackID, func(w http.ResponseWriter, r *http.Request) {
+		if _, ok := r.Header[AuthHeader]; !ok {
+			w.WriteHeader(http.StatusUnauthorized)
+		}
+
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(testdata.GetChargebackResponse))
+	})
+
+	chargeback, err := tClient.Chargebacks.Get(paymentID, chargebackID, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(chargeback.ID)
+	// Output: chb_n9z0tp
 }
 
 func TestChargebacksService_List(t *testing.T) {
