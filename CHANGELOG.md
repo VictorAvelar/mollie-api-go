@@ -11,7 +11,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 - Playground ready example tests for GetChargeback #79
 
 ## Fixed
-- golint style errors in `mandates.go` #
+- golint style errors in `mandates.go` #80
 - ignored error in `newResponse` method is now properly handled #66
 - yaml files were linted #79
 
