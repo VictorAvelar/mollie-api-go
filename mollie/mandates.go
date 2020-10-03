@@ -9,7 +9,7 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
-// Mandates allow you to charge a customer’s credit card or bank account recurrently.
+// Mandate allow you to charge a customer’s credit card or bank account recurrently.
 type Mandate struct {
 	ID               string         `json:"id,omitempty"`
 	Resource         string         `json:"resource,omitempty"`
@@ -48,7 +48,7 @@ const (
 	InvalidMandate MandateStatus = "invalid"
 )
 
-// CardLabel. Note that not all labels can be processed through Mollie.
+// CardLabel Note that not all labels can be processed through Mollie.
 type CardLabel string
 
 // Available card labels
@@ -162,7 +162,7 @@ func (ms *MandatesService) Revoke(cID, mID string) (err error) {
 	return
 }
 
-// ListMandates retrieves all mandates for the given customerId,
+// List retrieves all mandates for the given customerId,
 // ordered from newest to oldest.
 //
 // See: https://docs.mollie.com/reference/v2/mandates-api/list-mandates
