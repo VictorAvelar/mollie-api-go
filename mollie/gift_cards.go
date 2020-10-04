@@ -10,26 +10,26 @@ type GiftCardIssuer string
 // Supported gift card issuers
 const (
 	DecaudeuKaart              GiftCardIssuer = "decadeaukaart"
-	Dinercadeau                               = "dinercadeau"
-	Fashioncheque                             = "fashioncheque"
-	Festivalcadeau                            = "festivalcadeau"
-	Good4fun                                  = "good4fun"
-	Kunstencultuurcadeaukaart                 = "kunstencultuurcadeaukaart"
-	Nationalebioscoopbon                      = "nationalebioscoopbon"
-	Nationaleentertainmentcard                = "nationaleentertainmentcard"
-	Nationalegolfbon                          = "nationalegolfbon"
-	Ohmygood                                  = "ohmygood"
-	Podiumcadeaukaart                         = "podiumcadeaukaart"
-	Reiscadeau                                = "reiscadeau"
-	Restaurantcadeau                          = "restaurantcadeau"
-	Sportenfitcadeau                          = "sportenfitcadeau"
-	Sustainablefashion                        = "sustainablefashion"
-	Travelcheq                                = "travelcheq"
-	Vvvgiftcard                               = "vvvgiftcard"
-	Vvvdinercheque                            = "vvvdinercheque"
-	Vvvlekkerweg                              = "vvvlekkerweg"
-	Webshopgiftcard                           = "webshopgiftcard"
-	Yourgift                                  = "yourgift"
+	Dinercadeau                GiftCardIssuer = "dinercadeau"
+	Fashioncheque              GiftCardIssuer = "fashioncheque"
+	Festivalcadeau             GiftCardIssuer = "festivalcadeau"
+	Good4fun                   GiftCardIssuer = "good4fun"
+	Kunstencultuurcadeaukaart  GiftCardIssuer = "kunstencultuurcadeaukaart"
+	Nationalebioscoopbon       GiftCardIssuer = "nationalebioscoopbon"
+	Nationaleentertainmentcard GiftCardIssuer = "nationaleentertainmentcard"
+	Nationalegolfbon           GiftCardIssuer = "nationalegolfbon"
+	Ohmygood                   GiftCardIssuer = "ohmygood"
+	Podiumcadeaukaart          GiftCardIssuer = "podiumcadeaukaart"
+	Reiscadeau                 GiftCardIssuer = "reiscadeau"
+	Restaurantcadeau           GiftCardIssuer = "restaurantcadeau"
+	Sportenfitcadeau           GiftCardIssuer = "sportenfitcadeau"
+	Sustainablefashion         GiftCardIssuer = "sustainablefashion"
+	Travelcheq                 GiftCardIssuer = "travelcheq"
+	Vvvgiftcard                GiftCardIssuer = "vvvgiftcard"
+	Vvvdinercheque             GiftCardIssuer = "vvvdinercheque"
+	Vvvlekkerweg               GiftCardIssuer = "vvvlekkerweg"
+	Webshopgiftcard            GiftCardIssuer = "webshopgiftcard"
+	Yourgift                   GiftCardIssuer = "yourgift"
 )
 
 // GiftCardIssuerStatus describes the status of a gift
@@ -39,7 +39,7 @@ type GiftCardIssuerStatus string
 // Valid issuer statuses
 const (
 	PendingIssuer GiftCardIssuerStatus = "pending-issuer"
-	EnabledIssuer                      = "enabled"
+	EnabledIssuer GiftCardIssuerStatus = "enabled"
 )
 
 // GiftCardEnabled describes the response of a gift card
