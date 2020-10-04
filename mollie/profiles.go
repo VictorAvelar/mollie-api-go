@@ -203,6 +203,10 @@ func (ps *ProfilesService) DisablePaymentMethod(id string, pm PaymentMethod) (er
 // See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
 func (ps *ProfilesService) EnableGiftCardIssuer(profileID string, issuer GiftCardIssuer) (gc *GiftCardEnabled, err error) {
 	res, err := ps.toggleGiftCardIssuerStatus(profileID, http.MethodPost, issuer)
+	if err != nil {
+		return
+	}
+
 	if err = json.Unmarshal(res.content, &gc); err != nil {
 		return
 	}
