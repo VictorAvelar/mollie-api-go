@@ -6,6 +6,8 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## master
 
+## v1.5.0
+
 ## Added
 - Code samples for Chargebacks API #79
 - Playground ready example tests for GetChargeback #79
