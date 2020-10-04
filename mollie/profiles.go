@@ -196,3 +196,42 @@ func (ps *ProfilesService) DisablePaymentMethod(id string, pm PaymentMethod) (er
 	}
 	return
 }
+
+// EnableGiftCardIssuer activates the requested giftcard issuer for the provided
+// profile id.
+//
+// See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
+func (ps *ProfilesService) EnableGiftCardIssuer(profileID string, vendor GiftCardIssuer) (gc *GiftCardEnabled, err error) {
+	res, err := ps.toggleGiftCardIssuerStatus(profileID, http.MethodPost, vendor)
+	if err = json.Unmarshal(res.content, &gc); err != nil {
+		return
+	}
+	return
+}
+
+// DisableGiftCardIssuer deactivates the requested giftcard issuer for the provided
+// profile id.
+//
+// See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
+func (ps *ProfilesService) DisableGiftCardIssuer(profileID string, vendor GiftCardIssuer) (err error) {
+	_, err = ps.toggleGiftCardIssuerStatus(profileID, http.MethodDelete, vendor)
+	if err != nil {
+		return
+	}
+	return
+}
+
+func (ps *ProfilesService) toggleGiftCardIssuerStatus(profileID string, method string, vendor GiftCardIssuer) (r *Response, err error) {
+	u := fmt.Sprintf("v2/profiles/%s/giftcards/issuer/%s", profileID, vendor)
+	req, err := ps.client.NewAPIRequest(method, u, nil)
+	if err != nil {
+		return
+	}
+
+	r, err = ps.client.Do(req)
+	if err != nil {
+		return
+	}
+
+	return
+}
