@@ -11,6 +11,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 - Playground ready example tests for GetChargeback #79
 - Dockerfile for test execution #81
 - Makefile with used commands #81
+- Code samples for profiles #82
 
 ## Fixed
 - golint style errors in `mandates.go` #80
