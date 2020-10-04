@@ -201,8 +201,8 @@ func (ps *ProfilesService) DisablePaymentMethod(id string, pm PaymentMethod) (er
 // profile id.
 //
 // See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
-func (ps *ProfilesService) EnableGiftCardIssuer(profileID string, vendor GiftCardIssuer) (gc *GiftCardEnabled, err error) {
-	res, err := ps.toggleGiftCardIssuerStatus(profileID, http.MethodPost, vendor)
+func (ps *ProfilesService) EnableGiftCardIssuer(profileID string, issuer GiftCardIssuer) (gc *GiftCardEnabled, err error) {
+	res, err := ps.toggleGiftCardIssuerStatus(profileID, http.MethodPost, issuer)
 	if err = json.Unmarshal(res.content, &gc); err != nil {
 		return
 	}
@@ -213,8 +213,8 @@ func (ps *ProfilesService) EnableGiftCardIssuer(profileID string, vendor GiftCar
 // profile id.
 //
 // See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
-func (ps *ProfilesService) DisableGiftCardIssuer(profileID string, vendor GiftCardIssuer) (err error) {
-	_, err = ps.toggleGiftCardIssuerStatus(profileID, http.MethodDelete, vendor)
+func (ps *ProfilesService) DisableGiftCardIssuer(profileID string, issuer GiftCardIssuer) (err error) {
+	_, err = ps.toggleGiftCardIssuerStatus(profileID, http.MethodDelete, issuer)
 	if err != nil {
 		return
 	}
@@ -225,8 +225,8 @@ func (ps *ProfilesService) DisableGiftCardIssuer(profileID string, vendor GiftCa
 // curent profile (token owner).
 //
 // See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
-func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(vendor GiftCardIssuer) (gc *GiftCardEnabled, err error) {
-	res, err := ps.toggleGiftCardIssuerStatus("me", http.MethodPost, vendor)
+func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(issuer GiftCardIssuer) (gc *GiftCardEnabled, err error) {
+	res, err := ps.toggleGiftCardIssuerStatus("me", http.MethodPost, issuer)
 	if err != nil {
 		return
 	}
@@ -241,16 +241,16 @@ func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(vendor GiftCardIssuer)
 // curent profile (token owner).
 //
 // See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
-func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(vendor GiftCardIssuer) (err error) {
-	_, err = ps.toggleGiftCardIssuerStatus("me", http.MethodDelete, vendor)
+func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(issuer GiftCardIssuer) (err error) {
+	_, err = ps.toggleGiftCardIssuerStatus("me", http.MethodDelete, issuer)
 	if err != nil {
 		return
 	}
 	return
 }
 
-func (ps *ProfilesService) toggleGiftCardIssuerStatus(profileID string, method string, vendor GiftCardIssuer) (r *Response, err error) {
-	u := fmt.Sprintf("v2/profiles/%s/methods/giftcards/issuer/%s", profileID, vendor)
+func (ps *ProfilesService) toggleGiftCardIssuerStatus(profileID string, method string, issuer GiftCardIssuer) (r *Response, err error) {
+	u := fmt.Sprintf("v2/profiles/%s/methods/giftcards/issuer/%s", profileID, issuer)
 	req, err := ps.client.NewAPIRequest(method, u, nil)
 	if err != nil {
 		return
