@@ -233,3 +233,22 @@ const EnablePaymentMethodResponse = `{
     }
 }
 `
+
+// EnableGiftCardIssuerResponse example.
+const EnableGiftCardIssuerResponse = `{
+    "resource": "issuer",
+    "id": "festivalcadeau",
+    "description": "FestivalCadeau Giftcard",
+    "status": "pending-issuer",
+    "_links": {
+        "self": {
+            "href": "https://api.mollie.com/v2/issuers/festivalcadeau",
+            "type": "application/hal+json"
+        },
+        "documentation": {
+            "href": "https://docs.mollie.com/reference/v2/profiles-api/enable-giftcard-issuer",
+            "type": "text/html"
+        }
+    }
+}
+`

@@ -42,7 +42,7 @@ func TestProfilesService_Get(t *testing.T) {
 func ExampleProfilesService_Get() {
 	setup()
 	defer teardown()
-	id := "pfl_v9hTwCvYqw" 
+	id := "pfl_v9hTwCvYqw"
 
 	_ = tClient.WithAuthenticationValue("test_token")
 
@@ -55,13 +55,12 @@ func ExampleProfilesService_Get() {
 		_, _ = w.Write([]byte(testdata.GetProfileResponse))
 	})
 
-
 	p, err := tClient.Profiles.Get(id)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println(p.ID) 
+	fmt.Println(p.ID)
 	//Output: pfl_v9hTwCvYqw
 }
 
@@ -270,6 +269,136 @@ func TestProfilesService_DisablePaymentMethod(t *testing.T) {
 	}
 }
 
+func TestProfilesService_EnableGiftCardIssuer(t *testing.T) {
+	setEnv()
+	setup()
+	defer func() {
+		teardown()
+		unsetEnv()
+	}()
+
+	id := "pfl_v9hTwCvYqw"
+
+	tMux.HandleFunc(
+		fmt.Sprintf("/v2/profiles/%s/methods/giftcard/issuers/%s", id, Festivalcadeau),
+		func(rw http.ResponseWriter, r *http.Request) {
+			testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+			testMethod(t, r, "POST")
+			if _, ok := r.Header[AuthHeader]; !ok {
+				rw.WriteHeader(http.StatusUnauthorized)
+			}
+
+			rw.WriteHeader(http.StatusOK)
+			_, _ = rw.Write([]byte(testdata.EnableGiftCardIssuerResponse))
+		},
+	)
+
+	res, err := tClient.Profiles.EnableGiftCardIssuer(id, Festivalcadeau)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if res.ID != Festivalcadeau {
+		t.Errorf("unexpected id received: want %v, got %v", Festivalcadeau, res.ID)
+	}
+}
+
+func TestProfilesService_DisableGiftCardIssuer(t *testing.T) {
+	setEnv()
+	setup()
+	defer func() {
+		teardown()
+		unsetEnv()
+	}()
+	
+	id := "pfl_v9hTwCvYqw"
+	
+	tMux.HandleFunc(
+		fmt.Sprintf("/v2/profiles/%s/methods/giftcard/issuers/%s", id, Festivalcadeau),
+		func(rw http.ResponseWriter, r *http.Request) {
+			testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+			testMethod(t, r, "DELETE")
+			if _, ok := r.Header[AuthHeader]; !ok {
+				rw.WriteHeader(http.StatusUnauthorized)
+			}
+			
+			rw.WriteHeader(http.StatusNoContent)
+		},
+	)
+	
+	err := tClient.Profiles.DisableGiftCardIssuer(id, Festivalcadeau)
+	
+	if err != nil {
+		t.Error(err)
+	}
+}
+
+func TestProfilesService_EnableGiftCardIssuerForCurrent(t *testing.T) {
+	setEnv()
+	setup()
+	defer func() {
+		teardown()
+		unsetEnv()
+	}()
+	
+	id := "me"
+	
+	tMux.HandleFunc(
+		fmt.Sprintf("/v2/profiles/%s/methods/giftcard/issuers/%s", id, Festivalcadeau),
+		func(rw http.ResponseWriter, r *http.Request) {
+			testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+			testMethod(t, r, "POST")
+			if _, ok := r.Header[AuthHeader]; !ok {
+				rw.WriteHeader(http.StatusUnauthorized)
+			}
+			
+			rw.WriteHeader(http.StatusOK)
+			_, _ = rw.Write([]byte(testdata.EnableGiftCardIssuerResponse))
+		},
+	)
+	
+	res, err := tClient.Profiles.EnableGiftCardIssuerForCurrent(Festivalcadeau)
+	
+	if err != nil {
+		t.Error(err)
+	}
+	
+	if res.ID != Festivalcadeau {
+		t.Errorf("unexpected id received: want %v, got %v", Festivalcadeau, res.ID)
+	}
+}
+
+func TestProfilesService_DisableGiftCardIssuerForCurrent(t *testing.T) {
+	setEnv()
+	setup()
+	defer func() {
+		teardown()
+		unsetEnv()
+	}()
+	
+	id := "me"
+	
+	tMux.HandleFunc(
+		fmt.Sprintf("/v2/profiles/%s/methods/giftcard/issuers/%s", id, Festivalcadeau),
+		func(rw http.ResponseWriter, r *http.Request) {
+			testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+			testMethod(t, r, "DELETE")
+			if _, ok := r.Header[AuthHeader]; !ok {
+				rw.WriteHeader(http.StatusUnauthorized)
+			}
+			
+			rw.WriteHeader(http.StatusNoContent)
+		},
+	)
+	
+	err := tClient.Profiles.DisableGiftCardIssuerForCurrent(Festivalcadeau)
+	
+	if err != nil {
+		t.Error(err)
+	}
+}
+
 func TestProfilesService_HttpRequestErrors(t *testing.T) {
 	setup()
 	defer teardown()
@@ -285,8 +414,12 @@ func TestProfilesService_HttpRequestErrors(t *testing.T) {
 	_, ccerr := tClient.Profiles.Current()
 	dderr := tClient.Profiles.DisablePaymentMethod("1212", PayPal)
 	_, eperr := tClient.Profiles.EnablePaymentMethod("1212", PayPal)
+	dgcerr := tClient.Profiles.DisableGiftCardIssuer("1212", Festivalcadeau)
+	_, egcerr := tClient.Profiles.EnableGiftCardIssuer("1212", Festivalcadeau)
+	dgccerr := tClient.Profiles.DisableGiftCardIssuerForCurrent(Festivalcadeau)
+	_, egccerr := tClient.Profiles.EnableGiftCardIssuerForCurrent(Festivalcadeau)
 
-	tests := []error{cerr, rerr, uerr, derr, gerr, ccerr, eperr, dderr}
+	tests := []error{cerr, rerr, uerr, derr, gerr, ccerr, eperr, dderr, dgcerr, egcerr, dgccerr, egccerr}
 
 	for _, tt := range tests {
 		if tt == nil {
@@ -308,8 +441,10 @@ func TestProfilesService_EncodingResponseErrors(t *testing.T) {
 	_, gerr := tClient.Profiles.Get("1212")
 	_, ccerr := tClient.Profiles.Current()
 	_, eperr := tClient.Profiles.EnablePaymentMethod("1212", PayPal)
+	_, egcerr := tClient.Profiles.EnableGiftCardIssuer("1212", Festivalcadeau)
+	_, egccerr := tClient.Profiles.EnableGiftCardIssuerForCurrent(Festivalcadeau)
 
-	tests := []error{cerr, rerr, uerr, gerr, ccerr, eperr}
+	tests := []error{cerr, rerr, uerr, gerr, ccerr, eperr, egcerr, egccerr}
 
 	for _, tt := range tests {
 		if tt == nil {
@@ -337,8 +472,10 @@ func TestProfilesService_NewAPIRequestBaseError(t *testing.T) {
 	ddcerr := tClient.Profiles.Delete("1212")
 	_, eperr := tClient.Profiles.EnablePaymentMethod("1212", PayPal)
 	deperr := tClient.Profiles.DisablePaymentMethod("1212", PayPal)
+	dgcerr := tClient.Profiles.DisableGiftCardIssuer("1212", Festivalcadeau)
+	_, egcerr := tClient.Profiles.EnableGiftCardIssuer("1212", Festivalcadeau)
 
-	tests := []error{cerr, rerr, uerr, gerr, ccerr, eperr, deperr, ddcerr}
+	tests := []error{cerr, rerr, uerr, gerr, ccerr, eperr, deperr, ddcerr, dgcerr, egcerr}
 
 	for _, tt := range tests {
 		if tt != errBadBaseURL {
