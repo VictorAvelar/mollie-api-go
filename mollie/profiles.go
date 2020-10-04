@@ -254,7 +254,7 @@ func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(issuer GiftCardIssuer
 }
 
 func (ps *ProfilesService) toggleGiftCardIssuerStatus(profileID string, method string, issuer GiftCardIssuer) (r *Response, err error) {
-	u := fmt.Sprintf("v2/profiles/%s/methods/giftcards/issuer/%s", profileID, issuer)
+	u := fmt.Sprintf("v2/profiles/%s/methods/giftcard/issuers/%s", profileID, issuer)
 	req, err := ps.client.NewAPIRequest(method, u, nil)
 	if err != nil {
 		return
