@@ -12,6 +12,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 - Dockerfile for test execution #81
 - Makefile with used commands #81
 - Code samples for profiles #82
+- Methods for enabling/disabling payment methods #84
 
 ## Fixed
 - golint style errors in `mandates.go` #80
