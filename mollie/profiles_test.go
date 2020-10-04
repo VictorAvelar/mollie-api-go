@@ -1,6 +1,8 @@
 package mollie
 
 import (
+	"fmt"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -35,6 +37,32 @@ func TestProfilesService_Get(t *testing.T) {
 	if p.ID != id {
 		t.Errorf("unexpected response, want: %v got: %v", p.ID, id)
 	}
+}
+
+func ExampleProfilesService_Get() {
+	setup()
+	defer teardown()
+	id := "pfl_v9hTwCvYqw" 
+
+	_ = tClient.WithAuthenticationValue("test_token")
+
+	tMux.HandleFunc("/v2/profiles/"+id, func(w http.ResponseWriter, r *http.Request) {
+		if _, ok := r.Header[AuthHeader]; !ok {
+			w.WriteHeader(http.StatusUnauthorized)
+		}
+
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(testdata.GetProfileResponse))
+	})
+
+
+	p, err := tClient.Profiles.Get(id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(p.ID) 
+	//Output: pfl_v9hTwCvYqw
 }
 
 func TestProfilesService_Current(t *testing.T) {
