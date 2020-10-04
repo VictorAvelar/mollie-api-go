@@ -46,7 +46,7 @@ const (
 // issuer enable operation.
 type GiftCardEnabled struct {
 	Resource    string               `json:"resource,omitempty"`
-	ID          string               `json:"id,omitempty"`
+	ID          GiftCardIssuer       `json:"id,omitempty"`
 	Description string               `json:"description,omitempty"`
 	Status      GiftCardIssuerStatus `json:"status,omitempty"`
 	Links       GiftCardLinks        `json:"_links,omitempty"`
