@@ -104,10 +104,6 @@ func (rs *RefundsService) Get(paymentID, refundID string, options *RefundOptions
 	return
 }
 
-var (
-	requiredCreateParamRefund = "parameter required for creating a refund: %+v"
-)
-
 // Create a refund payment request.
 //
 // See https://docs.mollie.com/reference/v2/refunds-api/create-refund.
