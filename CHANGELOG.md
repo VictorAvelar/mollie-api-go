@@ -6,9 +6,17 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## master
 
+## v1.6.0
+
+### Changed
+- Go mod version upgraded to 1.15 #86 
+
+### Removed
+- Unused variable in refunds.go #87 
+
 ## v1.5.0
 
-## Added
+### Added
 - Code samples for Chargebacks API #79
 - Playground ready example tests for GetChargeback #79
 - Dockerfile for test execution #81
@@ -16,7 +24,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 - Code samples for profiles #82
 - Methods for enabling/disabling payment methods #84
 
-## Fixed
+### Fixed
 - golint style errors in `mandates.go` #80
 - ignored error in `newResponse` method is now properly handled #66
 - yaml files were linted #79
