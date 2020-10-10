@@ -56,7 +56,6 @@ func GetProfile() {
 //CurrentProfile code sample for getting the current profile belonging to the API key.
 func CurrentProfile() {
 
-	
 	newConfig := mollie.NewConfig(true, mollie.APITokenEnv) //Requires a API key 
 	newClient, _ := mollie.NewClient(nil,newConfig)
 	
@@ -129,4 +128,24 @@ func DisablePaymentMethod() {
 		log.Fatal(err)
 	}
 
+}
+
+//EnableGiftCardIssuer code sample for enabling gift card issuer on a specific profile to use with payments.
+func EnableGiftCardIssuer() {
+
+	gc, err := client.Profiles.EnableGiftCardIssuer(profileID, mollie.Festivalcadeau)
+	if err != nil{
+		log.Fatal(err)
+	}
+
+	fmt.Println(gc)
+}
+
+//DisableGiftCardIssuer code sample for disabling gift card issuer on a specific profile.
+func DisableGiftCardIssuer() {
+
+	err := client.Profiles.DisableGiftCardIssuer(profileID, mollie.Festivalcadeau)
+	if err != nil{
+		log.Fatal(err)
+	}
 }
