@@ -8,20 +8,19 @@ import (
 	"github.com/VictorAvelar/mollie-api-go/mollie"
 )
 
-// Available authentication options using static keys
-const (
-	APIKey string = "your_api_key_here"
-)
-
 func main() {
 	/*
-		To build our config, we need to tell our client if its
-		purpose is to be used for testing or live requests, and
-		then if using static tokens we will pass our key as
-		second parameter, this will attach our token to every
-		outgoing requests as a Bearer token.
-	*/
-	config := mollie.NewConfig(true, APIKey)
+		Create a base config object, the first parameter is a boolean
+		to indicate if the client should be build for testing or for
+		live requests.
+		The second parameter is name of the environment variable from
+		which the client should parse the token.
+
+		By default the client will attempt to parse an API token from
+		MOLLIE_API_TOKEN, but if you are using a diff variable name,
+		you can pass it as second parameter.
+	 */
+	config := mollie.NewConfig(false, mollie.APITokenEnv)
 
 	/*
 		Then we build our Mollie API client, in this case we will
@@ -36,7 +35,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	output, err := m.Methods.List(nil)
+	output, err := m.Methods.All(nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -50,6 +49,6 @@ func main() {
 		fmt.Printf("- Name: %s\n", o.Description)
 	}
 
-	fmt.Printf("For detailed information see: %s", output.Links.Docs.Href)
+	fmt.Printf("For detailed information see: %s\n", output.Links.Docs.Href)
 	os.Exit(0)
 }
