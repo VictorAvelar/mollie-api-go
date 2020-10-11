@@ -173,10 +173,12 @@ func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
 	mollie.Mandates = (*MandatesService)(&mollie.common)
 
 	// Parse authorization from environment
-	if tkn, ok := os.LookupEnv(APITokenEnv); ok {
+	tkn, ok := os.LookupEnv(APITokenEnv)
+	if ok {
 		mollie.authentication = tkn
 	} else {
-		mollie.authentication = c.auth
+		tkn = os.Getenv(c.auth)
+		mollie.authentication = tkn
 	}
 	return
 }
