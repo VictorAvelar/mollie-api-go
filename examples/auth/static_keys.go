@@ -19,7 +19,7 @@ func main() {
 		By default the client will attempt to parse an API token from
 		MOLLIE_API_TOKEN, but if you are using a diff variable name,
 		you can pass it as second parameter.
-	 */
+	*/
 	config := mollie.NewConfig(false, mollie.APITokenEnv)
 
 	/*
