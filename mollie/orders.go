@@ -239,7 +239,7 @@ func (ors *OrdersService) Get(orID string, opt *OrderOptions) (order *Order, err
 //
 // See https://docs.mollie.com/reference/v2/orders-api/create-order
 func (ors *OrdersService) Create(ord Order, opt *OrderOptions) (order *Order, err error) {
-	u := fmt.Sprintf("v2/orders")
+	u := "v2/orders"
 	if opt != nil {
 		v, _ := query.Values(opt)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
@@ -312,7 +312,7 @@ func (ors *OrdersService) Cancel(orderID string) (order *Order, err error) {
 //
 // See https://docs.mollie.com/reference/v2/orders-api/list-orders
 func (ors *OrdersService) List(opt *OrderListOptions) (ordList *OrderList, err error) {
-	u := fmt.Sprintf("v2/orders")
+	u := "v2/orders"
 	if opt != nil {
 		v, _ := query.Values(opt)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())

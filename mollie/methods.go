@@ -97,7 +97,7 @@ func (ms *MethodsService) Get(id string, options *MethodsOptions) (pmi *PaymentM
 //
 // See: https://docs.mollie.com/reference/v2/methods-api/list-all-methods
 func (ms *MethodsService) All(options *MethodsOptions) (pm *ListMethods, err error) {
-	u := fmt.Sprintf("v2/methods/all")
+	u := "v2/methods/all"
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
@@ -111,7 +111,7 @@ func (ms *MethodsService) All(options *MethodsOptions) (pm *ListMethods, err err
 //
 // See: https://docs.mollie.com/reference/v2/methods-api/list-methods
 func (ms *MethodsService) List(options *MethodsOptions) (pm *ListMethods, err error) {
-	u := fmt.Sprintf("v2/methods")
+	u := "v2/methods"
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())

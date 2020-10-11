@@ -158,7 +158,7 @@ func (rs *RefundsService) Cancel(paymentID, refundID string, options *RefundOpti
 //
 // See https://docs.mollie.com/reference/v2/refunds-api/list-refunds.
 func (rs *RefundsService) ListRefund(options *ListRefundOptions) (rl *RefundList, err error) {
-	u := fmt.Sprintf("v2/refunds")
+	u := "v2/refunds"
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
