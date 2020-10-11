@@ -6,6 +6,15 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## master
 
+## v1.6.1
+
+### Fixed
+- api token parsing from env variable #89
+- go fmt errors #89
+
+### Changed
+- Updated documentation
+
 ## v1.6.0
 
 ### Changed

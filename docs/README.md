@@ -206,7 +206,7 @@ See: https://docs.mollie.com/reference/v2/captures-api/list-captures
 type CardLabel string
 ```
 
-CardLabel. Note that not all labels can be processed through Mollie.
+CardLabel Note that not all labels can be processed through Mollie.
 
 ```go
 const (
@@ -677,6 +677,82 @@ const (
 ```
 Valid Fee regions
 
+#### type GiftCardEnabled
+
+```go
+type GiftCardEnabled struct {
+	Resource    string               `json:"resource,omitempty"`
+	ID          GiftCardIssuer       `json:"id,omitempty"`
+	Description string               `json:"description,omitempty"`
+	Status      GiftCardIssuerStatus `json:"status,omitempty"`
+	Links       GiftCardLinks        `json:"_links,omitempty"`
+}
+```
+
+GiftCardEnabled describes the response of a gift card issuer enable operation.
+
+#### type GiftCardIssuer
+
+```go
+type GiftCardIssuer string
+```
+
+GiftCardIssuer type describes issuers supported by mollie.
+
+```go
+const (
+	DecaudeuKaart              GiftCardIssuer = "decadeaukaart"
+	Dinercadeau                GiftCardIssuer = "dinercadeau"
+	Fashioncheque              GiftCardIssuer = "fashioncheque"
+	Festivalcadeau             GiftCardIssuer = "festivalcadeau"
+	Good4fun                   GiftCardIssuer = "good4fun"
+	Kunstencultuurcadeaukaart  GiftCardIssuer = "kunstencultuurcadeaukaart"
+	Nationalebioscoopbon       GiftCardIssuer = "nationalebioscoopbon"
+	Nationaleentertainmentcard GiftCardIssuer = "nationaleentertainmentcard"
+	Nationalegolfbon           GiftCardIssuer = "nationalegolfbon"
+	Ohmygood                   GiftCardIssuer = "ohmygood"
+	Podiumcadeaukaart          GiftCardIssuer = "podiumcadeaukaart"
+	Reiscadeau                 GiftCardIssuer = "reiscadeau"
+	Restaurantcadeau           GiftCardIssuer = "restaurantcadeau"
+	Sportenfitcadeau           GiftCardIssuer = "sportenfitcadeau"
+	Sustainablefashion         GiftCardIssuer = "sustainablefashion"
+	Travelcheq                 GiftCardIssuer = "travelcheq"
+	Vvvgiftcard                GiftCardIssuer = "vvvgiftcard"
+	Vvvdinercheque             GiftCardIssuer = "vvvdinercheque"
+	Vvvlekkerweg               GiftCardIssuer = "vvvlekkerweg"
+	Webshopgiftcard            GiftCardIssuer = "webshopgiftcard"
+	Yourgift                   GiftCardIssuer = "yourgift"
+)
+```
+Supported gift card issuers
+
+#### type GiftCardIssuerStatus
+
+```go
+type GiftCardIssuerStatus string
+```
+
+GiftCardIssuerStatus describes the status of a gift card issuer in your account.
+
+```go
+const (
+	PendingIssuer GiftCardIssuerStatus = "pending-issuer"
+	EnabledIssuer GiftCardIssuerStatus = "enabled"
+)
+```
+Valid issuer statuses
+
+#### type GiftCardLinks
+
+```go
+type GiftCardLinks struct {
+	Self          URL `json:"self,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
+}
+```
+
+GiftCardLinks are links embeded when a gift card is enabled.
+
 #### type Image
 
 ```go
@@ -943,7 +1019,7 @@ type Mandate struct {
 }
 ```
 
-Mandates allow you to charge a customer’s credit card or bank account
+Mandate allow you to charge a customer’s credit card or bank account
 recurrently.
 
 #### type MandateDetails
@@ -1039,8 +1115,8 @@ See: https://docs.mollie.com/reference/v2/mandates-api/get-mandate
 ```go
 func (ms *MandatesService) List(cID string, opt *ListMandatesOptions) (ml MandateList, err error)
 ```
-ListMandates retrieves all mandates for the given customerId, ordered from
-newest to oldest.
+List retrieves all mandates for the given customerId, ordered from newest to
+oldest.
 
 See: https://docs.mollie.com/reference/v2/mandates-api/list-mandates
 
@@ -1987,6 +2063,26 @@ func (ps *ProfilesService) Delete(id string) (err error)
 Delete enables profile deletions, rendering the profile unavailable for further
 API calls and transactions.
 
+#### func (*ProfilesService) DisableGiftCardIssuer
+
+```go
+func (ps *ProfilesService) DisableGiftCardIssuer(profileID string, issuer GiftCardIssuer) (err error)
+```
+DisableGiftCardIssuer deactivates the requested giftcard issuer for the provided
+profile id.
+
+See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
+
+#### func (*ProfilesService) DisableGiftCardIssuerForCurrent
+
+```go
+func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(issuer GiftCardIssuer) (err error)
+```
+DisableGiftCardIssuerForCurrent deactivates the specified issuer for the curent
+profile (token owner).
+
+See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
+
 #### func (*ProfilesService) DisablePaymentMethod
 
 ```go
@@ -1994,6 +2090,26 @@ func (ps *ProfilesService) DisablePaymentMethod(id string, pm PaymentMethod) (er
 ```
 DisablePaymentMethod disables a payment method on a specific or authenticated
 profile. If you're using API tokens for authentication, pass "me" as id.
+
+#### func (*ProfilesService) EnableGiftCardIssuer
+
+```go
+func (ps *ProfilesService) EnableGiftCardIssuer(profileID string, issuer GiftCardIssuer) (gc *GiftCardEnabled, err error)
+```
+EnableGiftCardIssuer activates the requested giftcard issuer for the provided
+profile id.
+
+See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
+
+#### func (*ProfilesService) EnableGiftCardIssuerForCurrent
+
+```go
+func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(issuer GiftCardIssuer) (gc *GiftCardEnabled, err error)
+```
+EnableGiftCardIssuerForCurrent activates the specified issuer for the curent
+profile (token owner).
+
+See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
 
 #### func (*ProfilesService) EnablePaymentMethod
 
