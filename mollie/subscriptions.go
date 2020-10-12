@@ -163,7 +163,7 @@ func (ss *SubscriptionsService) Delete(cID, sID string) (s *Subscription, err er
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/list-all-subscriptions
 func (ss *SubscriptionsService) All(options *SubscriptionListOptions) (sl *SubscriptionList, err error) {
-	u := fmt.Sprintf("v2/subscriptions")
+	u := "v2/subscriptions"
 
 	if options != nil {
 		v, _ := query.Values(options)

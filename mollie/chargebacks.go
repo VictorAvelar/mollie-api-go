@@ -83,7 +83,7 @@ func (cs *ChargebacksService) Get(paymentID, chargebackID string, options *Charg
 //
 // See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
 func (cs *ChargebacksService) List(options *ListChargebackOptions) (cl *ChargebackList, err error) {
-	u := fmt.Sprint("v2/chargebacks")
+	u := "v2/chargebacks"
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())

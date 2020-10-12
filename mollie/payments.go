@@ -144,7 +144,7 @@ func (ps *PaymentsService) Get(id string, options *PaymentOptions) (p Payment, e
 //
 // See: https://docs.mollie.com/reference/v2/payments-api/create-payment#
 func (ps *PaymentsService) Create(p Payment) (np Payment, err error) {
-	u := fmt.Sprintf("v2/payments")
+	u := "v2/payments"
 	req, err := ps.client.NewAPIRequest(http.MethodPost, u, p)
 	if err != nil {
 		return
@@ -211,7 +211,7 @@ type PaymentList struct {
 //
 // See: https://docs.mollie.com/reference/v2/payments-api/list-payments
 func (ps *PaymentsService) List(options *ListPaymentOptions) (pl PaymentList, err error) {
-	u := fmt.Sprint("v2/payments")
+	u := "v2/payments"
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())

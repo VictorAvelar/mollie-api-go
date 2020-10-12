@@ -92,7 +92,7 @@ func (is *InvoicesService) Get(id string) (i Invoice, err error) {
 
 // List retrieves a list of invoices associated with your account/organization.
 func (is *InvoicesService) List(options *ListInvoiceOptions) (il InvoiceList, err error) {
-	u := fmt.Sprint("v2/invoices")
+	u := "v2/invoices"
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
