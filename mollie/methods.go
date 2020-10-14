@@ -62,7 +62,7 @@ type MethodsOptions struct {
 	Amount         Amount       `url:"amount,omitempty"`
 	Resource       string       `url:"resource,omitempty"`
 	BillingCountry string       `url:"billingCountry,omitempty"`
-	IncludeWallets string       `json:"includeWallets,omitempty"`
+	IncludeWallets string       `url:"includeWallets,omitempty"`
 }
 
 // MethodsService operates on methods endpoints
