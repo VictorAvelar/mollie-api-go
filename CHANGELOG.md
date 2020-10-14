@@ -6,6 +6,11 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## master
 
+## v1.6.2
+
+### Fixed
+- Wrong tag in `MethodOptions`struct #92
+
 ## v1.6.1
 
 ### Fixed
