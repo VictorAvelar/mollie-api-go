@@ -59,7 +59,8 @@ type MethodsOptions struct {
 	Include   string `url:"include,omitempty"`
 	// Use for List method only
 	SequenceType   SequenceType `url:"sequenceType,omitempty"`
-	Amount         Amount       `url:"amount,omitempty"`
+	AmountCurrency string       `url:"amount[currency],omitempty"`
+	AmountValue    string       `url:"amount[value],omitempty"`
 	Resource       string       `url:"resource,omitempty"`
 	BillingCountry string       `url:"billingCountry,omitempty"`
 	IncludeWallets string       `url:"includeWallets,omitempty"`

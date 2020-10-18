@@ -9,6 +9,81 @@ import (
 	"github.com/VictorAvelar/mollie-api-go/testdata"
 )
 
+func TestMethodsService_ListWithQueryOptionsAmountCurrency(t *testing.T) {
+	setup()
+	defer teardown()
+	_ = tClient.WithAuthenticationValue("test_token")
+
+	tMux.HandleFunc("/v2/methods", func(w http.ResponseWriter, r *http.Request) {
+		testHeader(t, r, AuthHeader, "Bearer test_token")
+		testMethod(t, r, "GET")
+		if _, ok := r.Header[AuthHeader]; !ok {
+			w.WriteHeader(http.StatusUnauthorized)
+		}
+
+		if r.URL.RawQuery != "amount%5Bcurrency%5D=USD&amount%5Bvalue%5D=100.00" {
+			t.Fatal(r.URL.RawQuery)
+		}
+
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(testdata.ListMethodsResponse))
+	})
+
+	opts := &MethodsOptions{
+		AmountCurrency: "USD",
+		AmountValue:    "100.00",
+	}
+
+	res, err := tClient.Methods.List(opts)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if res.Count <= 0 {
+		t.Error("expecting methods and got 0")
+	}
+}
+
+func TestMethodsService_ListWithQueryOptionsAll(t *testing.T) {
+	setup()
+	defer teardown()
+	_ = tClient.WithAuthenticationValue("test_token")
+
+	tMux.HandleFunc("/v2/methods", func(w http.ResponseWriter, r *http.Request) {
+		testHeader(t, r, AuthHeader, "Bearer test_token")
+		testMethod(t, r, "GET")
+		if _, ok := r.Header[AuthHeader]; !ok {
+			w.WriteHeader(http.StatusUnauthorized)
+		}
+
+		if r.URL.RawQuery != "amount%5Bcurrency%5D=USD&amount%5Bvalue%5D=100.00&billingCountry=DE&includeWallets=applepay&locale=de_DE&resource=orders&sequenceType=first" {
+			t.Fatal(r.URL.RawQuery)
+		}
+
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(testdata.ListMethodsResponse))
+	})
+
+	opts := &MethodsOptions{
+		AmountCurrency: "USD",
+		AmountValue:    "100.00",
+		Resource: "orders",
+		SequenceType: FirstSequence,
+		Locale: German,
+		BillingCountry: "DE",
+		IncludeWallets: "applepay",
+	}
+
+	res, err := tClient.Methods.List(opts)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if res.Count <= 0 {
+		t.Error("expecting methods and got 0")
+	}
+}
+
 func TestMethodsService_Get(t *testing.T) {
 	setup()
 	defer teardown()
