@@ -6,6 +6,11 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## master
 
+## v1.6.3
+
+### Fixed
+- Error when parsing amount values on payment methods #94
+
 ## v1.6.2
 
 ### Fixed
