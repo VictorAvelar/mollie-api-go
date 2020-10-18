@@ -189,12 +189,13 @@ Error reports details on a failed API request.
 type Error struct {
 	Code     int            `json:"code"`
 	Message  string         `json:"message"`
+	Content  string         `json:"content,omitempty"`
 	Response *http.Response `json:"response"` // the full response that produced the error
 }
 
 // Error function complies with the error interface
 func (e *Error) Error() string {
-	return fmt.Sprintf("response failed with status %v", e.Message)
+	return fmt.Sprintf("response failed with status %s\npayload: %v", e.Message, e.Content)
 }
 
 /*
@@ -205,6 +206,11 @@ func newError(r *http.Response) *Error {
 	e.Response = r
 	e.Code = r.StatusCode
 	e.Message = r.Status
+	c, err := ioutil.ReadAll(r.Body)
+	if err == nil {
+		e.Content = string(c)
+	}
+	r.Body = ioutil.NopCloser(bytes.NewBuffer(c))
 	return &e
 }
 
