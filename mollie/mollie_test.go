@@ -244,11 +244,19 @@ func TestCheckResponse(t *testing.T) {
 	res1 := &http.Response{
 		StatusCode: http.StatusNotFound,
 		Status:     http.StatusText(http.StatusNotFound),
+		Body:       ioutil.NopCloser(strings.NewReader("not found ok")),
+	}
+
+	res3 := &http.Response{
+		StatusCode: http.StatusNotFound,
+		Status:     http.StatusText(http.StatusNotFound),
+		Body:       ioutil.NopCloser(strings.NewReader("")),
 	}
 
 	res2 := &http.Response{
 		StatusCode: http.StatusOK,
 		Status:     http.StatusText(http.StatusOK),
+		Body:       ioutil.NopCloser(strings.NewReader("success ok")),
 	}
 
 	tests := []struct {
@@ -265,6 +273,11 @@ func TestCheckResponse(t *testing.T) {
 			"not found response",
 			"Not Found",
 			res1,
+		},
+		{
+			"success with empty body",
+			"",
+			res3,
 		},
 	}
 
