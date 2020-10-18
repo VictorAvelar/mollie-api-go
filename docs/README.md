@@ -621,6 +621,7 @@ Valid Embed query string value.
 type Error struct {
 	Code     int            `json:"code"`
 	Message  string         `json:"message"`
+	Content  string         `json:"content,omitempty"`
 	Response *http.Response `json:"response"` // the full response that produced the error
 }
 ```

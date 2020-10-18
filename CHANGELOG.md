@@ -6,6 +6,11 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## master
 
+## v1.6.4
+
+### Added
+- Full http error content when the response is within the http error range #95
+
 ## v1.6.3
 
 ### Fixed
