@@ -6,6 +6,16 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## master
 
+## v.1.6.5
+
+### Added
+- Goreleaser workflow
+- Examples for subscriptions #96
+- Examples or payment methods
+
+### Changed
+- Renamed ChargebackID to PaymentID in Chargeback struct #98
+
 ## v1.6.4
 
 ### Added
