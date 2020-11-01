@@ -1,6 +1,6 @@
 # mollie
 --
-    import "github.com/VictorAvelar/molli-api-go/mollie"
+    import "."
 
 Package mollie is a wrapper around Mollie's REST API.
 
@@ -265,14 +265,14 @@ Available category codes
 
 ```go
 type Chargeback struct {
-	Resource         string           `json:"resource,omitempty"`
-	ID               string           `json:"id,omitempty"`
-	Amount           *Amount          `json:"amount,omitempty"`
-	SettlementAmount *Amount          `json:"settlementAmount,omitempty"`
-	CreatedAt        *time.Time       `json:"createdAt,omitempty"`
-	ReversedAt       *time.Time       `json:"reversedAt,omitempty"`
-	ChargebackID     string           `json:"chargebackId,omitempty"`
-	Links            *ChargebackLinks `json:"_links,omitempty"`
+	Resource         string          `json:"resource,omitempty"`
+	ID               string          `json:"id,omitempty"`
+	Amount           Amount          `json:"amount,omitempty"`
+	SettlementAmount Amount          `json:"settlementAmount,omitempty"`
+	CreatedAt        time.Time       `json:"createdAt,omitempty"`
+	ReversedAt       time.Time       `json:"reversedAt,omitempty"`
+	PaymentID        string          `json:"paymentId,omitempty"`
+	Links            ChargebackLinks `json:"_links,omitempty"`
 }
 ```
 
@@ -284,7 +284,7 @@ bank
 ```go
 type ChargebackLinks struct {
 	Self          URL `json:"self,omitempty"`
-	Chargeback    URL `json:"chargeback,omitempty"`
+	Payment       URL `json:"payment,omitempty"`
 	Settlement    URL `json:"settlement,omitempty"`
 	Documentation URL `json:"documentation,omitempty"`
 }
