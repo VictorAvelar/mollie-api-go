@@ -1,0 +1,6 @@
+# This is an example goreleaser.yaml file with some sane defaults.
+project_name: mollie-api-golang
+builds:
+  skip: true
+changelog:
+  sort: asc
