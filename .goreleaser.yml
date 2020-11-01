@@ -3,4 +3,9 @@ project_name: mollie-api-golang
 builds:
   skip: true
 changelog:
-  sort: asc
+  sort: desc
+  filters:
+    exclude:
+      - "^docs"
+      - "^changelog"
+      - "Merge pull request^"
