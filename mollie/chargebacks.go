@@ -11,21 +11,21 @@ import (
 
 // Chargeback describes a forced transaction reversal initiated by the cardholder's bank
 type Chargeback struct {
-	Resource         string           `json:"resource,omitempty"`
-	ID               string           `json:"id,omitempty"`
-	Amount           *Amount          `json:"amount,omitempty"`
-	SettlementAmount *Amount          `json:"settlementAmount,omitempty"`
-	CreatedAt        *time.Time       `json:"createdAt,omitempty"`
-	ReversedAt       *time.Time       `json:"reversedAt,omitempty"`
-	ChargebackID     string           `json:"chargebackId,omitempty"`
-	Links            *ChargebackLinks `json:"_links,omitempty"`
+	Resource         string          `json:"resource,omitempty"`
+	ID               string          `json:"id,omitempty"`
+	Amount           Amount          `json:"amount,omitempty"`
+	SettlementAmount Amount          `json:"settlementAmount,omitempty"`
+	CreatedAt        time.Time       `json:"createdAt,omitempty"`
+	ReversedAt       time.Time       `json:"reversedAt,omitempty"`
+	PaymentID        string          `json:"paymentId,omitempty"`
+	Links            ChargebackLinks `json:"_links,omitempty"`
 }
 
 // ChargebackLinks describes all the possible links to be returned with
 // a chargeback object.
 type ChargebackLinks struct {
 	Self          URL `json:"self,omitempty"`
-	Chargeback    URL `json:"chargeback,omitempty"`
+	Payment       URL `json:"payment,omitempty"`
 	Settlement    URL `json:"settlement,omitempty"`
 	Documentation URL `json:"documentation,omitempty"`
 }
