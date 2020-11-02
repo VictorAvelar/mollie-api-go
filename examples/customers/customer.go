@@ -9,9 +9,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/VictorAvelar/mollie-api-go/mollie"
 	"log"
 	"os"
+
+	"github.com/VictorAvelar/mollie-api-go/mollie"
 )
 
 func main() {
@@ -52,18 +53,18 @@ func GetCustomerPayments(cs *mollie.Customer, m *mollie.Client) {
 }
 
 //CreateCustomerPayment create a single payment for a particular customer from mollie
-func CreateCustomerPayment(cs *mollie.Customer, m *mollie.Client)  {
+func CreateCustomerPayment(cs *mollie.Customer, m *mollie.Client) {
 	// Create customer payment
 	fmt.Printf("Creating payment for customer  with id %s \n", cs.ID)
 	var bt = mollie.BankTransfer
 
 	var p = mollie.Payment{
-		Amount: &mollie.Amount{
+		Amount: mollie.Amount{
 			Currency: "EUR",
 			Value:    "10.12",
 		},
 		Description: "Order #12345",
-		Method:      &bt,
+		Method:      bt,
 		RedirectURL: "https://webshop.example.org/order/12345/",
 		WebhookURL:  "https://webshop.example.org/payments/webhook/",
 	}

@@ -114,6 +114,8 @@ type ListPaymentOptions struct {
 	Include   string `url:"include,omitempty"`
 	Embed     string `url:"embed,omitempty"`
 	ProfileID string `url:"profileId,omitempty"`
+	From      string `url:"from,omitempty"`
+	Limit     int    `url:"limit,omitempty"`
 }
 
 // PaymentsService instance operates over payment resources

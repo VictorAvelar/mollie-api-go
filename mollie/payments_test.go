@@ -55,7 +55,7 @@ func TestPaymentsService_Create(t *testing.T) {
 	})
 
 	p := Payment{
-		Amount: &Amount{
+		Amount: Amount{
 			Currency: "EUR",
 			Value:    "10.00",
 		},
@@ -188,7 +188,7 @@ func TestPaymentsService_HttpRequestErrors(t *testing.T) {
 	tMux.HandleFunc("/v2/payments/", errorHandler)
 
 	p := Payment{
-		Amount: &Amount{
+		Amount: Amount{
 			Currency: "EUR",
 			Value:    "10.00",
 		},
@@ -218,7 +218,7 @@ func TestPaymentsService_NewAPIRequestErrors(t *testing.T) {
 	tMux.HandleFunc("/v2/payments/", errorHandler)
 
 	p := Payment{
-		Amount: &Amount{
+		Amount: Amount{
 			Currency: "EUR",
 			Value:    "10.00",
 		},
@@ -246,7 +246,7 @@ func TestPaymentsService_EncodingResponseErrors(t *testing.T) {
 	tMux.HandleFunc("/v2/payments/", encodingHandler)
 
 	p := Payment{
-		Amount: &Amount{
+		Amount: Amount{
 			Currency: "EUR",
 			Value:    "10.00",
 		},
