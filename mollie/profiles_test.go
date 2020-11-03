@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/VictorAvelar/mollie-api-go/testdata"
+	"github.com/VictorAvelar/mollie-api-go/v2/testdata"
 )
 
 func TestProfilesService_Get(t *testing.T) {
@@ -311,9 +311,9 @@ func TestProfilesService_DisableGiftCardIssuer(t *testing.T) {
 		teardown()
 		unsetEnv()
 	}()
-	
+
 	id := "pfl_v9hTwCvYqw"
-	
+
 	tMux.HandleFunc(
 		fmt.Sprintf("/v2/profiles/%s/methods/giftcard/issuers/%s", id, Festivalcadeau),
 		func(rw http.ResponseWriter, r *http.Request) {
@@ -322,13 +322,13 @@ func TestProfilesService_DisableGiftCardIssuer(t *testing.T) {
 			if _, ok := r.Header[AuthHeader]; !ok {
 				rw.WriteHeader(http.StatusUnauthorized)
 			}
-			
+
 			rw.WriteHeader(http.StatusNoContent)
 		},
 	)
-	
+
 	err := tClient.Profiles.DisableGiftCardIssuer(id, Festivalcadeau)
-	
+
 	if err != nil {
 		t.Error(err)
 	}
@@ -341,9 +341,9 @@ func TestProfilesService_EnableGiftCardIssuerForCurrent(t *testing.T) {
 		teardown()
 		unsetEnv()
 	}()
-	
+
 	id := "me"
-	
+
 	tMux.HandleFunc(
 		fmt.Sprintf("/v2/profiles/%s/methods/giftcard/issuers/%s", id, Festivalcadeau),
 		func(rw http.ResponseWriter, r *http.Request) {
@@ -352,18 +352,18 @@ func TestProfilesService_EnableGiftCardIssuerForCurrent(t *testing.T) {
 			if _, ok := r.Header[AuthHeader]; !ok {
 				rw.WriteHeader(http.StatusUnauthorized)
 			}
-			
+
 			rw.WriteHeader(http.StatusOK)
 			_, _ = rw.Write([]byte(testdata.EnableGiftCardIssuerResponse))
 		},
 	)
-	
+
 	res, err := tClient.Profiles.EnableGiftCardIssuerForCurrent(Festivalcadeau)
-	
+
 	if err != nil {
 		t.Error(err)
 	}
-	
+
 	if res.ID != Festivalcadeau {
 		t.Errorf("unexpected id received: want %v, got %v", Festivalcadeau, res.ID)
 	}
@@ -376,9 +376,9 @@ func TestProfilesService_DisableGiftCardIssuerForCurrent(t *testing.T) {
 		teardown()
 		unsetEnv()
 	}()
-	
+
 	id := "me"
-	
+
 	tMux.HandleFunc(
 		fmt.Sprintf("/v2/profiles/%s/methods/giftcard/issuers/%s", id, Festivalcadeau),
 		func(rw http.ResponseWriter, r *http.Request) {
@@ -387,13 +387,13 @@ func TestProfilesService_DisableGiftCardIssuerForCurrent(t *testing.T) {
 			if _, ok := r.Header[AuthHeader]; !ok {
 				rw.WriteHeader(http.StatusUnauthorized)
 			}
-			
+
 			rw.WriteHeader(http.StatusNoContent)
 		},
 	)
-	
+
 	err := tClient.Profiles.DisableGiftCardIssuerForCurrent(Festivalcadeau)
-	
+
 	if err != nil {
 		t.Error(err)
 	}

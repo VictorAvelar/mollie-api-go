@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/VictorAvelar/mollie-api-go/testdata"
+	"github.com/VictorAvelar/mollie-api-go/v2/testdata"
 )
 
 func TestMethodsService_ListWithQueryOptionsAmountCurrency(t *testing.T) {
@@ -67,9 +67,9 @@ func TestMethodsService_ListWithQueryOptionsAll(t *testing.T) {
 	opts := &MethodsOptions{
 		AmountCurrency: "USD",
 		AmountValue:    "100.00",
-		Resource: "orders",
-		SequenceType: FirstSequence,
-		Locale: German,
+		Resource:       "orders",
+		SequenceType:   FirstSequence,
+		Locale:         German,
 		BillingCountry: "DE",
 		IncludeWallets: "applepay",
 	}

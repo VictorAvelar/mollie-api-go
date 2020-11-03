@@ -1,11 +1,12 @@
 package mollie
 
 import (
-	"github.com/VictorAvelar/mollie-api-go/testdata"
 	"net/http"
 	"net/url"
 	"strings"
 	"testing"
+
+	"github.com/VictorAvelar/mollie-api-go/v2/testdata"
 )
 
 func TestOrganizationsService_Get(t *testing.T) {

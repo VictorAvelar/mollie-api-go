@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/VictorAvelar/mollie-api-go/mollie"
+	"github.com/VictorAvelar/mollie-api-go/v2/mollie"
 )
 
 func main() {
