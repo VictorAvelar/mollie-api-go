@@ -8,8 +8,8 @@ import (
 
 	"golang.org/x/oauth2"
 
-	"github.com/VictorAvelar/mollie-api-go/mollie"
-	"github.com/VictorAvelar/mollie-api-go/mollie/connect"
+	"github.com/VictorAvelar/mollie-api-go/v2/mollie"
+	"github.com/VictorAvelar/mollie-api-go/v2/mollie/connect"
 )
 
 func main() {

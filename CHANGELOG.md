@@ -6,6 +6,14 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## master
 
+## v2.0.1
+
+### Fixed
+- Path for v2 support
+
+### Deprecated
+- v1 support
+
 ## v2.0.0
 
 ### Added

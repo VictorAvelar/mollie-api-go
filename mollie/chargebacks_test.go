@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/VictorAvelar/mollie-api-go/testdata"
+	"github.com/VictorAvelar/mollie-api-go/v2/testdata"
 )
 
 func TestChargebacksService_Get(t *testing.T) {

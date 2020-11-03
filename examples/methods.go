@@ -5,9 +5,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/VictorAvelar/mollie-api-go/mollie"
+	"github.com/VictorAvelar/mollie-api-go/v2/mollie"
 )
-
 
 func init() {
 	_ = os.Setenv(mollie.APITokenEnv, "YOUR_API_TOKEN")
@@ -16,7 +15,7 @@ func init() {
 	client, _ = mollie.NewClient(nil, config)
 }
 
-// ListPaymentMethods code sample for getting a list of enabled payment methods on the website 
+// ListPaymentMethods code sample for getting a list of enabled payment methods on the website
 func ListPaymentMethods() {
 
 	options := &mollie.MethodsOptions{Resource: "orders"}
@@ -42,9 +41,9 @@ func ListAllPaymentMethods() {
 	fmt.Println(list)
 }
 
-// GetPaymentMethod code sample for getting an enabled payment method on the website 
+// GetPaymentMethod code sample for getting an enabled payment method on the website
 func GetPaymentMethod() {
-	
+
 	options := &mollie.MethodsOptions{Include: "issuers"}
 	paymentMethod, err := client.Methods.Get("ideal", options)
 

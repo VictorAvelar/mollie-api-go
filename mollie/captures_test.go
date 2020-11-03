@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/VictorAvelar/mollie-api-go/testdata"
+	"github.com/VictorAvelar/mollie-api-go/v2/testdata"
 )
 
 func TestCapturesService_Get(t *testing.T) {
