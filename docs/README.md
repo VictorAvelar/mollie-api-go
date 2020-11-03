@@ -1,6 +1,6 @@
 # mollie
 --
-    import "github.com/VictorAvelar/mollie-api-golang/v2/mollie"
+    import "."
 
 Package mollie is a wrapper around Mollie's REST API.
 
@@ -1656,10 +1656,10 @@ GetCurrent retrieve the currently authenticated organization
 
 ```go
 type PaginationLinks struct {
-	Self     URL `json:"self,omitempty"`
-	Previous URL `json:"previous,omitempty"`
-	Next     URL `json:"next,omitempty"`
-	Docs     URL `json:"documentation,omitempty"`
+	Self          URL `json:"self,omitempty"`
+	Previous      URL `json:"previous,omitempty"`
+	Next          URL `json:"next,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
 }
 ```
 
