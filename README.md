@@ -23,9 +23,28 @@ To use the Mollie API client, the following things are required:
 For leveraging [Mollie Connect](https://docs.mollie.com/oauth/overview) (advanced use cases only), it is recommended to be familiar with the OAuth2 protocol.
 
 ## Install
-```go
+```sh
 go get -u github.com/VictorAvelar/mollie-api-go/v2
 ```
+
+## Usage
+
+#### Create a basic client
+
+```go
+// main.go
+/*
+Parse authentication key from MOLLIE_API_TOKEN
+*/
+config := mollie.NewConfig(true, mollie.APITokenEnv)
+client, err := mollie.NewClient(nil, config)
+if err != nil {
+    log.Fatal(err)
+}
+// do your operations with the authenticated client
+```
+
+For more examples visit the [examples](https://github.com/VictorAvelar/mollie-api-go/tree/master/examples) directory.
 
 ## API parity
 
