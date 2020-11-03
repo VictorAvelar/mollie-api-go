@@ -11,32 +11,32 @@ import (
 
 // Order explain the items that customers need to pay for.
 type Order struct {
-	Resource            string         `json:"resource,omitempty"`
-	ID                  string         `json:"id,omitempty"`
-	ProfileID           string         `json:"profileId,omitempty"`
-	Method              *PaymentMethod `json:"method,omitempty"`
-	Mode                *Mode          `json:"mode,omitempty"`
-	Amount              *Amount        `json:"amount,omitempty"`
-	AmountCaptured      *Amount        `json:"amountCaptured,omitempty"`
-	AmountRefunded      *Amount        `json:"amountRefunded,omitempty"`
-	Status              *OrderStatus   `json:"status,omitempty"`
-	IsCancelable        bool           `json:"isCancelable,omitempty"`
-	BillingAddress      *OrderAddress  `json:"billingAddress,omitempty"`
-	ConsumerDateOfBirth *ShortDate     `json:"consumerDateOfBirth,omitempty"`
-	OrderNumber         string         `json:"orderNumber,omitempty"`
-	ShippingAddress     *OrderAddress  `json:"shippingAddress,omitempty"`
-	Locale              *Locale        `json:"locale,omitempty"`
-	Metadata            interface{}    `json:"metadata,omitempty"`
-	RedirectURL         string         `json:"redirectUrl,omitempty"`
-	Lines               []*OrderLine   `json:"lines,omitempty"`
-	WebhookURL          string         `json:"webhookUrl,omitempty"`
-	CreatedAt           *time.Time     `json:"createdAt,omitempty"`
-	ExpiresAt           *time.Time     `json:"expiresAt,omitempty"`
-	ExpiredAt           *time.Time     `json:"expiredAt,omitempty"`
-	PaidAt              *time.Time     `json:"paidAt,omitempty"`
-	AuthorizedAt        *time.Time     `json:"authorizedAt,omitempty"`
-	CanceledAt          *time.Time     `json:"canceledAt,omitempty"`
-	CompletedAt         *time.Time     `json:"completedAt,omitempty"`
+	Resource            string        `json:"resource,omitempty"`
+	ID                  string        `json:"id,omitempty"`
+	ProfileID           string        `json:"profileId,omitempty"`
+	Method              PaymentMethod `json:"method,omitempty"`
+	Mode                Mode          `json:"mode,omitempty"`
+	Amount              Amount        `json:"amount,omitempty"`
+	AmountCaptured      Amount        `json:"amountCaptured,omitempty"`
+	AmountRefunded      Amount        `json:"amountRefunded,omitempty"`
+	Status              OrderStatus   `json:"status,omitempty"`
+	IsCancelable        bool          `json:"isCancelable,omitempty"`
+	BillingAddress      OrderAddress  `json:"billingAddress,omitempty"`
+	ConsumerDateOfBirth ShortDate     `json:"consumerDateOfBirth,omitempty"`
+	OrderNumber         string        `json:"orderNumber,omitempty"`
+	ShippingAddress     OrderAddress  `json:"shippingAddress,omitempty"`
+	Locale              Locale        `json:"locale,omitempty"`
+	Metadata            interface{}   `json:"metadata,omitempty"`
+	RedirectURL         string        `json:"redirectUrl,omitempty"`
+	Lines               []OrderLine   `json:"lines,omitempty"`
+	WebhookURL          string        `json:"webhookUrl,omitempty"`
+	CreatedAt           time.Time     `json:"createdAt,omitempty"`
+	ExpiresAt           time.Time     `json:"expiresAt,omitempty"`
+	ExpiredAt           time.Time     `json:"expiredAt,omitempty"`
+	PaidAt              time.Time     `json:"paidAt,omitempty"`
+	AuthorizedAt        time.Time     `json:"authorizedAt,omitempty"`
+	CanceledAt          time.Time     `json:"canceledAt,omitempty"`
+	CompletedAt         time.Time     `json:"completedAt,omitempty"`
 	Embedded            struct {
 		Payments []Payment `json:"payments,omitempty"`
 		Refunds  []Refund  `json:"refunds,omitempty"`
@@ -49,17 +49,17 @@ type Order struct {
 
 // OrderPayment describes payment specific parameters that can be passed during order creation
 type OrderPayment struct {
-	ConsumerAccount   string          `json:"consumerAccount,omitempty"`
-	CustomerID        string          `json:"customerId,omitempty"`
-	CustomerReference string          `json:"customerReference,omitempty"`
-	Issuer            string          `json:"issuer,omitempty"`
-	MandateID         string          `json:"mandateId,omitempty"`
-	SequenceType      *SequenceType   `json:"sequenceType,omitempty"`
-	VoucherNumber     string          `json:"voucherNumber,omitempty"`
-	VoucherPin        string          `json:"voucherPin,omitempty"`
-	WebhookURL        string          `json:"webhookUrl,omitempty"`
-	ApplicationFee    *ApplicationFee `json:"applicationFee,omitempty"`
-	Method            *PaymentMethod  `json:"method,omitempty"`
+	ConsumerAccount   string         `json:"consumerAccount,omitempty"`
+	CustomerID        string         `json:"customerId,omitempty"`
+	CustomerReference string         `json:"customerReference,omitempty"`
+	Issuer            string         `json:"issuer,omitempty"`
+	MandateID         string         `json:"mandateId,omitempty"`
+	SequenceType      *SequenceType  `json:"sequenceType,omitempty"`
+	VoucherNumber     string         `json:"voucherNumber,omitempty"`
+	VoucherPin        string         `json:"voucherPin,omitempty"`
+	WebhookURL        string         `json:"webhookUrl,omitempty"`
+	ApplicationFee    ApplicationFee `json:"applicationFee,omitempty"`
+	Method            PaymentMethod  `json:"method,omitempty"`
 }
 
 // OrderStatus describes the valid order status.
@@ -78,60 +78,60 @@ const (
 
 // OrderAddress identify both the address and the person the order is billed or shipped to.
 type OrderAddress struct {
-	OrganizationName string       `json:"organizationName,omitempty"`
-	Title            string       `json:"title,omitempty"`
-	GivenName        string       `json:"givenName,omitempty"`
-	FamilyName       string       `json:"familyName,omitempty"`
-	Email            string       `json:"email,omitempty"`
-	Phone            *PhoneNumber `json:"phone,omitempty"`
-	StreetAndNumber  string       `json:"streetAndNumber,omitempty"`
-	StreetAdditional string       `json:"streetAdditional,omitempty"`
-	PostalCode       string       `json:"postalCode,omitempty"`
-	City             string       `json:"city,omitempty"`
-	Region           string       `json:"region,omitempty"`
-	Country          string       `json:"country,omitempty"`
+	OrganizationName string      `json:"organizationName,omitempty"`
+	Title            string      `json:"title,omitempty"`
+	GivenName        string      `json:"givenName,omitempty"`
+	FamilyName       string      `json:"familyName,omitempty"`
+	Email            string      `json:"email,omitempty"`
+	Phone            PhoneNumber `json:"phone,omitempty"`
+	StreetAndNumber  string      `json:"streetAndNumber,omitempty"`
+	StreetAdditional string      `json:"streetAdditional,omitempty"`
+	PostalCode       string      `json:"postalCode,omitempty"`
+	City             string      `json:"city,omitempty"`
+	Region           string      `json:"region,omitempty"`
+	Country          string      `json:"country,omitempty"`
 }
 
 // OrderLinks describes an object with several URL objects
 // relevant to the order.
 // Every URL object will contain an href and a type field.
 type OrderLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Checkout      *URL `json:"checkout,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
-	Dashboard     *URL `json:"dashboard,omitempty"`
+	Self          URL `json:"self,omitempty"`
+	Checkout      URL `json:"checkout,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
+	Dashboard     URL `json:"dashboard,omitempty"`
 }
 
 // OrderLine contain the actual things the customer bought.
 type OrderLine struct {
-	Resource           string           `json:"resource,omitempty"`
-	ID                 string           `json:"id,omitempty"`
-	OrderID            string           `json:"orderId,omitempty"`
-	ProductType        *ProductType     `json:"type,omitempty"`
-	Name               string           `json:"name,omitempty"`
-	Amount             *Amount          `json:"amount,omitempty"`
-	Status             *OrderLineStatus `json:"status,omitempty"`
-	IsCancelable       bool             `json:"isCancelable,omitempty"`
-	Quantity           int              `json:"quantity,omitempty"`
-	QuantityShipped    int              `json:"quantityShipped,omitempty"`
-	AmountShipped      *Amount          `json:"amountShipped,omitempty"`
-	QuantityRefunded   int              `json:"quantityRefunded,omitempty"`
-	AmountRefunded     *Amount          `json:"amountRefunded,omitempty"`
-	QuantityCanceled   int              `json:"quantityCanceled,omitempty"`
-	AmountCanceled     *Amount          `json:"amountCanceled,omitempty"`
-	ShippableQuantity  int              `json:"shippableQuantity,omitempty"`
-	RefundableQuantity int              `json:"refundableQuantity,omitempty"`
-	CancelableQuantity int              `json:"cancelableQuantity,omitempty"`
-	UnitPrice          *Amount          `json:"unitPrice,omitempty"`
-	DiscountAmount     *Amount          `json:"discountAmount,omitempty"`
-	TotalAmount        *Amount          `json:"totalAmount,omitempty"`
-	VatRate            string           `json:"vatRate,omitempty"`
-	VatAmount          *Amount          `json:"vatAmount,omitempty"`
-	SKU                string           `json:"sku,omitempty"`
-	CreatedAt          *time.Time       `json:"createdAt,omitempty"`
-	Links              *OrderLineLinks  `json:"_links,omitempty"`
-	ImageURL           string           `json:"imageUrl,omitempty"`
-	ProductURL         string           `json:"productUrl,omitempty"`
+	Resource           string          `json:"resource,omitempty"`
+	ID                 string          `json:"id,omitempty"`
+	OrderID            string          `json:"orderId,omitempty"`
+	ProductType        ProductType     `json:"type,omitempty"`
+	Name               string          `json:"name,omitempty"`
+	Amount             Amount          `json:"amount,omitempty"`
+	Status             OrderLineStatus `json:"status,omitempty"`
+	IsCancelable       bool            `json:"isCancelable,omitempty"`
+	Quantity           int             `json:"quantity,omitempty"`
+	QuantityShipped    int             `json:"quantityShipped,omitempty"`
+	AmountShipped      Amount          `json:"amountShipped,omitempty"`
+	QuantityRefunded   int             `json:"quantityRefunded,omitempty"`
+	AmountRefunded     Amount          `json:"amountRefunded,omitempty"`
+	QuantityCanceled   int             `json:"quantityCanceled,omitempty"`
+	AmountCanceled     Amount          `json:"amountCanceled,omitempty"`
+	ShippableQuantity  int             `json:"shippableQuantity,omitempty"`
+	RefundableQuantity int             `json:"refundableQuantity,omitempty"`
+	CancelableQuantity int             `json:"cancelableQuantity,omitempty"`
+	UnitPrice          Amount          `json:"unitPrice,omitempty"`
+	DiscountAmount     Amount          `json:"discountAmount,omitempty"`
+	TotalAmount        Amount          `json:"totalAmount,omitempty"`
+	VatRate            string          `json:"vatRate,omitempty"`
+	VatAmount          Amount          `json:"vatAmount,omitempty"`
+	SKU                string          `json:"sku,omitempty"`
+	CreatedAt          time.Time       `json:"createdAt,omitempty"`
+	Links              OrderLineLinks  `json:"_links,omitempty"`
+	ImageURL           string          `json:"imageUrl,omitempty"`
+	ProductURL         string          `json:"productUrl,omitempty"`
 }
 
 // OrderList for containing the response of list orders
@@ -181,8 +181,8 @@ const (
 
 // OrderLineLinks describes object with several URL objects relevant to the order line.
 type OrderLineLinks struct {
-	ProductURL *URL `json:"productUrl,omitempty"`
-	ImageURL   *URL `json:"imageUrl,omitempty"`
+	ProductURL URL `json:"productUrl,omitempty"`
+	ImageURL   URL `json:"imageUrl,omitempty"`
 }
 
 // OrderOptions describes order endpoint valid query string parameters.

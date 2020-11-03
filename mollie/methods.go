@@ -13,8 +13,8 @@ type PaymentMethodInfo struct {
 	Resource      string                 `json:"resource,omitempty"`
 	ID            string                 `json:"id,omitempty"`
 	Description   string                 `json:"description,omitempty"`
-	MinimumAmount *Amount                `json:"minimumAmount,omitempty"`
-	MaximumAmount *Amount                `json:"maximumAmount,omitempty"`
+	MinimumAmount Amount                 `json:"minimumAmount,omitempty"`
+	MaximumAmount Amount                 `json:"maximumAmount,omitempty"`
 	Image         Image                  `json:"image,omitempty"`
 	Pricing       []PaymentMethodPricing `json:"pricing,omitempty"`
 	Links         MethodsLinks           `json:"_links,omitempty"`
@@ -36,9 +36,9 @@ type Image struct {
 // PaymentMethodPricing contains information about commissions and fees
 // applicable to a payment method.
 type PaymentMethodPricing struct {
-	Description string  `json:"description,omitempty"`
-	Fixed       *Amount `json:"fixed,omitempty"`
-	Variable    string  `json:"variable,omitempty"`
+	Description string `json:"description,omitempty"`
+	Fixed       Amount `json:"fixed,omitempty"`
+	Variable    string `json:"variable,omitempty"`
 }
 
 // ListMethods describes a list of paginated payment methods.

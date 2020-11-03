@@ -17,7 +17,7 @@ type Shipment struct {
 	Resource  string           `json:"resource,omitempty"`
 	ID        string           `json:"id,omitempty"`
 	OrderID   string           `json:"orderId,omitempty"`
-	CreatedAt *time.Time       `json:"createdAt,omitempty"`
+	CreatedAt time.Time        `json:"createdAt,omitempty"`
 	Tracking  ShipmentTracking `json:"tracking,omitempty"`
 	Lines     []OrderLine      `json:"lines,omitempty"`
 	Links     ShipmentLinks    `json:"_links,omitempty"`
@@ -33,9 +33,9 @@ type ShipmentTracking struct {
 // ShipmentLinks contains URL objects with shipment relevant
 // information for the user.
 type ShipmentLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Order         *URL `json:"order,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+	Self          URL `json:"self,omitempty"`
+	Order         URL `json:"order,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
 }
 
 // Get retrieves a single shipment and the order lines shipped by a shipment’s ID.

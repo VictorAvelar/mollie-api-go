@@ -70,8 +70,8 @@ type Settlement struct {
 	ID        string           `json:"id,omitempty"`
 	Resource  string           `json:"resource,omitempty"`
 	Reference string           `json:"reference,omitempty"`
-	CreatedAt *time.Time       `json:"createdAt,omitempty"`
-	SettledAt *time.Time       `json:"settledAt,omitempty"`
+	CreatedAt time.Time        `json:"createdAt,omitempty"`
+	SettledAt time.Time        `json:"settledAt,omitempty"`
 	Status    SettlementStatus `json:"status,omitempty"`
 	Amount    Amount           `json:"amount,omitempty"`
 	Periods   SettlementObject `json:"periods,omitempty"`
@@ -81,7 +81,7 @@ type Settlement struct {
 
 // SettlementsListOptions contains query parameters for settlement lists.
 type SettlementsListOptions struct {
-	From  *ShortDate `url:"from,omitempty"`
+	From  ShortDate  `url:"from,omitempty"`
 	Limit int        `url:"limit,omitempty"`
 	Embed EmbedValue `url:"embed,omitempty"`
 }

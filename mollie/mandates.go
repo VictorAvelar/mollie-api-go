@@ -17,25 +17,25 @@ type Mandate struct {
 	ConsumerName     string         `json:"consumerName,omitempty"`
 	ConsumerAccount  string         `json:"consumerAccount,omitempty"`
 	ConsumerBic      string         `json:"consumerBic,omitempty"`
-	SignatureDate    *ShortDate     `json:"signatureDate,omitempty"`
+	SignatureDate    ShortDate      `json:"signatureDate,omitempty"`
 	MandateReference string         `json:"mandateReference,omitempty"`
 	Mode             Mode           `json:"mode,omitempty"`
 	Status           MandateStatus  `json:"status,omitempty"`
-	CreatedAt        *time.Time     `json:"createdAt,omitempty"`
+	CreatedAt        time.Time      `json:"createdAt,omitempty"`
 	Details          MandateDetails `json:"details,omitempty"`
 	Links            MandateLinks   `json:"_links,omitempty"`
 }
 
 // MandateDetails are possible values inside the mandate.details field
 type MandateDetails struct {
-	ConsumerName    string     `json:"consumerName,omitempty"`
-	ConsumerAccount string     `json:"consumerAccount,omitempty"`
-	ConsumerBic     string     `json:"consumerBic,omitempty"`
-	CardHolder      string     `json:"cardHolder,omitempty"`
-	CardNumber      string     `json:"cardNumber,omitempty"`
-	CardLabel       CardLabel  `json:"cardLabel,omitempty"`
-	CardFingerprint string     `json:"cardFingerprint,omitempty"`
-	CardExpiryDate  *ShortDate `json:"cardExpiryDate,omitempty"`
+	ConsumerName    string    `json:"consumerName,omitempty"`
+	ConsumerAccount string    `json:"consumerAccount,omitempty"`
+	ConsumerBic     string    `json:"consumerBic,omitempty"`
+	CardHolder      string    `json:"cardHolder,omitempty"`
+	CardNumber      string    `json:"cardNumber,omitempty"`
+	CardLabel       CardLabel `json:"cardLabel,omitempty"`
+	CardFingerprint string    `json:"cardFingerprint,omitempty"`
+	CardExpiryDate  ShortDate `json:"cardExpiryDate,omitempty"`
 }
 
 // MandateStatus for the Mandate object
@@ -73,9 +73,9 @@ type MandatesService service
 
 // MandateLinks response objects
 type MandateLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Customer      *URL `json:"customer,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+	Self          URL `json:"self,omitempty"`
+	Customer      URL `json:"customer,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
 }
 
 // ListMandatesOptions contains valid query parameters

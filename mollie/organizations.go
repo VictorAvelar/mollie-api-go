@@ -8,31 +8,31 @@ import (
 
 // Organization describes an organization detail
 type Organization struct {
-	Resource           string             `json:"resource,omitempty"`
-	ID                 string             `json:"id,omitempty"`
-	Name               string             `json:"name,omitempty"`
-	Email              string             `json:"email,omitempty"`
-	Locale             string             `json:"locale,omitempty"`
-	Address            *Address           `json:"address,omitempty"`
-	RegistrationNumber string             `json:"registrationNumber,omitempty"`
-	VatNumber          string             `json:"vatNumber,omitempty"`
-	VatRegulation      string             `json:"vatRegulation,omitempty"`
-	Links              *OrganizationLinks `json:"_links,omitempty"`
+	Resource           string            `json:"resource,omitempty"`
+	ID                 string            `json:"id,omitempty"`
+	Name               string            `json:"name,omitempty"`
+	Email              string            `json:"email,omitempty"`
+	Locale             string            `json:"locale,omitempty"`
+	Address            Address           `json:"address,omitempty"`
+	RegistrationNumber string            `json:"registrationNumber,omitempty"`
+	VatNumber          string            `json:"vatNumber,omitempty"`
+	VatRegulation      string            `json:"vatRegulation,omitempty"`
+	Links              OrganizationLinks `json:"_links,omitempty"`
 }
 
 // OrganizationLinks describes all the possible links to be returned with
 // a organization object.
 type OrganizationLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Chargebacks   *URL `json:"chargebacks,omitempty"`
-	Customers     *URL `json:"customers,omitempty"`
-	Dashboard     *URL `json:"dashboard,omitempty"`
-	Invoices      *URL `json:"invoices,omitempty"`
-	Payments      *URL `json:"payments,omitempty"`
-	Profiles      *URL `json:"profiles,omitempty"`
-	Refunds       *URL `json:"refunds,omitempty"`
-	Settlements   *URL `json:"settlements,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+	Self          URL `json:"self,omitempty"`
+	Chargebacks   URL `json:"chargebacks,omitempty"`
+	Customers     URL `json:"customers,omitempty"`
+	Dashboard     URL `json:"dashboard,omitempty"`
+	Invoices      URL `json:"invoices,omitempty"`
+	Payments      URL `json:"payments,omitempty"`
+	Profiles      URL `json:"profiles,omitempty"`
+	Refunds       URL `json:"refunds,omitempty"`
+	Settlements   URL `json:"settlements,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
 }
 
 // OrganizationsService instance operates over organization resources

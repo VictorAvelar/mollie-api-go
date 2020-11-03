@@ -14,12 +14,12 @@ type CustomersService service
 
 // CustomerLinks contains the HAL resources for a customer response
 type CustomerLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Mandates      *URL `json:"mandates,omitempty"`
-	Subscriptions *URL `json:"subscriptions,omitempty"`
-	Payments      *URL `json:"payments,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
-	Dashboard     *URL `json:"dashboard,omitempty"`
+	Self          URL `json:"self,omitempty"`
+	Mandates      URL `json:"mandates,omitempty"`
+	Subscriptions URL `json:"subscriptions,omitempty"`
+	Payments      URL `json:"payments,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
+	Dashboard     URL `json:"dashboard,omitempty"`
 }
 
 // Customer represents buyers
@@ -31,7 +31,7 @@ type Customer struct {
 	Email     string                 `json:"email,omitempty"`
 	Locale    Locale                 `json:"locale,omitempty"`
 	Metadata  map[string]interface{} `json:"metadata,omitempty"`
-	CreatedAt *time.Time             `json:"createdAt,omitempty"`
+	CreatedAt time.Time              `json:"createdAt,omitempty"`
 	Links     CustomerLinks          `json:"_links,omitempty"`
 }
 
