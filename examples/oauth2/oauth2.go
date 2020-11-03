@@ -41,6 +41,6 @@ func main() {
 		fmt.Printf("- Name: %s\n", o.Description)
 	}
 
-	fmt.Printf("For detailed information see: %s", output.Links.Docs.Href)
+	fmt.Printf("For detailed information see: %s", output.Links.Documentation.Href)
 	os.Exit(0)
 }

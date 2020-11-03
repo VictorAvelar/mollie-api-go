@@ -98,10 +98,10 @@ type URL struct {
 
 // PaginationLinks describes the hal component of paginated responses.
 type PaginationLinks struct {
-	Self     URL `json:"self,omitempty"`
-	Previous URL `json:"previous,omitempty"`
-	Next     URL `json:"next,omitempty"`
-	Docs     URL `json:"documentation,omitempty"`
+	Self          URL `json:"self,omitempty"`
+	Previous      URL `json:"previous,omitempty"`
+	Next          URL `json:"next,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
 }
 
 // CategoryCode specifies an industry or category
