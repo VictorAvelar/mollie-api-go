@@ -22,6 +22,10 @@ To use the Mollie API client, the following things are required:
 
 For leveraging [Mollie Connect](https://docs.mollie.com/oauth/overview) (advanced use cases only), it is recommended to be familiar with the OAuth2 protocol.
 
+## Install
+```go
+go get -u github.com/VictorAvelar/mollie-api-go/v2
+```
 
 ## API parity
 
