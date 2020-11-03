@@ -1,6 +1,6 @@
 # mollie
 --
-    import "github.com/VictorAvelar/mollie-api-golang/v2/mollie"
+    import "."
 
 Package mollie is a wrapper around Mollie's REST API.
 
@@ -752,7 +752,7 @@ type GiftCardLinks struct {
 }
 ```
 
-GiftCardLinks are links embeded when a gift card is enabled.
+GiftCardLinks are links embedded when a gift card is enabled.
 
 #### type Image
 
