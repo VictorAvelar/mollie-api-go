@@ -752,7 +752,7 @@ type GiftCardLinks struct {
 }
 ```
 
-GiftCardLinks are links embeded when a gift card is enabled.
+GiftCardLinks are links embedded when a gift card is enabled.
 
 #### type Image
 
@@ -1656,10 +1656,10 @@ GetCurrent retrieve the currently authenticated organization
 
 ```go
 type PaginationLinks struct {
-	Self     URL `json:"self,omitempty"`
-	Previous URL `json:"previous,omitempty"`
-	Next     URL `json:"next,omitempty"`
-	Docs     URL `json:"documentation,omitempty"`
+	Self          URL `json:"self,omitempty"`
+	Previous      URL `json:"previous,omitempty"`
+	Next          URL `json:"next,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
 }
 ```
 
