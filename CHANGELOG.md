@@ -12,7 +12,8 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 - Missing payment list url options
 
 ### Changed
-- Replaced pointers with values in the whole library
+- Replaced pointers with values in the whole library (BREAKING)
+- All the documentation links name unified to `Documentation`
 
 ## v1.6.5
 
