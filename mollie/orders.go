@@ -41,10 +41,10 @@ type Order struct {
 		Payments []Payment `json:"payments,omitempty"`
 		Refunds  []Refund  `json:"refunds,omitempty"`
 	} `json:"_embedded,omitempty"`
-	Links                                    *OrderLinks   `json:"_links,omitempty"`
-	OrderPayment                             *OrderPayment `json:"payment,omitempty"`
-	Description                              string        `json:"description,omitempty"`
-	ShopperCountryMustMatchTheBillingCountry bool          `json:"shopperCountryMustMatchTheBillingCountry,omitempty"`
+	Links                                    OrderLinks   `json:"_links,omitempty"`
+	OrderPayment                             OrderPayment `json:"payment,omitempty"`
+	Description                              string       `json:"description,omitempty"`
+	ShopperCountryMustMatchTheBillingCountry bool         `json:"shopperCountryMustMatchTheBillingCountry,omitempty"`
 }
 
 // OrderPayment describes payment specific parameters that can be passed during order creation

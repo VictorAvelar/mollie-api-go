@@ -22,8 +22,8 @@ type PaymentMethodInfo struct {
 
 // MethodsLinks describes links attached to methods service responses.
 type MethodsLinks struct {
-	Self URL `json:"self,omitempty"`
-	Docs URL `json:"documentation,omitempty"`
+	Self          URL `json:"self,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
 }
 
 // Image describes a generic image resource retrieved by Mollie.
