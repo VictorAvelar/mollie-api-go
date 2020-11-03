@@ -137,7 +137,7 @@ type Capture struct {
 	PaymentID        string       `json:"paymentId,omitempty"`
 	ShipmentID       string       `json:"shipmentId,omitempty"`
 	SettlementID     string       `json:"settlementId,omitempty"`
-	CreatedAt        *time.Time   `json:"createdAt,omitempty"`
+	CreatedAt        time.Time    `json:"createdAt,omitempty"`
 	Links            CaptureLinks `json:"links,omitempty"`
 }
 ```
@@ -466,7 +466,7 @@ type Customer struct {
 	Email     string                 `json:"email,omitempty"`
 	Locale    Locale                 `json:"locale,omitempty"`
 	Metadata  map[string]interface{} `json:"metadata,omitempty"`
-	CreatedAt *time.Time             `json:"createdAt,omitempty"`
+	CreatedAt time.Time              `json:"createdAt,omitempty"`
 	Links     CustomerLinks          `json:"_links,omitempty"`
 }
 ```
@@ -477,12 +477,12 @@ Customer represents buyers
 
 ```go
 type CustomerLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Mandates      *URL `json:"mandates,omitempty"`
-	Subscriptions *URL `json:"subscriptions,omitempty"`
-	Payments      *URL `json:"payments,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
-	Dashboard     *URL `json:"dashboard,omitempty"`
+	Self          URL `json:"self,omitempty"`
+	Mandates      URL `json:"mandates,omitempty"`
+	Subscriptions URL `json:"subscriptions,omitempty"`
+	Payments      URL `json:"payments,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
+	Dashboard     URL `json:"dashboard,omitempty"`
 }
 ```
 
@@ -781,8 +781,8 @@ type Invoice struct {
 	NetAmount   Amount        `json:"netAmount,omitempty"`
 	VatAmount   Amount        `json:"vatAmount,omitempty"`
 	GrossAmount Amount        `json:"grossAmount,omitempty"`
-	Lines       []*LineItem   `json:"lines,omitempty"`
-	Links       *InvoiceLinks `json:"_links,omitempty"`
+	Lines       []LineItem    `json:"lines,omitempty"`
+	Links       InvoiceLinks  `json:"_links,omitempty"`
 }
 ```
 
@@ -792,9 +792,9 @@ Invoice describes an invoice details
 
 ```go
 type InvoiceLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	PDF           *URL `json:"pdf,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+	Self          URL `json:"self,omitempty"`
+	PDF           URL `json:"pdf,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
 }
 ```
 
@@ -1012,11 +1012,11 @@ type Mandate struct {
 	ConsumerName     string         `json:"consumerName,omitempty"`
 	ConsumerAccount  string         `json:"consumerAccount,omitempty"`
 	ConsumerBic      string         `json:"consumerBic,omitempty"`
-	SignatureDate    *ShortDate     `json:"signatureDate,omitempty"`
+	SignatureDate    ShortDate      `json:"signatureDate,omitempty"`
 	MandateReference string         `json:"mandateReference,omitempty"`
 	Mode             Mode           `json:"mode,omitempty"`
 	Status           MandateStatus  `json:"status,omitempty"`
-	CreatedAt        *time.Time     `json:"createdAt,omitempty"`
+	CreatedAt        time.Time      `json:"createdAt,omitempty"`
 	Details          MandateDetails `json:"details,omitempty"`
 	Links            MandateLinks   `json:"_links,omitempty"`
 }
@@ -1029,14 +1029,14 @@ recurrently.
 
 ```go
 type MandateDetails struct {
-	ConsumerName    string     `json:"consumerName,omitempty"`
-	ConsumerAccount string     `json:"consumerAccount,omitempty"`
-	ConsumerBic     string     `json:"consumerBic,omitempty"`
-	CardHolder      string     `json:"cardHolder,omitempty"`
-	CardNumber      string     `json:"cardNumber,omitempty"`
-	CardLabel       CardLabel  `json:"cardLabel,omitempty"`
-	CardFingerprint string     `json:"cardFingerprint,omitempty"`
-	CardExpiryDate  *ShortDate `json:"cardExpiryDate,omitempty"`
+	ConsumerName    string    `json:"consumerName,omitempty"`
+	ConsumerAccount string    `json:"consumerAccount,omitempty"`
+	ConsumerBic     string    `json:"consumerBic,omitempty"`
+	CardHolder      string    `json:"cardHolder,omitempty"`
+	CardNumber      string    `json:"cardNumber,omitempty"`
+	CardLabel       CardLabel `json:"cardLabel,omitempty"`
+	CardFingerprint string    `json:"cardFingerprint,omitempty"`
+	CardExpiryDate  ShortDate `json:"cardExpiryDate,omitempty"`
 }
 ```
 
@@ -1046,9 +1046,9 @@ MandateDetails are possible values inside the mandate.details field
 
 ```go
 type MandateLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Customer      *URL `json:"customer,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+	Self          URL `json:"self,omitempty"`
+	Customer      URL `json:"customer,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
 }
 ```
 
@@ -1138,8 +1138,8 @@ See: https://docs.mollie.com/reference/v2/mandates-api/revoke-mandate
 
 ```go
 type MethodsLinks struct {
-	Self URL `json:"self,omitempty"`
-	Docs URL `json:"documentation,omitempty"`
+	Self          URL `json:"self,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
 }
 ```
 
@@ -1243,40 +1243,40 @@ Valid modes
 
 ```go
 type Order struct {
-	Resource            string         `json:"resource,omitempty"`
-	ID                  string         `json:"id,omitempty"`
-	ProfileID           string         `json:"profileId,omitempty"`
-	Method              *PaymentMethod `json:"method,omitempty"`
-	Mode                *Mode          `json:"mode,omitempty"`
-	Amount              *Amount        `json:"amount,omitempty"`
-	AmountCaptured      *Amount        `json:"amountCaptured,omitempty"`
-	AmountRefunded      *Amount        `json:"amountRefunded,omitempty"`
-	Status              *OrderStatus   `json:"status,omitempty"`
-	IsCancelable        bool           `json:"isCancelable,omitempty"`
-	BillingAddress      *OrderAddress  `json:"billingAddress,omitempty"`
-	ConsumerDateOfBirth *ShortDate     `json:"consumerDateOfBirth,omitempty"`
-	OrderNumber         string         `json:"orderNumber,omitempty"`
-	ShippingAddress     *OrderAddress  `json:"shippingAddress,omitempty"`
-	Locale              *Locale        `json:"locale,omitempty"`
-	Metadata            interface{}    `json:"metadata,omitempty"`
-	RedirectURL         string         `json:"redirectUrl,omitempty"`
-	Lines               []*OrderLine   `json:"lines,omitempty"`
-	WebhookURL          string         `json:"webhookUrl,omitempty"`
-	CreatedAt           *time.Time     `json:"createdAt,omitempty"`
-	ExpiresAt           *time.Time     `json:"expiresAt,omitempty"`
-	ExpiredAt           *time.Time     `json:"expiredAt,omitempty"`
-	PaidAt              *time.Time     `json:"paidAt,omitempty"`
-	AuthorizedAt        *time.Time     `json:"authorizedAt,omitempty"`
-	CanceledAt          *time.Time     `json:"canceledAt,omitempty"`
-	CompletedAt         *time.Time     `json:"completedAt,omitempty"`
+	Resource            string        `json:"resource,omitempty"`
+	ID                  string        `json:"id,omitempty"`
+	ProfileID           string        `json:"profileId,omitempty"`
+	Method              PaymentMethod `json:"method,omitempty"`
+	Mode                Mode          `json:"mode,omitempty"`
+	Amount              Amount        `json:"amount,omitempty"`
+	AmountCaptured      Amount        `json:"amountCaptured,omitempty"`
+	AmountRefunded      Amount        `json:"amountRefunded,omitempty"`
+	Status              OrderStatus   `json:"status,omitempty"`
+	IsCancelable        bool          `json:"isCancelable,omitempty"`
+	BillingAddress      OrderAddress  `json:"billingAddress,omitempty"`
+	ConsumerDateOfBirth ShortDate     `json:"consumerDateOfBirth,omitempty"`
+	OrderNumber         string        `json:"orderNumber,omitempty"`
+	ShippingAddress     OrderAddress  `json:"shippingAddress,omitempty"`
+	Locale              Locale        `json:"locale,omitempty"`
+	Metadata            interface{}   `json:"metadata,omitempty"`
+	RedirectURL         string        `json:"redirectUrl,omitempty"`
+	Lines               []OrderLine   `json:"lines,omitempty"`
+	WebhookURL          string        `json:"webhookUrl,omitempty"`
+	CreatedAt           time.Time     `json:"createdAt,omitempty"`
+	ExpiresAt           time.Time     `json:"expiresAt,omitempty"`
+	ExpiredAt           time.Time     `json:"expiredAt,omitempty"`
+	PaidAt              time.Time     `json:"paidAt,omitempty"`
+	AuthorizedAt        time.Time     `json:"authorizedAt,omitempty"`
+	CanceledAt          time.Time     `json:"canceledAt,omitempty"`
+	CompletedAt         time.Time     `json:"completedAt,omitempty"`
 	Embedded            struct {
 		Payments []Payment `json:"payments,omitempty"`
 		Refunds  []Refund  `json:"refunds,omitempty"`
 	} `json:"_embedded,omitempty"`
-	Links                                    *OrderLinks   `json:"_links,omitempty"`
-	OrderPayment                             *OrderPayment `json:"payment,omitempty"`
-	Description                              string        `json:"description,omitempty"`
-	ShopperCountryMustMatchTheBillingCountry bool          `json:"shopperCountryMustMatchTheBillingCountry,omitempty"`
+	Links                                    OrderLinks   `json:"_links,omitempty"`
+	OrderPayment                             OrderPayment `json:"payment,omitempty"`
+	Description                              string       `json:"description,omitempty"`
+	ShopperCountryMustMatchTheBillingCountry bool         `json:"shopperCountryMustMatchTheBillingCountry,omitempty"`
 }
 ```
 
@@ -1286,18 +1286,18 @@ Order explain the items that customers need to pay for.
 
 ```go
 type OrderAddress struct {
-	OrganizationName string       `json:"organizationName,omitempty"`
-	Title            string       `json:"title,omitempty"`
-	GivenName        string       `json:"givenName,omitempty"`
-	FamilyName       string       `json:"familyName,omitempty"`
-	Email            string       `json:"email,omitempty"`
-	Phone            *PhoneNumber `json:"phone,omitempty"`
-	StreetAndNumber  string       `json:"streetAndNumber,omitempty"`
-	StreetAdditional string       `json:"streetAdditional,omitempty"`
-	PostalCode       string       `json:"postalCode,omitempty"`
-	City             string       `json:"city,omitempty"`
-	Region           string       `json:"region,omitempty"`
-	Country          string       `json:"country,omitempty"`
+	OrganizationName string      `json:"organizationName,omitempty"`
+	Title            string      `json:"title,omitempty"`
+	GivenName        string      `json:"givenName,omitempty"`
+	FamilyName       string      `json:"familyName,omitempty"`
+	Email            string      `json:"email,omitempty"`
+	Phone            PhoneNumber `json:"phone,omitempty"`
+	StreetAndNumber  string      `json:"streetAndNumber,omitempty"`
+	StreetAdditional string      `json:"streetAdditional,omitempty"`
+	PostalCode       string      `json:"postalCode,omitempty"`
+	City             string      `json:"city,omitempty"`
+	Region           string      `json:"region,omitempty"`
+	Country          string      `json:"country,omitempty"`
 }
 ```
 
@@ -1308,34 +1308,34 @@ shipped to.
 
 ```go
 type OrderLine struct {
-	Resource           string           `json:"resource,omitempty"`
-	ID                 string           `json:"id,omitempty"`
-	OrderID            string           `json:"orderId,omitempty"`
-	ProductType        *ProductType     `json:"type,omitempty"`
-	Name               string           `json:"name,omitempty"`
-	Amount             *Amount          `json:"amount,omitempty"`
-	Status             *OrderLineStatus `json:"status,omitempty"`
-	IsCancelable       bool             `json:"isCancelable,omitempty"`
-	Quantity           int              `json:"quantity,omitempty"`
-	QuantityShipped    int              `json:"quantityShipped,omitempty"`
-	AmountShipped      *Amount          `json:"amountShipped,omitempty"`
-	QuantityRefunded   int              `json:"quantityRefunded,omitempty"`
-	AmountRefunded     *Amount          `json:"amountRefunded,omitempty"`
-	QuantityCanceled   int              `json:"quantityCanceled,omitempty"`
-	AmountCanceled     *Amount          `json:"amountCanceled,omitempty"`
-	ShippableQuantity  int              `json:"shippableQuantity,omitempty"`
-	RefundableQuantity int              `json:"refundableQuantity,omitempty"`
-	CancelableQuantity int              `json:"cancelableQuantity,omitempty"`
-	UnitPrice          *Amount          `json:"unitPrice,omitempty"`
-	DiscountAmount     *Amount          `json:"discountAmount,omitempty"`
-	TotalAmount        *Amount          `json:"totalAmount,omitempty"`
-	VatRate            string           `json:"vatRate,omitempty"`
-	VatAmount          *Amount          `json:"vatAmount,omitempty"`
-	SKU                string           `json:"sku,omitempty"`
-	CreatedAt          *time.Time       `json:"createdAt,omitempty"`
-	Links              *OrderLineLinks  `json:"_links,omitempty"`
-	ImageURL           string           `json:"imageUrl,omitempty"`
-	ProductURL         string           `json:"productUrl,omitempty"`
+	Resource           string          `json:"resource,omitempty"`
+	ID                 string          `json:"id,omitempty"`
+	OrderID            string          `json:"orderId,omitempty"`
+	ProductType        ProductType     `json:"type,omitempty"`
+	Name               string          `json:"name,omitempty"`
+	Amount             Amount          `json:"amount,omitempty"`
+	Status             OrderLineStatus `json:"status,omitempty"`
+	IsCancelable       bool            `json:"isCancelable,omitempty"`
+	Quantity           int             `json:"quantity,omitempty"`
+	QuantityShipped    int             `json:"quantityShipped,omitempty"`
+	AmountShipped      Amount          `json:"amountShipped,omitempty"`
+	QuantityRefunded   int             `json:"quantityRefunded,omitempty"`
+	AmountRefunded     Amount          `json:"amountRefunded,omitempty"`
+	QuantityCanceled   int             `json:"quantityCanceled,omitempty"`
+	AmountCanceled     Amount          `json:"amountCanceled,omitempty"`
+	ShippableQuantity  int             `json:"shippableQuantity,omitempty"`
+	RefundableQuantity int             `json:"refundableQuantity,omitempty"`
+	CancelableQuantity int             `json:"cancelableQuantity,omitempty"`
+	UnitPrice          Amount          `json:"unitPrice,omitempty"`
+	DiscountAmount     Amount          `json:"discountAmount,omitempty"`
+	TotalAmount        Amount          `json:"totalAmount,omitempty"`
+	VatRate            string          `json:"vatRate,omitempty"`
+	VatAmount          Amount          `json:"vatAmount,omitempty"`
+	SKU                string          `json:"sku,omitempty"`
+	CreatedAt          time.Time       `json:"createdAt,omitempty"`
+	Links              OrderLineLinks  `json:"_links,omitempty"`
+	ImageURL           string          `json:"imageUrl,omitempty"`
+	ProductURL         string          `json:"productUrl,omitempty"`
 }
 ```
 
@@ -1345,8 +1345,8 @@ OrderLine contain the actual things the customer bought.
 
 ```go
 type OrderLineLinks struct {
-	ProductURL *URL `json:"productUrl,omitempty"`
-	ImageURL   *URL `json:"imageUrl,omitempty"`
+	ProductURL URL `json:"productUrl,omitempty"`
+	ImageURL   URL `json:"imageUrl,omitempty"`
 }
 ```
 
@@ -1377,10 +1377,10 @@ Valid order line status.
 
 ```go
 type OrderLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Checkout      *URL `json:"checkout,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
-	Dashboard     *URL `json:"dashboard,omitempty"`
+	Self          URL `json:"self,omitempty"`
+	Checkout      URL `json:"checkout,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
+	Dashboard     URL `json:"dashboard,omitempty"`
 }
 ```
 
@@ -1454,17 +1454,17 @@ OrderOptions describes order endpoint valid query string parameters.
 
 ```go
 type OrderPayment struct {
-	ConsumerAccount   string          `json:"consumerAccount,omitempty"`
-	CustomerID        string          `json:"customerId,omitempty"`
-	CustomerReference string          `json:"customerReference,omitempty"`
-	Issuer            string          `json:"issuer,omitempty"`
-	MandateID         string          `json:"mandateId,omitempty"`
-	SequenceType      *SequenceType   `json:"sequenceType,omitempty"`
-	VoucherNumber     string          `json:"voucherNumber,omitempty"`
-	VoucherPin        string          `json:"voucherPin,omitempty"`
-	WebhookURL        string          `json:"webhookUrl,omitempty"`
-	ApplicationFee    *ApplicationFee `json:"applicationFee,omitempty"`
-	Method            *PaymentMethod  `json:"method,omitempty"`
+	ConsumerAccount   string         `json:"consumerAccount,omitempty"`
+	CustomerID        string         `json:"customerId,omitempty"`
+	CustomerReference string         `json:"customerReference,omitempty"`
+	Issuer            string         `json:"issuer,omitempty"`
+	MandateID         string         `json:"mandateId,omitempty"`
+	SequenceType      *SequenceType  `json:"sequenceType,omitempty"`
+	VoucherNumber     string         `json:"voucherNumber,omitempty"`
+	VoucherPin        string         `json:"voucherPin,omitempty"`
+	WebhookURL        string         `json:"webhookUrl,omitempty"`
+	ApplicationFee    ApplicationFee `json:"applicationFee,omitempty"`
+	Method            PaymentMethod  `json:"method,omitempty"`
 }
 ```
 
@@ -1595,16 +1595,16 @@ See https://docs.mollie.com/reference/v2/orders-api/update-orderline
 
 ```go
 type Organization struct {
-	Resource           string             `json:"resource,omitempty"`
-	ID                 string             `json:"id,omitempty"`
-	Name               string             `json:"name,omitempty"`
-	Email              string             `json:"email,omitempty"`
-	Locale             string             `json:"locale,omitempty"`
-	Address            *Address           `json:"address,omitempty"`
-	RegistrationNumber string             `json:"registrationNumber,omitempty"`
-	VatNumber          string             `json:"vatNumber,omitempty"`
-	VatRegulation      string             `json:"vatRegulation,omitempty"`
-	Links              *OrganizationLinks `json:"_links,omitempty"`
+	Resource           string            `json:"resource,omitempty"`
+	ID                 string            `json:"id,omitempty"`
+	Name               string            `json:"name,omitempty"`
+	Email              string            `json:"email,omitempty"`
+	Locale             string            `json:"locale,omitempty"`
+	Address            Address           `json:"address,omitempty"`
+	RegistrationNumber string            `json:"registrationNumber,omitempty"`
+	VatNumber          string            `json:"vatNumber,omitempty"`
+	VatRegulation      string            `json:"vatRegulation,omitempty"`
+	Links              OrganizationLinks `json:"_links,omitempty"`
 }
 ```
 
@@ -1614,16 +1614,16 @@ Organization describes an organization detail
 
 ```go
 type OrganizationLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Chargebacks   *URL `json:"chargebacks,omitempty"`
-	Customers     *URL `json:"customers,omitempty"`
-	Dashboard     *URL `json:"dashboard,omitempty"`
-	Invoices      *URL `json:"invoices,omitempty"`
-	Payments      *URL `json:"payments,omitempty"`
-	Profiles      *URL `json:"profiles,omitempty"`
-	Refunds       *URL `json:"refunds,omitempty"`
-	Settlements   *URL `json:"settlements,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+	Self          URL `json:"self,omitempty"`
+	Chargebacks   URL `json:"chargebacks,omitempty"`
+	Customers     URL `json:"customers,omitempty"`
+	Dashboard     URL `json:"dashboard,omitempty"`
+	Invoices      URL `json:"invoices,omitempty"`
+	Payments      URL `json:"payments,omitempty"`
+	Profiles      URL `json:"profiles,omitempty"`
+	Refunds       URL `json:"refunds,omitempty"`
+	Settlements   URL `json:"settlements,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
 }
 ```
 
@@ -1656,10 +1656,10 @@ GetCurrent retrieve the currently authenticated organization
 
 ```go
 type PaginationLinks struct {
-	Self     *URL `json:"self,omitempty"`
-	Previous *URL `json:"previous,omitempty"`
-	Next     *URL `json:"next,omitempty"`
-	Docs     *URL `json:"documentation,omitempty"`
+	Self     URL `json:"self,omitempty"`
+	Previous URL `json:"previous,omitempty"`
+	Next     URL `json:"next,omitempty"`
+	Docs     URL `json:"documentation,omitempty"`
 }
 ```
 
@@ -1836,8 +1836,8 @@ type PaymentMethodInfo struct {
 	Resource      string                 `json:"resource,omitempty"`
 	ID            string                 `json:"id,omitempty"`
 	Description   string                 `json:"description,omitempty"`
-	MinimumAmount *Amount                `json:"minimumAmount,omitempty"`
-	MaximumAmount *Amount                `json:"maximumAmount,omitempty"`
+	MinimumAmount Amount                 `json:"minimumAmount,omitempty"`
+	MaximumAmount Amount                 `json:"maximumAmount,omitempty"`
 	Image         Image                  `json:"image,omitempty"`
 	Pricing       []PaymentMethodPricing `json:"pricing,omitempty"`
 	Links         MethodsLinks           `json:"_links,omitempty"`
@@ -1850,9 +1850,9 @@ PaymentMethodInfo describes a single method with details.
 
 ```go
 type PaymentMethodPricing struct {
-	Description string  `json:"description,omitempty"`
-	Fixed       *Amount `json:"fixed,omitempty"`
-	Variable    string  `json:"variable,omitempty"`
+	Description string `json:"description,omitempty"`
+	Fixed       Amount `json:"fixed,omitempty"`
+	Variable    string `json:"variable,omitempty"`
 }
 ```
 
@@ -1959,7 +1959,7 @@ Valid product type.
 type Profile struct {
 	ID           string       `json:"id,omitempty"`
 	CategoryCode CategoryCode `json:"categoryCode,omitempty"`
-	CreatedAt    *time.Time   `json:"createdAt,omitempty"`
+	CreatedAt    time.Time    `json:"createdAt,omitempty"`
 	Email        string       `json:"email,omitempty"`
 	Mode         Mode         `json:"mode,omitempty"`
 	Name         string       `json:"name,omitempty"`
@@ -1981,13 +1981,13 @@ website or application.
 
 ```go
 type ProfileLinks struct {
-	Self               *URL `json:"self,omitempty"`
-	Chargebacks        *URL `json:"chargebacks,omitempty"`
-	Methods            *URL `json:"methods,omitempty"`
-	Refunds            *URL `json:"refunds,omitempty"`
-	CheckoutPreviewURL *URL `json:"checkoutPreviewUrl,omitempty"`
-	Documentation      *URL `json:"documentation,omitempty"`
-	Dashboard          *URL `json:"dashboard,omitempty"`
+	Self               URL `json:"self,omitempty"`
+	Chargebacks        URL `json:"chargebacks,omitempty"`
+	Methods            URL `json:"methods,omitempty"`
+	Refunds            URL `json:"refunds,omitempty"`
+	CheckoutPreviewURL URL `json:"checkoutPreviewUrl,omitempty"`
+	Documentation      URL `json:"documentation,omitempty"`
+	Dashboard          URL `json:"dashboard,omitempty"`
 }
 ```
 
@@ -2171,19 +2171,19 @@ Rate describes service rates, further divided into fixed and percentage costs.
 
 ```go
 type Refund struct {
-	Resource         string        `json:"resource,omitempty"`
-	ID               string        `json:"id,omitempty"`
-	Amount           *Amount       `json:"amount,omitempty"`
-	SettlementID     string        `json:"settlementId,omitempty"`
-	SettlementAmount *Amount       `json:"settlementAmount,omitempty"`
-	Description      string        `json:"description,omitempty"`
-	Metadata         interface{}   `json:"metadata,omitempty"`
-	Status           *RefundStatus `json:"status,omitempty"`
-	Lines            []*OrderLine  `json:"lines,omitempty"`
-	PaymentID        string        `json:"paymentId,omitempty"`
-	OrderID          string        `json:"orderId,omitempty"`
-	CreatedAt        *time.Time    `json:"createdAt,omitempty"`
-	Links            *RefundLinks  `json:"_links,omitempty"`
+	Resource         string       `json:"resource,omitempty"`
+	ID               string       `json:"id,omitempty"`
+	Amount           Amount       `json:"amount,omitempty"`
+	SettlementID     string       `json:"settlementId,omitempty"`
+	SettlementAmount Amount       `json:"settlementAmount,omitempty"`
+	Description      string       `json:"description,omitempty"`
+	Metadata         interface{}  `json:"metadata,omitempty"`
+	Status           RefundStatus `json:"status,omitempty"`
+	Lines            []OrderLine  `json:"lines,omitempty"`
+	PaymentID        string       `json:"paymentId,omitempty"`
+	OrderID          string       `json:"orderId,omitempty"`
+	CreatedAt        time.Time    `json:"createdAt,omitempty"`
+	Links            RefundLinks  `json:"_links,omitempty"`
 }
 ```
 
@@ -2193,11 +2193,11 @@ Refund describe a refund for a certain payment.
 
 ```go
 type RefundLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Payment       *URL `json:"payment,omitempty"`
-	Settlement    *URL `json:"settlement,omitempty"`
-	Order         *URL `json:"order,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+	Self          URL `json:"self,omitempty"`
+	Payment       URL `json:"payment,omitempty"`
+	Settlement    URL `json:"settlement,omitempty"`
+	Order         URL `json:"order,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
 }
 ```
 
@@ -2340,8 +2340,8 @@ type Settlement struct {
 	ID        string           `json:"id,omitempty"`
 	Resource  string           `json:"resource,omitempty"`
 	Reference string           `json:"reference,omitempty"`
-	CreatedAt *time.Time       `json:"createdAt,omitempty"`
-	SettledAt *time.Time       `json:"settledAt,omitempty"`
+	CreatedAt time.Time        `json:"createdAt,omitempty"`
+	SettledAt time.Time        `json:"settledAt,omitempty"`
 	Status    SettlementStatus `json:"status,omitempty"`
 	Amount    Amount           `json:"amount,omitempty"`
 	Periods   SettlementObject `json:"periods,omitempty"`
@@ -2446,7 +2446,7 @@ SettlementsList describes a list of settlements.
 
 ```go
 type SettlementsListOptions struct {
-	From  *ShortDate `url:"from,omitempty"`
+	From  ShortDate  `url:"from,omitempty"`
 	Limit int        `url:"limit,omitempty"`
 	Embed EmbedValue `url:"embed,omitempty"`
 }
@@ -2547,7 +2547,7 @@ type Shipment struct {
 	Resource  string           `json:"resource,omitempty"`
 	ID        string           `json:"id,omitempty"`
 	OrderID   string           `json:"orderId,omitempty"`
-	CreatedAt *time.Time       `json:"createdAt,omitempty"`
+	CreatedAt time.Time        `json:"createdAt,omitempty"`
 	Tracking  ShipmentTracking `json:"tracking,omitempty"`
 	Lines     []OrderLine      `json:"lines,omitempty"`
 	Links     ShipmentLinks    `json:"_links,omitempty"`
@@ -2562,9 +2562,9 @@ digital content was delivered.
 
 ```go
 type ShipmentLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Order         *URL `json:"order,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+	Self          URL `json:"self,omitempty"`
+	Order         URL `json:"order,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
 }
 ```
 
@@ -2675,17 +2675,17 @@ type Subscription struct {
 	ID              string                 `json:"id,omitempty"`
 	MandateID       string                 `json:"mandateId,omitempty"`
 	Mode            Mode                   `json:"mode,omitempty"`
-	CreatedAT       *time.Time             `json:"createdAt,omitempty"`
+	CreatedAT       time.Time              `json:"createdAt,omitempty"`
 	Status          SubscriptionStatus     `json:"status,omitempty"`
-	Amount          *Amount                `json:"amount,omitempty"`
+	Amount          Amount                 `json:"amount,omitempty"`
 	Times           int                    `json:"times,omitempty"`
 	TimesRemaining  int                    `json:"timesRemaining,omitempty"`
 	Interval        string                 `json:"interval,omitempty"`
-	StartDate       *ShortDate             `json:"startDate,omitempty"`
-	NextPaymentDate *ShortDate             `json:"nextPaymentDate,omitempty"`
+	StartDate       ShortDate              `json:"startDate,omitempty"`
+	NextPaymentDate ShortDate              `json:"nextPaymentDate,omitempty"`
 	Description     string                 `json:"description,omitempty"`
 	Method          PaymentMethod          `json:"method,omitempty"`
-	CanceledAt      *time.Time             `json:"canceledAt,omitempty"`
+	CanceledAt      time.Time              `json:"canceledAt,omitempty"`
 	WebhookURL      string                 `json:"webhookUrl,omitempty"`
 	Metadata        map[string]interface{} `json:"metadata,omitempty"`
 	ApplicationFee  ApplicationFee         `json:"applicationFee,omitempty"`
@@ -2699,10 +2699,10 @@ Subscription contains information about a customer subscription
 
 ```go
 type SubscriptionLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Customer      *URL `json:"customer,omitempty"`
-	Payments      *URL `json:"payments,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+	Self          URL `json:"self,omitempty"`
+	Customer      URL `json:"customer,omitempty"`
+	Payments      URL `json:"payments,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
 }
 ```
 
