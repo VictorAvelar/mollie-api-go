@@ -1,8 +1,5 @@
 # Mollie API Golang client 
 
-#### Travis CI
-[![Build Status](https://travis-ci.org/VictorAvelar/mollie-api-go.svg?branch=master)](https://travis-ci.org/VictorAvelar/mollie-api-go)
-
 #### Scrutinizer CI
 
 [![Build Status](https://scrutinizer-ci.com/g/VictorAvelar/mollie-api-go/badges/build.png?b=master)](https://scrutinizer-ci.com/g/VictorAvelar/mollie-api-go/build-status/master)

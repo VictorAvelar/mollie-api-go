@@ -62,15 +62,15 @@ func TestRefundsService_Create(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetRefundResponse))
 	})
 
-	refund := &Refund{
-		Amount: &Amount{
+	refund := Refund{
+		Amount: Amount{
 			Currency: "EUR",
 			Value:    "20",
 		},
 		Description: "Order #33",
 	}
 
-	res, err := tClient.Refunds.Create(paymentID, *refund, &RefundOptions{})
+	res, err := tClient.Refunds.Create(paymentID, refund, &RefundOptions{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -175,7 +175,7 @@ func TestRefundsService_HttpRequestErrors(t *testing.T) {
 	tMux.HandleFunc("/v2/refunds/", errorHandler)
 
 	refund := Refund{
-		Amount: &Amount{
+		Amount: Amount{
 			Currency: "IDR",
 			Value:    "100000",
 		},
@@ -205,7 +205,7 @@ func TestRefundsService_NewAPIRequestErrors(t *testing.T) {
 	tMux.HandleFunc("/v2/refunds/", errorHandler)
 
 	refund := Refund{
-		Amount: &Amount{
+		Amount: Amount{
 			Currency: "IDR",
 			Value:    "100000",
 		},
@@ -239,7 +239,7 @@ func TestRefundsService_EncodingResponseErrors(t *testing.T) {
 	tMux.HandleFunc("/v2/payments/"+paymentID+"/refunds/"+refundID, encodingHandler)
 
 	refund := Refund{
-		Amount: &Amount{
+		Amount: Amount{
 			Currency: "IDR",
 			Value:    "100000",
 		},

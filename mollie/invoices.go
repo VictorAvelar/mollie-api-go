@@ -31,8 +31,8 @@ type Invoice struct {
 	NetAmount   Amount        `json:"netAmount,omitempty"`
 	VatAmount   Amount        `json:"vatAmount,omitempty"`
 	GrossAmount Amount        `json:"grossAmount,omitempty"`
-	Lines       []*LineItem   `json:"lines,omitempty"`
-	Links       *InvoiceLinks `json:"_links,omitempty"`
+	Lines       []LineItem    `json:"lines,omitempty"`
+	Links       InvoiceLinks  `json:"_links,omitempty"`
 }
 
 // LineItem product details
@@ -47,9 +47,9 @@ type LineItem struct {
 // InvoiceLinks describes all the possible links to be returned with
 // a invoice object.
 type InvoiceLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	PDF           *URL `json:"pdf,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+	Self          URL `json:"self,omitempty"`
+	PDF           URL `json:"pdf,omitempty"`
+	Documentation URL `json:"documentation,omitempty"`
 }
 
 // ListInvoiceOptions describes list invoices endpoint valid query string parameters.

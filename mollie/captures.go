@@ -30,7 +30,7 @@ type Capture struct {
 	PaymentID        string       `json:"paymentId,omitempty"`
 	ShipmentID       string       `json:"shipmentId,omitempty"`
 	SettlementID     string       `json:"settlementId,omitempty"`
-	CreatedAt        *time.Time   `json:"createdAt,omitempty"`
+	CreatedAt        time.Time    `json:"createdAt,omitempty"`
 	Links            CaptureLinks `json:"links,omitempty"`
 }
 

@@ -6,7 +6,16 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## master
 
-## v.1.6.5
+## v2.0.0
+
+### Added
+- Missing payment list url options
+
+### Changed
+- Replaced pointers with values in the whole library (BREAKING)
+- All the documentation links name unified to `Documentation`
+
+## v1.6.5
 
 ### Added
 - Goreleaser workflow
