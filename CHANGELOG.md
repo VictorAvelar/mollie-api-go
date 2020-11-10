@@ -6,6 +6,17 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## master
 
+## v2.1.0
+
+## Changed
+- Rollback to use pointers inside struct tags as structs have no empty value
+and thus the usage of values instead of pointers breaks most of the post requests.
+
+## v2.0.2
+
+### Fixed
+- Normalized wording across structs
+
 ## v2.0.1
 
 ### Fixed
