@@ -24,7 +24,7 @@ const (
 type Profile struct {
 	ID           string       `json:"id,omitempty"`
 	CategoryCode CategoryCode `json:"categoryCode,omitempty"`
-	CreatedAt    time.Time    `json:"createdAt,omitempty"`
+	CreatedAt    *time.Time   `json:"createdAt,omitempty"`
 	Email        string       `json:"email,omitempty"`
 	Mode         Mode         `json:"mode,omitempty"`
 	Name         string       `json:"name,omitempty"`
@@ -41,13 +41,13 @@ type Profile struct {
 // ProfileLinks contains URL's to relevant information related to
 // a profile.
 type ProfileLinks struct {
-	Self               URL `json:"self,omitempty"`
-	Chargebacks        URL `json:"chargebacks,omitempty"`
-	Methods            URL `json:"methods,omitempty"`
-	Refunds            URL `json:"refunds,omitempty"`
-	CheckoutPreviewURL URL `json:"checkoutPreviewUrl,omitempty"`
-	Documentation      URL `json:"documentation,omitempty"`
-	Dashboard          URL `json:"dashboard,omitempty"`
+	Self               *URL `json:"self,omitempty"`
+	Chargebacks        *URL `json:"chargebacks,omitempty"`
+	Methods            *URL `json:"methods,omitempty"`
+	Refunds            *URL `json:"refunds,omitempty"`
+	CheckoutPreviewURL *URL `json:"checkoutPreviewUrl,omitempty"`
+	Documentation      *URL `json:"documentation,omitempty"`
+	Dashboard          *URL `json:"dashboard,omitempty"`
 }
 
 // ProfileListOptions are optional query string parameters for the list profiles request
@@ -60,7 +60,7 @@ type ProfileListOptions struct {
 type ProfileList struct {
 	Count    int `json:"count,omitempty"`
 	Embedded struct {
-		Profiles []Profile `json:"profiles,omitempty"`
+		Profiles []*Profile `json:"profiles,omitempty"`
 	} `json:"_embedded,omitempty"`
 	Links PaginationLinks `json:"_links,omitempty"`
 }

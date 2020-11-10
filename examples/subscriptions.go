@@ -27,7 +27,7 @@ func init() {
 func CreateSubscription() {
 
 	newSubscription := &mollie.Subscription{
-		Amount:      mollie.Amount{Currency: "EUR", Value: "25.00"},
+		Amount:      &mollie.Amount{Currency: "EUR", Value: "25.00"},
 		Times:       4,
 		Interval:    "3 months",
 		Description: "Quarterly payment",
@@ -58,7 +58,7 @@ func GetSubscription() {
 func UpdateSubscription() {
 
 	updatedSubscription := &mollie.Subscription{
-		Amount: mollie.Amount{Currency: "EUR", Value: "10.00"},
+		Amount: &mollie.Amount{Currency: "EUR", Value: "10.00"},
 	}
 
 	sub, err := client.Subscriptions.Update(customerID, subscriptionID, updatedSubscription)

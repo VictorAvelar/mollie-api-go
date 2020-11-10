@@ -13,16 +13,16 @@ import (
 type Refund struct {
 	Resource         string       `json:"resource,omitempty"`
 	ID               string       `json:"id,omitempty"`
-	Amount           Amount       `json:"amount,omitempty"`
+	Amount           *Amount      `json:"amount,omitempty"`
 	SettlementID     string       `json:"settlementId,omitempty"`
-	SettlementAmount Amount       `json:"settlementAmount,omitempty"`
+	SettlementAmount *Amount      `json:"settlementAmount,omitempty"`
 	Description      string       `json:"description,omitempty"`
 	Metadata         interface{}  `json:"metadata,omitempty"`
 	Status           RefundStatus `json:"status,omitempty"`
-	Lines            []OrderLine  `json:"lines,omitempty"`
+	Lines            []*OrderLine `json:"lines,omitempty"`
 	PaymentID        string       `json:"paymentId,omitempty"`
 	OrderID          string       `json:"orderId,omitempty"`
-	CreatedAt        time.Time    `json:"createdAt,omitempty"`
+	CreatedAt        *time.Time   `json:"createdAt,omitempty"`
 	Links            RefundLinks  `json:"_links,omitempty"`
 }
 
@@ -30,7 +30,7 @@ type Refund struct {
 type RefundList struct {
 	Count    int `json:"count,omitempty"`
 	Embedded struct {
-		Refunds []Refund
+		Refunds []*Refund
 	} `json:"_embedded,omitempty"`
 	Links PaginationLinks `json:"_links,omitempty"`
 }
@@ -50,11 +50,11 @@ const (
 // RefundLinks describes all the possible links to be returned with
 // a Refund object.
 type RefundLinks struct {
-	Self          URL `json:"self,omitempty"`
-	Payment       URL `json:"payment,omitempty"`
-	Settlement    URL `json:"settlement,omitempty"`
-	Order         URL `json:"order,omitempty"`
-	Documentation URL `json:"documentation,omitempty"`
+	Self          *URL `json:"self,omitempty"`
+	Payment       *URL `json:"payment,omitempty"`
+	Settlement    *URL `json:"settlement,omitempty"`
+	Order         *URL `json:"order,omitempty"`
+	Documentation *URL `json:"documentation,omitempty"`
 }
 
 // RefundOptions describes refund endpoint valid query string parameters.

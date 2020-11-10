@@ -28,10 +28,10 @@ type Invoice struct {
 	IssuedAt    string        `json:"issuedAt,omitempty"`
 	PaidAt      string        `json:"paidAt,omitempty"`
 	DueAt       string        `json:"dueAt,omitempty"`
-	NetAmount   Amount        `json:"netAmount,omitempty"`
-	VatAmount   Amount        `json:"vatAmount,omitempty"`
-	GrossAmount Amount        `json:"grossAmount,omitempty"`
-	Lines       []LineItem    `json:"lines,omitempty"`
+	NetAmount   *Amount       `json:"netAmount,omitempty"`
+	VatAmount   *Amount       `json:"vatAmount,omitempty"`
+	GrossAmount *Amount       `json:"grossAmount,omitempty"`
+	Lines       []*LineItem   `json:"lines,omitempty"`
 	Links       InvoiceLinks  `json:"_links,omitempty"`
 }
 
@@ -41,15 +41,15 @@ type LineItem struct {
 	Description   string  `json:"description,omitempty"`
 	Count         int64   `json:"count,omitempty"`
 	VatPercentage float64 `json:"vatPercentage,omitempty"`
-	Amount        Amount  `json:"amount,omitempty"`
+	Amount        *Amount `json:"amount,omitempty"`
 }
 
 // InvoiceLinks describes all the possible links to be returned with
 // a invoice object.
 type InvoiceLinks struct {
-	Self          URL `json:"self,omitempty"`
-	PDF           URL `json:"pdf,omitempty"`
-	Documentation URL `json:"documentation,omitempty"`
+	Self          *URL `json:"self,omitempty"`
+	PDF           *URL `json:"pdf,omitempty"`
+	Documentation *URL `json:"documentation,omitempty"`
 }
 
 // ListInvoiceOptions describes list invoices endpoint valid query string parameters.
