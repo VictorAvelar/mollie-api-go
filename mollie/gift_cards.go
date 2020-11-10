@@ -54,6 +54,6 @@ type GiftCardEnabled struct {
 
 // GiftCardLinks are links embedded when a gift card is enabled.
 type GiftCardLinks struct {
-	Self          URL `json:"self,omitempty"`
-	Documentation URL `json:"documentation,omitempty"`
+	Self          *URL `json:"self,omitempty"`
+	Documentation *URL `json:"documentation,omitempty"`
 }

@@ -12,11 +12,11 @@ type CapturesService service
 
 // CaptureLinks contains relevant links for a capture object
 type CaptureLinks struct {
-	Self          URL `json:"self,omitempty"`
-	Payment       URL `json:"payment,omitempty"`
-	Shipment      URL `json:"shipment,omitempty"`
-	Settlement    URL `json:"settlement,omitempty"`
-	Documentation URL `json:"documentation,omitempty"`
+	Self          *URL `json:"self,omitempty"`
+	Payment       *URL `json:"payment,omitempty"`
+	Shipment      *URL `json:"shipment,omitempty"`
+	Settlement    *URL `json:"settlement,omitempty"`
+	Documentation *URL `json:"documentation,omitempty"`
 }
 
 // Capture describes a single capture
@@ -25,12 +25,12 @@ type Capture struct {
 	Resource         string       `json:"resource,omitempty"`
 	ID               string       `json:"id,omitempty"`
 	Mode             Mode         `json:"mode,omitempty"`
-	Amount           Amount       `json:"amount,omitempty"`
-	SettlementAmount Amount       `json:"settlementAmount,omitempty"`
+	Amount           *Amount      `json:"amount,omitempty"`
+	SettlementAmount *Amount      `json:"settlementAmount,omitempty"`
 	PaymentID        string       `json:"paymentId,omitempty"`
 	ShipmentID       string       `json:"shipmentId,omitempty"`
 	SettlementID     string       `json:"settlementId,omitempty"`
-	CreatedAt        time.Time    `json:"createdAt,omitempty"`
+	CreatedAt        *time.Time   `json:"createdAt,omitempty"`
 	Links            CaptureLinks `json:"links,omitempty"`
 }
 
@@ -38,7 +38,7 @@ type Capture struct {
 type CapturesList struct {
 	Count    int `json:"count,omitempty"`
 	Embedded struct {
-		Captures []Capture
+		Captures []*Capture
 	} `json:"_embedded,omitempty"`
 	Links PaginationLinks `json:"_links,omitempty"`
 }

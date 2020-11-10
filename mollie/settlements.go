@@ -26,9 +26,9 @@ const (
 // SettlementRevenue objects contain the total revenue for each payment method during this period
 type SettlementRevenue struct {
 	Description string        `json:"description,omitempty"`
-	AmountNet   Amount        `json:"amountNet,omitempty"`
-	AmountVAT   Amount        `json:"amountVat,omitempty"`
-	AmountGross Amount        `json:"amountGross,omitempty"`
+	AmountNet   *Amount       `json:"amountNet,omitempty"`
+	AmountVAT   *Amount       `json:"amountVat,omitempty"`
+	AmountGross *Amount       `json:"amountGross,omitempty"`
 	Count       int           `json:"count,omitempty"`
 	Method      PaymentMethod `json:"method,omitempty"`
 }
@@ -36,18 +36,18 @@ type SettlementRevenue struct {
 // SettlementCosts contains information about costs related to a settlement
 type SettlementCosts struct {
 	Description string        `json:"description,omitempty"`
-	AmountNet   Amount        `json:"amountNet,omitempty"`
-	AmountVAT   Amount        `json:"amountVat,omitempty"`
-	AmountGross Amount        `json:"amountGross,omitempty"`
+	AmountNet   *Amount       `json:"amountNet,omitempty"`
+	AmountVAT   *Amount       `json:"amountVat,omitempty"`
+	AmountGross *Amount       `json:"amountGross,omitempty"`
 	Count       int           `json:"count,omitempty"`
-	Rate        Rate          `json:"rate,omitempty"`
+	Rate        *Rate         `json:"rate,omitempty"`
 	Method      PaymentMethod `json:"method,omitempty"`
 }
 
 // SettlementPeriod describe the settlement by month in full detail
 type SettlementPeriod struct {
-	Revenue []SettlementRevenue `json:"revenue,omitempty"`
-	Costs   []SettlementCosts   `json:"costs,omitempty"`
+	Revenue []*SettlementRevenue `json:"revenue,omitempty"`
+	Costs   []*SettlementCosts   `json:"costs,omitempty"`
 }
 
 // SettlementObject nests as describes for settlement periods
@@ -55,13 +55,13 @@ type SettlementObject map[string]map[string]SettlementPeriod
 
 // SettlementLinks is an object with several URL objects relevant to the settlement
 type SettlementLinks struct {
-	Self          URL `json:"self,omitempty"`
-	Payments      URL `json:"payments,omitempty"`
-	Refunds       URL `json:"refunds,omitempty"`
-	Chargebacks   URL `json:"chargebacks,omitempty"`
-	Captures      URL `json:"captures,omitempty"`
-	Invoice       URL `json:"invoice,omitempty"`
-	Documentation URL `json:"documentation,omitempty"`
+	Self          *URL `json:"self,omitempty"`
+	Payments      *URL `json:"payments,omitempty"`
+	Refunds       *URL `json:"refunds,omitempty"`
+	Chargebacks   *URL `json:"chargebacks,omitempty"`
+	Captures      *URL `json:"captures,omitempty"`
+	Invoice       *URL `json:"invoice,omitempty"`
+	Documentation *URL `json:"documentation,omitempty"`
 }
 
 // Settlement contains successful payments, together with refunds,
@@ -70,10 +70,10 @@ type Settlement struct {
 	ID        string           `json:"id,omitempty"`
 	Resource  string           `json:"resource,omitempty"`
 	Reference string           `json:"reference,omitempty"`
-	CreatedAt time.Time        `json:"createdAt,omitempty"`
-	SettledAt time.Time        `json:"settledAt,omitempty"`
+	CreatedAt *time.Time       `json:"createdAt,omitempty"`
+	SettledAt *time.Time       `json:"settledAt,omitempty"`
 	Status    SettlementStatus `json:"status,omitempty"`
-	Amount    Amount           `json:"amount,omitempty"`
+	Amount    *Amount          `json:"amount,omitempty"`
 	Periods   SettlementObject `json:"periods,omitempty"`
 	InvoiceID string           `json:"invoiceId,omitempty"`
 	Links     SettlementLinks  `json:"_links,omitempty"`
@@ -81,7 +81,7 @@ type Settlement struct {
 
 // SettlementsListOptions contains query parameters for settlement lists.
 type SettlementsListOptions struct {
-	From  ShortDate  `url:"from,omitempty"`
+	From  *ShortDate `url:"from,omitempty"`
 	Limit int        `url:"limit,omitempty"`
 	Embed EmbedValue `url:"embed,omitempty"`
 }
@@ -90,7 +90,7 @@ type SettlementsListOptions struct {
 type SettlementsList struct {
 	Count    int `json:"count,omitempty"`
 	Embedded struct {
-		Settlements []Settlement
+		Settlements []*Settlement
 	} `json:"_embedded,omitempty"`
 	Links PaginationLinks `json:"_links,omitempty"`
 }

@@ -45,9 +45,9 @@ const (
 
 // UsedGiftCard describes a used gift card.
 type UsedGiftCard struct {
-	Issuer        string `json:"issuer,omitempty"`
-	Amount        Amount `json:"amount,omitempty"`
-	VoucherNumber string `json:"voucherNumber,omitempty"`
+	Issuer        string  `json:"issuer,omitempty"`
+	Amount        *Amount `json:"amount,omitempty"`
+	VoucherNumber string  `json:"voucherNumber,omitempty"`
 }
 
 // PaymentDetails contains details for the specified payment method
@@ -70,28 +70,28 @@ type PaymentDetails struct {
 	ConsumerName       string             `json:"consumerName,omitempty"`
 	ConsumerReference  string             `json:"consumerReference,omitempty"`
 	CreditorIdentifier string             `json:"creditorIdentifier,omitempty"`
-	DueDate            ShortDate          `json:"dueDate,omitempty"`
+	DueDate            *ShortDate         `json:"dueDate,omitempty"`
 	EndToEndIdentifier string             `json:"endToEndIdentifier,omitempty"`
 	FailureReason      FailureReason      `json:"failureReason,omitempty"`
 	FeeRegion          FeeRegion          `json:"feeRegion,omitempty"`
 	FileReference      string             `json:"fileReference,omitempty"`
-	GiftCards          []UsedGiftCard     `json:"giftCards,omitempty"`
+	GiftCards          []*UsedGiftCard    `json:"giftCards,omitempty"`
 	MandateReference   string             `json:"mandateReference,omitempty"`
 	PaypalDigitalGoods bool               `json:"digitalGoods,omitempty"`
 	PaypalFee          Amount             `json:"paypalFee,omitempty"`
 	PaypalPayerID      string             `json:"paypalPayerId,omitempty"`
 	PaypalReference    string             `json:"paypalReference,omitempty"`
-	QRCode             QRCode             `json:"qrCode,omitempty"`
-	RemainderAmount    Amount             `json:"remainderAmount,omitempty"`
+	QRCode             *QRCode            `json:"qrCode,omitempty"`
+	RemainderAmount    *Amount            `json:"remainderAmount,omitempty"`
 	RemainderMethod    PaymentMethod      `json:"remainderMethod,omitempty"`
 	SellerProtection   EligibilityReasons `json:"sellerProtection,omitempty"`
 	ShippingAddress    string             `json:"shippingAddress,omitempty"`
-	SignatureDate      ShortDate          `json:"signatureDate,omitempty"`
+	SignatureDate      *ShortDate         `json:"signatureDate,omitempty"`
 	TransferReference  string             `json:"transferReference,omitempty"`
 	VoucherNumber      string             `json:"voucherNumber,omitempty"`
 	Wallet             string             `json:"wallet,omitempty"`
 	Links              struct {
-		Status    URL `json:"status,omitempty"`
-		PayOnline URL `json:"payOnline,omitempty"`
+		Status    *URL `json:"status,omitempty"`
+		PayOnline *URL `json:"payOnline,omitempty"`
 	} `json:"_links,omitempty"`
 }

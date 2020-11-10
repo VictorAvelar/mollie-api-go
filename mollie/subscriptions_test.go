@@ -61,7 +61,7 @@ func TestSubscriptionsService_Create(t *testing.T) {
 	})
 
 	s := Subscription{
-		Amount: Amount{
+		Amount: &Amount{
 			Currency: "EUR",
 			Value:    "11.99",
 		},
@@ -99,7 +99,7 @@ func TestSubscriptionsService_Update(t *testing.T) {
 	})
 
 	s := Subscription{
-		Amount: Amount{
+		Amount: &Amount{
 			Currency: "EUR",
 			Value:    "11.99",
 		},

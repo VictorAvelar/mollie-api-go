@@ -13,10 +13,10 @@ import (
 type Chargeback struct {
 	Resource         string          `json:"resource,omitempty"`
 	ID               string          `json:"id,omitempty"`
-	Amount           Amount          `json:"amount,omitempty"`
-	SettlementAmount Amount          `json:"settlementAmount,omitempty"`
-	CreatedAt        time.Time       `json:"createdAt,omitempty"`
-	ReversedAt       time.Time       `json:"reversedAt,omitempty"`
+	Amount           *Amount         `json:"amount,omitempty"`
+	SettlementAmount *Amount         `json:"settlementAmount,omitempty"`
+	CreatedAt        *time.Time      `json:"createdAt,omitempty"`
+	ReversedAt       *time.Time      `json:"reversedAt,omitempty"`
 	PaymentID        string          `json:"paymentId,omitempty"`
 	Links            ChargebackLinks `json:"_links,omitempty"`
 }
@@ -24,10 +24,10 @@ type Chargeback struct {
 // ChargebackLinks describes all the possible links to be returned with
 // a chargeback object.
 type ChargebackLinks struct {
-	Self          URL `json:"self,omitempty"`
-	Payment       URL `json:"payment,omitempty"`
-	Settlement    URL `json:"settlement,omitempty"`
-	Documentation URL `json:"documentation,omitempty"`
+	Self          *URL `json:"self,omitempty"`
+	Payment       *URL `json:"payment,omitempty"`
+	Settlement    *URL `json:"settlement,omitempty"`
+	Documentation *URL `json:"documentation,omitempty"`
 }
 
 // ChargebackOptions describes chargeback endpoint valid query string parameters.

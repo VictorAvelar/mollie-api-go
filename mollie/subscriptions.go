@@ -26,10 +26,10 @@ const (
 
 // SubscriptionLinks contains several URL objects relevant to the subscription
 type SubscriptionLinks struct {
-	Self          URL `json:"self,omitempty"`
-	Customer      URL `json:"customer,omitempty"`
-	Payments      URL `json:"payments,omitempty"`
-	Documentation URL `json:"documentation,omitempty"`
+	Self          *URL `json:"self,omitempty"`
+	Customer      *URL `json:"customer,omitempty"`
+	Payments      *URL `json:"payments,omitempty"`
+	Documentation *URL `json:"documentation,omitempty"`
 }
 
 // Subscription contains information about a customer subscription
@@ -38,20 +38,20 @@ type Subscription struct {
 	ID              string                 `json:"id,omitempty"`
 	MandateID       string                 `json:"mandateId,omitempty"`
 	Mode            Mode                   `json:"mode,omitempty"`
-	CreatedAT       time.Time              `json:"createdAt,omitempty"`
+	CreatedAT       *time.Time             `json:"createdAt,omitempty"`
 	Status          SubscriptionStatus     `json:"status,omitempty"`
-	Amount          Amount                 `json:"amount,omitempty"`
+	Amount          *Amount                `json:"amount,omitempty"`
 	Times           int                    `json:"times,omitempty"`
 	TimesRemaining  int                    `json:"timesRemaining,omitempty"`
 	Interval        string                 `json:"interval,omitempty"`
-	StartDate       ShortDate              `json:"startDate,omitempty"`
-	NextPaymentDate ShortDate              `json:"nextPaymentDate,omitempty"`
+	StartDate       *ShortDate             `json:"startDate,omitempty"`
+	NextPaymentDate *ShortDate             `json:"nextPaymentDate,omitempty"`
 	Description     string                 `json:"description,omitempty"`
 	Method          PaymentMethod          `json:"method,omitempty"`
-	CanceledAt      time.Time              `json:"canceledAt,omitempty"`
+	CanceledAt      *time.Time             `json:"canceledAt,omitempty"`
 	WebhookURL      string                 `json:"webhookUrl,omitempty"`
 	Metadata        map[string]interface{} `json:"metadata,omitempty"`
-	ApplicationFee  ApplicationFee         `json:"applicationFee,omitempty"`
+	ApplicationFee  *ApplicationFee        `json:"applicationFee,omitempty"`
 	Links           SubscriptionLinks      `json:"_links,omitempty"`
 }
 
@@ -59,7 +59,7 @@ type Subscription struct {
 type SubscriptionList struct {
 	Count    int `json:"count,omitempty"`
 	Embedded struct {
-		Subscriptions []Subscription
+		Subscriptions []*Subscription
 	} `json:"_embedded,omitempty"`
 	Links PaginationLinks `json:"_links,omitempty"`
 }

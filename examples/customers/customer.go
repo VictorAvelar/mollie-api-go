@@ -59,7 +59,7 @@ func CreateCustomerPayment(cs *mollie.Customer, m *mollie.Client) {
 	var bt = mollie.BankTransfer
 
 	var p = mollie.Payment{
-		Amount: mollie.Amount{
+		Amount: &mollie.Amount{
 			Currency: "EUR",
 			Value:    "10.12",
 		},

@@ -10,20 +10,20 @@ import (
 
 // PaymentMethodInfo describes a single method with details.
 type PaymentMethodInfo struct {
-	Resource      string                 `json:"resource,omitempty"`
-	ID            string                 `json:"id,omitempty"`
-	Description   string                 `json:"description,omitempty"`
-	MinimumAmount Amount                 `json:"minimumAmount,omitempty"`
-	MaximumAmount Amount                 `json:"maximumAmount,omitempty"`
-	Image         Image                  `json:"image,omitempty"`
-	Pricing       []PaymentMethodPricing `json:"pricing,omitempty"`
-	Links         MethodsLinks           `json:"_links,omitempty"`
+	Resource      string                  `json:"resource,omitempty"`
+	ID            string                  `json:"id,omitempty"`
+	Description   string                  `json:"description,omitempty"`
+	MinimumAmount *Amount                 `json:"minimumAmount,omitempty"`
+	MaximumAmount *Amount                 `json:"maximumAmount,omitempty"`
+	Image         *Image                  `json:"image,omitempty"`
+	Pricing       []*PaymentMethodPricing `json:"pricing,omitempty"`
+	Links         MethodsLinks            `json:"_links,omitempty"`
 }
 
 // MethodsLinks describes links attached to methods service responses.
 type MethodsLinks struct {
-	Self          URL `json:"self,omitempty"`
-	Documentation URL `json:"documentation,omitempty"`
+	Self          *URL `json:"self,omitempty"`
+	Documentation *URL `json:"documentation,omitempty"`
 }
 
 // Image describes a generic image resource retrieved by Mollie.
@@ -36,16 +36,16 @@ type Image struct {
 // PaymentMethodPricing contains information about commissions and fees
 // applicable to a payment method.
 type PaymentMethodPricing struct {
-	Description string `json:"description,omitempty"`
-	Fixed       Amount `json:"fixed,omitempty"`
-	Variable    string `json:"variable,omitempty"`
+	Description string  `json:"description,omitempty"`
+	Fixed       *Amount `json:"fixed,omitempty"`
+	Variable    string  `json:"variable,omitempty"`
 }
 
 // ListMethods describes a list of paginated payment methods.
 type ListMethods struct {
 	Count    int `json:"count,omitempty"`
 	Embedded struct {
-		Methods []PaymentMethodInfo
+		Methods []*PaymentMethodInfo
 	} `json:"_embedded,omitempty"`
 	Links PaginationLinks `json:"_links,omitempty"`
 }
