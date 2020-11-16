@@ -6,6 +6,11 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## master
 
+## v2.1.1
+
+### Added
+- Payment details address for supported payment methods. #109
+
 ## v2.1.0
 
 ## Changed
