@@ -109,26 +109,27 @@ type CategoryCode uint
 
 // Available category codes
 const (
-	BookMagazinesAndNewspapers      CategoryCode = 5192
-	GeneralMerchandise              CategoryCode = 5399
-	FoodAndDrinks                   CategoryCode = 5499
-	AutomotiveProducts              CategoryCode = 5533
-	ChildrenProducts                CategoryCode = 5641
-	ClothingAndShoes                CategoryCode = 5651
-	ElectronicsComputersAndSoftware CategoryCode = 5732
-	HostingOrVpnServices            CategoryCode = 5734
-	Entertainment                   CategoryCode = 5735
-	CreditsOrVouchersOrGiftCards    CategoryCode = 5815
-	Alcohol                         CategoryCode = 5921
-	JewelryAndAccessories           CategoryCode = 5944
-	HealthAndBeautyProducts         CategoryCode = 5977
-	FinancialServices               CategoryCode = 6012
-	Consultancy                     CategoryCode = 7299
-	TravelRentalAndTransportation   CategoryCode = 7999
-	AdvisingOrCoachingOrTraining    CategoryCode = 8299
-	CharityAndDonations             CategoryCode = 8398
-	PoliticalParties                CategoryCode = 8699
-	Others                          CategoryCode = 0
+	BookMagazinesAndNewspapers          CategoryCode = 5192
+	GeneralMerchandise                  CategoryCode = 5399
+	FoodAndDrinks                       CategoryCode = 5499
+	AutomotiveProducts                  CategoryCode = 5533
+	ChildrenProducts                    CategoryCode = 5641
+	ClothingAndShoes                    CategoryCode = 5651
+	MarketplaceCrowdfundingAndDonations CategoryCode = 5262
+	ElectronicsComputersAndSoftware     CategoryCode = 5732
+	HostingOrVpnServices                CategoryCode = 5734
+	Entertainment                       CategoryCode = 5735
+	CreditsOrVouchersOrGiftCards        CategoryCode = 5815
+	Alcohol                             CategoryCode = 5921
+	JewelryAndAccessories               CategoryCode = 5944
+	HealthAndBeautyProducts             CategoryCode = 5977
+	FinancialServices                   CategoryCode = 6012
+	Consultancy                         CategoryCode = 7299
+	TravelRentalAndTransportation       CategoryCode = 7999
+	AdvisingOrCoachingOrTraining        CategoryCode = 8299
+	CharityAndDonations                 CategoryCode = 8398
+	PoliticalParties                    CategoryCode = 8699
+	Others                              CategoryCode = 0
 )
 
 // Mode contains information about the creation environment.
