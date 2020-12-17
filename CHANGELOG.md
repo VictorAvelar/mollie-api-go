@@ -6,6 +6,17 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## master
 
+## v2.2.0
+
+### Added
+- Region fee for payment methods information
+- Status report for payment methods
+
+## v2.1.2
+
+### Added
+- New category code for marketplace, crowdfunding and donation platforms.
+
 ## v2.1.1
 
 ### Added
