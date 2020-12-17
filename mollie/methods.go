@@ -8,6 +8,20 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
+// PaymentMethodStatus tels the status that the method is in.
+// Possible values: activated pending-boarding pending-review
+// pending-external rejected.
+type PaymentMethodStatus string
+
+// Available payment method statuses
+const (
+	PaymentMethodActivated       PaymentMethodStatus = "activated"
+	PaymentMethodPendingBoarding PaymentMethodStatus = "pending-boarding"
+	PaymentMethodPendingReview   PaymentMethodStatus = "pending-review"
+	PaymentMethodPendingExternal PaymentMethodStatus = "pending-external"
+	PaymentMethodRejected        PaymentMethodStatus = "pending-rejected"
+)
+
 // PaymentMethodInfo describes a single method with details.
 type PaymentMethodInfo struct {
 	Resource      string                  `json:"resource,omitempty"`
@@ -17,6 +31,7 @@ type PaymentMethodInfo struct {
 	MaximumAmount *Amount                 `json:"maximumAmount,omitempty"`
 	Image         *Image                  `json:"image,omitempty"`
 	Pricing       []*PaymentMethodPricing `json:"pricing,omitempty"`
+	Status        *PaymentMethodStatus    `json:"status,omitempty"`
 	Links         MethodsLinks            `json:"_links,omitempty"`
 }
 
@@ -36,9 +51,10 @@ type Image struct {
 // PaymentMethodPricing contains information about commissions and fees
 // applicable to a payment method.
 type PaymentMethodPricing struct {
-	Description string  `json:"description,omitempty"`
-	Fixed       *Amount `json:"fixed,omitempty"`
-	Variable    string  `json:"variable,omitempty"`
+	Description string    `json:"description,omitempty"`
+	Fixed       *Amount   `json:"fixed,omitempty"`
+	Variable    string    `json:"variable,omitempty"`
+	FeeRegion   FeeRegion `json:"feeRegion,omitempty"`
 }
 
 // ListMethods describes a list of paginated payment methods.
