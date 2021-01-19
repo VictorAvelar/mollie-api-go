@@ -56,7 +56,7 @@ type InvoiceLinks struct {
 type ListInvoiceOptions struct {
 	Reference string `json:"reference,omitempty"`
 	Year      string `json:"year,omitempty"`
-	From      int64  `json:"from,omitempty"`
+	From      string `json:"from,omitempty"`
 	Limit     int64  `json:"limit,omitempty"`
 }
 
