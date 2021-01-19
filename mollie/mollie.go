@@ -111,6 +111,7 @@ func (c *Client) NewAPIRequest(method string, uri string, body interface{}) (req
 	req.Header.Add(AuthHeader, strings.Join([]string{TokenType, c.authentication}, " "))
 	req.Header.Set("Content-Type", RequestContentType)
 	req.Header.Set("Accept", RequestContentType)
+	req.Header.Set("User-Agent", c.userAgent)
 
 	return
 }
