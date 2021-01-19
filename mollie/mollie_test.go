@@ -147,7 +147,7 @@ func TestClient_WithAuthenticationValue_Error(t *testing.T) {
 	err := tClient.WithAuthenticationValue("")
 
 	if err == nil {
-		t.Errorf("unexpected error, want %v and got %v", errEmptyAPIKey, err)
+		t.Errorf("unexpected error, want %v and got %v", errEmptyAuthKey, err)
 	}
 }
 
