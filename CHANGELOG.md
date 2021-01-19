@@ -6,6 +6,13 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## master
 
+## v2.2.1
+
+### Added
+- User agent header
+
+### Fixed
+- Parse auth key from any given env var
 ## v2.2.0
 
 ### Added
