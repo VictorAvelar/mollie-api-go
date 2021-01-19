@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"runtime"
 	"strings"
 )
 
@@ -32,6 +33,7 @@ var (
 type Client struct {
 	BaseURL        *url.URL
 	authentication string
+	userAgent      string
 	client         *http.Client
 	common         service // Reuse a single struct instead of allocating one for each service on the heap.
 	config         *Config
@@ -176,8 +178,11 @@ func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
 	tkn, ok := os.LookupEnv(c.auth)
 	if ok {
 		mollie.authentication = tkn
-	} else {
-		return mollie, errEmptyAuthKey
+		mollie.userAgent = strings.Join([]string{
+			runtime.GOOS,
+			runtime.GOARCH,
+			runtime.Version(),
+		}, ";")
 	}
 	return
 }
