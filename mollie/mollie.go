@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"runtime"
 	"strings"
 )
 
@@ -24,14 +25,15 @@ const (
 )
 
 var (
-	errEmptyAPIKey = errors.New("you must provide a non-empty API key")
-	errBadBaseURL  = errors.New("malformed base url, it must contain a trailing slash")
+	errEmptyAuthKey = errors.New("you must provide a non-empty authentication key")
+	errBadBaseURL   = errors.New("malformed base url, it must contain a trailing slash")
 )
 
 // Client manages communication with Mollie's API.
 type Client struct {
 	BaseURL        *url.URL
 	authentication string
+	userAgent      string
 	client         *http.Client
 	common         service // Reuse a single struct instead of allocating one for each service on the heap.
 	config         *Config
@@ -65,7 +67,7 @@ type service struct {
 // This should only be used when environment variables are "impossible" to be used.
 func (c *Client) WithAuthenticationValue(k string) error {
 	if k == "" {
-		return errEmptyAPIKey
+		return errEmptyAuthKey
 	}
 
 	c.authentication = strings.TrimSpace(k)
@@ -109,6 +111,7 @@ func (c *Client) NewAPIRequest(method string, uri string, body interface{}) (req
 	req.Header.Add(AuthHeader, strings.Join([]string{TokenType, c.authentication}, " "))
 	req.Header.Set("Content-Type", RequestContentType)
 	req.Header.Set("Accept", RequestContentType)
+	req.Header.Set("User-Agent", c.userAgent)
 
 	return
 }
@@ -172,13 +175,15 @@ func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
 	mollie.Miscellaneous = (*MiscellaneousService)(&mollie.common)
 	mollie.Mandates = (*MandatesService)(&mollie.common)
 
-	// Parse authorization from environment
-	tkn, ok := os.LookupEnv(APITokenEnv)
+	// Parse authorization from specified environment variable
+	tkn, ok := os.LookupEnv(c.auth)
 	if ok {
 		mollie.authentication = tkn
-	} else {
-		tkn = os.Getenv(c.auth)
-		mollie.authentication = tkn
+		mollie.userAgent = strings.Join([]string{
+			runtime.GOOS,
+			runtime.GOARCH,
+			runtime.Version(),
+		}, ";")
 	}
 	return
 }
