@@ -23,7 +23,6 @@ const (
 	GiftCard       PaymentMethod = "giftcard"
 	GiroPay        PaymentMethod = "giropay"
 	IDeal          PaymentMethod = "ideal"
-	INGHomePay     PaymentMethod = "inghomepay"
 	KBC            PaymentMethod = "kbc"
 	KlarnaPayLater PaymentMethod = "klarnapaylater"
 	KlarnaLiceit   PaymentMethod = "klarnaliceit"
