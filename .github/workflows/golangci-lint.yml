@@ -3,6 +3,18 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - "**.md"
+      - "*.yml"
+      - "Makefile"
+      - "docs/*.md"
+      - ".gitignore"
+      - "LICENSE"
+      - ".github/*.yml"
+      - ".github/ISSUE_TEMPLATE/*.md"
+      - ".github/*.md"
+      - ".github/workflows/main.yml"
+      - ".github/workflows/release.yml"
   pull_request:
 jobs:
   golangci:
