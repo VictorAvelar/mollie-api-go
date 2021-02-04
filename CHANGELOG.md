@@ -6,6 +6,16 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## master
 
+## v2.4.0
+
+### Added
+- Permissions API resource
+
+## v2.3.0
+
+### Removed
+- ING Pay'Home payment method support
+
 ## v2.2.1
 
 ### Added
