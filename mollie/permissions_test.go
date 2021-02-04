@@ -2,6 +2,8 @@ package mollie
 
 import (
 	"net/http"
+	"net/url"
+	"strings"
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v2/testdata"
@@ -55,5 +57,60 @@ func TestPermissionsService_List(t *testing.T) {
 
 	if pl.Count != 15 {
 		t.Errorf("the response content doesn't match expectations")
+	}
+}
+
+func TestPermissionsService_HttpRequestErrors(t *testing.T) {
+	setup()
+	defer teardown()
+	tMux.HandleFunc("/v2/permissions", errorHandler)
+
+	_, gerr := tClient.Permissions.Get("payments.read")
+	_, lerr := tClient.Permissions.List()
+
+	tests := []error{lerr, gerr}
+
+	for _, tt := range tests {
+		if tt == nil {
+			t.Fail()
+		}
+	}
+}
+
+func TestPermissionsService_NewAPIRequestErrors(t *testing.T) {
+	setup()
+	defer teardown()
+	u, _ := url.Parse(tServer.URL)
+	tClient.BaseURL = u
+	tMux.HandleFunc("/v2/permissions", errorHandler)
+
+	_, gerr := tClient.Permissions.Get("payments.read")
+	_, lerr := tClient.Permissions.List()
+
+	tests := []error{lerr, gerr}
+
+	for _, tt := range tests {
+		if tt != errBadBaseURL {
+			t.Fail()
+		}
+	}
+}
+
+func TestPermissionsService_EncodingResponseErrors(t *testing.T) {
+	setup()
+	defer teardown()
+	tMux.HandleFunc("/v2/permissions/", encodingHandler)
+
+	_, gerr := tClient.Permissions.Get("payments.read")
+	_, lerr := tClient.Permissions.List()
+
+	tests := []error{lerr, gerr}
+
+	for _, tt := range tests {
+		if tt == nil {
+			t.Fail()
+		} else if !strings.Contains(tt.Error(), "invalid character") {
+			t.Errorf("unexpected error %v", tt)
+		}
 	}
 }
