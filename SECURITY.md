@@ -7,10 +7,11 @@ declared inside the `.travis.yml` file.
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.13.x   | :white_check_mark: |
-| 1.14.x   | :white_check_mark:                |
-| 1.15.x   | :white_check_mark: |
-| master   | :x:                |
+| 1.13.x   | :warning: |
+| 1.14.x   | :warning: |
+| 1.15.x   | :warning: |
+| 1.16.x   | :white_check_mark: |
+| master   | :x: |
 
 ## Reporting a Vulnerability
 
