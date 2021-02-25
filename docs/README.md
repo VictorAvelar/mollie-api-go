@@ -377,6 +377,7 @@ type Client struct {
 	Customers     *CustomersService
 	Miscellaneous *MiscellaneousService
 	Mandates      *MandatesService
+	Permissions   *PermissionsService
 }
 ```
 
@@ -1966,6 +1967,108 @@ func (ps *PaymentsService) Update(id string, up Payment) (p Payment, err error)
 Update can be used to update some details of a created payment.
 
 See: https://docs.mollie.com/reference/v2/payments-api/update-payment#
+
+#### type Permission
+
+```go
+type Permission struct {
+	Resource    string          `json:"resource,omitempty"`
+	ID          PermissionGrant `json:"id,omitempty"`
+	Description string          `json:"description,omitempty"`
+	Granted     bool            `json:"granted,omitempty"`
+	Links       PermissionLinks `json:"_links,omitempty"`
+}
+```
+
+Permission represents an action that can be performed by any API actor.
+
+#### type PermissionGrant
+
+```go
+type PermissionGrant string
+```
+
+PermissionGrant defines supported permissions.
+
+```go
+const (
+	PaymentsRead       PermissionGrant = "payments.read"
+	PaymentsWrite      PermissionGrant = "payments.write"
+	RefundsRead        PermissionGrant = "refunds.read"
+	RefundsWrite       PermissionGrant = "refunds.write"
+	CustomersRead      PermissionGrant = "customers.read"
+	CustomersWrite     PermissionGrant = "customers.write"
+	MandatesRead       PermissionGrant = "mandates.read"
+	MandatesWrite      PermissionGrant = "mandates.write"
+	SubscriptionsRead  PermissionGrant = "subscriptions.read"
+	SubscriptionsWrite PermissionGrant = "subscriptions.write"
+	ProfilesRead       PermissionGrant = "profiles.read"
+	ProfilesWrite      PermissionGrant = "profiles.write"
+	InvoicesRead       PermissionGrant = "invoices.read"
+	OrdersRead         PermissionGrant = "orders.read"
+	OrdersWrite        PermissionGrant = "orders.write"
+	ShipmentsRead      PermissionGrant = "shipments.read"
+	ShipmentsWrite     PermissionGrant = "shipments.write"
+	OrganizationsRead  PermissionGrant = "organizations.read"
+	OrganizationsWrite PermissionGrant = "organizations.write"
+	OnboardingRead     PermissionGrant = "onbording.read"
+	OnboardingWrite    PermissionGrant = "onbording.write"
+)
+```
+Available permission grants.
+
+#### type PermissionLinks
+
+```go
+type PermissionLinks struct {
+	Self          *URL `json:"self,omitempty"`
+	Documentation *URL `json:"documentation,omitempty"`
+}
+```
+
+PermissionLinks contains URL objects that make reference to an http addres
+related to permissions.
+
+#### type PermissionsList
+
+```go
+type PermissionsList struct {
+	Count    int `json:"count,omitempty"`
+	Embedded struct {
+		Permissions []*Permission `json:"permissions,omitempty"`
+	} `json:"_embedded,omitempty"`
+	Links PermissionLinks `json:"_links,omitempty"`
+}
+```
+
+PermissionsList lists all the permissions given to an API actor.
+
+#### type PermissionsService
+
+```go
+type PermissionsService service
+```
+
+PermissionsService operates over permission resources.
+
+#### func (*PermissionsService) Get
+
+```go
+func (ps *PermissionsService) Get(id string) (p *Permission, err error)
+```
+Get returns a permission by its id.
+
+See: https://docs.mollie.com/reference/v2/permissions-api/get-permission
+
+#### func (*PermissionsService) List
+
+```go
+func (ps *PermissionsService) List() (pl *PermissionsList, err error)
+```
+List retrieves all permissions available with the current app access token. The
+list is not paginated.
+
+See: https://docs.mollie.com/reference/v2/permissions-api/list-permissions
 
 #### type PhoneNumber
 
