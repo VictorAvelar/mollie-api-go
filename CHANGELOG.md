@@ -6,6 +6,11 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## master
 
+## v2.5.0
+
+### Added
+- Support for golang v1.16
+
 ## v2.4.0
 
 ### Added

@@ -6,6 +6,6 @@ changelog:
   sort: desc
   filters:
     exclude:
-      - docs$
-      - changelog$
-      - Merge pull request
+      - docs
+      - changelog
+      - ^Merge pull request
