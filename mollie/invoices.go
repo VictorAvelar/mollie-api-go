@@ -54,10 +54,10 @@ type InvoiceLinks struct {
 
 // ListInvoiceOptions describes list invoices endpoint valid query string parameters.
 type ListInvoiceOptions struct {
-	Reference string `json:"reference,omitempty"`
-	Year      string `json:"year,omitempty"`
-	From      string `json:"from,omitempty"`
-	Limit     int64  `json:"limit,omitempty"`
+	Reference string `url:"reference,omitempty"`
+	Year      string `url:"year,omitempty"`
+	From      string `url:"from,omitempty"`
+	Limit     int64  `url:"limit,omitempty"`
 }
 
 // InvoiceList describes how a list of invoices will be retrieved by Mollie.
