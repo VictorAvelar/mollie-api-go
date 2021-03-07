@@ -54,6 +54,7 @@ type Client struct {
 	Miscellaneous *MiscellaneousService
 	Mandates      *MandatesService
 	Permissions   *PermissionsService
+	Onboarding    *OnboardingService
 }
 
 type service struct {
@@ -176,6 +177,7 @@ func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
 	mollie.Miscellaneous = (*MiscellaneousService)(&mollie.common)
 	mollie.Mandates = (*MandatesService)(&mollie.common)
 	mollie.Permissions = (*PermissionsService)(&mollie.common)
+	mollie.Onboarding = (*OnboardingService)(&mollie.common)
 
 	// Parse authorization from specified environment variable
 	tkn, ok := os.LookupEnv(c.auth)

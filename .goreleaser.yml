@@ -8,4 +8,5 @@ changelog:
     exclude:
       - docs
       - changelog
+      - readme
       - ^Merge pull request

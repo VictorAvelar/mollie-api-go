@@ -6,6 +6,14 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ## master
 
+## v2.6.0
+
+### Added
+
+- OnboardingService
+- GetOnboardingData method
+- SubmitOnboardingData method
+
 ## v2.5.1
 
 ### Fixed
