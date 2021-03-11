@@ -91,7 +91,9 @@ func (c *Client) NewAPIRequest(method string, uri string, body interface{}) (req
 	}
 
 	if c.config.testing {
-		u.Query().Add("testmode", "true")
+		query := u.Query()
+		query.Add("testmode", "true")
+		u.RawQuery = query.Encode()
 	}
 
 	var buf io.ReadWriter
