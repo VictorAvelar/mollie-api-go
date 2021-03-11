@@ -21,7 +21,7 @@ func TestMethodsService_ListWithQueryOptionsAmountCurrency(t *testing.T) {
 			w.WriteHeader(http.StatusUnauthorized)
 		}
 
-		if r.URL.RawQuery != "amount%5Bcurrency%5D=USD&amount%5Bvalue%5D=100.00" {
+		if r.URL.RawQuery != "amount%5Bcurrency%5D=USD&amount%5Bvalue%5D=100.00&testmode=true" {
 			t.Fatal(r.URL.RawQuery)
 		}
 
@@ -56,7 +56,7 @@ func TestMethodsService_ListWithQueryOptionsAll(t *testing.T) {
 			w.WriteHeader(http.StatusUnauthorized)
 		}
 
-		if r.URL.RawQuery != "amount%5Bcurrency%5D=USD&amount%5Bvalue%5D=100.00&billingCountry=DE&includeWallets=applepay&locale=de_DE&resource=orders&sequenceType=first" {
+		if r.URL.RawQuery != "amount%5Bcurrency%5D=USD&amount%5Bvalue%5D=100.00&billingCountry=DE&includeWallets=applepay&locale=de_DE&resource=orders&sequenceType=first&testmode=true" {
 			t.Fatal(r.URL.RawQuery)
 		}
 
