@@ -90,12 +90,6 @@ func (c *Client) NewAPIRequest(method string, uri string, body interface{}) (req
 		return nil, err
 	}
 
-	if c.config.testing {
-		query := u.Query()
-		query.Add("testmode", "true")
-		u.RawQuery = query.Encode()
-	}
-
 	var buf io.ReadWriter
 	if body != nil {
 		buf = new(bytes.Buffer)

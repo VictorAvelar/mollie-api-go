@@ -125,6 +125,9 @@ func (ps *PaymentsService) Get(id string, options *PaymentOptions) (p Payment, e
 	u := fmt.Sprintf("v2/payments/%s", id)
 	if options != nil {
 		v, _ := query.Values(options)
+		if ps.client.config.testing {
+			v["testmode"] = []string{"true"}
+		}
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
 	req, err := ps.client.NewAPIRequest(http.MethodGet, u, nil)
@@ -147,6 +150,7 @@ func (ps *PaymentsService) Get(id string, options *PaymentOptions) (p Payment, e
 func (ps *PaymentsService) Create(p Payment) (np Payment, err error) {
 	if ps.client.config.testing {
 		p.Testmode = true
+
 	}
 
 	u := "v2/payments"
