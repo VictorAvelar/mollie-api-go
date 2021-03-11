@@ -47,7 +47,7 @@ const (
 type Payment struct {
 	Resource                        string          `json:"resource,omitempty"`
 	ID                              string          `json:"id,omitempty"`
-	Mode                            Mode            `json:"mode,omitempty"`
+	Testmode                        bool            `json:"testmode,omitempty"`
 	CreatedAt                       *time.Time      `json:"createdAt,omitempty"`
 	Status                          string          `json:"status,omitempty"`
 	IsCancellable                   bool            `json:"isCancellable,omitempty"`
@@ -145,6 +145,10 @@ func (ps *PaymentsService) Get(id string, options *PaymentOptions) (p Payment, e
 //
 // See: https://docs.mollie.com/reference/v2/payments-api/create-payment#
 func (ps *PaymentsService) Create(p Payment) (np Payment, err error) {
+	if ps.client.config.testing {
+		p.Testmode = true
+	}
+
 	u := "v2/payments"
 	req, err := ps.client.NewAPIRequest(http.MethodPost, u, p)
 	if err != nil {

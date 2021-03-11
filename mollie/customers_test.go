@@ -130,7 +130,7 @@ func TestCustomersService_CreatePayment(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetPaymentResponse))
 	})
 
-	p, err := tClient.Customers.CreatePayment(id, Payment{Mode: TestMode})
+	p, err := tClient.Customers.CreatePayment(id, Payment{Testmode: true})
 	if err != nil {
 		t.Error(err)
 	}
