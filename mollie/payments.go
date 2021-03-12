@@ -129,6 +129,8 @@ func (ps *PaymentsService) Get(id string, options *PaymentOptions) (p Payment, e
 			v["testmode"] = []string{"true"}
 		}
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
+	} else if ps.client.config.testing {
+		u = fmt.Sprintf("%s?testmode=true", u)
 	}
 	req, err := ps.client.NewAPIRequest(http.MethodGet, u, nil)
 	if err != nil {
@@ -174,6 +176,9 @@ func (ps *PaymentsService) Create(p Payment) (np Payment, err error) {
 // See: https://docs.mollie.com/reference/v2/payments-api/cancel-payment
 func (ps *PaymentsService) Cancel(id string) (p Payment, err error) {
 	u := fmt.Sprintf("v2/payments/%s", id)
+	if ps.client.config.testing {
+		u = fmt.Sprintf("%s?testmode=true", u)
+	}
 	req, err := ps.client.NewAPIRequest(http.MethodDelete, u, nil)
 	if err != nil {
 		return
@@ -223,7 +228,12 @@ func (ps *PaymentsService) List(options *ListPaymentOptions) (pl PaymentList, er
 	u := "v2/payments"
 	if options != nil {
 		v, _ := query.Values(options)
+		if ps.client.config.testing {
+			v["testmode"] = []string{"true"}
+		}
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
+	} else if ps.client.config.testing {
+		u = fmt.Sprintf("%s?testmode=true", u)
 	}
 	req, err := ps.client.NewAPIRequest(http.MethodGet, u, nil)
 	if err != nil {
