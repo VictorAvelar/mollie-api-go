@@ -79,12 +79,12 @@ func (c *Client) WithAuthenticationValue(k string) error {
 	return nil
 }
 
-// IsAccessToken will return true when the provided authentication token
+// HasAccessToken will return true when the provided authentication token
 // complies with the access token REGEXP match check.
 // This will enable TestMode inside the request body.
 //
 // See: https://github.com/VictorAvelar/mollie-api-go/issues/123
-func (c *Client) IsAccessToken() bool {
+func (c *Client) HasAccessToken() bool {
 	return accessTokenExpr.Match([]byte(c.authentication))
 }
 

@@ -145,7 +145,7 @@ func TestClient_IsAccessToken(t *testing.T) {
 				authentication: c.value,
 			}
 
-			got := client.IsAccessToken()
+			got := client.HasAccessToken()
 
 			if got != c.want {
 				t.Errorf("Mismatching token check, want %v, got %v", c.want, got)
