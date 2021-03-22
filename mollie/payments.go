@@ -80,6 +80,7 @@ type Payment struct {
 	Details                         *PaymentDetails `json:"details,omitempty"`
 	RestrictPaymentMethodsToCountry Locale          `json:"restrictPaymentMethodsToCountry,omitempty"`
 	SubscriptionID                  string          `json:"subscriptionId,omitempty"`
+	TestMode                        bool            `json:"testmode,omitempty"`
 }
 
 // PaymentLinks describes all the possible links to be returned with
