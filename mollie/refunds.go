@@ -23,6 +23,7 @@ type Refund struct {
 	PaymentID        string       `json:"paymentId,omitempty"`
 	OrderID          string       `json:"orderId,omitempty"`
 	CreatedAt        *time.Time   `json:"createdAt,omitempty"`
+	TestMode         bool         `json:"testmode,omitempty"`
 	Links            RefundLinks  `json:"_links,omitempty"`
 }
 
@@ -112,6 +113,10 @@ func (rs *RefundsService) Create(paymentID string, re Refund, options *RefundOpt
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
+	}
+
+	if rs.client.HasAccessToken() && rs.client.config.testing {
+		re.TestMode = true
 	}
 
 	req, err := rs.client.NewAPIRequest(http.MethodPost, u, re)

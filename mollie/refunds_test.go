@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/url"
 	"strings"
@@ -77,6 +78,44 @@ func TestRefundsService_Create(t *testing.T) {
 
 	if res.Description != refund.Description {
 		t.Errorf("mismatching info. want %s got %s", refund.Description, res.Description)
+	}
+}
+
+func TestRefundsService_Create_AccessTokens(t *testing.T) {
+	setup()
+	defer teardown()
+	_ = tClient.WithAuthenticationValue("access_token")
+
+	paymentID := "tr_WDqYK6vllg"
+
+	tMux.HandleFunc("/v2/payments/"+paymentID+"/refunds", func(rw http.ResponseWriter, r *http.Request) {
+		var ref Refund
+		defer r.Body.Close()
+		if err := json.NewDecoder(r.Body).Decode(&ref); err != nil {
+			rw.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		rw.Header().Set("Content-Type", "application/json")
+		rw.WriteHeader(http.StatusCreated)
+		json.NewEncoder(rw).Encode(ref)
+	})
+
+	refund := Refund{
+		Amount: &Amount{
+			Currency: "EUR",
+			Value:    "20",
+		},
+		Description: "Order #33",
+	}
+
+	res, err := tClient.Refunds.Create(paymentID, refund, &RefundOptions{})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if res.TestMode != true {
+		t.Fatal("testmode flag is not set for access tokens")
 	}
 }
 
