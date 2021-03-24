@@ -52,6 +52,7 @@ type Subscription struct {
 	WebhookURL      string                 `json:"webhookUrl,omitempty"`
 	Metadata        map[string]interface{} `json:"metadata,omitempty"`
 	ApplicationFee  *ApplicationFee        `json:"applicationFee,omitempty"`
+	TestMode        bool                   `json:"testmode,omitempty"`
 	Links           SubscriptionLinks      `json:"_links,omitempty"`
 }
 
@@ -97,6 +98,10 @@ func (ss *SubscriptionsService) Get(cID, sID string) (s *Subscription, err error
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/create-subscription
 func (ss *SubscriptionsService) Create(cID string, sc *Subscription) (s *Subscription, err error) {
 	u := fmt.Sprintf("v2/customers/%s/subscriptions", cID)
+
+	if ss.client.HasAccessToken() && ss.client.config.testing {
+		sc.TestMode = true
+	}
 
 	req, err := ss.client.NewAPIRequest(http.MethodPost, u, sc)
 	if err != nil {
