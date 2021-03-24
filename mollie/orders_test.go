@@ -79,6 +79,39 @@ func TestOrdersService_Create(t *testing.T) {
 	}
 }
 
+func TestOrdersService_Create_AccessTokens(t *testing.T) {
+	setup()
+	defer teardown()
+	_ = tClient.WithAuthenticationValue("access_token")
+
+	tMux.HandleFunc("/v2/orders", func(rw http.ResponseWriter, r *http.Request) {
+		var ord Order
+		defer r.Body.Close()
+		if err := json.NewDecoder(r.Body).Decode(&ord); err != nil {
+			rw.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		rw.Header().Set("Content-Type", "application/json")
+		rw.WriteHeader(http.StatusCreated)
+		json.NewEncoder(rw).Encode(ord)
+	})
+
+	order := Order{}
+	opt := &OrderOptions{
+		ProfileID: "pfl_3RkSN1zuPE",
+	}
+
+	res, err := tClient.Orders.Create(order, opt)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if res.TestMode != true {
+		t.Fatal("testmode flag is not set for access tokens")
+	}
+}
+
 func TestOrdersService_Update(t *testing.T) {
 	setup()
 	defer teardown()
