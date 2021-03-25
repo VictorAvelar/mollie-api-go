@@ -80,6 +80,7 @@ type Payment struct {
 	Details                         *PaymentDetails `json:"details,omitempty"`
 	RestrictPaymentMethodsToCountry Locale          `json:"restrictPaymentMethodsToCountry,omitempty"`
 	SubscriptionID                  string          `json:"subscriptionId,omitempty"`
+	TestMode                        bool            `json:"testmode,omitempty"`
 }
 
 // PaymentLinks describes all the possible links to be returned with
@@ -146,6 +147,11 @@ func (ps *PaymentsService) Get(id string, options *PaymentOptions) (p Payment, e
 // See: https://docs.mollie.com/reference/v2/payments-api/create-payment#
 func (ps *PaymentsService) Create(p Payment) (np Payment, err error) {
 	u := "v2/payments"
+
+	if ps.client.HasAccessToken() && ps.client.config.testing {
+		p.TestMode = true
+	}
+
 	req, err := ps.client.NewAPIRequest(http.MethodPost, u, p)
 	if err != nil {
 		return

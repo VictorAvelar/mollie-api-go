@@ -106,6 +106,54 @@ func TestClient_NewAPIRequest(t *testing.T) {
 	}
 }
 
+func TestClient_IsAccessToken(t *testing.T) {
+	cases := []struct {
+		name  string
+		value string
+		want  bool
+	}{
+		{
+			"Test dummytext",
+			"dummytext",
+			false,
+		},
+		{
+			"Test pattern is matched",
+			"access_testingtokenhere",
+			true,
+		},
+		{
+			"Test patter is not matched if not in the right position",
+			"testing_tokent_access_here",
+			false,
+		},
+		{
+			"Test other tokens are not matched",
+			"test_yourtokenhere",
+			false,
+		},
+		{
+			"Test empty is not a matched",
+			"",
+			false,
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			client := &Client{
+				authentication: c.value,
+			}
+
+			got := client.HasAccessToken()
+
+			if got != c.want {
+				t.Errorf("Mismatching token check, want %v, got %v", c.want, got)
+			}
+		})
+	}
+}
+
 func TestClient_NewAPIRequest_ErrTrailingSlash(t *testing.T) {
 	uri, _ := url.Parse("http://localhost")
 	tClient = &Client{

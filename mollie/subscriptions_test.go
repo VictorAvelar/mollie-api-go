@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -75,6 +76,45 @@ func TestSubscriptionsService_Create(t *testing.T) {
 
 	if sub.ID != sID {
 		t.Errorf("unexpected response: got %v, want %v", sub.ID, sID)
+	}
+}
+
+func TestSubscriptionsService_Create_AccessTokens(t *testing.T) {
+	setup()
+	defer teardown()
+	_ = tClient.WithAuthenticationValue("access_token")
+
+	cID := "cst_stTC2WHAuS"
+	u := fmt.Sprintf("/v2/customers/%s/subscriptions", cID)
+
+	tMux.HandleFunc(u, func(rw http.ResponseWriter, r *http.Request) {
+		var ship Shipment
+		defer r.Body.Close()
+		if err := json.NewDecoder(r.Body).Decode(&ship); err != nil {
+			rw.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		rw.Header().Set("Content-Type", "application/json")
+		rw.WriteHeader(http.StatusCreated)
+		json.NewEncoder(rw).Encode(ship)
+	})
+
+	s := Subscription{
+		Amount: &Amount{
+			Currency: "EUR",
+			Value:    "11.99",
+		},
+		Interval: "12 months",
+	}
+
+	sub, err := tClient.Subscriptions.Create(cID, &s)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if sub.TestMode != true {
+		t.Fatal("testmode flag is not set for access tokens")
 	}
 }
 

@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -73,6 +74,41 @@ func TestShipmentsService_Create(t *testing.T) {
 
 	if shipment.OrderID != orderID {
 		t.Errorf("unexpected response, got: %v want: %v", shipment.OrderID, orderID)
+	}
+}
+
+func TestShipmentsService_Create_AccessTokens(t *testing.T) {
+	setup()
+	defer teardown()
+	_ = tClient.WithAuthenticationValue("access_token")
+
+	orderID := "ord_kEn1PlbGa"
+
+	tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/shipments", orderID), func(rw http.ResponseWriter, r *http.Request) {
+		var ship Shipment
+		defer r.Body.Close()
+		if err := json.NewDecoder(r.Body).Decode(&ship); err != nil {
+			rw.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		rw.Header().Set("Content-Type", "application/json")
+		rw.WriteHeader(http.StatusCreated)
+		json.NewEncoder(rw).Encode(ship)
+	})
+
+	csr := CreateShipmentRequest{
+		Lines:    []OrderLine{},
+		Tracking: ShipmentTracking{},
+	}
+
+	shipment, err := tClient.Shipments.Create(orderID, csr)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if shipment.TestMode != true {
+		t.Fatal("testmode flag is not set for access tokens")
 	}
 }
 

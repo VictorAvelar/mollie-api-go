@@ -17,6 +17,7 @@ type Shipment struct {
 	Resource  string            `json:"resource,omitempty"`
 	ID        string            `json:"id,omitempty"`
 	OrderID   string            `json:"orderId,omitempty"`
+	TestMode  bool              `json:"testmode,omitempty"`
 	CreatedAt *time.Time        `json:"createdAt,omitempty"`
 	Tracking  *ShipmentTracking `json:"tracking,omitempty"`
 	Lines     []*OrderLine      `json:"lines,omitempty"`
@@ -63,6 +64,7 @@ func (ss *ShipmentsService) Get(oID string, sID string) (s *Shipment, err error)
 type CreateShipmentRequest struct {
 	Lines    []OrderLine      `json:"lines,omitempty"`
 	Tracking ShipmentTracking `json:"tracking,omitempty"`
+	TestMode bool             `json:"testmode,omitempty"`
 }
 
 // Create can be used to ship order lines.
@@ -70,6 +72,11 @@ type CreateShipmentRequest struct {
 // See: https://docs.mollie.com/reference/v2/shipments-api/create-shipment
 func (ss *ShipmentsService) Create(oID string, cs CreateShipmentRequest) (s *Shipment, err error) {
 	u := fmt.Sprintf("v2/orders/%s/shipments", oID)
+
+	if ss.client.HasAccessToken() && ss.client.config.testing {
+		cs.TestMode = true
+	}
+
 	req, err := ss.client.NewAPIRequest(http.MethodPost, u, cs)
 	if err != nil {
 		return

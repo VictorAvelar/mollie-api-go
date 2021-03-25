@@ -14,6 +14,7 @@ type Order struct {
 	Resource            string        `json:"resource,omitempty"`
 	ID                  string        `json:"id,omitempty"`
 	ProfileID           string        `json:"profileId,omitempty"`
+	TestMode            bool          `json:"testmode,omitempty"`
 	Method              PaymentMethod `json:"method,omitempty"`
 	Mode                Mode          `json:"mode,omitempty"`
 	Amount              *Amount       `json:"amount,omitempty"`
@@ -243,6 +244,10 @@ func (ors *OrdersService) Create(ord Order, opt *OrderOptions) (order *Order, er
 	if opt != nil {
 		v, _ := query.Values(opt)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
+	}
+
+	if ors.client.HasAccessToken() && ors.client.config.testing {
+		ord.TestMode = true
 	}
 
 	req, err := ors.client.NewAPIRequest(http.MethodPost, u, ord)

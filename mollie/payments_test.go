@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/url"
 	"strings"
@@ -69,6 +70,42 @@ func TestPaymentsService_Create(t *testing.T) {
 
 	if res.Description != p.Description {
 		t.Errorf("mismatching info. want %v, got %v", p.Description, res.Description)
+	}
+}
+
+func TestPaymentsService_Create_AccessTokens(t *testing.T) {
+	setup()
+	defer teardown()
+	_ = tClient.WithAuthenticationValue("access_token")
+
+	tMux.HandleFunc("/v2/payments", func(rw http.ResponseWriter, r *http.Request) {
+		var pay Payment
+		defer r.Body.Close()
+		if err := json.NewDecoder(r.Body).Decode(&pay); err != nil {
+			rw.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		rw.Header().Set("Content-Type", "application/json")
+		rw.WriteHeader(http.StatusCreated)
+		json.NewEncoder(rw).Encode(pay)
+	})
+
+	p := Payment{
+		Amount: &Amount{
+			Currency: "EUR",
+			Value:    "10.00",
+		},
+		Description: "Order #12345",
+	}
+
+	payment, err := tClient.Payments.Create(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if payment.TestMode != true {
+		t.Error("testmode flag is not set for access tokens")
 	}
 }
 
