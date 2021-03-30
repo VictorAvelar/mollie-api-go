@@ -420,6 +420,18 @@ func (c *Client) Do(req *http.Request) (*Response, error)
 Do sends an API request and returns the API response or returned as an error if
 an API error has occurred.
 
+#### func (\*Client) HasAccessToken
+
+```go
+func (c *Client) HasAccessToken() bool
+```
+
+HasAccessToken will return true when the provided authentication token complies
+with the access token REGEXP match check. This will enable TestMode inside the
+request body.
+
+See: https://github.com/VictorAvelar/mollie-api-go/issues/123
+
 #### func (\*Client) NewAPIRequest
 
 ```go
@@ -469,6 +481,7 @@ authentication method we want to use.
 type CreateShipmentRequest struct {
 	Lines    []OrderLine      `json:"lines,omitempty"`
 	Tracking ShipmentTracking `json:"tracking,omitempty"`
+	TestMode bool             `json:"testmode,omitempty"`
 }
 ```
 
@@ -1401,6 +1414,7 @@ type Order struct {
 	Resource            string        `json:"resource,omitempty"`
 	ID                  string        `json:"id,omitempty"`
 	ProfileID           string        `json:"profileId,omitempty"`
+	TestMode            bool          `json:"testmode,omitempty"`
 	Method              PaymentMethod `json:"method,omitempty"`
 	Mode                Mode          `json:"mode,omitempty"`
 	Amount              *Amount       `json:"amount,omitempty"`
@@ -1873,6 +1887,7 @@ type Payment struct {
 	Details                         *PaymentDetails `json:"details,omitempty"`
 	RestrictPaymentMethodsToCountry Locale          `json:"restrictPaymentMethodsToCountry,omitempty"`
 	SubscriptionID                  string          `json:"subscriptionId,omitempty"`
+	TestMode                        bool            `json:"testmode,omitempty"`
 }
 ```
 
@@ -2521,6 +2536,7 @@ type Refund struct {
 	PaymentID        string       `json:"paymentId,omitempty"`
 	OrderID          string       `json:"orderId,omitempty"`
 	CreatedAt        *time.Time   `json:"createdAt,omitempty"`
+	TestMode         bool         `json:"testmode,omitempty"`
 	Links            RefundLinks  `json:"_links,omitempty"`
 }
 ```
@@ -2900,6 +2916,7 @@ type Shipment struct {
 	Resource  string            `json:"resource,omitempty"`
 	ID        string            `json:"id,omitempty"`
 	OrderID   string            `json:"orderId,omitempty"`
+	TestMode  bool              `json:"testmode,omitempty"`
 	CreatedAt *time.Time        `json:"createdAt,omitempty"`
 	Tracking  *ShipmentTracking `json:"tracking,omitempty"`
 	Lines     []*OrderLine      `json:"lines,omitempty"`
@@ -3048,6 +3065,7 @@ type Subscription struct {
 	WebhookURL      string                 `json:"webhookUrl,omitempty"`
 	Metadata        map[string]interface{} `json:"metadata,omitempty"`
 	ApplicationFee  *ApplicationFee        `json:"applicationFee,omitempty"`
+	TestMode        bool                   `json:"testmode,omitempty"`
 	Links           SubscriptionLinks      `json:"_links,omitempty"`
 }
 ```
