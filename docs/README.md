@@ -687,16 +687,18 @@ FailureReason provides a description on a failed payment
 
 ```go
 const (
-	ReasonInvalidCardNumber     FailureReason = "invalid_card_number"
-	ReasonInvalidCCV            FailureReason = "invalid_ccv"
-	ReasonInvalidCardHolderName FailureReason = "invalid_card_holder_name"
-	ReasonCardExpired           FailureReason = "card_expired"
-	ReasonInvalidCardType       FailureReason = "invalid_card_type"
-	ReasonRefusedByIssuer       FailureReason = "refused_by_issuer"
-	ReasonInsufficientFunds     FailureReason = "insufficient_funds"
-	ReasonInactiveCard          FailureReason = "inactive_card"
-	ReasonUnknown               FailureReason = "unknown_reason"
-	ReasonPossibleFraud         FailureReason = "possible_fraud"
+	ReasonAuthenticationAbandoned      FailureReason = "authentication_abandoned"
+	ReasonAuthenticationUnavailableACS FailureReason = "authentication_unavailable_acs"
+	ReasonInvalidCardNumber            FailureReason = "invalid_card_number"
+	ReasonInvalidCCV                   FailureReason = "invalid_ccv"
+	ReasonInvalidCardHolderName        FailureReason = "invalid_card_holder_name"
+	ReasonCardExpired                  FailureReason = "card_expired"
+	ReasonInvalidCardType              FailureReason = "invalid_card_type"
+	ReasonRefusedByIssuer              FailureReason = "refused_by_issuer"
+	ReasonInsufficientFunds            FailureReason = "insufficient_funds"
+	ReasonInactiveCard                 FailureReason = "inactive_card"
+	ReasonUnknown                      FailureReason = "unknown_reason"
+	ReasonPossibleFraud                FailureReason = "possible_fraud"
 )
 ```
 
@@ -746,11 +748,15 @@ GiftCardIssuer type describes issuers supported by mollie.
 
 ```go
 const (
+	BloemenCadeuKaart          GiftCardIssuer = "bloemencadeaukaart"
+	Boekenbon                  GiftCardIssuer = "boekenbon"
 	DecaudeuKaart              GiftCardIssuer = "decadeaukaart"
+	DelokaleDecauKaart         GiftCardIssuer = "delokalecadeaukaart"
 	Dinercadeau                GiftCardIssuer = "dinercadeau"
 	Fashioncheque              GiftCardIssuer = "fashioncheque"
 	Festivalcadeau             GiftCardIssuer = "festivalcadeau"
 	Good4fun                   GiftCardIssuer = "good4fun"
+	KlusCadeu                  GiftCardIssuer = "kluscadeau"
 	Kunstencultuurcadeaukaart  GiftCardIssuer = "kunstencultuurcadeaukaart"
 	Nationalebioscoopbon       GiftCardIssuer = "nationalebioscoopbon"
 	Nationaleentertainmentcard GiftCardIssuer = "nationaleentertainmentcard"

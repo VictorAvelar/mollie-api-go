@@ -17,16 +17,18 @@ type FailureReason string
 
 // Possible failure reasons
 const (
-	ReasonInvalidCardNumber     FailureReason = "invalid_card_number"
-	ReasonInvalidCCV            FailureReason = "invalid_ccv"
-	ReasonInvalidCardHolderName FailureReason = "invalid_card_holder_name"
-	ReasonCardExpired           FailureReason = "card_expired"
-	ReasonInvalidCardType       FailureReason = "invalid_card_type"
-	ReasonRefusedByIssuer       FailureReason = "refused_by_issuer"
-	ReasonInsufficientFunds     FailureReason = "insufficient_funds"
-	ReasonInactiveCard          FailureReason = "inactive_card"
-	ReasonUnknown               FailureReason = "unknown_reason"
-	ReasonPossibleFraud         FailureReason = "possible_fraud"
+	ReasonAuthenticationAbandoned      FailureReason = "authentication_abandoned"
+	ReasonAuthenticationUnavailableACS FailureReason = "authentication_unavailable_acs"
+	ReasonInvalidCardNumber            FailureReason = "invalid_card_number"
+	ReasonInvalidCCV                   FailureReason = "invalid_ccv"
+	ReasonInvalidCardHolderName        FailureReason = "invalid_card_holder_name"
+	ReasonCardExpired                  FailureReason = "card_expired"
+	ReasonInvalidCardType              FailureReason = "invalid_card_type"
+	ReasonRefusedByIssuer              FailureReason = "refused_by_issuer"
+	ReasonInsufficientFunds            FailureReason = "insufficient_funds"
+	ReasonInactiveCard                 FailureReason = "inactive_card"
+	ReasonUnknown                      FailureReason = "unknown_reason"
+	ReasonPossibleFraud                FailureReason = "possible_fraud"
 )
 
 // EligibilityReasons for paypal seller protection

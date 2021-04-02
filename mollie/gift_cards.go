@@ -9,11 +9,15 @@ type GiftCardIssuer string
 
 // Supported gift card issuers
 const (
+	BloemenCadeuKaart          GiftCardIssuer = "bloemencadeaukaart"
+	Boekenbon                  GiftCardIssuer = "boekenbon"
 	DecaudeuKaart              GiftCardIssuer = "decadeaukaart"
+	DelokaleDecauKaart         GiftCardIssuer = "delokalecadeaukaart"
 	Dinercadeau                GiftCardIssuer = "dinercadeau"
 	Fashioncheque              GiftCardIssuer = "fashioncheque"
 	Festivalcadeau             GiftCardIssuer = "festivalcadeau"
 	Good4fun                   GiftCardIssuer = "good4fun"
+	KlusCadeu                  GiftCardIssuer = "kluscadeau"
 	Kunstencultuurcadeaukaart  GiftCardIssuer = "kunstencultuurcadeaukaart"
 	Nationalebioscoopbon       GiftCardIssuer = "nationalebioscoopbon"
 	Nationaleentertainmentcard GiftCardIssuer = "nationaleentertainmentcard"
