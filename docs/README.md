@@ -1,6 +1,6 @@
 # mollie
 --
-import "github.com/VictorAvelar/mollie-api-golang/v2/mollie"
+    import "."
 
 Package mollie is a wrapper around Mollie's REST API.
 
@@ -2153,7 +2153,7 @@ type PermissionLinks struct {
 }
 ```
 
-PermissionLinks contains URL objects that make reference to an http addres
+PermissionLinks contains URL objects that make reference to an http address
 related to permissions.
 
 #### type PermissionsList
