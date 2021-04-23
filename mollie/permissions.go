@@ -45,7 +45,7 @@ type Permission struct {
 }
 
 // PermissionLinks contains URL objects that make
-// reference to an http addres related to permissions.
+// reference to an http address related to permissions.
 type PermissionLinks struct {
 	Self          *URL `json:"self,omitempty"`
 	Documentation *URL `json:"documentation,omitempty"`

@@ -11,41 +11,42 @@ import (
 
 // Order explain the items that customers need to pay for.
 type Order struct {
-	Resource            string        `json:"resource,omitempty"`
-	ID                  string        `json:"id,omitempty"`
-	ProfileID           string        `json:"profileId,omitempty"`
-	TestMode            bool          `json:"testmode,omitempty"`
-	Method              PaymentMethod `json:"method,omitempty"`
-	Mode                Mode          `json:"mode,omitempty"`
-	Amount              *Amount       `json:"amount,omitempty"`
-	AmountCaptured      *Amount       `json:"amountCaptured,omitempty"`
-	AmountRefunded      *Amount       `json:"amountRefunded,omitempty"`
-	Status              OrderStatus   `json:"status,omitempty"`
-	IsCancelable        bool          `json:"isCancelable,omitempty"`
-	BillingAddress      *OrderAddress `json:"billingAddress,omitempty"`
-	ConsumerDateOfBirth *ShortDate    `json:"consumerDateOfBirth,omitempty"`
-	OrderNumber         string        `json:"orderNumber,omitempty"`
-	ShippingAddress     OrderAddress  `json:"shippingAddress,omitempty"`
-	Locale              Locale        `json:"locale,omitempty"`
-	Metadata            interface{}   `json:"metadata,omitempty"`
-	RedirectURL         string        `json:"redirectUrl,omitempty"`
-	Lines               []*OrderLine  `json:"lines,omitempty"`
-	WebhookURL          string        `json:"webhookUrl,omitempty"`
-	CreatedAt           *time.Time    `json:"createdAt,omitempty"`
-	ExpiresAt           *time.Time    `json:"expiresAt,omitempty"`
-	ExpiredAt           *time.Time    `json:"expiredAt,omitempty"`
-	PaidAt              *time.Time    `json:"paidAt,omitempty"`
-	AuthorizedAt        *time.Time    `json:"authorizedAt,omitempty"`
-	CanceledAt          *time.Time    `json:"canceledAt,omitempty"`
-	CompletedAt         *time.Time    `json:"completedAt,omitempty"`
-	Embedded            struct {
-		Payments []*Payment `json:"payments,omitempty"`
-		Refunds  []*Refund  `json:"refunds,omitempty"`
-	} `json:"_embedded,omitempty"`
+	Resource                                 string        `json:"resource,omitempty"`
+	ID                                       string        `json:"id,omitempty"`
+	ProfileID                                string        `json:"profileId,omitempty"`
+	TestMode                                 bool          `json:"testmode,omitempty"`
+	Method                                   PaymentMethod `json:"method,omitempty"`
+	Mode                                     Mode          `json:"mode,omitempty"`
+	Amount                                   *Amount       `json:"amount,omitempty"`
+	AmountCaptured                           *Amount       `json:"amountCaptured,omitempty"`
+	AmountRefunded                           *Amount       `json:"amountRefunded,omitempty"`
+	Status                                   OrderStatus   `json:"status,omitempty"`
+	IsCancelable                             bool          `json:"isCancelable,omitempty"`
+	BillingAddress                           *OrderAddress `json:"billingAddress,omitempty"`
+	ConsumerDateOfBirth                      *ShortDate    `json:"consumerDateOfBirth,omitempty"`
+	OrderNumber                              string        `json:"orderNumber,omitempty"`
+	ShippingAddress                          OrderAddress  `json:"shippingAddress,omitempty"`
+	Locale                                   Locale        `json:"locale,omitempty"`
+	Metadata                                 interface{}   `json:"metadata,omitempty"`
+	RedirectURL                              string        `json:"redirectUrl,omitempty"`
+	Lines                                    []*OrderLine  `json:"lines,omitempty"`
+	WebhookURL                               string        `json:"webhookUrl,omitempty"`
+	CreatedAt                                *time.Time    `json:"createdAt,omitempty"`
+	ExpiresAt                                *time.Time    `json:"expiresAt,omitempty"`
+	ExpiredAt                                *time.Time    `json:"expiredAt,omitempty"`
+	PaidAt                                   *time.Time    `json:"paidAt,omitempty"`
+	AuthorizedAt                             *time.Time    `json:"authorizedAt,omitempty"`
+	CanceledAt                               *time.Time    `json:"canceledAt,omitempty"`
+	CompletedAt                              *time.Time    `json:"completedAt,omitempty"`
 	Links                                    OrderLinks    `json:"_links,omitempty"`
 	OrderPayment                             *OrderPayment `json:"payment,omitempty"`
 	Description                              string        `json:"description,omitempty"`
 	ShopperCountryMustMatchTheBillingCountry bool          `json:"shopperCountryMustMatchTheBillingCountry,omitempty"`
+	Sku                                      string        `json:"sku,omitempty"`
+	Embedded                                 struct {
+		Payments []*Payment `json:"payments,omitempty"`
+		Refunds  []*Refund  `json:"refunds,omitempty"`
+	} `json:"_embedded,omitempty"`
 }
 
 // OrderPayment describes payment specific parameters that can be passed during order creation
