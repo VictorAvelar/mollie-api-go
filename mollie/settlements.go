@@ -17,7 +17,7 @@ type SettlementStatus string
 
 // Available settlement statuses
 const (
-	SettlementStatusOpen    = "string"
+	SettlementStatusOpen    = "open"
 	SettlementStatusPending = "pending"
 	SettlementStatusPaidOut = "paidout"
 	SettlementStatusFailed  = "failed"
