@@ -13,7 +13,7 @@ import (
 type SettlementsService service
 
 // SettlementStatus describes the status of the settlement
-type SettlementStatus
+type SettlementStatus string
 
 // Available settlement statuses
 const (
