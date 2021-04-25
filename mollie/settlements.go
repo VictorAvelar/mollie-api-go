@@ -17,10 +17,10 @@ type SettlementStatus string
 
 // Available settlement statuses
 const (
-	SettlementStatusOpen SettlementStatus = "open"
+	SettlementStatusOpen    SettlementStatus = "open"
 	SettlementStatusPending SettlementStatus = "pending"
 	SettlementStatusPaidOut SettlementStatus = "paidout"
-	SettlementStatusFailed SettlementStatus = "failed"
+	SettlementStatusFailed  SettlementStatus = "failed"
 )
 
 // SettlementRevenue objects contain the total revenue for each payment method during this period
