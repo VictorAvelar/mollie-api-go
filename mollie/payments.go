@@ -43,44 +43,60 @@ const (
 	RecurringSequence SequenceType = "recurring"
 )
 
-// Payment describes a transaction between a customer and a merchant
+// Payment describes a transaction between a customer and a merchant.
 type Payment struct {
+	IsCancellable                   bool            `json:"isCancellable,omitempty"`
+	TestMode                        bool            `json:"testmode,omitempty"`
+	WebhookURL                      string          `json:"webhookUrl,omitempty"`
 	Resource                        string          `json:"resource,omitempty"`
 	ID                              string          `json:"id,omitempty"`
-	Mode                            Mode            `json:"mode,omitempty"`
-	CreatedAt                       *time.Time      `json:"createdAt,omitempty"`
+	MandateID                       string          `json:"mandateId,omitempty"`
+	OrderID                         string          `json:"orderId,omitempty"`
+	ProfileID                       string          `json:"profileId,omitempty"`
+	SettlementID                    string          `json:"settlementId,omitempty"`
+	CustomerID                      string          `json:"customerId,omitempty"`
 	Status                          string          `json:"status,omitempty"`
-	IsCancellable                   bool            `json:"isCancellable,omitempty"`
+	Description                     string          `json:"description,omitempty"`
+	RedirectURL                     string          `json:"redirectUrl,omitempty"`
+	CountryCode                     string          `json:"countryCode,omitempty"`
+	SubscriptionID                  string          `json:"subscriptionId,omitempty"`
+	Metadata                        interface{}     `json:"metadata,omitempty"`
+	Amount                          *Amount         `json:"amount,omitempty"`
+	AmountRefunded                  *Amount         `json:"amountRefunded,omitempty"`
+	AmountRemaining                 *Amount         `json:"amountRemaining,omitempty"`
+	AmountCaptured                  *Amount         `json:"amountCaptured,omitempty"`
+	SettlementAmount                *Amount         `json:"settlementAmount,omitempty"`
+	ApplicationFee                  *ApplicationFee `json:"applicationFee,omitempty"`
+	Details                         *PaymentDetails `json:"details,omitempty"`
+	CreatedAt                       *time.Time      `json:"createdAt,omitempty"`
 	AuthorizedAt                    *time.Time      `json:"authorizedAt,omitempty"`
 	PaidAt                          *time.Time      `json:"paidAt,omitempty"`
 	CanceledAt                      *time.Time      `json:"canceledAt,omitempty"`
 	ExpiresAt                       *time.Time      `json:"expiresAt,omitempty"`
 	ExpiredAt                       *time.Time      `json:"expiredAt,omitempty"`
 	FailedAt                        *time.Time      `json:"failedAt,omitempty"`
-	Amount                          *Amount         `json:"amount,omitempty"`
-	AmountRefunded                  *Amount         `json:"amountRefunded,omitempty"`
-	AmountRemaining                 *Amount         `json:"amountRemaining,omitempty"`
-	AmountCaptured                  *Amount         `json:"amountCaptured,omitempty"`
-	Description                     string          `json:"description,omitempty"`
-	RedirectURL                     string          `json:"redirectUrl,omitempty"`
-	WebhookURL                      string          `json:"webhookUrl,omitempty"`
-	Method                          PaymentMethod   `json:"method,omitempty"`
-	Metadata                        interface{}     `json:"metadata,omitempty"`
+	Mode                            Mode            `json:"mode,omitempty"`
 	Locale                          Locale          `json:"locale,omitempty"`
-	CountryCode                     string          `json:"countryCode,omitempty"`
-	ProfileID                       string          `json:"profileId,omitempty"`
-	SettlementAmount                *Amount         `json:"settlementAmount,omitempty"`
-	SettlementID                    string          `json:"settlementId,omitempty"`
-	CustomerID                      string          `json:"customerId,omitempty"`
-	SequenceType                    SequenceType    `json:"sequenceType,omitempty"`
-	MandateID                       string          `json:"mandateId,omitempty"`
-	OrderID                         string          `json:"orderId,omitempty"`
-	ApplicationFee                  *ApplicationFee `json:"applicationFee,omitempty"`
-	Links                           PaymentLinks    `json:"_links,omitempty"`
-	Details                         *PaymentDetails `json:"details,omitempty"`
 	RestrictPaymentMethodsToCountry Locale          `json:"restrictPaymentMethodsToCountry,omitempty"`
-	SubscriptionID                  string          `json:"subscriptionId,omitempty"`
-	TestMode                        bool            `json:"testmode,omitempty"`
+	Method                          PaymentMethod   `json:"method,omitempty"`
+	Links                           PaymentLinks    `json:"_links,omitempty"`
+	SequenceType                    SequenceType    `json:"sequenceType,omitempty"`
+	// Payment method specific params.
+	DigitalGoods         bool                   `json:"digitalGoods,omitempty"`
+	ApplePayPaymentToken string                 `json:"applePayPaymentToken,omitempty"`
+	BillingEmail         string                 `json:"billingEmail,omitempty"`
+	CardToken            string                 `json:"cardToken,omitempty"`
+	Issuer               string                 `json:"issuer,omitempty"`
+	VoucherNumber        string                 `json:"voucherNumber,omitempty"`
+	VoucherPin           string                 `json:"voucherPin,omitempty"`
+	ExtraMerchantData    string                 `json:"extraMerchantData,omitempty"`
+	SessionID            string                 `json:"sessionId,omitempty"`
+	CustomerReference    string                 `json:"customerReference,omitempty"`
+	ConsumerName         string                 `json:"consumerName,omitempty"`
+	ConsumerAccount      string                 `json:"consumerAccount,omitempty"`
+	DueDate              *ShortDate             `json:"dueDate,omitempty"`
+	BillingAddress       *Address               `json:"billingAddress,omitempty"`
+	ShippingAddress      *PaymentDetailsAddress `json:"shippingAddress,omitempty"`
 }
 
 // PaymentLinks describes all the possible links to be returned with
@@ -111,11 +127,11 @@ type PaymentOptions struct {
 
 // ListPaymentOptions describes list payments endpoint valid query string parameters.
 type ListPaymentOptions struct {
+	Limit     int    `url:"limit,omitempty"`
 	Include   string `url:"include,omitempty"`
 	Embed     string `url:"embed,omitempty"`
 	ProfileID string `url:"profileId,omitempty"`
 	From      string `url:"from,omitempty"`
-	Limit     int    `url:"limit,omitempty"`
 }
 
 // PaymentsService instance operates over payment resources
