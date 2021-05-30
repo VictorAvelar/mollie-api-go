@@ -109,6 +109,48 @@ func TestPaymentsService_Create_AccessTokens(t *testing.T) {
 	}
 }
 
+func TestPaymentsService_Create_PaymentMethodFields(t *testing.T) {
+	setup()
+	defer teardown()
+	_ = tClient.WithAuthenticationValue("access_token")
+
+	tMux.HandleFunc("/v2/payments", func(rw http.ResponseWriter, r *http.Request) {
+		var pay Payment
+		defer r.Body.Close()
+		if err := json.NewDecoder(r.Body).Decode(&pay); err != nil {
+			rw.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		if pay.Method != "ideal" && pay.Issuer == "" {
+			t.Error("request payload is not properly encoded")
+		}
+
+		rw.Header().Set("Content-Type", "application/json")
+		rw.WriteHeader(http.StatusCreated)
+		json.NewEncoder(rw).Encode(pay)
+	})
+
+	p := Payment{
+		Amount: &Amount{
+			Currency: "EUR",
+			Value:    "10.00",
+		},
+		Description: "Order #12345",
+		Method:      IDeal,
+		Issuer:      "ideal_INGBNL2A",
+	}
+
+	payment, err := tClient.Payments.Create(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if payment.TestMode != true {
+		t.Error("testmode flag is not set for access tokens")
+	}
+}
+
 func TestPaymentsService_Update(t *testing.T) {
 	setup()
 	defer teardown()
