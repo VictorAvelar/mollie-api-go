@@ -54,6 +54,7 @@ type UsedGiftCard struct {
 
 // PaymentDetails contains details for the specified payment method
 type PaymentDetails struct {
+	PaypalDigitalGoods bool                   `json:"digitalGoods,omitempty"`
 	BankAccount        string                 `json:"bankAccount,omitempty"`
 	BankBIC            string                 `json:"bankBic,omitempty"`
 	BankName           string                 `json:"bankName,omitempty"`
@@ -72,26 +73,25 @@ type PaymentDetails struct {
 	ConsumerName       string                 `json:"consumerName,omitempty"`
 	ConsumerReference  string                 `json:"consumerReference,omitempty"`
 	CreditorIdentifier string                 `json:"creditorIdentifier,omitempty"`
-	DueDate            *ShortDate             `json:"dueDate,omitempty"`
 	EndToEndIdentifier string                 `json:"endToEndIdentifier,omitempty"`
-	FailureReason      FailureReason          `json:"failureReason,omitempty"`
-	FeeRegion          FeeRegion              `json:"feeRegion,omitempty"`
 	FileReference      string                 `json:"fileReference,omitempty"`
-	GiftCards          []*UsedGiftCard        `json:"giftCards,omitempty"`
 	MandateReference   string                 `json:"mandateReference,omitempty"`
-	PaypalDigitalGoods bool                   `json:"digitalGoods,omitempty"`
-	PaypalFee          Amount                 `json:"paypalFee,omitempty"`
-	PaypalPayerID      string                 `json:"paypalPayerId,omitempty"`
 	PaypalReference    string                 `json:"paypalReference,omitempty"`
-	QRCode             *QRCode                `json:"qrCode,omitempty"`
-	RemainderAmount    *Amount                `json:"remainderAmount,omitempty"`
-	RemainderMethod    PaymentMethod          `json:"remainderMethod,omitempty"`
-	SellerProtection   EligibilityReasons     `json:"sellerProtection,omitempty"`
-	ShippingAddress    *PaymentDetailsAddress `json:"shippingAddress,omitempty"`
-	SignatureDate      *ShortDate             `json:"signatureDate,omitempty"`
+	PaypalPayerID      string                 `json:"paypalPayerId,omitempty"`
 	TransferReference  string                 `json:"transferReference,omitempty"`
 	VoucherNumber      string                 `json:"voucherNumber,omitempty"`
 	Wallet             string                 `json:"wallet,omitempty"`
+	PaypalFee          Amount                 `json:"paypalFee,omitempty"`
+	FailureReason      FailureReason          `json:"failureReason,omitempty"`
+	FeeRegion          FeeRegion              `json:"feeRegion,omitempty"`
+	RemainderMethod    PaymentMethod          `json:"remainderMethod,omitempty"`
+	SellerProtection   EligibilityReasons     `json:"sellerProtection,omitempty"`
+	DueDate            *ShortDate             `json:"dueDate,omitempty"`
+	GiftCards          []*UsedGiftCard        `json:"giftCards,omitempty"`
+	QRCode             *QRCode                `json:"qrCode,omitempty"`
+	RemainderAmount    *Amount                `json:"remainderAmount,omitempty"`
+	ShippingAddress    *PaymentDetailsAddress `json:"shippingAddress,omitempty"`
+	SignatureDate      *ShortDate             `json:"signatureDate,omitempty"`
 	Links              struct {
 		Status    *URL `json:"status,omitempty"`
 		PayOnline *URL `json:"payOnline,omitempty"`
