@@ -985,11 +985,11 @@ ListMethods describes a list of paginated payment methods.
 
 ```go
 type ListPaymentOptions struct {
+	Limit     int    `url:"limit,omitempty"`
 	Include   string `url:"include,omitempty"`
 	Embed     string `url:"embed,omitempty"`
 	ProfileID string `url:"profileId,omitempty"`
 	From      string `url:"from,omitempty"`
-	Limit     int    `url:"limit,omitempty"`
 }
 ```
 
@@ -1848,51 +1848,67 @@ PaginationLinks describes the hal component of paginated responses.
 
 ```go
 type Payment struct {
-	Resource                        string          `json:"resource,omitempty"`
-	ID                              string          `json:"id,omitempty"`
-	Mode                            Mode            `json:"mode,omitempty"`
-	CreatedAt                       *time.Time      `json:"createdAt,omitempty"`
-	Status                          string          `json:"status,omitempty"`
-	IsCancellable                   bool            `json:"isCancellable,omitempty"`
-	AuthorizedAt                    *time.Time      `json:"authorizedAt,omitempty"`
-	PaidAt                          *time.Time      `json:"paidAt,omitempty"`
-	CanceledAt                      *time.Time      `json:"canceledAt,omitempty"`
-	ExpiresAt                       *time.Time      `json:"expiresAt,omitempty"`
-	ExpiredAt                       *time.Time      `json:"expiredAt,omitempty"`
-	FailedAt                        *time.Time      `json:"failedAt,omitempty"`
-	Amount                          *Amount         `json:"amount,omitempty"`
-	AmountRefunded                  *Amount         `json:"amountRefunded,omitempty"`
-	AmountRemaining                 *Amount         `json:"amountRemaining,omitempty"`
-	AmountCaptured                  *Amount         `json:"amountCaptured,omitempty"`
-	Description                     string          `json:"description,omitempty"`
-	RedirectURL                     string          `json:"redirectUrl,omitempty"`
-	WebhookURL                      string          `json:"webhookUrl,omitempty"`
-	Method                          PaymentMethod   `json:"method,omitempty"`
-	Metadata                        interface{}     `json:"metadata,omitempty"`
-	Locale                          Locale          `json:"locale,omitempty"`
-	CountryCode                     string          `json:"countryCode,omitempty"`
-	ProfileID                       string          `json:"profileId,omitempty"`
-	SettlementAmount                *Amount         `json:"settlementAmount,omitempty"`
-	SettlementID                    string          `json:"settlementId,omitempty"`
-	CustomerID                      string          `json:"customerId,omitempty"`
-	SequenceType                    SequenceType    `json:"sequenceType,omitempty"`
-	MandateID                       string          `json:"mandateId,omitempty"`
-	OrderID                         string          `json:"orderId,omitempty"`
-	ApplicationFee                  *ApplicationFee `json:"applicationFee,omitempty"`
-	Links                           PaymentLinks    `json:"_links,omitempty"`
-	Details                         *PaymentDetails `json:"details,omitempty"`
-	RestrictPaymentMethodsToCountry Locale          `json:"restrictPaymentMethodsToCountry,omitempty"`
-	SubscriptionID                  string          `json:"subscriptionId,omitempty"`
-	TestMode                        bool            `json:"testmode,omitempty"`
+	IsCancellable                   bool                   `json:"isCancellable,omitempty"`
+	TestMode                        bool                   `json:"testmode,omitempty"`
+	DigitalGoods                    bool                   `json:"digitalGoods,omitempty"`
+	ApplePayPaymentToken            string                 `json:"applePayPaymentToken,omitempty"`
+	BillingEmail                    string                 `json:"billingEmail,omitempty"`
+	CardToken                       string                 `json:"cardToken,omitempty"`
+	Issuer                          string                 `json:"issuer,omitempty"`
+	VoucherNumber                   string                 `json:"voucherNumber,omitempty"`
+	VoucherPin                      string                 `json:"voucherPin,omitempty"`
+	ExtraMerchantData               string                 `json:"extraMerchantData,omitempty"`
+	SessionID                       string                 `json:"sessionId,omitempty"`
+	CustomerReference               string                 `json:"customerReference,omitempty"`
+	ConsumerName                    string                 `json:"consumerName,omitempty"`
+	ConsumerAccount                 string                 `json:"consumerAccount,omitempty"`
+	WebhookURL                      string                 `json:"webhookUrl,omitempty"`
+	Resource                        string                 `json:"resource,omitempty"`
+	ID                              string                 `json:"id,omitempty"`
+	MandateID                       string                 `json:"mandateId,omitempty"`
+	OrderID                         string                 `json:"orderId,omitempty"`
+	ProfileID                       string                 `json:"profileId,omitempty"`
+	SettlementID                    string                 `json:"settlementId,omitempty"`
+	CustomerID                      string                 `json:"customerId,omitempty"`
+	Status                          string                 `json:"status,omitempty"`
+	Description                     string                 `json:"description,omitempty"`
+	RedirectURL                     string                 `json:"redirectUrl,omitempty"`
+	CountryCode                     string                 `json:"countryCode,omitempty"`
+	SubscriptionID                  string                 `json:"subscriptionId,omitempty"`
+	Metadata                        interface{}            `json:"metadata,omitempty"`
+	Amount                          *Amount                `json:"amount,omitempty"`
+	AmountRefunded                  *Amount                `json:"amountRefunded,omitempty"`
+	AmountRemaining                 *Amount                `json:"amountRemaining,omitempty"`
+	AmountCaptured                  *Amount                `json:"amountCaptured,omitempty"`
+	SettlementAmount                *Amount                `json:"settlementAmount,omitempty"`
+	ApplicationFee                  *ApplicationFee        `json:"applicationFee,omitempty"`
+	Details                         *PaymentDetails        `json:"details,omitempty"`
+	CreatedAt                       *time.Time             `json:"createdAt,omitempty"`
+	AuthorizedAt                    *time.Time             `json:"authorizedAt,omitempty"`
+	PaidAt                          *time.Time             `json:"paidAt,omitempty"`
+	CanceledAt                      *time.Time             `json:"canceledAt,omitempty"`
+	ExpiresAt                       *time.Time             `json:"expiresAt,omitempty"`
+	ExpiredAt                       *time.Time             `json:"expiredAt,omitempty"`
+	FailedAt                        *time.Time             `json:"failedAt,omitempty"`
+	DueDate                         *ShortDate             `json:"dueDate,omitempty"`
+	BillingAddress                  *Address               `json:"billingAddress,omitempty"`
+	ShippingAddress                 *PaymentDetailsAddress `json:"shippingAddress,omitempty"`
+	Mode                            Mode                   `json:"mode,omitempty"`
+	Locale                          Locale                 `json:"locale,omitempty"`
+	RestrictPaymentMethodsToCountry Locale                 `json:"restrictPaymentMethodsToCountry,omitempty"`
+	Method                          PaymentMethod          `json:"method,omitempty"`
+	Links                           PaymentLinks           `json:"_links,omitempty"`
+	SequenceType                    SequenceType           `json:"sequenceType,omitempty"`
 }
 ```
 
-Payment describes a transaction between a customer and a merchant
+Payment describes a transaction between a customer and a merchant.
 
 #### type PaymentDetails
 
 ```go
 type PaymentDetails struct {
+	PaypalDigitalGoods bool                   `json:"digitalGoods,omitempty"`
 	BankAccount        string                 `json:"bankAccount,omitempty"`
 	BankBIC            string                 `json:"bankBic,omitempty"`
 	BankName           string                 `json:"bankName,omitempty"`
@@ -1911,26 +1927,25 @@ type PaymentDetails struct {
 	ConsumerName       string                 `json:"consumerName,omitempty"`
 	ConsumerReference  string                 `json:"consumerReference,omitempty"`
 	CreditorIdentifier string                 `json:"creditorIdentifier,omitempty"`
-	DueDate            *ShortDate             `json:"dueDate,omitempty"`
 	EndToEndIdentifier string                 `json:"endToEndIdentifier,omitempty"`
-	FailureReason      FailureReason          `json:"failureReason,omitempty"`
-	FeeRegion          FeeRegion              `json:"feeRegion,omitempty"`
 	FileReference      string                 `json:"fileReference,omitempty"`
-	GiftCards          []*UsedGiftCard        `json:"giftCards,omitempty"`
 	MandateReference   string                 `json:"mandateReference,omitempty"`
-	PaypalDigitalGoods bool                   `json:"digitalGoods,omitempty"`
-	PaypalFee          Amount                 `json:"paypalFee,omitempty"`
-	PaypalPayerID      string                 `json:"paypalPayerId,omitempty"`
 	PaypalReference    string                 `json:"paypalReference,omitempty"`
-	QRCode             *QRCode                `json:"qrCode,omitempty"`
-	RemainderAmount    *Amount                `json:"remainderAmount,omitempty"`
-	RemainderMethod    PaymentMethod          `json:"remainderMethod,omitempty"`
-	SellerProtection   EligibilityReasons     `json:"sellerProtection,omitempty"`
-	ShippingAddress    *PaymentDetailsAddress `json:"shippingAddress,omitempty"`
-	SignatureDate      *ShortDate             `json:"signatureDate,omitempty"`
+	PaypalPayerID      string                 `json:"paypalPayerId,omitempty"`
 	TransferReference  string                 `json:"transferReference,omitempty"`
 	VoucherNumber      string                 `json:"voucherNumber,omitempty"`
 	Wallet             string                 `json:"wallet,omitempty"`
+	PaypalFee          Amount                 `json:"paypalFee,omitempty"`
+	FailureReason      FailureReason          `json:"failureReason,omitempty"`
+	FeeRegion          FeeRegion              `json:"feeRegion,omitempty"`
+	RemainderMethod    PaymentMethod          `json:"remainderMethod,omitempty"`
+	SellerProtection   EligibilityReasons     `json:"sellerProtection,omitempty"`
+	DueDate            *ShortDate             `json:"dueDate,omitempty"`
+	GiftCards          []*UsedGiftCard        `json:"giftCards,omitempty"`
+	QRCode             *QRCode                `json:"qrCode,omitempty"`
+	RemainderAmount    *Amount                `json:"remainderAmount,omitempty"`
+	ShippingAddress    *PaymentDetailsAddress `json:"shippingAddress,omitempty"`
+	SignatureDate      *ShortDate             `json:"signatureDate,omitempty"`
 	Links              struct {
 		Status    *URL `json:"status,omitempty"`
 		PayOnline *URL `json:"payOnline,omitempty"`
