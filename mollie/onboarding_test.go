@@ -54,7 +54,6 @@ func TestOnboardingService_SubmitOnboardingData(t *testing.T) {
 		}
 
 		rw.WriteHeader(http.StatusCreated)
-		return
 	})
 
 	od := OnboardingData{}

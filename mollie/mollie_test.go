@@ -1,14 +1,11 @@
 package mollie
 
 import (
-	"bytes"
-	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"os"
-	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -383,52 +380,6 @@ func testMethod(t *testing.T, r *http.Request, want string) {
 func testHeader(t *testing.T, r *http.Request, header string, want string) {
 	if got := r.Header.Get(header); got != want {
 		t.Errorf("Header.Get(%q) returned %q, want %q", header, got, want)
-	}
-}
-
-func testURLParseError(t *testing.T, err error) {
-	if err == nil {
-		t.Errorf("Expected error to be returned")
-	}
-	if err, ok := err.(*url.Error); !ok || err.Op != "parse" {
-		t.Errorf("Expected URL parse error, got %+v", err)
-	}
-}
-
-func testBody(t *testing.T, r *http.Request, want string) {
-	b, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		t.Errorf("Error reading request body: %v", err)
-	}
-	if got := string(b); got != want {
-		t.Errorf("request Body is %s, want %s", got, want)
-	}
-}
-
-func testJSONMarshal(t *testing.T, v interface{}, want string) {
-	j, err := json.Marshal(v)
-	if err != nil {
-		t.Errorf("Unable to marshal JSON for %v", v)
-	}
-
-	w := new(bytes.Buffer)
-	err = json.Compact(w, []byte(want))
-	if err != nil {
-		t.Errorf("String is not valid json: %s", want)
-	}
-
-	if w.String() != string(j) {
-		t.Errorf("json.Marshal(%q) returned %s, want %s", v, j, w)
-	}
-
-	// now go the other direction and make sure things unmarshal as expected
-	u := reflect.ValueOf(v).Interface()
-	if err := json.Unmarshal([]byte(want), u); err != nil {
-		t.Errorf("Unable to unmarshal JSON for %v: %v", want, err)
-	}
-
-	if !reflect.DeepEqual(v, u) {
-		t.Errorf("json.Unmarshal(%q) returned %s, want %s", want, u, v)
 	}
 }
 
