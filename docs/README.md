@@ -2057,12 +2057,27 @@ type PaymentMethodInfo struct {
 	MaximumAmount *Amount                 `json:"maximumAmount,omitempty"`
 	Image         *Image                  `json:"image,omitempty"`
 	Pricing       []*PaymentMethodPricing `json:"pricing,omitempty"`
+	Issuers       []*PaymentMethodIssuer  `json:"issuers,omitempty"`
 	Status        *PaymentMethodStatus    `json:"status,omitempty"`
 	Links         MethodsLinks            `json:"_links,omitempty"`
 }
 ```
 
 PaymentMethodInfo describes a single method with details.
+
+#### type PaymentMethodIssuer
+
+```go
+type PaymentMethodIssuer struct {
+	Resource string `json:"resource,omitempty"`
+	ID       string `json:"id,omitempty"`
+	Name     string `json:"name,omitempty"`
+	Image    Image  `json:"image,omitempty"`
+}
+```
+
+PaymentMethodIssuer available for the payment method (for iDEAL, KBC/CBC payment
+button, gift cards, or meal vouchers).
 
 #### type PaymentMethodPricing
 
