@@ -70,7 +70,7 @@ type RefundOptions struct {
 // See: https://docs.mollie.com/reference/v2/refunds-api/list-refunds.
 type ListRefundOptions struct {
 	From      string     `url:"from,omitempty"`
-	Limit     string     `url:"limit,omitempty"`
+	Limit     int        `url:"limit,omitempty"`
 	ProfileID string     `url:"profileId,omitempty"`
 	Embed     EmbedValue `url:"embed,omitempty"`
 }
