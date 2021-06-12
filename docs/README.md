@@ -1001,7 +1001,7 @@ parameters.
 ```go
 type ListRefundOptions struct {
 	From      string     `url:"from,omitempty"`
-	Limit     string     `url:"limit,omitempty"`
+	Limit     int        `url:"limit,omitempty"`
 	ProfileID string     `url:"profileId,omitempty"`
 	Embed     EmbedValue `url:"embed,omitempty"`
 }
