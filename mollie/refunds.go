@@ -88,7 +88,7 @@ func (rs *RefundsService) Get(paymentID, refundID string, options *RefundOptions
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
 
-	req, err := rs.client.NewAPIRequest(http.MethodGet, u, options)
+	req, err := rs.client.NewAPIRequest(http.MethodGet, u, nil)
 	if err != nil {
 		return
 	}
