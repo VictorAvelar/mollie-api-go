@@ -195,7 +195,7 @@ func TestServiceRefunds_ListPayment(t *testing.T) {
 
 	opt := &ListRefundOptions{
 		From:  "re_4qqhO89gsT",
-		Limit: "100",
+		Limit: 100,
 	}
 
 	res, err := tClient.Refunds.ListRefundPayment(paymentID, opt)
