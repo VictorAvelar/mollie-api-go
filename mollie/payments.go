@@ -160,8 +160,12 @@ func (ps *PaymentsService) Get(id string, options *PaymentOptions) (p Payment, e
 // Create stores a new payment object attached to your Mollie account.
 //
 // See: https://docs.mollie.com/reference/v2/payments-api/create-payment#
-func (ps *PaymentsService) Create(p Payment) (np Payment, err error) {
+func (ps *PaymentsService) Create(p Payment, options *PaymentOptions) (np Payment, err error) {
 	u := "v2/payments"
+	if options != nil {
+		v, _ := query.Values(options)
+		u = fmt.Sprintf("%s?%s", u, v.Encode())
+	}
 
 	if ps.client.HasAccessToken() && ps.client.config.testing {
 		p.TestMode = true
