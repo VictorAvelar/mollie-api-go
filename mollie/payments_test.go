@@ -63,7 +63,7 @@ func TestPaymentsService_Create(t *testing.T) {
 		Description: "Order #12345",
 	}
 
-	res, err := tClient.Payments.Create(p)
+	res, err := tClient.Payments.Create(p, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -99,7 +99,7 @@ func TestPaymentsService_Create_AccessTokens(t *testing.T) {
 		Description: "Order #12345",
 	}
 
-	payment, err := tClient.Payments.Create(p)
+	payment, err := tClient.Payments.Create(p, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -141,7 +141,7 @@ func TestPaymentsService_Create_PaymentMethodFields(t *testing.T) {
 		Issuer:      "ideal_INGBNL2A",
 	}
 
-	payment, err := tClient.Payments.Create(p)
+	payment, err := tClient.Payments.Create(p, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -274,7 +274,7 @@ func TestPaymentsService_HttpRequestErrors(t *testing.T) {
 		Description: "Order #12345",
 	}
 
-	_, cerr := tClient.Payments.Create(p)
+	_, cerr := tClient.Payments.Create(p, nil)
 	_, rerr := tClient.Payments.List(nil)
 	_, uerr := tClient.Payments.Update("1212", p)
 	_, derr := tClient.Payments.Cancel("1212")
@@ -304,7 +304,7 @@ func TestPaymentsService_NewAPIRequestErrors(t *testing.T) {
 		Description: "Order #12345",
 	}
 
-	_, cerr := tClient.Payments.Create(p)
+	_, cerr := tClient.Payments.Create(p, nil)
 	_, rerr := tClient.Payments.List(nil)
 	_, uerr := tClient.Payments.Update("1212", p)
 	_, derr := tClient.Payments.Cancel("1212")
@@ -332,7 +332,7 @@ func TestPaymentsService_EncodingResponseErrors(t *testing.T) {
 		Description: "Order #12345",
 	}
 
-	_, cerr := tClient.Payments.Create(p)
+	_, cerr := tClient.Payments.Create(p, nil)
 	_, rerr := tClient.Payments.List(nil)
 	_, uerr := tClient.Payments.Update("1212", p)
 	_, derr := tClient.Payments.Cancel("1212")
@@ -354,7 +354,7 @@ func TestPaymentFailedResponseAvailable(t *testing.T) {
 	defer teardown()
 	tMux.HandleFunc("/v2/payments/", unprocessableEntityHandler)
 
-	_, err := tClient.Payments.Create(Payment{})
+	_, err := tClient.Payments.Create(Payment{}, nil)
 
 	if err == nil {
 		t.Error("expected error and got nil")
