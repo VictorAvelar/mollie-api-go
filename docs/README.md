@@ -2148,7 +2148,7 @@ See: https://docs.mollie.com/reference/v2/payments-api/cancel-payment
 #### func (\*PaymentsService) Create
 
 ```go
-func (ps *PaymentsService) Create(p Payment) (np Payment, err error)
+func (ps *PaymentsService) Create(p Payment, options *PaymentOptions) (np Payment, err error)
 ```
 
 Create stores a new payment object attached to your Mollie account.
