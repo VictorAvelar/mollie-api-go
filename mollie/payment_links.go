@@ -35,7 +35,7 @@ type PaymentLink struct {
 //
 // See: https://docs.mollie.com/reference/v2/payment-links-api/get-payment-link
 type PaymentLinkLinks struct {
-	Self          *URL `json:"self,omitempty`
+	Self          *URL `json:"self,omitempty"`
 	Documentation *URL `json:"documentation,omitempty"`
 	PaymentLink   *URL `json:"paymentLink,omitempty"`
 	Next          *URL `json:"next,omitempty"`
