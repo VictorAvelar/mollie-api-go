@@ -57,6 +57,7 @@ type Client struct {
 	Mandates      *MandatesService
 	Permissions   *PermissionsService
 	Onboarding    *OnboardingService
+	PaymentLinks  *PaymentLinksService
 }
 
 type service struct {
@@ -189,6 +190,7 @@ func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
 	mollie.Mandates = (*MandatesService)(&mollie.common)
 	mollie.Permissions = (*PermissionsService)(&mollie.common)
 	mollie.Onboarding = (*OnboardingService)(&mollie.common)
+	mollie.PaymentLinks = (*PaymentLinksService)(&mollie.common)
 
 	// Parse authorization from specified environment variable
 	tkn, ok := os.LookupEnv(c.auth)
