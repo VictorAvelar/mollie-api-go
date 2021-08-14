@@ -10,6 +10,7 @@ type GiftCardIssuer string
 // Supported gift card issuers
 const (
 	BloemenCadeuKaart          GiftCardIssuer = "bloemencadeaukaart"
+	BloemPlantGiftCard         GiftCardIssuer = "bloemplantgiftcard"
 	Boekenbon                  GiftCardIssuer = "boekenbon"
 	DecaudeuKaart              GiftCardIssuer = "decadeaukaart"
 	DelokaleDecauKaart         GiftCardIssuer = "delokalecadeaukaart"
@@ -26,6 +27,7 @@ const (
 	Podiumcadeaukaart          GiftCardIssuer = "podiumcadeaukaart"
 	Reiscadeau                 GiftCardIssuer = "reiscadeau"
 	Restaurantcadeau           GiftCardIssuer = "restaurantcadeau"
+	SodexoSportCulturePass     GiftCardIssuer = "sodexosportculturepass"
 	Sportenfitcadeau           GiftCardIssuer = "sportenfitcadeau"
 	Sustainablefashion         GiftCardIssuer = "sustainablefashion"
 	Travelcheq                 GiftCardIssuer = "travelcheq"
