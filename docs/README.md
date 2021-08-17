@@ -379,6 +379,7 @@ type Client struct {
 	Mandates      *MandatesService
 	Permissions   *PermissionsService
 	Onboarding    *OnboardingService
+	PaymentLinks  *PaymentLinksService
 }
 ```
 
@@ -738,6 +739,7 @@ GiftCardIssuer type describes issuers supported by mollie.
 ```go
 const (
 	BloemenCadeuKaart          GiftCardIssuer = "bloemencadeaukaart"
+	BloemPlantGiftCard         GiftCardIssuer = "bloemplantgiftcard"
 	Boekenbon                  GiftCardIssuer = "boekenbon"
 	DecaudeuKaart              GiftCardIssuer = "decadeaukaart"
 	DelokaleDecauKaart         GiftCardIssuer = "delokalecadeaukaart"
@@ -754,6 +756,7 @@ const (
 	Podiumcadeaukaart          GiftCardIssuer = "podiumcadeaukaart"
 	Reiscadeau                 GiftCardIssuer = "reiscadeau"
 	Restaurantcadeau           GiftCardIssuer = "restaurantcadeau"
+	SodexoSportCulturePass     GiftCardIssuer = "sodexosportculturepass"
 	Sportenfitcadeau           GiftCardIssuer = "sportenfitcadeau"
 	Sustainablefashion         GiftCardIssuer = "sustainablefashion"
 	Travelcheq                 GiftCardIssuer = "travelcheq"
@@ -1977,6 +1980,61 @@ type PaymentDetailsAddress struct {
 PaymentDetailsAddress identify both the address and the person the payment is
 shipped to.
 
+#### type PaymentLink
+
+```go
+type PaymentLink struct {
+	ID          string           `json:"id,omitempty"`
+	Resource    string           `json:"resource,omitempty"`
+	Description string           `json:"description,omitempty"`
+	ProfileID   string           `json:"profileId,omitempty"`
+	RedirectURL string           `json:"redirectUrl,omitempty"`
+	WebhookURL  string           `json:"webhookUrl,omitempty"`
+	Mode        Mode             `json:"mode,omitempty"`
+	Amount      Amount           `json:"amount,omitempty"`
+	CreatedAt   *time.Time       `json:"createdAt,omitempty"`
+	PaidAt      *time.Time       `json:"paidAt,omitempty"`
+	UpdatedAt   *time.Time       `json:"updatedAt,omitempty"`
+	ExpiresAt   *time.Time       `json:"expiresAt,omitempty"`
+	Links       PaymentLinkLinks `json:"_links,omitempty"`
+}
+```
+
+PaymentLink is a resource that can be shared with your customers and will
+redirect them to them the payment page where they can complete the payment.
+
+See: https://docs.mollie.com/reference/v2/payment-links-api/get-payment-link
+
+#### type PaymentLinkLinks
+
+```go
+type PaymentLinkLinks struct {
+	Self          *URL `json:"self,omitempty"`
+	Documentation *URL `json:"documentation,omitempty"`
+	PaymentLink   *URL `json:"paymentLink,omitempty"`
+	Next          *URL `json:"next,omitempty"`
+	Previous      *URL `json:"previous,omitempty"`
+}
+```
+
+PaymentLinkLinks describes all the possible links returned with a payment link
+struct.
+
+See: https://docs.mollie.com/reference/v2/payment-links-api/get-payment-link
+
+#### type PaymentLinkOptions
+
+```go
+type PaymentLinkOptions struct {
+	ProfileID string `url:"profileId,omitempty"`
+	From      string `url:"from,omitemtpy"`
+	Limit     int    `url:"limit,omitempty"`
+}
+```
+
+PaymentLinkOptions represents query string parameters to modify the payment
+links requests.
+
 #### type PaymentLinks
 
 ```go
@@ -1999,6 +2057,58 @@ type PaymentLinks struct {
 
 PaymentLinks describes all the possible links to be returned with a payment
 object.
+
+#### type PaymentLinksList
+
+```go
+type PaymentLinksList struct {
+	Count    int              `json:"count,omitempty"`
+	Links    PaymentLinkLinks `json:"_links,omitempty"`
+	Embedded struct {
+		PaymentLinks []*PaymentLink `json:"payment_links,omitempty"`
+	} `json:"_embedded,omitempty"`
+}
+```
+
+#### type PaymentLinksService
+
+```go
+type PaymentLinksService service
+```
+
+PaymentLinksService operates over the payment link resource.
+
+#### func (\*PaymentLinksService) Create
+
+```go
+func (pls *PaymentLinksService) Create(p PaymentLink, opts *PaymentLinkOptions) (np *PaymentLink, err error)
+```
+
+Create generates payment links that by default, unlike regular payments, do not
+expire.
+
+See: https://docs.mollie.com/reference/v2/payment-links-api/create-payment-link
+
+#### func (\*PaymentLinksService) Get
+
+```go
+func (pls *PaymentLinksService) Get(id string) (pl *PaymentLink, err error)
+```
+
+Get retrieves a single payment link object by its id/token.
+
+See: https://docs.mollie.com/reference/v2/payment-links-api/get-payment-link
+
+#### func (\*PaymentLinksService) List
+
+```go
+func (pls *PaymentLinksService) List(opts *PaymentLinkOptions) (pl *PaymentLinksList, err error)
+```
+
+List retrieves all payments links created with the current website profile,
+ordered from newest to oldest.
+
+See: https://docs.mollie.com/reference/v2/payment-links-api/list-payment-links
 
 #### type PaymentList
 
