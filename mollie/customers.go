@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/google/go-querystring/query"
@@ -160,7 +161,7 @@ func (cs *CustomersService) List(options *ListCustomersOptions) (cl *CustomersLi
 //
 // See: https://docs.mollie.com/reference/v2/customers-api/list-customer-payments
 func (cs *CustomersService) GetPayments(id string, options *ListCustomersOptions) (pl *PaymentList, err error) {
-	u := fmt.Sprintf("v2/customers/%s/payments", id)
+	u := fmt.Sprintf("v2/customers/%s/payments", url.PathEscape(id))
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
@@ -181,7 +182,7 @@ func (cs *CustomersService) GetPayments(id string, options *ListCustomersOptions
 //
 // See: https://docs.mollie.com/reference/v2/customers-api/create-customer-payment
 func (cs *CustomersService) CreatePayment(id string, p Payment) (pp *Payment, err error) {
-	u := fmt.Sprintf("v2/customers/%s/payments", id)
+	u := fmt.Sprintf("v2/customers/%s/payments", url.PathEscape(id))
 	req, err := cs.client.NewAPIRequest(http.MethodPost, u, p)
 	if err != nil {
 		return

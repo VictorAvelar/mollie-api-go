@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/google/go-querystring/query"
@@ -167,7 +168,7 @@ func (ps *ProfilesService) Delete(id string) (err error) {
 // EnablePaymentMethod enables a payment method on a specific or authenticated profile.
 // If you're using API tokens for authentication, pass "me" as id.
 func (ps *ProfilesService) EnablePaymentMethod(id string, pm PaymentMethod) (pmi *PaymentMethodInfo, err error) {
-	u := fmt.Sprintf("v2/profiles/%s/methods/%s", id, pm)
+	u := fmt.Sprintf("v2/profiles/%s/methods/%s", url.PathEscape(id), pm)
 	req, err := ps.client.NewAPIRequest(http.MethodPost, u, nil)
 	if err != nil {
 		return
@@ -185,7 +186,7 @@ func (ps *ProfilesService) EnablePaymentMethod(id string, pm PaymentMethod) (pmi
 // DisablePaymentMethod disables a payment method on a specific or authenticated profile.
 // If you're using API tokens for authentication, pass "me" as id.
 func (ps *ProfilesService) DisablePaymentMethod(id string, pm PaymentMethod) (err error) {
-	u := fmt.Sprintf("v2/profiles/%s/methods/%s", id, pm)
+	u := fmt.Sprintf("v2/profiles/%s/methods/%s", url.PathEscape(id), pm)
 	req, err := ps.client.NewAPIRequest(http.MethodDelete, u, nil)
 	if err != nil {
 		return
@@ -254,7 +255,7 @@ func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(issuer GiftCardIssuer
 }
 
 func (ps *ProfilesService) toggleGiftCardIssuerStatus(profileID string, method string, issuer GiftCardIssuer) (r *Response, err error) {
-	u := fmt.Sprintf("v2/profiles/%s/methods/giftcard/issuers/%s", profileID, issuer)
+	u := fmt.Sprintf("v2/profiles/%s/methods/giftcard/issuers/%s", url.PathEscape(profileID), issuer)
 	req, err := ps.client.NewAPIRequest(method, u, nil)
 	if err != nil {
 		return

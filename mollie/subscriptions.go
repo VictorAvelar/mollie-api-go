@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/google/go-querystring/query"
@@ -76,7 +77,7 @@ type SubscriptionListOptions struct {
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/get-subscription
 func (ss *SubscriptionsService) Get(cID, sID string) (s *Subscription, err error) {
-	u := fmt.Sprintf("v2/customers/%s/subscriptions/%s", cID, sID)
+	u := fmt.Sprintf("v2/customers/%s/subscriptions/%s", url.PathEscape(cID), url.PathEscape(sID))
 	req, err := ss.client.NewAPIRequest(http.MethodGet, u, nil)
 	if err != nil {
 		return
@@ -97,7 +98,7 @@ func (ss *SubscriptionsService) Get(cID, sID string) (s *Subscription, err error
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/create-subscription
 func (ss *SubscriptionsService) Create(cID string, sc *Subscription) (s *Subscription, err error) {
-	u := fmt.Sprintf("v2/customers/%s/subscriptions", cID)
+	u := fmt.Sprintf("v2/customers/%s/subscriptions", url.PathEscape(cID))
 
 	if ss.client.HasAccessToken() && ss.client.config.testing {
 		sc.TestMode = true
@@ -123,7 +124,7 @@ func (ss *SubscriptionsService) Create(cID string, sc *Subscription) (s *Subscri
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/update-subscription
 func (ss *SubscriptionsService) Update(cID, sID string, sc *Subscription) (s *Subscription, err error) {
-	u := fmt.Sprintf("v2/customers/%s/subscriptions/%s", cID, sID)
+	u := fmt.Sprintf("v2/customers/%s/subscriptions/%s", url.PathEscape(cID), url.PathEscape(sID))
 
 	req, err := ss.client.NewAPIRequest(http.MethodPatch, u, sc)
 	if err != nil {
@@ -145,7 +146,7 @@ func (ss *SubscriptionsService) Update(cID, sID string, sc *Subscription) (s *Su
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/cancel-subscription
 func (ss *SubscriptionsService) Delete(cID, sID string) (s *Subscription, err error) {
-	u := fmt.Sprintf("v2/customers/%s/subscriptions/%s", cID, sID)
+	u := fmt.Sprintf("v2/customers/%s/subscriptions/%s", url.PathEscape(cID), url.PathEscape(sID))
 	req, err := ss.client.NewAPIRequest(http.MethodDelete, u, nil)
 	if err != nil {
 		return
@@ -190,7 +191,7 @@ func (ss *SubscriptionsService) All(options *SubscriptionListOptions) (sl *Subsc
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/list-subscriptions
 func (ss *SubscriptionsService) List(cID string, options *SubscriptionListOptions) (sl *SubscriptionList, err error) {
-	u := fmt.Sprintf("v2/customers/%s/subscriptions", cID)
+	u := fmt.Sprintf("v2/customers/%s/subscriptions", url.PathEscape(cID))
 
 	if options != nil {
 		v, _ := query.Values(options)
@@ -212,7 +213,7 @@ func (ss *SubscriptionsService) List(cID string, options *SubscriptionListOption
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/list-subscriptions-payments
 func (ss *SubscriptionsService) GetPayments(cID, sID string, options *SubscriptionListOptions) (sl *PaymentList, err error) {
-	u := fmt.Sprintf("v2/customers/%s/subscriptions/%s/payments", cID, sID)
+	u := fmt.Sprintf("v2/customers/%s/subscriptions/%s/payments", url.PathEscape(cID), url.PathEscape(sID))
 
 	if options != nil {
 		v, _ := query.Values(options)

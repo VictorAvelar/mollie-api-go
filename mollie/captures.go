@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"time"
 )
 
@@ -48,7 +49,7 @@ type CapturesList struct {
 //
 // See: https://docs.mollie.com/reference/v2/captures-api/get-capture
 func (cs *CapturesService) Get(pID, cID string) (c *Capture, err error) {
-	u := fmt.Sprintf("v2/payments/%s/captures/%s", pID, cID)
+	u := fmt.Sprintf("v2/payments/%s/captures/%s", url.PathEscape(pID), url.PathEscape(cID))
 	req, err := cs.client.NewAPIRequest(http.MethodGet, u, nil)
 	if err != nil {
 		return
@@ -69,7 +70,7 @@ func (cs *CapturesService) Get(pID, cID string) (c *Capture, err error) {
 //
 // See: https://docs.mollie.com/reference/v2/captures-api/list-captures
 func (cs *CapturesService) List(pID string) (cl *CapturesList, err error) {
-	u := fmt.Sprintf("v2/payments/%s/captures", pID)
+	u := fmt.Sprintf("v2/payments/%s/captures", url.PathEscape(pID))
 	req, err := cs.client.NewAPIRequest(http.MethodGet, u, nil)
 	if err != nil {
 		return

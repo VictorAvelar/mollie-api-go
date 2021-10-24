@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/google/go-querystring/query"
@@ -60,7 +61,7 @@ type ChargebacksService service
 //
 // See: https://docs.mollie.com/reference/v2/chargebacks-api/get-chargeback
 func (cs *ChargebacksService) Get(paymentID, chargebackID string, options *ChargebackOptions) (p Chargeback, err error) {
-	u := fmt.Sprintf("v2/payments/%s/chargebacks/%s", paymentID, chargebackID)
+	u := fmt.Sprintf("v2/payments/%s/chargebacks/%s", url.PathEscape(paymentID), url.PathEscape(chargebackID))
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
@@ -95,7 +96,7 @@ func (cs *ChargebacksService) List(options *ListChargebackOptions) (cl *Chargeba
 //
 // See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
 func (cs *ChargebacksService) ListForPayment(paymentID string, options *ListChargebackOptions) (cl *ChargebackList, err error) {
-	u := fmt.Sprintf("v2/payments/%s/chargebacks", paymentID)
+	u := fmt.Sprintf("v2/payments/%s/chargebacks", url.PathEscape(paymentID))
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())

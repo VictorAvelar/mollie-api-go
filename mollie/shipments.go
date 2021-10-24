@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"time"
 )
 
@@ -43,7 +44,7 @@ type ShipmentLinks struct {
 //
 // See: https://docs.mollie.com/reference/v2/shipments-api/get-shipment#
 func (ss *ShipmentsService) Get(oID string, sID string) (s *Shipment, err error) {
-	u := fmt.Sprintf("v2/orders/%s/shipments/%s", oID, sID)
+	u := fmt.Sprintf("v2/orders/%s/shipments/%s", url.PathEscape(oID), url.PathEscape(sID))
 	req, err := ss.client.NewAPIRequest(http.MethodGet, u, nil)
 	if err != nil {
 		return
@@ -71,7 +72,7 @@ type CreateShipmentRequest struct {
 //
 // See: https://docs.mollie.com/reference/v2/shipments-api/create-shipment
 func (ss *ShipmentsService) Create(oID string, cs CreateShipmentRequest) (s *Shipment, err error) {
-	u := fmt.Sprintf("v2/orders/%s/shipments", oID)
+	u := fmt.Sprintf("v2/orders/%s/shipments", url.PathEscape(oID))
 
 	if ss.client.HasAccessToken() && ss.client.config.testing {
 		cs.TestMode = true
@@ -106,7 +107,7 @@ type ShipmentsList struct {
 //
 // See: https://docs.mollie.com/reference/v2/shipments-api/list-shipments
 func (ss *ShipmentsService) List(oID string) (sl *ShipmentsList, err error) {
-	u := fmt.Sprintf("v2/orders/%s/shipments", oID)
+	u := fmt.Sprintf("v2/orders/%s/shipments", url.PathEscape(oID))
 	req, err := ss.client.NewAPIRequest(http.MethodGet, u, nil)
 	if err != nil {
 		return
@@ -127,7 +128,7 @@ func (ss *ShipmentsService) List(oID string) (sl *ShipmentsList, err error) {
 //
 // See: https://docs.mollie.com/reference/v2/shipments-api/update-shipment
 func (ss *ShipmentsService) Update(oID string, sID string, st ShipmentTracking) (s *Shipment, err error) {
-	u := fmt.Sprintf("v2/orders/%s/shipments/%s", oID, sID)
+	u := fmt.Sprintf("v2/orders/%s/shipments/%s", url.PathEscape(oID), url.PathEscape(sID))
 	req, err := ss.client.NewAPIRequest(http.MethodPatch, u, st)
 	if err != nil {
 		return

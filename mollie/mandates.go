@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/google/go-querystring/query"
@@ -101,7 +102,7 @@ type MandateList struct {
 //
 // See: https://docs.mollie.com/reference/v2/mandates-api/create-mandate
 func (ms *MandatesService) Create(cID string, mandate Mandate) (mr *Mandate, err error) {
-	u := fmt.Sprintf("v2/customers/%s/mandates", cID)
+	u := fmt.Sprintf("v2/customers/%s/mandates", url.PathEscape(cID))
 	req, err := ms.client.NewAPIRequest(http.MethodPost, u, mandate)
 	if err != nil {
 		return
@@ -125,7 +126,7 @@ func (ms *MandatesService) Create(cID string, mandate Mandate) (mr *Mandate, err
 //
 // See: https://docs.mollie.com/reference/v2/mandates-api/get-mandate
 func (ms *MandatesService) Get(cID, mID string) (mr *Mandate, err error) {
-	u := fmt.Sprintf("v2/customers/%s/mandates/%s", cID, mID)
+	u := fmt.Sprintf("v2/customers/%s/mandates/%s", url.PathEscape(cID), url.PathEscape(mID))
 	req, err := ms.client.NewAPIRequest(http.MethodGet, u, nil)
 	if err != nil {
 		return
@@ -148,7 +149,7 @@ func (ms *MandatesService) Get(cID, mID string) (mr *Mandate, err error) {
 //
 // See: https://docs.mollie.com/reference/v2/mandates-api/revoke-mandate
 func (ms *MandatesService) Revoke(cID, mID string) (err error) {
-	u := fmt.Sprintf("v2/customers/%s/mandates/%s", cID, mID)
+	u := fmt.Sprintf("v2/customers/%s/mandates/%s", url.PathEscape(cID), url.PathEscape(mID))
 	req, err := ms.client.NewAPIRequest(http.MethodDelete, u, nil)
 	if err != nil {
 		return
@@ -167,7 +168,7 @@ func (ms *MandatesService) Revoke(cID, mID string) (err error) {
 //
 // See: https://docs.mollie.com/reference/v2/mandates-api/list-mandates
 func (ms *MandatesService) List(cID string, opt *ListMandatesOptions) (ml MandateList, err error) {
-	u := fmt.Sprintf("v2/customers/%s/mandates", cID)
+	u := fmt.Sprintf("v2/customers/%s/mandates", url.PathEscape(cID))
 	if opt != nil {
 		v, _ := query.Values(opt)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())

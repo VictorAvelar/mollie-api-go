@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/google/go-querystring/query"
@@ -82,7 +83,7 @@ type RefundsService service
 //
 // If you do not know the original payment’s ID, you can use the List payment refunds endpoint.
 func (rs *RefundsService) Get(paymentID, refundID string, options *RefundOptions) (refund Refund, err error) {
-	u := fmt.Sprintf("v2/payments/%s/refunds/%s", paymentID, refundID)
+	u := fmt.Sprintf("v2/payments/%s/refunds/%s", url.PathEscape(paymentID), url.PathEscape(refundID))
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
@@ -109,7 +110,7 @@ func (rs *RefundsService) Get(paymentID, refundID string, options *RefundOptions
 //
 // See https://docs.mollie.com/reference/v2/refunds-api/create-refund.
 func (rs *RefundsService) Create(paymentID string, re Refund, options *RefundOptions) (rf Refund, err error) {
-	u := fmt.Sprintf("v2/payments/%s/refunds", paymentID)
+	u := fmt.Sprintf("v2/payments/%s/refunds", url.PathEscape(paymentID))
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
@@ -140,7 +141,7 @@ func (rs *RefundsService) Create(paymentID string, re Refund, options *RefundOpt
 // The refund can only be canceled while the refund’s status is either queued or pending.
 // See https://docs.mollie.com/reference/v2/refunds-api/cancel-refund
 func (rs *RefundsService) Cancel(paymentID, refundID string, options *RefundOptions) (err error) {
-	u := fmt.Sprintf("v2/payments/%s/refunds/%s", paymentID, refundID)
+	u := fmt.Sprintf("v2/payments/%s/refunds/%s", url.PathEscape(paymentID), url.PathEscape(refundID))
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
@@ -176,7 +177,7 @@ func (rs *RefundsService) ListRefund(options *ListRefundOptions) (rl *RefundList
 // Only refunds for that specific payment are returned.
 // See https://docs.mollie.com/reference/v2/refunds-api/list-refunds
 func (rs *RefundsService) ListRefundPayment(paymentID string, options *ListRefundOptions) (rl *RefundList, err error) {
-	u := fmt.Sprintf("v2/payments/%s/refunds", paymentID)
+	u := fmt.Sprintf("v2/payments/%s/refunds", url.PathEscape(paymentID))
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
