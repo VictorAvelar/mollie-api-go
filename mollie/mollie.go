@@ -192,15 +192,16 @@ func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
 	mollie.Onboarding = (*OnboardingService)(&mollie.common)
 	mollie.PaymentLinks = (*PaymentLinksService)(&mollie.common)
 
+	mollie.userAgent = strings.Join([]string{
+		runtime.GOOS,
+		runtime.GOARCH,
+		runtime.Version(),
+	}, ";")
+
 	// Parse authorization from specified environment variable
 	tkn, ok := os.LookupEnv(c.auth)
 	if ok {
 		mollie.authentication = tkn
-		mollie.userAgent = strings.Join([]string{
-			runtime.GOOS,
-			runtime.GOARCH,
-			runtime.Version(),
-		}, ";")
 	}
 	return
 }
