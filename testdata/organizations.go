@@ -79,3 +79,23 @@ const GetCurrentOrganizationResponse = `{
          }
      }
  }`
+
+const GetPartnerStatusResponse = `{
+    "resource": "partner",
+    "partnerType": "signuplink",
+    "partnerContractSignedAt": "2018-03-20T13:13:37+00:00",
+    "_links": {
+        "self": {
+            "href": "https://api.mollie.com/v2/organizations/me/partner",
+            "type": "application/hal+json"
+        },
+        "documentation": {
+            "href": "https://docs.mollie.com/reference/v2/partners-api/get-partner",
+            "type": "text/html"
+        },
+        "signuplink": {
+            "href": "https://www.mollie.com/dashboard/signup/myCode?lang=en",
+            "type": "text/html"
+        }
+    }
+}`

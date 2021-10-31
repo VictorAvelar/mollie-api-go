@@ -61,6 +61,32 @@ func TestOrganizationsService_GetCurrent(t *testing.T) {
 	}
 }
 
+func TestOrganizationsService_GetPartnerStatus(t *testing.T) {
+	setup()
+	defer teardown()
+	_ = tClient.WithAuthenticationValue("access_token")
+	tMux.HandleFunc("/v2/organizations/me/partner", func(w http.ResponseWriter, r *http.Request) {
+		testHeader(t, r, AuthHeader, "Bearer access_token")
+		testMethod(t, r, "GET")
+		if _, ok := r.Header[AuthHeader]; !ok {
+			w.WriteHeader(http.StatusUnauthorized)
+		}
+
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(testdata.GetPartnerStatusResponse))
+	})
+
+	res, err := tClient.Organizations.GetPartnerStatus()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if res.PartnerType != PartnerTypeSignUpLink {
+		t.Errorf("mismatching info. got %v, want %v", res.PartnerType, PartnerTypeSignUpLink)
+	}
+
+}
+
 func TestOrganizationsService_HttpRequestErrors(t *testing.T) {
 	setup()
 	defer teardown()
@@ -68,8 +94,9 @@ func TestOrganizationsService_HttpRequestErrors(t *testing.T) {
 
 	_, gerr := tClient.Organizations.Get("org_12345678")
 	_, gcerr := tClient.Organizations.GetCurrent()
+	_, gpserr := tClient.Organizations.GetPartnerStatus()
 
-	tests := []error{gerr, gcerr}
+	tests := []error{gerr, gcerr, gpserr}
 
 	for _, tt := range tests {
 		if tt == nil {
@@ -87,8 +114,9 @@ func TestOrganizationsService_NewAPIRequestErrors(t *testing.T) {
 
 	_, gerr := tClient.Organizations.Get("org_12345678")
 	_, gcerr := tClient.Organizations.GetCurrent()
+	_, gpserr := tClient.Organizations.GetPartnerStatus()
 
-	tests := []error{gerr, gcerr}
+	tests := []error{gerr, gcerr, gpserr}
 
 	for _, tt := range tests {
 		if tt != errBadBaseURL {
@@ -104,8 +132,9 @@ func TestOrganizationsService_EncodingResponseErrors(t *testing.T) {
 
 	_, gerr := tClient.Organizations.Get("org_12345678")
 	_, gcerr := tClient.Organizations.GetCurrent()
+	_, gpserr := tClient.Organizations.GetPartnerStatus()
 
-	tests := []error{gerr, gcerr}
+	tests := []error{gerr, gcerr, gpserr}
 
 	for _, tt := range tests {
 		if tt == nil {
