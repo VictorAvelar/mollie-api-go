@@ -1848,6 +1848,35 @@ type OrganizationLinks struct {
 OrganizationLinks describes all the possible links to be returned with a
 organization object.
 
+#### type OrganizationPartnerLinks
+
+```go
+type OrganizationPartnerLinks struct {
+	Self          *URL `json:"self,omitempty"`
+	Documentation *URL `json:"documentation,omitempty"`
+	SignUpLink    *URL `json:"signuplink,omitempty"`
+}
+```
+
+OrganizationPartnerLinks is an object with several URL objects relevant to the
+partner resource.
+
+#### type OrganizationPartnerStatus
+
+```go
+type OrganizationPartnerStatus struct {
+	IsCommissionPartner            bool                     `json:"isCommissionPartner,omitempty"`
+	PartnerContractUpdateAvailable bool                     `json:"partnerContractUpdate_available,omitempty"`
+	Resource                       string                   `json:"resource,omitempty"`
+	PartnerType                    PartnerType              `json:"partnerType,omitempty"`
+	UserAgentTokens                []*UserAgentToken        `json:"userAgentTokens,omitempty"`
+	PartnerContractSignedAt        *time.Time               `json:"partnerContractSignedAt,omitempty"`
+	Links                          OrganizationPartnerLinks `json:"_links,omitempty"`
+}
+```
+
+OrganizationPartnerStatus response descriptor.
+
 #### type OrganizationsService
 
 ```go
@@ -1871,6 +1900,17 @@ func (os *OrganizationsService) GetCurrent() (o *Organization, err error)
 ```
 
 GetCurrent retrieve the currently authenticated organization
+
+#### func (\*OrganizationsService) GetPartnerStatus
+
+```go
+func (os *OrganizationsService) GetPartnerStatus() (ops *OrganizationPartnerStatus, err error)
+```
+
+GetPartnerStatus retrieves details about the partner status of the currently
+authenticated organization.
+
+See: https://docs.mollie.com/reference/v2/organizations-api/get-partner
 
 #### type PaginationLinks
 
@@ -1953,6 +1993,24 @@ func (ps *PartnerService) List(opts *ListPartnerClientsOptions) (pc *PartnerClie
 Get retrieves all clients.
 
 See: https://docs.mollie.com/reference/v2/partners-api/list-clients
+
+#### type PartnerType
+
+```go
+type PartnerType string
+```
+
+PartnerType alias for organization partner types.
+
+```go
+const (
+	PartnerTypeOauth      PartnerType = "oauth"
+	PartnerTypeSignUpLink PartnerType = "signuplink"
+	PartnerTypeUserAgent  PartnerType = "useragent"
+)
+```
+
+Available partner types.
 
 #### type Payment
 
@@ -3491,3 +3549,15 @@ type UsedGiftCard struct {
 ```
 
 UsedGiftCard describes a used gift card.
+
+#### type UserAgentToken
+
+```go
+type UserAgentToken struct {
+	Token    string
+	StartsAt *time.Time
+	EndsAt   *time.Time
+}
+```
+
+UserAgentToken are time limited valid access tokens.
