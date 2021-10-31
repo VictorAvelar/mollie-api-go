@@ -380,6 +380,7 @@ type Client struct {
 	Permissions   *PermissionsService
 	Onboarding    *OnboardingService
 	PaymentLinks  *PaymentLinksService
+	Partners      *PartnerService
 }
 ```
 
@@ -445,6 +446,17 @@ authentication tokens provided by Mollie.
 Ideally your API key will be provided from and environment variable or a secret
 management engine. This should only be used when environment variables are
 "impossible" to be used.
+
+#### type Commission
+
+```go
+type Commission struct {
+	Count       int     `json:"count,omitempty"`
+	TotalAmount *Amount `json:"totalAmount,omitempty"`
+}
+```
+
+Commission describes a partner take from any operation on Mollie's API.
 
 #### type Config
 
@@ -714,6 +726,17 @@ const (
 
 Valid Fee regions
 
+#### type GetPartnerClientOptions
+
+```go
+type GetPartnerClientOptions struct {
+	Embed string `url:"embed,omitempty"`
+}
+```
+
+GetPartnerClientOptions contains valid query parameters for the get clients
+endpoint.
+
 #### type GiftCardEnabled
 
 ```go
@@ -747,6 +770,7 @@ const (
 	Fashioncheque              GiftCardIssuer = "fashioncheque"
 	Festivalcadeau             GiftCardIssuer = "festivalcadeau"
 	Good4fun                   GiftCardIssuer = "good4fun"
+	HuistuinCadeauKaart        GiftCardIssuer = "huistuincadeaukaart"
 	KlusCadeu                  GiftCardIssuer = "kluscadeau"
 	Kunstencultuurcadeaukaart  GiftCardIssuer = "kunstencultuurcadeaukaart"
 	Nationalebioscoopbon       GiftCardIssuer = "nationalebioscoopbon"
@@ -983,6 +1007,20 @@ type ListMethods struct {
 ```
 
 ListMethods describes a list of paginated payment methods.
+
+#### type ListPartnerClientsOptions
+
+```go
+type ListPartnerClientsOptions struct {
+	From  int `url:"from,omitempty"`
+	Limit int `url:"limit,omitempty"`
+	Year  int `url:"year,omitempty"`
+	Month int `url:"month,omitempty"`
+}
+```
+
+ListPartnerClientsOptions contains valid query parameters for the list clients
+endpoint.
 
 #### type ListPaymentOptions
 
@@ -1846,6 +1884,75 @@ type PaginationLinks struct {
 ```
 
 PaginationLinks describes the hal component of paginated responses.
+
+#### type PartnerClient
+
+```go
+type PartnerClient struct {
+	Resource              string             `json:"resource,omitempty"`
+	ID                    string             `json:"id,omitempty"`
+	OrganizationCreatedAt *time.Time         `json:"organizationCreatedAt,omitempty"`
+	Commission            Commission         `json:"commission,omitempty"`
+	Links                 PartnerClientLinks `json:"_links,omitempty"`
+}
+```
+
+PartnerClient describes a partner client.
+
+#### type PartnerClientLinks
+
+```go
+type PartnerClientLinks struct {
+	Self          *URL `json:"self,omitempty"`
+	Organization  *URL `json:"organization,omitempty"`
+	Onboarding    *URL `json:"onboarding,omitempty"`
+	Documentation *URL `json:"documentation,omitempty"`
+}
+```
+
+PartnerClientLinks contains URL objects relevant to the client.
+
+#### type PartnerClientList
+
+```go
+type PartnerClientList struct {
+	Count          int `json:"count,omitempty"`
+	PartnerClients struct {
+		Clients []*PartnerClient `json:"clients,omitempty"`
+	} `json:"_embedded,omitempty"`
+	Links PaginationLinks `json:"_links,omitempty"`
+}
+```
+
+PartnerClientList describes a list of partner clients.
+
+#### type PartnerService
+
+```go
+type PartnerService service
+```
+
+PartnerService operates over the partners API.
+
+#### func (\*PartnerService) Get
+
+```go
+func (ps *PartnerService) Get(id string, opts *GetPartnerClientOptions) (pc *PartnerClient, err error)
+```
+
+Get retrieves a single client by its ID.
+
+See: https://docs.mollie.com/reference/v2/partners-api/get-client
+
+#### func (\*PartnerService) List
+
+```go
+func (ps *PartnerService) List(opts *ListPartnerClientsOptions) (pc *PartnerClientList, err error)
+```
+
+Get retrieves all clients.
+
+See: https://docs.mollie.com/reference/v2/partners-api/list-clients
 
 #### type Payment
 
