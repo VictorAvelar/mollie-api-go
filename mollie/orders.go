@@ -134,6 +134,7 @@ type OrderLine struct {
 	Links              OrderLineLinks  `json:"_links,omitempty"`
 	ImageURL           string          `json:"imageUrl,omitempty"`
 	ProductURL         string          `json:"productUrl,omitempty"`
+	Metadata           interface{}     `json:"metadata,omitempty"`
 }
 
 // OrderList for containing the response of list orders
