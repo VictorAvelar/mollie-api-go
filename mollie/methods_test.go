@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/VictorAvelar/mollie-api-go/v2/testdata"
+	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
 )
 
 func TestMethodsService_ListWithQueryOptionsAmountCurrency(t *testing.T) {
