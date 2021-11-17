@@ -1,4 +1,4 @@
-module github.com/VictorAvelar/mollie-api-go/v2
+module github.com/VictorAvelar/mollie-api-go/v3
 
 go 1.15
 
