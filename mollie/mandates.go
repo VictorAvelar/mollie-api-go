@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -100,9 +101,9 @@ type MandateList struct {
 // Mandates allow you to charge a customer’s credit card or bank account recurrently.
 //
 // See: https://docs.mollie.com/reference/v2/mandates-api/create-mandate
-func (ms *MandatesService) Create(cID string, mandate Mandate) (mr *Mandate, err error) {
+func (ms *MandatesService) Create(ctx context.Context, cID string, mandate Mandate) (mr *Mandate, err error) {
 	u := fmt.Sprintf("v2/customers/%s/mandates", cID)
-	req, err := ms.client.NewAPIRequest(http.MethodPost, u, mandate)
+	req, err := ms.client.NewAPIRequest(ctx, http.MethodPost, u, mandate)
 	if err != nil {
 		return
 	}
@@ -124,9 +125,9 @@ func (ms *MandatesService) Create(cID string, mandate Mandate) (mr *Mandate, err
 // depending on the type of mandate.
 //
 // See: https://docs.mollie.com/reference/v2/mandates-api/get-mandate
-func (ms *MandatesService) Get(cID, mID string) (mr *Mandate, err error) {
+func (ms *MandatesService) Get(ctx context.Context, cID, mID string) (mr *Mandate, err error) {
 	u := fmt.Sprintf("v2/customers/%s/mandates/%s", cID, mID)
-	req, err := ms.client.NewAPIRequest(http.MethodGet, u, nil)
+	req, err := ms.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
 	if err != nil {
 		return
 	}
@@ -147,9 +148,9 @@ func (ms *MandatesService) Get(cID, mID string) (mr *Mandate, err error) {
 // You will no longer be able to charge the consumer’s bank account or credit card with this mandate and all connected subscriptions will be canceled.
 //
 // See: https://docs.mollie.com/reference/v2/mandates-api/revoke-mandate
-func (ms *MandatesService) Revoke(cID, mID string) (err error) {
+func (ms *MandatesService) Revoke(ctx context.Context, cID, mID string) (err error) {
 	u := fmt.Sprintf("v2/customers/%s/mandates/%s", cID, mID)
-	req, err := ms.client.NewAPIRequest(http.MethodDelete, u, nil)
+	req, err := ms.client.NewAPIRequest(ctx, http.MethodDelete, u, nil)
 	if err != nil {
 		return
 	}
@@ -166,14 +167,14 @@ func (ms *MandatesService) Revoke(cID, mID string) (err error) {
 // ordered from newest to oldest.
 //
 // See: https://docs.mollie.com/reference/v2/mandates-api/list-mandates
-func (ms *MandatesService) List(cID string, opt *ListMandatesOptions) (ml MandateList, err error) {
+func (ms *MandatesService) List(ctx context.Context, cID string, opt *ListMandatesOptions) (ml MandateList, err error) {
 	u := fmt.Sprintf("v2/customers/%s/mandates", cID)
 	if opt != nil {
 		v, _ := query.Values(opt)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
 
-	req, err := ms.client.NewAPIRequest(http.MethodGet, u, nil)
+	req, err := ms.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
 	if err != nil {
 		return
 	}

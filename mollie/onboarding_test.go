@@ -28,7 +28,7 @@ func TestOnboardingService_GetOnboardingStatus(t *testing.T) {
 		_, _ = rw.Write([]byte(testdata.GetOnboardingStatusResponse))
 	})
 
-	res, err := tClient.Onboarding.GetOnboardingStatus()
+	res, err := tClient.Onboarding.GetOnboardingStatus(nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -59,7 +59,7 @@ func TestOnboardingService_SubmitOnboardingData(t *testing.T) {
 	od := OnboardingData{}
 	od.Organization.Name = "Testing Org. B.V."
 
-	err := tClient.Onboarding.SubmitOnboardingData(&od)
+	err := tClient.Onboarding.SubmitOnboardingData(nil, &od)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -72,8 +72,8 @@ func TestOnboardingService_NewAPIRequestErrors(t *testing.T) {
 	tClient.BaseURL = u
 	tMux.HandleFunc("/"+onboardingTarget, errorHandler)
 
-	_, gerr := tClient.Onboarding.GetOnboardingStatus()
-	gcerr := tClient.Onboarding.SubmitOnboardingData(&OnboardingData{})
+	_, gerr := tClient.Onboarding.GetOnboardingStatus(nil)
+	gcerr := tClient.Onboarding.SubmitOnboardingData(nil, &OnboardingData{})
 
 	tests := []error{gerr, gcerr}
 
@@ -89,8 +89,8 @@ func TestOnboardingService_HttpRequestErrors(t *testing.T) {
 	defer teardown()
 	tMux.HandleFunc("/"+onboardingTarget, errorHandler)
 
-	_, gerr := tClient.Onboarding.GetOnboardingStatus()
-	gcerr := tClient.Onboarding.SubmitOnboardingData(&OnboardingData{})
+	_, gerr := tClient.Onboarding.GetOnboardingStatus(nil)
+	gcerr := tClient.Onboarding.SubmitOnboardingData(nil, &OnboardingData{})
 
 	tests := []error{gerr, gcerr}
 
@@ -106,7 +106,7 @@ func TestOnboardingService_EncodingResponseErrors(t *testing.T) {
 	defer teardown()
 	tMux.HandleFunc("/"+onboardingTarget, encodingHandler)
 
-	_, gerr := tClient.Onboarding.GetOnboardingStatus()
+	_, gerr := tClient.Onboarding.GetOnboardingStatus(nil)
 
 	tests := []error{gerr}
 

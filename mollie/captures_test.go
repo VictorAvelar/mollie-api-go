@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -30,7 +31,7 @@ func TestCapturesService_Get(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetCaptureResponse))
 	})
 
-	capture, err := tClient.Captures.Get(pID, cID)
+	capture, err := tClient.Captures.Get(context.TODO(), pID, cID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -59,7 +60,7 @@ func TestCapturesService_List(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListCapturesResponse))
 	})
 
-	captures, err := tClient.Captures.List(pID)
+	captures, err := tClient.Captures.List(context.TODO(), pID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -119,8 +120,8 @@ func TestCapturesService_JsonEncodingErrors(t *testing.T) {
 }
 
 func forceCapturesErrors() []error {
-	_, lerr := tClient.Captures.List("09d87sd8a9d")
-	_, gerr := tClient.Captures.Get("09d87sd8a9d", "4asd5ad6")
+	_, lerr := tClient.Captures.List(context.TODO(), "09d87sd8a9d")
+	_, gerr := tClient.Captures.Get(context.TODO(), "09d87sd8a9d", "4asd5ad6")
 
 	return []error{lerr, gerr}
 }

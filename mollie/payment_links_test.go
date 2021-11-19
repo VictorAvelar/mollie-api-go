@@ -22,7 +22,7 @@ func TestPaymentLinkService_Get(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetPaymentLinkResponse))
 	})
 
-	v, err := tClient.PaymentLinks.Get("test_id")
+	v, err := tClient.PaymentLinks.Get(nil, "test_id")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -48,6 +48,7 @@ func TestPaymentLinkService_Create(t *testing.T) {
 	})
 
 	v, err := tClient.PaymentLinks.Create(
+		nil,
 		PaymentLink{
 			Description: "payment_test_desc",
 		},
@@ -78,6 +79,7 @@ func TestPaymentLinkService_List(t *testing.T) {
 	})
 
 	v, err := tClient.PaymentLinks.List(
+		nil,
 		nil,
 	)
 	if err != nil {

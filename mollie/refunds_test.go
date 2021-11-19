@@ -34,7 +34,7 @@ func TestRefundsService_Get(t *testing.T) {
 		Embed: EmbedPayment,
 	}
 
-	res, err := tClient.Refunds.Get(paymentID, refundID, opt)
+	res, err := tClient.Refunds.Get(nil, paymentID, refundID, opt)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -71,7 +71,7 @@ func TestRefundsService_Create(t *testing.T) {
 		Description: "Order #33",
 	}
 
-	res, err := tClient.Refunds.Create(paymentID, refund, &RefundOptions{})
+	res, err := tClient.Refunds.Create(nil, paymentID, refund, &RefundOptions{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -109,7 +109,7 @@ func TestRefundsService_Create_AccessTokens(t *testing.T) {
 		Description: "Order #33",
 	}
 
-	res, err := tClient.Refunds.Create(paymentID, refund, &RefundOptions{})
+	res, err := tClient.Refunds.Create(nil, paymentID, refund, &RefundOptions{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -138,7 +138,7 @@ func TestRefundsService_Cancel(t *testing.T) {
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	err := tClient.Refunds.Cancel(paymentID, refundID, &RefundOptions{})
+	err := tClient.Refunds.Cancel(nil, paymentID, refundID, &RefundOptions{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -164,7 +164,7 @@ func TestRefundsService_List(t *testing.T) {
 		ProfileID: "pfl_3RkSN1zuPE",
 	}
 
-	res, err := tClient.Refunds.ListRefund(opt)
+	res, err := tClient.Refunds.ListRefund(nil, opt)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -198,7 +198,7 @@ func TestServiceRefunds_ListPayment(t *testing.T) {
 		Limit: 100,
 	}
 
-	res, err := tClient.Refunds.ListRefundPayment(paymentID, opt)
+	res, err := tClient.Refunds.ListRefundPayment(nil, paymentID, opt)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -221,11 +221,11 @@ func TestRefundsService_HttpRequestErrors(t *testing.T) {
 		Description: "Order #12345",
 	}
 
-	_, cerr := tClient.Refunds.Create("123132", refund, nil)
-	_, rerr1 := tClient.Refunds.ListRefund(nil)
-	_, rerr2 := tClient.Refunds.ListRefundPayment("123132", nil)
-	derr := tClient.Refunds.Cancel("12123", "123123", nil)
-	_, rerr3 := tClient.Refunds.Get("1212", "12312", nil)
+	_, cerr := tClient.Refunds.Create(nil, "123132", refund, nil)
+	_, rerr1 := tClient.Refunds.ListRefund(nil, nil)
+	_, rerr2 := tClient.Refunds.ListRefundPayment(nil, "123132", nil)
+	derr := tClient.Refunds.Cancel(nil, "12123", "123123", nil)
+	_, rerr3 := tClient.Refunds.Get(nil, "1212", "12312", nil)
 
 	tests := []error{cerr, rerr1, rerr2, derr, rerr3}
 
@@ -251,11 +251,11 @@ func TestRefundsService_NewAPIRequestErrors(t *testing.T) {
 		Description: "Order #12345",
 	}
 
-	_, cerr := tClient.Refunds.Create("123132", refund, nil)
-	_, rerr1 := tClient.Refunds.ListRefund(nil)
-	_, rerr2 := tClient.Refunds.ListRefundPayment("123132", nil)
-	derr := tClient.Refunds.Cancel("12123", "123123", nil)
-	_, rerr3 := tClient.Refunds.Get("1212", "12312", nil)
+	_, cerr := tClient.Refunds.Create(nil, "123132", refund, nil)
+	_, rerr1 := tClient.Refunds.ListRefund(nil, nil)
+	_, rerr2 := tClient.Refunds.ListRefundPayment(nil, "123132", nil)
+	derr := tClient.Refunds.Cancel(nil, "12123", "123123", nil)
+	_, rerr3 := tClient.Refunds.Get(nil, "1212", "12312", nil)
 
 	tests := []error{cerr, rerr1, rerr2, derr, rerr3}
 
@@ -285,10 +285,10 @@ func TestRefundsService_EncodingResponseErrors(t *testing.T) {
 		Description: "Order #12345",
 	}
 
-	_, cerr := tClient.Refunds.Create(paymentID, refund, nil)
-	_, rerr1 := tClient.Refunds.ListRefund(nil)
-	_, rerr2 := tClient.Refunds.ListRefundPayment(paymentID, nil)
-	_, rerr3 := tClient.Refunds.Get(paymentID, refundID, nil)
+	_, cerr := tClient.Refunds.Create(nil, paymentID, refund, nil)
+	_, rerr1 := tClient.Refunds.ListRefund(nil, nil)
+	_, rerr2 := tClient.Refunds.ListRefundPayment(nil, paymentID, nil)
+	_, rerr3 := tClient.Refunds.Get(nil, paymentID, refundID, nil)
 
 	tests := []error{cerr, rerr1, rerr2, rerr3}
 

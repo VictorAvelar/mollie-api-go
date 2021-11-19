@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -75,9 +76,9 @@ type SubscriptionListOptions struct {
 // Get retrieves a customer's subscription
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/get-subscription
-func (ss *SubscriptionsService) Get(cID, sID string) (s *Subscription, err error) {
+func (ss *SubscriptionsService) Get(ctx context.Context, cID, sID string) (s *Subscription, err error) {
 	u := fmt.Sprintf("v2/customers/%s/subscriptions/%s", cID, sID)
-	req, err := ss.client.NewAPIRequest(http.MethodGet, u, nil)
+	req, err := ss.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
 	if err != nil {
 		return
 	}
@@ -96,14 +97,14 @@ func (ss *SubscriptionsService) Get(cID, sID string) (s *Subscription, err error
 // Create stores a new subscription for a given customer
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/create-subscription
-func (ss *SubscriptionsService) Create(cID string, sc *Subscription) (s *Subscription, err error) {
+func (ss *SubscriptionsService) Create(ctx context.Context, cID string, sc *Subscription) (s *Subscription, err error) {
 	u := fmt.Sprintf("v2/customers/%s/subscriptions", cID)
 
 	if ss.client.HasAccessToken() && ss.client.config.testing {
 		sc.TestMode = true
 	}
 
-	req, err := ss.client.NewAPIRequest(http.MethodPost, u, sc)
+	req, err := ss.client.NewAPIRequest(ctx, http.MethodPost, u, sc)
 	if err != nil {
 		return
 	}
@@ -122,10 +123,10 @@ func (ss *SubscriptionsService) Create(cID string, sc *Subscription) (s *Subscri
 // Update changes fields on a subscription object
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/update-subscription
-func (ss *SubscriptionsService) Update(cID, sID string, sc *Subscription) (s *Subscription, err error) {
+func (ss *SubscriptionsService) Update(ctx context.Context, cID, sID string, sc *Subscription) (s *Subscription, err error) {
 	u := fmt.Sprintf("v2/customers/%s/subscriptions/%s", cID, sID)
 
-	req, err := ss.client.NewAPIRequest(http.MethodPatch, u, sc)
+	req, err := ss.client.NewAPIRequest(ctx, http.MethodPatch, u, sc)
 	if err != nil {
 		return
 	}
@@ -144,9 +145,9 @@ func (ss *SubscriptionsService) Update(cID, sID string, sc *Subscription) (s *Su
 // Delete cancels a subscription
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/cancel-subscription
-func (ss *SubscriptionsService) Delete(cID, sID string) (s *Subscription, err error) {
+func (ss *SubscriptionsService) Delete(ctx context.Context, cID, sID string) (s *Subscription, err error) {
 	u := fmt.Sprintf("v2/customers/%s/subscriptions/%s", cID, sID)
-	req, err := ss.client.NewAPIRequest(http.MethodDelete, u, nil)
+	req, err := ss.client.NewAPIRequest(ctx, http.MethodDelete, u, nil)
 	if err != nil {
 		return
 	}
@@ -167,7 +168,7 @@ func (ss *SubscriptionsService) Delete(cID, sID string) (s *Subscription, err er
 // In the case of an OAuth Access Token relies the website profile on the profileId field
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/list-all-subscriptions
-func (ss *SubscriptionsService) All(options *SubscriptionListOptions) (sl *SubscriptionList, err error) {
+func (ss *SubscriptionsService) All(ctx context.Context, options *SubscriptionListOptions) (sl *SubscriptionList, err error) {
 	u := "v2/subscriptions"
 
 	if options != nil {
@@ -175,7 +176,7 @@ func (ss *SubscriptionsService) All(options *SubscriptionListOptions) (sl *Subsc
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
 
-	res, err := ss.list(u)
+	res, err := ss.list(ctx, u)
 	if err != nil {
 		return
 	}
@@ -189,7 +190,7 @@ func (ss *SubscriptionsService) All(options *SubscriptionListOptions) (sl *Subsc
 // List retrieves all subscriptions of a customer
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/list-subscriptions
-func (ss *SubscriptionsService) List(cID string, options *SubscriptionListOptions) (sl *SubscriptionList, err error) {
+func (ss *SubscriptionsService) List(ctx context.Context, cID string, options *SubscriptionListOptions) (sl *SubscriptionList, err error) {
 	u := fmt.Sprintf("v2/customers/%s/subscriptions", cID)
 
 	if options != nil {
@@ -197,7 +198,7 @@ func (ss *SubscriptionsService) List(cID string, options *SubscriptionListOption
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
 
-	res, err := ss.list(u)
+	res, err := ss.list(ctx, u)
 	if err != nil {
 		return
 	}
@@ -211,7 +212,7 @@ func (ss *SubscriptionsService) List(cID string, options *SubscriptionListOption
 // GetPayments retrieves all payments of a specific subscriptions of a customer
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/list-subscriptions-payments
-func (ss *SubscriptionsService) GetPayments(cID, sID string, options *SubscriptionListOptions) (sl *PaymentList, err error) {
+func (ss *SubscriptionsService) GetPayments(ctx context.Context, cID, sID string, options *SubscriptionListOptions) (sl *PaymentList, err error) {
 	u := fmt.Sprintf("v2/customers/%s/subscriptions/%s/payments", cID, sID)
 
 	if options != nil {
@@ -219,7 +220,7 @@ func (ss *SubscriptionsService) GetPayments(cID, sID string, options *Subscripti
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
 
-	res, err := ss.list(u)
+	res, err := ss.list(ctx, u)
 	if err != nil {
 		return
 	}
@@ -230,8 +231,8 @@ func (ss *SubscriptionsService) GetPayments(cID, sID string, options *Subscripti
 	return
 }
 
-func (ss *SubscriptionsService) list(uri string) (r *Response, err error) {
-	req, err := ss.client.NewAPIRequest(http.MethodGet, uri, nil)
+func (ss *SubscriptionsService) list(ctx context.Context, uri string) (r *Response, err error) {
+	req, err := ss.client.NewAPIRequest(ctx, http.MethodGet, uri, nil)
 	if err != nil {
 		return
 	}

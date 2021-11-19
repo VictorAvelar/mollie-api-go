@@ -32,7 +32,7 @@ func TestShipmentsService_Get(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetShipmentsResponse))
 	})
 
-	shipment, err := tClient.Shipments.Get(orderID, shipmentID)
+	shipment, err := tClient.Shipments.Get(nil, orderID, shipmentID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -67,7 +67,7 @@ func TestShipmentsService_Create(t *testing.T) {
 		Tracking: ShipmentTracking{},
 	}
 
-	shipment, err := tClient.Shipments.Create(orderID, csr)
+	shipment, err := tClient.Shipments.Create(nil, orderID, csr)
 	if err != nil {
 		t.Error(err)
 	}
@@ -102,7 +102,7 @@ func TestShipmentsService_Create_AccessTokens(t *testing.T) {
 		Tracking: ShipmentTracking{},
 	}
 
-	shipment, err := tClient.Shipments.Create(orderID, csr)
+	shipment, err := tClient.Shipments.Create(nil, orderID, csr)
 	if err != nil {
 		t.Error(err)
 	}
@@ -132,7 +132,7 @@ func TestShipmentsService_List(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetShipmentsResponse))
 	})
 
-	list, err := tClient.Shipments.List(orderID)
+	list, err := tClient.Shipments.List(nil, orderID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -163,9 +163,10 @@ func TestShipmentsService_Update(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetShipmentsResponse))
 	})
 
-	shipment, err := tClient.Shipments.Update(orderID, shipmentID, ShipmentTracking{
+	shipment, err := tClient.Shipments.Update(nil, orderID, shipmentID, ShipmentTracking{
 		Carrier: "PostNL",
-	})
+	},
+	)
 	if err != nil {
 		t.Error(err)
 	}
@@ -224,10 +225,10 @@ func TestShipmentsService_HTTPRequestErrors(t *testing.T) {
 }
 
 func forceShipmentsErrors() []error {
-	_, gerr := tClient.Shipments.Get("ord_kEn1PlbGa", "as6da7d8sa9d")
-	_, lerr := tClient.Shipments.List("ord_kEn1PlbGa")
-	_, cerr := tClient.Shipments.Create("ord_kEn1PlbGa", CreateShipmentRequest{})
-	_, uerr := tClient.Shipments.Update("ord_kEn1PlbGa", "as5das67d9s", ShipmentTracking{})
+	_, gerr := tClient.Shipments.Get(nil, "ord_kEn1PlbGa", "as6da7d8sa9d")
+	_, lerr := tClient.Shipments.List(nil, "ord_kEn1PlbGa")
+	_, cerr := tClient.Shipments.Create(nil, "ord_kEn1PlbGa", CreateShipmentRequest{})
+	_, uerr := tClient.Shipments.Update(nil, "ord_kEn1PlbGa", "as5das67d9s", ShipmentTracking{})
 
 	return []error{gerr, lerr, cerr, uerr}
 }

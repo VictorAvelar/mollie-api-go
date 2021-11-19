@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -47,9 +48,9 @@ type CapturesList struct {
 // Note the original payment’s ID is needed as well.
 //
 // See: https://docs.mollie.com/reference/v2/captures-api/get-capture
-func (cs *CapturesService) Get(pID, cID string) (c *Capture, err error) {
+func (cs *CapturesService) Get(ctx context.Context, pID, cID string) (c *Capture, err error) {
 	u := fmt.Sprintf("v2/payments/%s/captures/%s", pID, cID)
-	req, err := cs.client.NewAPIRequest(http.MethodGet, u, nil)
+	req, err := cs.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
 	if err != nil {
 		return
 	}
@@ -68,9 +69,9 @@ func (cs *CapturesService) Get(pID, cID string) (c *Capture, err error) {
 // List retrieves all captures for a certain payment
 //
 // See: https://docs.mollie.com/reference/v2/captures-api/list-captures
-func (cs *CapturesService) List(pID string) (cl *CapturesList, err error) {
+func (cs *CapturesService) List(ctx context.Context, pID string) (cl *CapturesList, err error) {
 	u := fmt.Sprintf("v2/payments/%s/captures", pID)
-	req, err := cs.client.NewAPIRequest(http.MethodGet, u, nil)
+	req, err := cs.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
 	if err != nil {
 		return
 	}

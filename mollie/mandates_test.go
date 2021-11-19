@@ -31,7 +31,7 @@ func TestMandatesService_Get(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetMandateResponse))
 	})
 
-	res, err := tClient.Mandates.Get(customerID, mandateID)
+	res, err := tClient.Mandates.Get(nil, customerID, mandateID)
 
 	if err != nil {
 		t.Fatal(err)
@@ -61,7 +61,7 @@ func TestMandatesService_Create(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.CreateMandateResponse))
 	})
 
-	res, err := tClient.Mandates.Create(customerID, Mandate{})
+	res, err := tClient.Mandates.Create(nil, customerID, Mandate{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -90,7 +90,7 @@ func TestMandatesService_Revoke(t *testing.T) {
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	err := tClient.Mandates.Revoke(customerID, mandateID)
+	err := tClient.Mandates.Revoke(nil, customerID, mandateID)
 
 	if err != nil {
 		t.Fatal(err)
@@ -116,7 +116,7 @@ func TestMandatesService_List(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListMandatesResponse))
 	})
 
-	res, err := tClient.Mandates.List(customerID, &ListMandatesOptions{From: "mdt_h3gAaD5zP"})
+	res, err := tClient.Mandates.List(nil, customerID, &ListMandatesOptions{From: "mdt_h3gAaD5zP"})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -180,14 +180,14 @@ func TestMandatesService_NewHTTPApiRequestErrors(t *testing.T) {
 func forceMandatesErrors(del bool) []error {
 	mandateID := "mdt_h3gAaD5zP"
 	customerID := "cst_4qqhO89gsT"
-	_, gerr := tClient.Mandates.Get(customerID, mandateID)
-	_, cerr := tClient.Mandates.Create(customerID, Mandate{})
-	_, lerr := tClient.Mandates.List(customerID, nil)
+	_, gerr := tClient.Mandates.Get(nil, customerID, mandateID)
+	_, cerr := tClient.Mandates.Create(nil, customerID, Mandate{})
+	_, lerr := tClient.Mandates.List(nil, customerID, nil)
 
 	tests := []error{gerr, cerr, lerr}
 
 	if del {
-		rerr := tClient.Mandates.Revoke(customerID, mandateID)
+		rerr := tClient.Mandates.Revoke(nil, customerID, mandateID)
 		tests = append(tests, rerr)
 	}
 

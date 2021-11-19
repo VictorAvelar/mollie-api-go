@@ -2,6 +2,7 @@ package mollie
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -93,7 +94,7 @@ func (c *Client) HasAccessToken() bool {
 // NewAPIRequest is a wrapper around the http.NewRequest function.
 //
 // It will setup the authentication headers/parameters according to the client config.
-func (c *Client) NewAPIRequest(method string, uri string, body interface{}) (req *http.Request, err error) {
+func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, body interface{}) (req *http.Request, err error) {
 	if !strings.HasSuffix(c.BaseURL.Path, "/") {
 		return nil, errBadBaseURL
 	}
@@ -118,9 +119,16 @@ func (c *Client) NewAPIRequest(method string, uri string, body interface{}) (req
 		}
 	}
 
-	req, err = http.NewRequest(method, u.String(), buf)
-	if err != nil {
-		return nil, err
+	if ctx != nil || ctx != context.TODO() {
+		req, err = http.NewRequestWithContext(ctx, method, u.String(), buf)
+		if err != nil {
+			return
+		}
+	} else {
+		req, err = http.NewRequest(method, u.String(), buf)
+		if err != nil {
+			return
+		}
 	}
 
 	req.Header.Add(AuthHeader, strings.Join([]string{TokenType, c.authentication}, " "))

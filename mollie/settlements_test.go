@@ -29,7 +29,7 @@ func TestSettlementsService_Get(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetSettlementsResponse))
 	})
 
-	settlement, err := tClient.Settlements.Get(cID)
+	settlement, err := tClient.Settlements.Get(nil, cID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -56,7 +56,7 @@ func TestSettlementsService_Next(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetNextSettlementResponse))
 	})
 
-	settlement, err := tClient.Settlements.Next()
+	settlement, err := tClient.Settlements.Next(nil)
 	if err != nil {
 		t.Error(err)
 	}
@@ -83,7 +83,7 @@ func TestSettlementsService_Open(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetOpenSettlementResponse))
 	})
 
-	settlement, err := tClient.Settlements.Open()
+	settlement, err := tClient.Settlements.Open(nil)
 	if err != nil {
 		t.Error(err)
 	}
@@ -110,9 +110,10 @@ func TestSettlementsService_List(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListSettlementsResponse))
 	})
 
-	settlement, err := tClient.Settlements.List(&SettlementsListOptions{
+	settlement, err := tClient.Settlements.List(nil, &SettlementsListOptions{
 		Limit: 10,
-	})
+	},
+	)
 	if err != nil {
 		t.Error(err)
 	}
@@ -139,7 +140,7 @@ func TestSettlementsService_GetPayments(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListPaymentsResponse))
 	})
 
-	list, err := tClient.Settlements.GetPayments("stl_jDk30akdN", nil)
+	list, err := tClient.Settlements.GetPayments(nil, "stl_jDk30akdN", nil)
 	if err != nil {
 		t.Error(err)
 	}
@@ -166,7 +167,7 @@ func TestSettlementsService_GetCaptures(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListCapturesResponse))
 	})
 
-	list, err := tClient.Settlements.GetCaptures("stl_jDk30akdN", nil)
+	list, err := tClient.Settlements.GetCaptures(nil, "stl_jDk30akdN", nil)
 	if err != nil {
 		t.Error(err)
 	}
@@ -193,7 +194,7 @@ func TestSettlementsService_GetChargebacks(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListChargebacksResponse))
 	})
 
-	list, err := tClient.Settlements.GetChargebacks("stl_jDk30akdN", nil)
+	list, err := tClient.Settlements.GetChargebacks(nil, "stl_jDk30akdN", nil)
 	if err != nil {
 		t.Error(err)
 	}
@@ -220,7 +221,7 @@ func TestSettlementsService_GetRefunds(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListOrderRefundResponse))
 	})
 
-	list, err := tClient.Settlements.GetRefunds("stl_jDk30akdN", nil)
+	list, err := tClient.Settlements.GetRefunds(nil, "stl_jDk30akdN", nil)
 	if err != nil {
 		t.Error(err)
 	}
@@ -280,14 +281,14 @@ func TestSettlementsService_JsonEncodingErrors(t *testing.T) {
 }
 
 func forceSettlementsErrors() []error {
-	_, gerr := tClient.Settlements.Get("10298372891")
-	_, nerr := tClient.Settlements.Next()
-	_, oerr := tClient.Settlements.Open()
-	_, lerr := tClient.Settlements.List(nil)
-	_, perr := tClient.Settlements.GetPayments("stl_jDk30akdN", nil)
-	_, cerr := tClient.Settlements.GetCaptures("stl_jDk30akdN", nil)
-	_, cberr := tClient.Settlements.GetChargebacks("stl_jDk30akdN", nil)
-	_, rerr := tClient.Settlements.GetRefunds("stl_jDk30akdN", nil)
+	_, gerr := tClient.Settlements.Get(nil, "10298372891")
+	_, nerr := tClient.Settlements.Next(nil)
+	_, oerr := tClient.Settlements.Open(nil)
+	_, lerr := tClient.Settlements.List(nil, nil)
+	_, perr := tClient.Settlements.GetPayments(nil, "stl_jDk30akdN", nil)
+	_, cerr := tClient.Settlements.GetCaptures(nil, "stl_jDk30akdN", nil)
+	_, cberr := tClient.Settlements.GetChargebacks(nil, "stl_jDk30akdN", nil)
+	_, rerr := tClient.Settlements.GetRefunds(nil, "stl_jDk30akdN", nil)
 
 	return []error{gerr, nerr, oerr, lerr, perr, cerr, cberr, rerr}
 }

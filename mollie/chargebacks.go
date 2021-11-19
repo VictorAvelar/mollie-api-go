@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -59,13 +60,13 @@ type ChargebacksService service
 // Note the original payment’s ID is needed as well.
 //
 // See: https://docs.mollie.com/reference/v2/chargebacks-api/get-chargeback
-func (cs *ChargebacksService) Get(paymentID, chargebackID string, options *ChargebackOptions) (p Chargeback, err error) {
+func (cs *ChargebacksService) Get(ctx context.Context, paymentID, chargebackID string, options *ChargebackOptions) (p Chargeback, err error) {
 	u := fmt.Sprintf("v2/payments/%s/chargebacks/%s", paymentID, chargebackID)
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
-	req, err := cs.client.NewAPIRequest(http.MethodGet, u, nil)
+	req, err := cs.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
 	if err != nil {
 		return
 	}
@@ -82,30 +83,30 @@ func (cs *ChargebacksService) Get(paymentID, chargebackID string, options *Charg
 // List retrieves a list of chargebacks associated with your account/organization.
 //
 // See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
-func (cs *ChargebacksService) List(options *ListChargebackOptions) (cl *ChargebackList, err error) {
+func (cs *ChargebacksService) List(ctx context.Context, options *ListChargebackOptions) (cl *ChargebackList, err error) {
 	u := "v2/chargebacks"
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
-	return cs.list(u)
+	return cs.list(ctx, u)
 }
 
 // ListForPayment retrieves a list of chargebacks associated with a single payment.
 //
 // See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
-func (cs *ChargebacksService) ListForPayment(paymentID string, options *ListChargebackOptions) (cl *ChargebackList, err error) {
+func (cs *ChargebacksService) ListForPayment(ctx context.Context, paymentID string, options *ListChargebackOptions) (cl *ChargebackList, err error) {
 	u := fmt.Sprintf("v2/payments/%s/chargebacks", paymentID)
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
-	return cs.list(u)
+	return cs.list(ctx, u)
 }
 
 // encapsulates the shared list methods logic
-func (cs *ChargebacksService) list(uri string) (cl *ChargebackList, err error) {
-	req, err := cs.client.NewAPIRequest(http.MethodGet, uri, nil)
+func (cs *ChargebacksService) list(ctx context.Context, uri string) (cl *ChargebackList, err error) {
+	req, err := cs.client.NewAPIRequest(ctx, http.MethodGet, uri, nil)
 	if err != nil {
 		return
 	}

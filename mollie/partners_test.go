@@ -25,7 +25,7 @@ func TestPartnerService_Get(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetPartnerClientResponse))
 	})
 
-	res, err := tClient.Partners.Get(id, nil)
+	res, err := tClient.Partners.Get(nil, id, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -54,7 +54,7 @@ func TestPartnerService_GetWithOptions(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetPartnerClientResponse))
 	})
 
-	res, err := tClient.Partners.Get(id, &GetPartnerClientOptions{Embed: "organization"})
+	res, err := tClient.Partners.Get(nil, id, &GetPartnerClientOptions{Embed: "organization"})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -79,7 +79,7 @@ func TestPartnerService_List(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListPartnerClientsResponse))
 	})
 
-	res, err := tClient.Partners.List(nil)
+	res, err := tClient.Partners.List(nil, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -107,7 +107,7 @@ func TestPartnerService_ListWithOptions(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListPartnerClientsResponse))
 	})
 
-	res, err := tClient.Partners.List(&ListPartnerClientsOptions{
+	res, err := tClient.Partners.List(nil, &ListPartnerClientsOptions{
 		Year: 2020,
 	})
 	if err != nil {
@@ -125,8 +125,8 @@ func TestPartnerService_HttpRequestErrors(t *testing.T) {
 
 	tMux.HandleFunc("/v2/clients/", errorHandler)
 
-	_, gerr := tClient.Partners.Get("org_1337", nil)
-	_, rerr := tClient.Partners.List(nil)
+	_, gerr := tClient.Partners.Get(nil, "org_1337", nil)
+	_, rerr := tClient.Partners.List(nil, nil)
 
 	tests := []error{rerr, gerr}
 
@@ -144,8 +144,8 @@ func TestPartnerService_NewAPIRequestErrors(t *testing.T) {
 	tClient.BaseURL = u
 	tMux.HandleFunc("/v2/clients/", errorHandler)
 
-	_, gerr := tClient.Partners.Get("org_1337", nil)
-	_, rerr := tClient.Partners.List(nil)
+	_, gerr := tClient.Partners.Get(nil, "org_1337", nil)
+	_, rerr := tClient.Partners.List(nil, nil)
 
 	tests := []error{rerr, gerr}
 
@@ -161,8 +161,8 @@ func TestPartnerService_EncodingResponseErrors(t *testing.T) {
 	defer teardown()
 	tMux.HandleFunc("/v2/clients/", encodingHandler)
 
-	_, gerr := tClient.Partners.Get("org_1337", nil)
-	_, rerr := tClient.Partners.List(nil)
+	_, gerr := tClient.Partners.Get(nil, "org_1337", nil)
+	_, rerr := tClient.Partners.List(nil, nil)
 
 	tests := []error{rerr, gerr}
 

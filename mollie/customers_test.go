@@ -26,7 +26,7 @@ func TestCustomersService_Get(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetCustomerResponse))
 	})
 
-	c, err := tClient.Customers.Get(id)
+	c, err := tClient.Customers.Get(nil, id)
 	if err != nil {
 		t.Error(err)
 	}
@@ -53,7 +53,7 @@ func TestCustomersService_Create(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.CreateCustomerResponse))
 	})
 
-	c, err := tClient.Customers.Create(Customer{Locale: German})
+	c, err := tClient.Customers.Create(nil, Customer{Locale: German})
 	if err != nil {
 		t.Error(err)
 	}
@@ -78,7 +78,7 @@ func TestCustomersService_List(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListCustomersResponse))
 	})
 
-	c, err := tClient.Customers.List(&ListCustomersOptions{Limit: 10})
+	c, err := tClient.Customers.List(nil, &ListCustomersOptions{Limit: 10})
 	if err != nil {
 		t.Error(err)
 	}
@@ -104,7 +104,7 @@ func TestCustomersService_GetPayments(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListPaymentsResponse))
 	})
 
-	p, err := tClient.Customers.GetPayments(id, &ListCustomersOptions{SequenceType: FirstSequence})
+	p, err := tClient.Customers.GetPayments(nil, id, &ListCustomersOptions{SequenceType: FirstSequence})
 	if err != nil {
 		t.Error(err)
 	}
@@ -130,7 +130,7 @@ func TestCustomersService_CreatePayment(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetPaymentResponse))
 	})
 
-	p, err := tClient.Customers.CreatePayment(id, Payment{Mode: TestMode})
+	p, err := tClient.Customers.CreatePayment(nil, id, Payment{Mode: TestMode})
 	if err != nil {
 		t.Error(err)
 	}
@@ -156,7 +156,7 @@ func TestCustomersService_Delete(t *testing.T) {
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	err := tClient.Customers.Delete(id)
+	err := tClient.Customers.Delete(nil, id)
 	if err != nil {
 		t.Error(err)
 	}
@@ -179,7 +179,7 @@ func TestCustomersService_Update(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.UpdateCustomerResponse))
 	})
 
-	c, err := tClient.Customers.Update(id, Customer{
+	c, err := tClient.Customers.Update(nil, id, Customer{
 		Locale: French,
 	})
 	if err != nil {
@@ -241,17 +241,17 @@ func TestCustomersService_HTTPRequestErrors(t *testing.T) {
 
 func forceCustomersErrors(del bool) []error {
 	id := "cst_kEn1PlbGa"
-	_, lerr := tClient.Customers.List(nil)
-	_, lperr := tClient.Customers.GetPayments(id, nil)
-	_, cperr := tClient.Customers.CreatePayment(id, Payment{})
-	_, gerr := tClient.Customers.Get(id)
-	_, cerr := tClient.Customers.Create(Customer{})
-	_, uerr := tClient.Customers.Update(id, Customer{})
+	_, lerr := tClient.Customers.List(nil, nil)
+	_, lperr := tClient.Customers.GetPayments(nil, id, nil)
+	_, cperr := tClient.Customers.CreatePayment(nil, id, Payment{})
+	_, gerr := tClient.Customers.Get(nil, id)
+	_, cerr := tClient.Customers.Create(nil, Customer{})
+	_, uerr := tClient.Customers.Update(nil, id, Customer{})
 
 	errs := []error{lerr, lperr, cperr, gerr, uerr, cerr}
 
 	if del {
-		derr := tClient.Customers.Delete(id)
+		derr := tClient.Customers.Delete(nil, id)
 		errs = append(errs, derr)
 	}
 

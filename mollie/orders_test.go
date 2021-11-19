@@ -37,7 +37,7 @@ func TestOrdersService_Get(t *testing.T) {
 		},
 	}
 
-	res, err := tClient.Orders.Get(ordID, opt)
+	res, err := tClient.Orders.Get(nil, ordID, opt)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -69,7 +69,7 @@ func TestOrdersService_Create(t *testing.T) {
 		ProfileID: "pfl_3RkSN1zuPE",
 	}
 
-	res, err := tClient.Orders.Create(order, opt)
+	res, err := tClient.Orders.Create(nil, order, opt)
 	if err != nil {
 		t.Error(err)
 	}
@@ -102,7 +102,7 @@ func TestOrdersService_Create_AccessTokens(t *testing.T) {
 		ProfileID: "pfl_3RkSN1zuPE",
 	}
 
-	res, err := tClient.Orders.Create(order, opt)
+	res, err := tClient.Orders.Create(nil, order, opt)
 	if err != nil {
 		t.Error(err)
 	}
@@ -132,7 +132,7 @@ func TestOrdersService_Update(t *testing.T) {
 	})
 
 	order := Order{}
-	res, err := tClient.Orders.Update(orderID, order)
+	res, err := tClient.Orders.Update(nil, orderID, order)
 	if err != nil {
 		t.Error(err)
 	}
@@ -161,7 +161,7 @@ func TestOrdersService_Cancel(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.CancelOrderResponse))
 	})
 
-	res, err := tClient.Orders.Cancel(orderID)
+	res, err := tClient.Orders.Cancel(nil, orderID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -192,7 +192,7 @@ func TestOrdersService_List(t *testing.T) {
 		ProfileID: "pfl_3RkSN1zuPE",
 	}
 
-	res, err := tClient.Orders.List(opt)
+	res, err := tClient.Orders.List(nil, opt)
 	if err != nil {
 		t.Error(err)
 	}
@@ -227,7 +227,7 @@ func TestOrdersService_UpdateOrderline(t *testing.T) {
 		t.Error(err)
 	}
 
-	res, err := tClient.Orders.UpdateOrderLine(orderID, orderlineID, orderline)
+	res, err := tClient.Orders.UpdateOrderLine(nil, orderID, orderlineID, orderline)
 	if err != nil {
 		t.Error(err)
 	}
@@ -259,7 +259,7 @@ func TestOrdersService_CancelOrderLines(t *testing.T) {
 			Name: "something",
 		},
 	}
-	err := tClient.Orders.CancelOrderLines(orderID, orderLines)
+	err := tClient.Orders.CancelOrderLines(nil, orderID, orderLines)
 
 	if err != nil {
 		t.Error(err)
@@ -290,7 +290,7 @@ func TestOrdersService_CreatePayment(t *testing.T) {
 		t.Error(err)
 	}
 
-	res, err := tClient.Orders.CreateOrderPayment(orderID, &ordPay)
+	res, err := tClient.Orders.CreateOrderPayment(nil, orderID, &ordPay)
 	if err != nil {
 		t.Error(err)
 	}
@@ -324,7 +324,7 @@ func TestOrdersService_CreateOrderRefund(t *testing.T) {
 		t.Error(err)
 	}
 
-	res, err := tClient.Orders.CreateOrderRefund(orderID, &order)
+	res, err := tClient.Orders.CreateOrderRefund(nil, orderID, &order)
 	if err != nil {
 		t.Error(err)
 	}
@@ -357,7 +357,7 @@ func TestOrdersService_ListOrderRefund(t *testing.T) {
 		Embed: EmbedPayment,
 	}
 
-	res, err := tClient.Orders.ListOrderRefunds(orderID, opt)
+	res, err := tClient.Orders.ListOrderRefunds(nil, orderID, opt)
 	if err != nil {
 		t.Error(err)
 	}
@@ -419,22 +419,22 @@ func TestOrdersService_HTTPRequestErrors(t *testing.T) {
 func forceOrdersErrors(del bool) []error {
 	id := "ord_8wmqcHMN4U"
 
-	_, cerr := tClient.Orders.Create(Order{}, nil)
-	_, coperr := tClient.Orders.CreateOrderPayment(id, nil)
-	_, corerr := tClient.Orders.CreateOrderRefund(id, nil)
-	_, rerr := tClient.Orders.Get(id, nil)
-	_, lerr := tClient.Orders.List(nil)
-	_, lorerr := tClient.Orders.ListOrderRefunds(id, nil)
-	_, uerr := tClient.Orders.Update(id, Order{})
-	_, uolerr := tClient.Orders.UpdateOrderLine(id, "", OrderLine{})
+	_, cerr := tClient.Orders.Create(nil, Order{}, nil)
+	_, coperr := tClient.Orders.CreateOrderPayment(nil, id, nil)
+	_, corerr := tClient.Orders.CreateOrderRefund(nil, id, nil)
+	_, rerr := tClient.Orders.Get(nil, id, nil)
+	_, lerr := tClient.Orders.List(nil, nil)
+	_, lorerr := tClient.Orders.ListOrderRefunds(nil, id, nil)
+	_, uerr := tClient.Orders.Update(nil, id, Order{})
+	_, uolerr := tClient.Orders.UpdateOrderLine(nil, id, "", OrderLine{})
 
 	errs := []error{cerr, coperr, corerr, rerr, lerr, lorerr, uerr, uolerr}
 
 	if del {
-		_, cnlerr := tClient.Orders.Cancel(id)
+		_, cnlerr := tClient.Orders.Cancel(nil, id)
 		errs = append(errs, cnlerr)
 
-		colerr := tClient.Orders.CancelOrderLines(id, []OrderLine{})
+		colerr := tClient.Orders.CancelOrderLines(nil, id, []OrderLine{})
 		errs = append(errs, colerr)
 	}
 

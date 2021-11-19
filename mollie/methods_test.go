@@ -34,7 +34,7 @@ func TestMethodsService_ListWithQueryOptionsAmountCurrency(t *testing.T) {
 		AmountValue:    "100.00",
 	}
 
-	res, err := tClient.Methods.List(opts)
+	res, err := tClient.Methods.List(nil, opts)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -74,7 +74,7 @@ func TestMethodsService_ListWithQueryOptionsAll(t *testing.T) {
 		IncludeWallets: "applepay",
 	}
 
-	res, err := tClient.Methods.List(opts)
+	res, err := tClient.Methods.List(nil, opts)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -100,7 +100,7 @@ func TestMethodsService_Get(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetMethodResponse))
 	})
 
-	res, err := tClient.Methods.Get(id, nil)
+	res, err := tClient.Methods.Get(nil, id, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -113,7 +113,7 @@ func TestMethodsService_Get(t *testing.T) {
 	mo := &MethodsOptions{
 		Locale: English,
 	}
-	_, err2 := tClient.Methods.Get("sofort", mo)
+	_, err2 := tClient.Methods.Get(nil, "sofort", mo)
 	if err2 == nil {
 		t.Fatal(err)
 	} else if !strings.Contains(err2.Error(), "Not Found") {
@@ -136,7 +136,7 @@ func TestMethodsService_All(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListMethodsResponse))
 	})
 
-	res, err := tClient.Methods.All(&MethodsOptions{
+	res, err := tClient.Methods.All(nil, &MethodsOptions{
 		Locale: Dutch,
 	})
 	if err != nil {
@@ -163,7 +163,7 @@ func TestMethodsService_List(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListMethodsResponse))
 	})
 
-	res, err := tClient.Methods.List(&MethodsOptions{
+	res, err := tClient.Methods.List(nil, &MethodsOptions{
 		SequenceType: FirstSequence,
 	})
 	if err != nil {
@@ -180,9 +180,9 @@ func TestMethodsService_HttpRequestErrors(t *testing.T) {
 	defer teardown()
 	tMux.HandleFunc("/v2/methods/", errorHandler)
 
-	_, lerr := tClient.Methods.List(nil)
-	_, aerr := tClient.Methods.All(nil)
-	_, gerr := tClient.Methods.Get("ideal", nil)
+	_, lerr := tClient.Methods.List(nil, nil)
+	_, aerr := tClient.Methods.All(nil, nil)
+	_, gerr := tClient.Methods.Get(nil, "ideal", nil)
 
 	tests := []error{lerr, aerr, gerr}
 
@@ -200,9 +200,9 @@ func TestMethodsService_NewAPIRequestErrors(t *testing.T) {
 	tClient.BaseURL = u
 	tMux.HandleFunc("/v2/methods/", errorHandler)
 
-	_, rerr := tClient.Methods.List(nil)
-	_, derr := tClient.Methods.All(nil)
-	_, gerr := tClient.Methods.Get("1212", nil)
+	_, rerr := tClient.Methods.List(nil, nil)
+	_, derr := tClient.Methods.All(nil, nil)
+	_, gerr := tClient.Methods.Get(nil, "1212", nil)
 
 	tests := []error{rerr, derr, gerr}
 
@@ -218,9 +218,9 @@ func TestMethodsService_EncodingResponseErrors(t *testing.T) {
 	defer teardown()
 	tMux.HandleFunc("/v2/methods/", encodingHandler)
 
-	_, cerr := tClient.Methods.All(nil)
-	_, rerr := tClient.Methods.List(nil)
-	_, uerr := tClient.Methods.Get("1212", nil)
+	_, cerr := tClient.Methods.All(nil, nil)
+	_, rerr := tClient.Methods.List(nil, nil)
+	_, uerr := tClient.Methods.Get(nil, "1212", nil)
 
 	tests := []error{cerr, rerr, uerr}
 

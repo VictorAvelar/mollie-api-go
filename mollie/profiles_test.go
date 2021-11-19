@@ -29,7 +29,7 @@ func TestProfilesService_Get(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetProfileResponse))
 	})
 
-	p, err := tClient.Profiles.Get(id)
+	p, err := tClient.Profiles.Get(nil, id)
 	if err != nil {
 		t.Error(err)
 	}
@@ -55,7 +55,7 @@ func ExampleProfilesService_Get() {
 		_, _ = w.Write([]byte(testdata.GetProfileResponse))
 	})
 
-	p, err := tClient.Profiles.Get(id)
+	p, err := tClient.Profiles.Get(nil, id)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -82,7 +82,7 @@ func TestProfilesService_Current(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetProfileResponse))
 	})
 
-	p, err := tClient.Profiles.Current()
+	p, err := tClient.Profiles.Current(nil)
 	if err != nil {
 		t.Error(err)
 	}
@@ -113,7 +113,7 @@ func TestProfilesService_List(t *testing.T) {
 		Limit: 10,
 	}
 
-	pl, err := tClient.Profiles.List(opt)
+	pl, err := tClient.Profiles.List(nil, opt)
 	if err != nil {
 		t.Error(err)
 	}
@@ -148,7 +148,7 @@ func TestProfilesService_Create(t *testing.T) {
 		Name:         "My website name",
 	}
 
-	p, err := tClient.Profiles.Create(np)
+	p, err := tClient.Profiles.Create(nil, np)
 	if err != nil {
 		t.Error(err)
 	}
@@ -185,7 +185,7 @@ func TestProfilesService_Update(t *testing.T) {
 		Phone:        "",
 	}
 
-	p, err := tClient.Profiles.Update(id, np)
+	p, err := tClient.Profiles.Update(nil, id, np)
 	if err != nil {
 		t.Error(err)
 	}
@@ -212,7 +212,7 @@ func TestProfilesService_Delete(t *testing.T) {
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	err := tClient.Profiles.Delete(id)
+	err := tClient.Profiles.Delete(nil, id)
 	if err != nil {
 		t.Error(err)
 	}
@@ -236,7 +236,7 @@ func TestProfilesService_EnablePaymentMethod(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.EnablePaymentMethodResponse))
 	})
 
-	res, err := tClient.Profiles.EnablePaymentMethod(id, Bancontact)
+	res, err := tClient.Profiles.EnablePaymentMethod(nil, id, Bancontact)
 	if err != nil {
 		t.Error(err)
 	}
@@ -263,7 +263,7 @@ func TestProfilesService_DisablePaymentMethod(t *testing.T) {
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	err := tClient.Profiles.DisablePaymentMethod(id, Bancontact)
+	err := tClient.Profiles.DisablePaymentMethod(nil, id, Bancontact)
 	if err != nil {
 		t.Error(err)
 	}
@@ -293,7 +293,7 @@ func TestProfilesService_EnableGiftCardIssuer(t *testing.T) {
 		},
 	)
 
-	res, err := tClient.Profiles.EnableGiftCardIssuer(id, Festivalcadeau)
+	res, err := tClient.Profiles.EnableGiftCardIssuer(nil, id, Festivalcadeau)
 
 	if err != nil {
 		t.Error(err)
@@ -327,7 +327,7 @@ func TestProfilesService_DisableGiftCardIssuer(t *testing.T) {
 		},
 	)
 
-	err := tClient.Profiles.DisableGiftCardIssuer(id, Festivalcadeau)
+	err := tClient.Profiles.DisableGiftCardIssuer(nil, id, Festivalcadeau)
 
 	if err != nil {
 		t.Error(err)
@@ -358,7 +358,7 @@ func TestProfilesService_EnableGiftCardIssuerForCurrent(t *testing.T) {
 		},
 	)
 
-	res, err := tClient.Profiles.EnableGiftCardIssuerForCurrent(Festivalcadeau)
+	res, err := tClient.Profiles.EnableGiftCardIssuerForCurrent(nil, Festivalcadeau)
 
 	if err != nil {
 		t.Error(err)
@@ -392,7 +392,7 @@ func TestProfilesService_DisableGiftCardIssuerForCurrent(t *testing.T) {
 		},
 	)
 
-	err := tClient.Profiles.DisableGiftCardIssuerForCurrent(Festivalcadeau)
+	err := tClient.Profiles.DisableGiftCardIssuerForCurrent(nil, Festivalcadeau)
 
 	if err != nil {
 		t.Error(err)
@@ -406,18 +406,18 @@ func TestProfilesService_HttpRequestErrors(t *testing.T) {
 
 	p := Profile{}
 
-	_, cerr := tClient.Profiles.Create(&p)
-	_, rerr := tClient.Profiles.List(nil)
-	_, uerr := tClient.Profiles.Update("1212", &p)
-	derr := tClient.Profiles.Delete("1212")
-	_, gerr := tClient.Profiles.Get("1212")
-	_, ccerr := tClient.Profiles.Current()
-	dderr := tClient.Profiles.DisablePaymentMethod("1212", PayPal)
-	_, eperr := tClient.Profiles.EnablePaymentMethod("1212", PayPal)
-	dgcerr := tClient.Profiles.DisableGiftCardIssuer("1212", Festivalcadeau)
-	_, egcerr := tClient.Profiles.EnableGiftCardIssuer("1212", Festivalcadeau)
-	dgccerr := tClient.Profiles.DisableGiftCardIssuerForCurrent(Festivalcadeau)
-	_, egccerr := tClient.Profiles.EnableGiftCardIssuerForCurrent(Festivalcadeau)
+	_, cerr := tClient.Profiles.Create(nil, &p)
+	_, rerr := tClient.Profiles.List(nil, nil)
+	_, uerr := tClient.Profiles.Update(nil, "1212", &p)
+	derr := tClient.Profiles.Delete(nil, "1212")
+	_, gerr := tClient.Profiles.Get(nil, "1212")
+	_, ccerr := tClient.Profiles.Current(nil)
+	dderr := tClient.Profiles.DisablePaymentMethod(nil, "1212", PayPal)
+	_, eperr := tClient.Profiles.EnablePaymentMethod(nil, "1212", PayPal)
+	dgcerr := tClient.Profiles.DisableGiftCardIssuer(nil, "1212", Festivalcadeau)
+	_, egcerr := tClient.Profiles.EnableGiftCardIssuer(nil, "1212", Festivalcadeau)
+	dgccerr := tClient.Profiles.DisableGiftCardIssuerForCurrent(nil, Festivalcadeau)
+	_, egccerr := tClient.Profiles.EnableGiftCardIssuerForCurrent(nil, Festivalcadeau)
 
 	tests := []error{cerr, rerr, uerr, derr, gerr, ccerr, eperr, dderr, dgcerr, egcerr, dgccerr, egccerr}
 
@@ -435,14 +435,14 @@ func TestProfilesService_EncodingResponseErrors(t *testing.T) {
 
 	p := Profile{}
 
-	_, cerr := tClient.Profiles.Create(&p)
-	_, rerr := tClient.Profiles.List(nil)
-	_, uerr := tClient.Profiles.Update("1212", &p)
-	_, gerr := tClient.Profiles.Get("1212")
-	_, ccerr := tClient.Profiles.Current()
-	_, eperr := tClient.Profiles.EnablePaymentMethod("1212", PayPal)
-	_, egcerr := tClient.Profiles.EnableGiftCardIssuer("1212", Festivalcadeau)
-	_, egccerr := tClient.Profiles.EnableGiftCardIssuerForCurrent(Festivalcadeau)
+	_, cerr := tClient.Profiles.Create(nil, &p)
+	_, rerr := tClient.Profiles.List(nil, nil)
+	_, uerr := tClient.Profiles.Update(nil, "1212", &p)
+	_, gerr := tClient.Profiles.Get(nil, "1212")
+	_, ccerr := tClient.Profiles.Current(nil)
+	_, eperr := tClient.Profiles.EnablePaymentMethod(nil, "1212", PayPal)
+	_, egcerr := tClient.Profiles.EnableGiftCardIssuer(nil, "1212", Festivalcadeau)
+	_, egccerr := tClient.Profiles.EnableGiftCardIssuerForCurrent(nil, Festivalcadeau)
 
 	tests := []error{cerr, rerr, uerr, gerr, ccerr, eperr, egcerr, egccerr}
 
@@ -464,16 +464,16 @@ func TestProfilesService_NewAPIRequestBaseError(t *testing.T) {
 
 	p := Profile{}
 
-	_, cerr := tClient.Profiles.Create(&p)
-	_, rerr := tClient.Profiles.List(nil)
-	_, uerr := tClient.Profiles.Update("1212", &p)
-	_, gerr := tClient.Profiles.Get("1212")
-	_, ccerr := tClient.Profiles.Current()
-	ddcerr := tClient.Profiles.Delete("1212")
-	_, eperr := tClient.Profiles.EnablePaymentMethod("1212", PayPal)
-	deperr := tClient.Profiles.DisablePaymentMethod("1212", PayPal)
-	dgcerr := tClient.Profiles.DisableGiftCardIssuer("1212", Festivalcadeau)
-	_, egcerr := tClient.Profiles.EnableGiftCardIssuer("1212", Festivalcadeau)
+	_, cerr := tClient.Profiles.Create(nil, &p)
+	_, rerr := tClient.Profiles.List(nil, nil)
+	_, uerr := tClient.Profiles.Update(nil, "1212", &p)
+	_, gerr := tClient.Profiles.Get(nil, "1212")
+	_, ccerr := tClient.Profiles.Current(nil)
+	ddcerr := tClient.Profiles.Delete(nil, "1212")
+	_, eperr := tClient.Profiles.EnablePaymentMethod(nil, "1212", PayPal)
+	deperr := tClient.Profiles.DisablePaymentMethod(nil, "1212", PayPal)
+	dgcerr := tClient.Profiles.DisableGiftCardIssuer(nil, "1212", Festivalcadeau)
+	_, egcerr := tClient.Profiles.EnableGiftCardIssuer(nil, "1212", Festivalcadeau)
 
 	tests := []error{cerr, rerr, uerr, gerr, ccerr, eperr, deperr, ddcerr, dgcerr, egcerr}
 
