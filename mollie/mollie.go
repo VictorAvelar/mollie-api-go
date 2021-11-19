@@ -121,16 +121,13 @@ func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, b
 		}
 	}
 
-	if ctx != nil || ctx != context.TODO() {
-		req, err = http.NewRequestWithContext(ctx, method, u.String(), buf)
-		if err != nil {
-			return
-		}
-	} else {
-		req, err = http.NewRequest(method, u.String(), buf)
-		if err != nil {
-			return
-		}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	req, err = http.NewRequestWithContext(ctx, method, u.String(), buf)
+	if err != nil {
+		return
 	}
 
 	req.Header.Add(AuthHeader, strings.Join([]string{TokenType, c.authentication}, " "))
