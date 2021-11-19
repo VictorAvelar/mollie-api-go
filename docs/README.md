@@ -1,7 +1,7 @@
 # mollie
 
 --
-import "github.com/VictorAvelar/mollie-api-golang/v2/mollie"
+import "github.com/VictorAvelar/mollie-api-golang/v3/mollie"
 
 Package mollie is a wrapper around Mollie's REST API.
 
@@ -177,7 +177,7 @@ CapturesService operates over captures resource
 #### func (\*CapturesService) Get
 
 ```go
-func (cs *CapturesService) Get(pID, cID string) (c *Capture, err error)
+func (cs *CapturesService) Get(ctx context.Context, pID, cID string) (c *Capture, err error)
 ```
 
 Get retrieves a single capture by its ID. Note the original payment’s ID is
@@ -188,7 +188,7 @@ See: https://docs.mollie.com/reference/v2/captures-api/get-capture
 #### func (\*CapturesService) List
 
 ```go
-func (cs *CapturesService) List(pID string) (cl *CapturesList, err error)
+func (cs *CapturesService) List(ctx context.Context, pID string) (cl *CapturesList, err error)
 ```
 
 List retrieves all captures for a certain payment
@@ -327,7 +327,7 @@ ChargebacksService instance operates over chargeback resources
 #### func (\*ChargebacksService) Get
 
 ```go
-func (cs *ChargebacksService) Get(paymentID, chargebackID string, options *ChargebackOptions) (p Chargeback, err error)
+func (cs *ChargebacksService) Get(ctx context.Context, paymentID, chargebackID string, options *ChargebackOptions) (p Chargeback, err error)
 ```
 
 Get retrieves a single chargeback by its ID. Note the original payment’s ID is
@@ -338,7 +338,7 @@ See: https://docs.mollie.com/reference/v2/chargebacks-api/get-chargeback
 #### func (\*ChargebacksService) List
 
 ```go
-func (cs *ChargebacksService) List(options *ListChargebackOptions) (cl *ChargebackList, err error)
+func (cs *ChargebacksService) List(ctx context.Context, options *ListChargebackOptions) (cl *ChargebackList, err error)
 ```
 
 List retrieves a list of chargebacks associated with your account/organization.
@@ -348,7 +348,7 @@ See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
 #### func (\*ChargebacksService) ListForPayment
 
 ```go
-func (cs *ChargebacksService) ListForPayment(paymentID string, options *ListChargebackOptions) (cl *ChargebackList, err error)
+func (cs *ChargebacksService) ListForPayment(ctx context.Context, paymentID string, options *ListChargebackOptions) (cl *ChargebackList, err error)
 ```
 
 ListForPayment retrieves a list of chargebacks associated with a single payment.
@@ -426,7 +426,7 @@ See: https://github.com/VictorAvelar/mollie-api-go/issues/123
 #### func (\*Client) NewAPIRequest
 
 ```go
-func (c *Client) NewAPIRequest(method string, uri string, body interface{}) (req *http.Request, err error)
+func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, body interface{}) (req *http.Request, err error)
 ```
 
 NewAPIRequest is a wrapper around the http.NewRequest function.
@@ -548,7 +548,7 @@ CustomersService operates over the customer resource
 #### func (\*CustomersService) Create
 
 ```go
-func (cs *CustomersService) Create(c Customer) (cc *Customer, err error)
+func (cs *CustomersService) Create(ctx context.Context, c Customer) (cc *Customer, err error)
 ```
 
 Create creates a simple minimal representation of a customer in the Mollie API
@@ -559,7 +559,7 @@ See: https://docs.mollie.com/reference/v2/customers-api/create-customer
 #### func (\*CustomersService) CreatePayment
 
 ```go
-func (cs *CustomersService) CreatePayment(id string, p Payment) (pp *Payment, err error)
+func (cs *CustomersService) CreatePayment(ctx context.Context, id string, p Payment) (pp *Payment, err error)
 ```
 
 CreatePayment creates a payment for the customer.
@@ -569,7 +569,7 @@ See: https://docs.mollie.com/reference/v2/customers-api/create-customer-payment
 #### func (\*CustomersService) Delete
 
 ```go
-func (cs *CustomersService) Delete(id string) (err error)
+func (cs *CustomersService) Delete(ctx context.Context, id string) (err error)
 ```
 
 Delete a customer. All mandates and subscriptions created for this customer will
@@ -580,7 +580,7 @@ See: https://docs.mollie.com/reference/v2/customers-api/delete-customer
 #### func (\*CustomersService) Get
 
 ```go
-func (cs *CustomersService) Get(id string) (c *Customer, err error)
+func (cs *CustomersService) Get(ctx context.Context, id string) (c *Customer, err error)
 ```
 
 Get finds a customer by its ID
@@ -590,7 +590,7 @@ See: https://docs.mollie.com/reference/v2/customers-api/get-customer
 #### func (\*CustomersService) GetPayments
 
 ```go
-func (cs *CustomersService) GetPayments(id string, options *ListCustomersOptions) (pl *PaymentList, err error)
+func (cs *CustomersService) GetPayments(ctx context.Context, id string, options *ListCustomersOptions) (pl *PaymentList, err error)
 ```
 
 GetPayments retrieves all payments linked to the customer.
@@ -600,7 +600,7 @@ See: https://docs.mollie.com/reference/v2/customers-api/list-customer-payments
 #### func (\*CustomersService) List
 
 ```go
-func (cs *CustomersService) List(options *ListCustomersOptions) (cl *CustomersList, err error)
+func (cs *CustomersService) List(ctx context.Context, options *ListCustomersOptions) (cl *CustomersList, err error)
 ```
 
 List retrieves all customers created.
@@ -610,7 +610,7 @@ See: https://docs.mollie.com/reference/v2/customers-api/list-customers
 #### func (\*CustomersService) Update
 
 ```go
-func (cs *CustomersService) Update(id string, c Customer) (cc *Customer, err error)
+func (cs *CustomersService) Update(ctx context.Context, id string, c Customer) (cc *Customer, err error)
 ```
 
 Update mutates an existing customer
@@ -912,7 +912,7 @@ InvoicesService instance operates over invoice resources
 #### func (\*InvoicesService) Get
 
 ```go
-func (is *InvoicesService) Get(id string) (i Invoice, err error)
+func (is *InvoicesService) Get(ctx context.Context, id string) (i Invoice, err error)
 ```
 
 Get retrieve details of an invoice, using the invoice’s identifier.
@@ -920,7 +920,7 @@ Get retrieve details of an invoice, using the invoice’s identifier.
 #### func (\*InvoicesService) List
 
 ```go
-func (is *InvoicesService) List(options *ListInvoiceOptions) (il InvoiceList, err error)
+func (is *InvoicesService) List(ctx context.Context, options *ListInvoiceOptions) (il InvoiceList, err error)
 ```
 
 List retrieves a list of invoices associated with your account/organization.
@@ -1183,7 +1183,7 @@ MandatesService operates over customer mandates endpoints.
 #### func (\*MandatesService) Create
 
 ```go
-func (ms *MandatesService) Create(cID string, mandate Mandate) (mr *Mandate, err error)
+func (ms *MandatesService) Create(ctx context.Context, cID string, mandate Mandate) (mr *Mandate, err error)
 ```
 
 Create a mandate for a specific customer. Mandates allow you to charge a
@@ -1194,7 +1194,7 @@ See: https://docs.mollie.com/reference/v2/mandates-api/create-mandate
 #### func (\*MandatesService) Get
 
 ```go
-func (ms *MandatesService) Get(cID, mID string) (mr *Mandate, err error)
+func (ms *MandatesService) Get(ctx context.Context, cID, mID string) (mr *Mandate, err error)
 ```
 
 Get retrieves a mandate by its ID and its customer’s ID. The mandate will either
@@ -1205,7 +1205,7 @@ See: https://docs.mollie.com/reference/v2/mandates-api/get-mandate
 #### func (\*MandatesService) List
 
 ```go
-func (ms *MandatesService) List(cID string, opt *ListMandatesOptions) (ml MandateList, err error)
+func (ms *MandatesService) List(ctx context.Context, cID string, opt *ListMandatesOptions) (ml MandateList, err error)
 ```
 
 List retrieves all mandates for the given customerId, ordered from newest to
@@ -1216,7 +1216,7 @@ See: https://docs.mollie.com/reference/v2/mandates-api/list-mandates
 #### func (\*MandatesService) Revoke
 
 ```go
-func (ms *MandatesService) Revoke(cID, mID string) (err error)
+func (ms *MandatesService) Revoke(ctx context.Context, cID, mID string) (err error)
 ```
 
 Revoke a customer’s mandate. You will no longer be able to charge the consumer’s
@@ -1268,7 +1268,7 @@ MethodsService operates on methods endpoints
 #### func (\*MethodsService) All
 
 ```go
-func (ms *MethodsService) All(options *MethodsOptions) (pm *ListMethods, err error)
+func (ms *MethodsService) All(ctx context.Context, options *MethodsOptions) (pm *ListMethods, err error)
 ```
 
 All retrieves all the payment methods enabled for your account/organization
@@ -1278,7 +1278,7 @@ See: https://docs.mollie.com/reference/v2/methods-api/list-all-methods
 #### func (\*MethodsService) Get
 
 ```go
-func (ms *MethodsService) Get(id string, options *MethodsOptions) (pmi *PaymentMethodInfo, err error)
+func (ms *MethodsService) Get(ctx context.Context, id string, options *MethodsOptions) (pmi *PaymentMethodInfo, err error)
 ```
 
 Get returns information about the payment method specified by id, it also
@@ -1290,7 +1290,7 @@ See: https://docs.mollie.com/reference/v2/methods-api/get-method
 #### func (\*MethodsService) List
 
 ```go
-func (ms *MethodsService) List(options *MethodsOptions) (pm *ListMethods, err error)
+func (ms *MethodsService) List(ctx context.Context, options *MethodsOptions) (pm *ListMethods, err error)
 ```
 
 List retrieves all enabled payment methods. The results are not paginated.
@@ -1309,7 +1309,7 @@ miscellaneous API endpoints section
 #### func (\*MiscellaneousService) ApplePaymentSession
 
 ```go
-func (ms *MiscellaneousService) ApplePaymentSession(asr *ApplePaymentSessionRequest) (aps *ApplePaymentSession, err error)
+func (ms *MiscellaneousService) ApplePaymentSession(ctx context.Context, asr *ApplePaymentSessionRequest) (aps *ApplePaymentSession, err error)
 ```
 
 ApplePaymentSession returns an Apple Payment Session object valid for one
@@ -1405,7 +1405,7 @@ OnboardingService operates over the onboarding API.
 #### func (\*OnboardingService) GetOnboardingStatus
 
 ```go
-func (os *OnboardingService) GetOnboardingStatus() (o *Onboarding, err error)
+func (os *OnboardingService) GetOnboardingStatus(ctx context.Context) (o *Onboarding, err error)
 ```
 
 GetOnboardingStatus gets the status of onboarding of the authenticated
@@ -1416,7 +1416,7 @@ See: https://docs.mollie.com/reference/v2/onboarding-api/get-onboarding-status
 #### func (\*OnboardingService) SubmitOnboardingData
 
 ```go
-func (os *OnboardingService) SubmitOnboardingData(d *OnboardingData) (err error)
+func (os *OnboardingService) SubmitOnboardingData(ctx context.Context, d *OnboardingData) (err error)
 ```
 
 SubmitOnboardingData sends data that will be prefilled in the merchant’s
@@ -1542,6 +1542,7 @@ type OrderLine struct {
 	Links              OrderLineLinks  `json:"_links,omitempty"`
 	ImageURL           string          `json:"imageUrl,omitempty"`
 	ProductURL         string          `json:"productUrl,omitempty"`
+	Metadata           interface{}     `json:"metadata,omitempty"`
 }
 ```
 
@@ -1711,7 +1712,7 @@ OrdersService instance operates over refund resources.
 #### func (\*OrdersService) Cancel
 
 ```go
-func (ors *OrdersService) Cancel(orderID string) (order *Order, err error)
+func (ors *OrdersService) Cancel(ctx context.Context, orderID string) (order *Order, err error)
 ```
 
 Cancel try to cancel the order that fulfill certain requirements.
@@ -1721,7 +1722,7 @@ See https://docs.mollie.com/reference/v2/orders-api/cancel-order
 #### func (\*OrdersService) CancelOrderLines
 
 ```go
-func (ors *OrdersService) CancelOrderLines(orderID string, orderLines []OrderLine) (err error)
+func (ors *OrdersService) CancelOrderLines(ctx context.Context, orderID string, orderLines []OrderLine) (err error)
 ```
 
 CancelOrderLines can be used to cancel one or more order lines that were
@@ -1733,7 +1734,7 @@ See https://docs.mollie.com/reference/v2/orders-api/cancel-order-lines
 #### func (\*OrdersService) Create
 
 ```go
-func (ors *OrdersService) Create(ord Order, opt *OrderOptions) (order *Order, err error)
+func (ors *OrdersService) Create(ctx context.Context, ord Order, opt *OrderOptions) (order *Order, err error)
 ```
 
 Create an order will automatically create the required payment to allow your
@@ -1744,7 +1745,7 @@ See https://docs.mollie.com/reference/v2/orders-api/create-order
 #### func (\*OrdersService) CreateOrderPayment
 
 ```go
-func (ors *OrdersService) CreateOrderPayment(orderID string, ordPay *OrderPayment) (payment *Payment, err error)
+func (ors *OrdersService) CreateOrderPayment(ctx context.Context, orderID string, ordPay *OrderPayment) (payment *Payment, err error)
 ```
 
 CreateOrderPayment can only be created while the status of the order is created,
@@ -1754,7 +1755,7 @@ failed. See https://docs.mollie.com/reference/v2/orders-api/create-order-payment
 #### func (\*OrdersService) CreateOrderRefund
 
 ```go
-func (ors *OrdersService) CreateOrderRefund(orderID string, order *Order) (refund Refund, err error)
+func (ors *OrdersService) CreateOrderRefund(ctx context.Context, orderID string, order *Order) (refund Refund, err error)
 ```
 
 CreateOrderRefund using the Orders API, refunds should be made against the
@@ -1763,7 +1764,7 @@ order. See https://docs.mollie.com/reference/v2/orders-api/create-order-refund
 #### func (\*OrdersService) Get
 
 ```go
-func (ors *OrdersService) Get(orID string, opt *OrderOptions) (order *Order, err error)
+func (ors *OrdersService) Get(ctx context.Context, orID string, opt *OrderOptions) (order *Order, err error)
 ```
 
 Get retrieve a single order by its ID.
@@ -1773,7 +1774,7 @@ See https://docs.mollie.com/reference/v2/orders-api/get-order
 #### func (\*OrdersService) List
 
 ```go
-func (ors *OrdersService) List(opt *OrderListOptions) (ordList *OrderList, err error)
+func (ors *OrdersService) List(ctx context.Context, opt *OrderListOptions) (ordList *OrderList, err error)
 ```
 
 List is to retrieve all orders.
@@ -1783,7 +1784,7 @@ See https://docs.mollie.com/reference/v2/orders-api/list-orders
 #### func (\*OrdersService) ListOrderRefunds
 
 ```go
-func (ors *OrdersService) ListOrderRefunds(orderID string, opt *OrderListRefundOptions) (orderListRefund OrderListRefund, err error)
+func (ors *OrdersService) ListOrderRefunds(ctx context.Context, orderID string, opt *OrderListRefundOptions) (orderListRefund OrderListRefund, err error)
 ```
 
 ListOrderRefunds retrieve all order refunds. See
@@ -1792,7 +1793,7 @@ https://docs.mollie.com/reference/v2/orders-api/list-order-refunds
 #### func (\*OrdersService) Update
 
 ```go
-func (ors *OrdersService) Update(orderID string, ord Order) (order *Order, err error)
+func (ors *OrdersService) Update(ctx context.Context, orderID string, ord Order) (order *Order, err error)
 ```
 
 Update is used to update the billing and/or shipping address of an order.
@@ -1802,7 +1803,7 @@ See https://docs.mollie.com/reference/v2/orders-api/update-order
 #### func (\*OrdersService) UpdateOrderLine
 
 ```go
-func (ors *OrdersService) UpdateOrderLine(orderID string, orderLineID string, orderLine OrderLine) (order *Order, err error)
+func (ors *OrdersService) UpdateOrderLine(ctx context.Context, orderID string, orderLineID string, orderLine OrderLine) (order *Order, err error)
 ```
 
 UpdateOrderLine can be used to update an order line.
@@ -1888,7 +1889,7 @@ OrganizationsService instance operates over organization resources
 #### func (\*OrganizationsService) Get
 
 ```go
-func (os *OrganizationsService) Get(id string) (o *Organization, err error)
+func (os *OrganizationsService) Get(ctx context.Context, id string) (o *Organization, err error)
 ```
 
 Get retrieve an organization by its id.
@@ -1896,7 +1897,7 @@ Get retrieve an organization by its id.
 #### func (\*OrganizationsService) GetCurrent
 
 ```go
-func (os *OrganizationsService) GetCurrent() (o *Organization, err error)
+func (os *OrganizationsService) GetCurrent(ctx context.Context) (o *Organization, err error)
 ```
 
 GetCurrent retrieve the currently authenticated organization
@@ -1904,7 +1905,7 @@ GetCurrent retrieve the currently authenticated organization
 #### func (\*OrganizationsService) GetPartnerStatus
 
 ```go
-func (os *OrganizationsService) GetPartnerStatus() (ops *OrganizationPartnerStatus, err error)
+func (os *OrganizationsService) GetPartnerStatus(ctx context.Context) (ops *OrganizationPartnerStatus, err error)
 ```
 
 GetPartnerStatus retrieves details about the partner status of the currently
@@ -1977,7 +1978,7 @@ PartnerService operates over the partners API.
 #### func (\*PartnerService) Get
 
 ```go
-func (ps *PartnerService) Get(id string, opts *GetPartnerClientOptions) (pc *PartnerClient, err error)
+func (ps *PartnerService) Get(ctx context.Context, id string, opts *GetPartnerClientOptions) (pc *PartnerClient, err error)
 ```
 
 Get retrieves a single client by its ID.
@@ -1987,10 +1988,10 @@ See: https://docs.mollie.com/reference/v2/partners-api/get-client
 #### func (\*PartnerService) List
 
 ```go
-func (ps *PartnerService) List(opts *ListPartnerClientsOptions) (pc *PartnerClientList, err error)
+func (ps *PartnerService) List(ctx context.Context, opts *ListPartnerClientsOptions) (pc *PartnerClientList, err error)
 ```
 
-Get retrieves all clients.
+List retrieves all clients.
 
 See: https://docs.mollie.com/reference/v2/partners-api/list-clients
 
@@ -2235,6 +2236,9 @@ type PaymentLinksList struct {
 }
 ```
 
+PaymentLinksList retrieves a list of payment links for the active profile or
+account token owner.
+
 #### type PaymentLinksService
 
 ```go
@@ -2246,7 +2250,7 @@ PaymentLinksService operates over the payment link resource.
 #### func (\*PaymentLinksService) Create
 
 ```go
-func (pls *PaymentLinksService) Create(p PaymentLink, opts *PaymentLinkOptions) (np *PaymentLink, err error)
+func (pls *PaymentLinksService) Create(ctx context.Context, p PaymentLink, opts *PaymentLinkOptions) (np *PaymentLink, err error)
 ```
 
 Create generates payment links that by default, unlike regular payments, do not
@@ -2257,7 +2261,7 @@ See: https://docs.mollie.com/reference/v2/payment-links-api/create-payment-link
 #### func (\*PaymentLinksService) Get
 
 ```go
-func (pls *PaymentLinksService) Get(id string) (pl *PaymentLink, err error)
+func (pls *PaymentLinksService) Get(ctx context.Context, id string) (pl *PaymentLink, err error)
 ```
 
 Get retrieves a single payment link object by its id/token.
@@ -2267,7 +2271,7 @@ See: https://docs.mollie.com/reference/v2/payment-links-api/get-payment-link
 #### func (\*PaymentLinksService) List
 
 ```go
-func (pls *PaymentLinksService) List(opts *PaymentLinkOptions) (pl *PaymentLinksList, err error)
+func (pls *PaymentLinksService) List(ctx context.Context, opts *PaymentLinkOptions) (pl *PaymentLinksList, err error)
 ```
 
 List retrieves all payments links created with the current website profile,
@@ -2413,7 +2417,7 @@ PaymentsService instance operates over payment resources
 #### func (\*PaymentsService) Cancel
 
 ```go
-func (ps *PaymentsService) Cancel(id string) (p Payment, err error)
+func (ps *PaymentsService) Cancel(ctx context.Context, id string) (p Payment, err error)
 ```
 
 Cancel removes a payment (if possible) from your Mollie account.
@@ -2423,7 +2427,7 @@ See: https://docs.mollie.com/reference/v2/payments-api/cancel-payment
 #### func (\*PaymentsService) Create
 
 ```go
-func (ps *PaymentsService) Create(p Payment, options *PaymentOptions) (np Payment, err error)
+func (ps *PaymentsService) Create(ctx context.Context, p Payment, options *PaymentOptions) (np Payment, err error)
 ```
 
 Create stores a new payment object attached to your Mollie account.
@@ -2433,7 +2437,7 @@ See: https://docs.mollie.com/reference/v2/payments-api/create-payment#
 #### func (\*PaymentsService) Get
 
 ```go
-func (ps *PaymentsService) Get(id string, options *PaymentOptions) (p Payment, err error)
+func (ps *PaymentsService) Get(ctx context.Context, id string, options *PaymentOptions) (p Payment, err error)
 ```
 
 Get retrieves a single payment object by its payment token.
@@ -2441,7 +2445,7 @@ Get retrieves a single payment object by its payment token.
 #### func (\*PaymentsService) List
 
 ```go
-func (ps *PaymentsService) List(options *ListPaymentOptions) (pl PaymentList, err error)
+func (ps *PaymentsService) List(ctx context.Context, options *ListPaymentOptions) (pl PaymentList, err error)
 ```
 
 List retrieves a list of payments associated with your account/organization.
@@ -2451,7 +2455,7 @@ See: https://docs.mollie.com/reference/v2/payments-api/list-payments
 #### func (\*PaymentsService) Update
 
 ```go
-func (ps *PaymentsService) Update(id string, up Payment) (p Payment, err error)
+func (ps *PaymentsService) Update(ctx context.Context, id string, up Payment) (p Payment, err error)
 ```
 
 Update can be used to update some details of a created payment.
@@ -2545,7 +2549,7 @@ PermissionsService operates over permission resources.
 #### func (\*PermissionsService) Get
 
 ```go
-func (ps *PermissionsService) Get(id string) (p *Permission, err error)
+func (ps *PermissionsService) Get(ctx context.Context, id string) (p *Permission, err error)
 ```
 
 Get returns a permission by its id.
@@ -2555,7 +2559,7 @@ See: https://docs.mollie.com/reference/v2/permissions-api/get-permission
 #### func (\*PermissionsService) List
 
 ```go
-func (ps *PermissionsService) List() (pl *PermissionsList, err error)
+func (ps *PermissionsService) List(ctx context.Context) (pl *PermissionsList, err error)
 ```
 
 List retrieves all permissions available with the current app access token. The
@@ -2689,7 +2693,7 @@ ProfilesService operates over profile resource
 #### func (\*ProfilesService) Create
 
 ```go
-func (ps *ProfilesService) Create(np *Profile) (p *Profile, err error)
+func (ps *ProfilesService) Create(ctx context.Context, np *Profile) (p *Profile, err error)
 ```
 
 Create stores a new profile in your Mollie account.
@@ -2697,7 +2701,7 @@ Create stores a new profile in your Mollie account.
 #### func (\*ProfilesService) Current
 
 ```go
-func (ps *ProfilesService) Current() (p *Profile, err error)
+func (ps *ProfilesService) Current(ctx context.Context) (p *Profile, err error)
 ```
 
 Current returns the profile belonging to the API key. This method only works
@@ -2706,7 +2710,7 @@ when using API keys.
 #### func (\*ProfilesService) Delete
 
 ```go
-func (ps *ProfilesService) Delete(id string) (err error)
+func (ps *ProfilesService) Delete(ctx context.Context, id string) (err error)
 ```
 
 Delete enables profile deletions, rendering the profile unavailable for further
@@ -2715,7 +2719,7 @@ API calls and transactions.
 #### func (\*ProfilesService) DisableGiftCardIssuer
 
 ```go
-func (ps *ProfilesService) DisableGiftCardIssuer(profileID string, issuer GiftCardIssuer) (err error)
+func (ps *ProfilesService) DisableGiftCardIssuer(ctx context.Context, profileID string, issuer GiftCardIssuer) (err error)
 ```
 
 DisableGiftCardIssuer deactivates the requested giftcard issuer for the provided
@@ -2726,7 +2730,7 @@ See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
 #### func (\*ProfilesService) DisableGiftCardIssuerForCurrent
 
 ```go
-func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(issuer GiftCardIssuer) (err error)
+func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(ctx context.Context, issuer GiftCardIssuer) (err error)
 ```
 
 DisableGiftCardIssuerForCurrent deactivates the specified issuer for the curent
@@ -2737,7 +2741,7 @@ See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
 #### func (\*ProfilesService) DisablePaymentMethod
 
 ```go
-func (ps *ProfilesService) DisablePaymentMethod(id string, pm PaymentMethod) (err error)
+func (ps *ProfilesService) DisablePaymentMethod(ctx context.Context, id string, pm PaymentMethod) (err error)
 ```
 
 DisablePaymentMethod disables a payment method on a specific or authenticated
@@ -2746,7 +2750,7 @@ profile. If you're using API tokens for authentication, pass "me" as id.
 #### func (\*ProfilesService) EnableGiftCardIssuer
 
 ```go
-func (ps *ProfilesService) EnableGiftCardIssuer(profileID string, issuer GiftCardIssuer) (gc *GiftCardEnabled, err error)
+func (ps *ProfilesService) EnableGiftCardIssuer(ctx context.Context, profileID string, issuer GiftCardIssuer) (gc *GiftCardEnabled, err error)
 ```
 
 EnableGiftCardIssuer activates the requested giftcard issuer for the provided
@@ -2757,7 +2761,7 @@ See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
 #### func (\*ProfilesService) EnableGiftCardIssuerForCurrent
 
 ```go
-func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(issuer GiftCardIssuer) (gc *GiftCardEnabled, err error)
+func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(ctx context.Context, issuer GiftCardIssuer) (gc *GiftCardEnabled, err error)
 ```
 
 EnableGiftCardIssuerForCurrent activates the specified issuer for the curent
@@ -2768,7 +2772,7 @@ See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
 #### func (\*ProfilesService) EnablePaymentMethod
 
 ```go
-func (ps *ProfilesService) EnablePaymentMethod(id string, pm PaymentMethod) (pmi *PaymentMethodInfo, err error)
+func (ps *ProfilesService) EnablePaymentMethod(ctx context.Context, id string, pm PaymentMethod) (pmi *PaymentMethodInfo, err error)
 ```
 
 EnablePaymentMethod enables a payment method on a specific or authenticated
@@ -2777,7 +2781,7 @@ profile. If you're using API tokens for authentication, pass "me" as id.
 #### func (\*ProfilesService) Get
 
 ```go
-func (ps *ProfilesService) Get(id string) (p *Profile, err error)
+func (ps *ProfilesService) Get(ctx context.Context, id string) (p *Profile, err error)
 ```
 
 Get retrieves the a profile by ID.
@@ -2785,7 +2789,7 @@ Get retrieves the a profile by ID.
 #### func (\*ProfilesService) List
 
 ```go
-func (ps *ProfilesService) List(options *ProfileListOptions) (pl *ProfileList, err error)
+func (ps *ProfilesService) List(ctx context.Context, options *ProfileListOptions) (pl *ProfileList, err error)
 ```
 
 List returns all the profiles for the authenticated account
@@ -2793,7 +2797,7 @@ List returns all the profiles for the authenticated account
 #### func (\*ProfilesService) Update
 
 ```go
-func (ps *ProfilesService) Update(id string, up *Profile) (p *Profile, err error)
+func (ps *ProfilesService) Update(ctx context.Context, id string, up *Profile) (p *Profile, err error)
 ```
 
 Update allows you to perform mutations on a profile
@@ -2916,7 +2920,7 @@ RefundsService instance operates over refund resources.
 #### func (\*RefundsService) Cancel
 
 ```go
-func (rs *RefundsService) Cancel(paymentID, refundID string, options *RefundOptions) (err error)
+func (rs *RefundsService) Cancel(ctx context.Context, paymentID, refundID string, options *RefundOptions) (err error)
 ```
 
 Cancel try to cancel the refund request. The refund can only be canceled while
@@ -2926,7 +2930,7 @@ https://docs.mollie.com/reference/v2/refunds-api/cancel-refund
 #### func (\*RefundsService) Create
 
 ```go
-func (rs *RefundsService) Create(paymentID string, re Refund, options *RefundOptions) (rf Refund, err error)
+func (rs *RefundsService) Create(ctx context.Context, paymentID string, re Refund, options *RefundOptions) (rf Refund, err error)
 ```
 
 Create a refund payment request.
@@ -2936,7 +2940,7 @@ See https://docs.mollie.com/reference/v2/refunds-api/create-refund.
 #### func (\*RefundsService) Get
 
 ```go
-func (rs *RefundsService) Get(paymentID, refundID string, options *RefundOptions) (refund Refund, err error)
+func (rs *RefundsService) Get(ctx context.Context, paymentID, refundID string, options *RefundOptions) (refund Refund, err error)
 ```
 
 Get retrieve a single refund by its ID.
@@ -2947,7 +2951,7 @@ refunds endpoint.
 #### func (\*RefundsService) ListRefund
 
 ```go
-func (rs *RefundsService) ListRefund(options *ListRefundOptions) (rl *RefundList, err error)
+func (rs *RefundsService) ListRefund(ctx context.Context, options *ListRefundOptions) (rl *RefundList, err error)
 ```
 
 ListRefund calls the top level https://api.mollie.com/v2/refunds.
@@ -2957,7 +2961,7 @@ See https://docs.mollie.com/reference/v2/refunds-api/list-refunds.
 #### func (\*RefundsService) ListRefundPayment
 
 ```go
-func (rs *RefundsService) ListRefundPayment(paymentID string, options *ListRefundOptions) (rl *RefundList, err error)
+func (rs *RefundsService) ListRefundPayment(ctx context.Context, paymentID string, options *ListRefundOptions) (rl *RefundList, err error)
 ```
 
 ListRefundPayment calls the payment-specific
@@ -3138,7 +3142,7 @@ SettlementsService operates over settlements resource
 #### func (\*SettlementsService) Get
 
 ```go
-func (ss *SettlementsService) Get(id string) (s *Settlement, err error)
+func (ss *SettlementsService) Get(ctx context.Context, id string) (s *Settlement, err error)
 ```
 
 Get returns a settlement by its id or the bank reference id
@@ -3148,7 +3152,7 @@ See: https://docs.mollie.com/reference/v2/settlements-api/get-settlement
 #### func (\*SettlementsService) GetCaptures
 
 ```go
-func (ss *SettlementsService) GetCaptures(id string, slo *SettlementsListOptions) (cl *CapturesList, err error)
+func (ss *SettlementsService) GetCaptures(ctx context.Context, id string, slo *SettlementsListOptions) (cl *CapturesList, err error)
 ```
 
 GetCaptures retrieves all captures included in a settlement.
@@ -3159,7 +3163,7 @@ https://docs.mollie.com/reference/v2/settlements-api/list-settlement-captures
 #### func (\*SettlementsService) GetChargebacks
 
 ```go
-func (ss *SettlementsService) GetChargebacks(id string, slo *SettlementsListOptions) (cl *ChargebackList, err error)
+func (ss *SettlementsService) GetChargebacks(ctx context.Context, id string, slo *SettlementsListOptions) (cl *ChargebackList, err error)
 ```
 
 GetChargebacks retrieves all chargebacks included in a settlement.
@@ -3170,7 +3174,7 @@ https://docs.mollie.com/reference/v2/settlements-api/list-settlement-chargebacks
 #### func (\*SettlementsService) GetPayments
 
 ```go
-func (ss *SettlementsService) GetPayments(id string, slo *SettlementsListOptions) (pl *PaymentList, err error)
+func (ss *SettlementsService) GetPayments(ctx context.Context, id string, slo *SettlementsListOptions) (pl *PaymentList, err error)
 ```
 
 GetPayments retrieves all payments included in a settlement.
@@ -3181,7 +3185,7 @@ https://docs.mollie.com/reference/v2/settlements-api/list-settlement-payments
 #### func (\*SettlementsService) GetRefunds
 
 ```go
-func (ss *SettlementsService) GetRefunds(id string, slo *SettlementsListOptions) (rl *RefundList, err error)
+func (ss *SettlementsService) GetRefunds(ctx context.Context, id string, slo *SettlementsListOptions) (rl *RefundList, err error)
 ```
 
 GetRefunds retrieves all refunds included in a settlement.
@@ -3192,7 +3196,7 @@ https://docs.mollie.com/reference/v2/settlements-api/list-settlement-refunds
 #### func (\*SettlementsService) List
 
 ```go
-func (ss *SettlementsService) List(slo *SettlementsListOptions) (sl *SettlementsList, err error)
+func (ss *SettlementsService) List(ctx context.Context, slo *SettlementsListOptions) (sl *SettlementsList, err error)
 ```
 
 List retrieves all settlements, ordered from new to old
@@ -3202,7 +3206,7 @@ See: https://docs.mollie.com/reference/v2/settlements-api/list-settlements
 #### func (\*SettlementsService) Next
 
 ```go
-func (ss *SettlementsService) Next() (s *Settlement, err error)
+func (ss *SettlementsService) Next(ctx context.Context) (s *Settlement, err error)
 ```
 
 Next retrieves the details of the current settlement that has not yet been paid
@@ -3213,7 +3217,7 @@ See: https://docs.mollie.com/reference/v2/settlements-api/get-next-settlement
 #### func (\*SettlementsService) Open
 
 ```go
-func (ss *SettlementsService) Open() (s *Settlement, err error)
+func (ss *SettlementsService) Open(ctx context.Context) (s *Settlement, err error)
 ```
 
 Open retrieves the details of the open balance of the organization. This will
@@ -3290,7 +3294,7 @@ ShipmentsService operates on shipments endpoints.
 #### func (\*ShipmentsService) Create
 
 ```go
-func (ss *ShipmentsService) Create(oID string, cs CreateShipmentRequest) (s *Shipment, err error)
+func (ss *ShipmentsService) Create(ctx context.Context, oID string, cs CreateShipmentRequest) (s *Shipment, err error)
 ```
 
 Create can be used to ship order lines.
@@ -3300,7 +3304,7 @@ See: https://docs.mollie.com/reference/v2/shipments-api/create-shipment
 #### func (\*ShipmentsService) Get
 
 ```go
-func (ss *ShipmentsService) Get(oID string, sID string) (s *Shipment, err error)
+func (ss *ShipmentsService) Get(ctx context.Context, oID string, sID string) (s *Shipment, err error)
 ```
 
 Get retrieves a single shipment and the order lines shipped by a shipment’s ID.
@@ -3310,7 +3314,7 @@ See: https://docs.mollie.com/reference/v2/shipments-api/get-shipment#
 #### func (\*ShipmentsService) List
 
 ```go
-func (ss *ShipmentsService) List(oID string) (sl *ShipmentsList, err error)
+func (ss *ShipmentsService) List(ctx context.Context, oID string) (sl *ShipmentsList, err error)
 ```
 
 List retrieves all shipments for an order.
@@ -3320,7 +3324,7 @@ See: https://docs.mollie.com/reference/v2/shipments-api/list-shipments
 #### func (\*ShipmentsService) Update
 
 ```go
-func (ss *ShipmentsService) Update(oID string, sID string, st ShipmentTracking) (s *Shipment, err error)
+func (ss *ShipmentsService) Update(ctx context.Context, oID string, sID string, st ShipmentTracking) (s *Shipment, err error)
 ```
 
 Update can be used to update the tracking information of a shipment
@@ -3455,7 +3459,7 @@ SubscriptionsService operates over subscriptions resource
 #### func (\*SubscriptionsService) All
 
 ```go
-func (ss *SubscriptionsService) All(options *SubscriptionListOptions) (sl *SubscriptionList, err error)
+func (ss *SubscriptionsService) All(ctx context.Context, options *SubscriptionListOptions) (sl *SubscriptionList, err error)
 ```
 
 All retrieves all subscriptions, ordered from newest to oldest. By using an API
@@ -3469,7 +3473,7 @@ https://docs.mollie.com/reference/v2/subscriptions-api/list-all-subscriptions
 #### func (\*SubscriptionsService) Create
 
 ```go
-func (ss *SubscriptionsService) Create(cID string, sc *Subscription) (s *Subscription, err error)
+func (ss *SubscriptionsService) Create(ctx context.Context, cID string, sc *Subscription) (s *Subscription, err error)
 ```
 
 Create stores a new subscription for a given customer
@@ -3479,7 +3483,7 @@ See: https://docs.mollie.com/reference/v2/subscriptions-api/create-subscription
 #### func (\*SubscriptionsService) Delete
 
 ```go
-func (ss *SubscriptionsService) Delete(cID, sID string) (s *Subscription, err error)
+func (ss *SubscriptionsService) Delete(ctx context.Context, cID, sID string) (s *Subscription, err error)
 ```
 
 Delete cancels a subscription
@@ -3489,7 +3493,7 @@ See: https://docs.mollie.com/reference/v2/subscriptions-api/cancel-subscription
 #### func (\*SubscriptionsService) Get
 
 ```go
-func (ss *SubscriptionsService) Get(cID, sID string) (s *Subscription, err error)
+func (ss *SubscriptionsService) Get(ctx context.Context, cID, sID string) (s *Subscription, err error)
 ```
 
 Get retrieves a customer's subscription
@@ -3499,7 +3503,7 @@ See: https://docs.mollie.com/reference/v2/subscriptions-api/get-subscription
 #### func (\*SubscriptionsService) GetPayments
 
 ```go
-func (ss *SubscriptionsService) GetPayments(cID, sID string, options *SubscriptionListOptions) (sl *PaymentList, err error)
+func (ss *SubscriptionsService) GetPayments(ctx context.Context, cID, sID string, options *SubscriptionListOptions) (sl *PaymentList, err error)
 ```
 
 GetPayments retrieves all payments of a specific subscriptions of a customer
@@ -3510,7 +3514,7 @@ https://docs.mollie.com/reference/v2/subscriptions-api/list-subscriptions-paymen
 #### func (\*SubscriptionsService) List
 
 ```go
-func (ss *SubscriptionsService) List(cID string, options *SubscriptionListOptions) (sl *SubscriptionList, err error)
+func (ss *SubscriptionsService) List(ctx context.Context, cID string, options *SubscriptionListOptions) (sl *SubscriptionList, err error)
 ```
 
 List retrieves all subscriptions of a customer
@@ -3520,7 +3524,7 @@ See: https://docs.mollie.com/reference/v2/subscriptions-api/list-subscriptions
 #### func (\*SubscriptionsService) Update
 
 ```go
-func (ss *SubscriptionsService) Update(cID, sID string, sc *Subscription) (s *Subscription, err error)
+func (ss *SubscriptionsService) Update(ctx context.Context, cID, sID string, sc *Subscription) (s *Subscription, err error)
 ```
 
 Update changes fields on a subscription object
