@@ -59,7 +59,7 @@ type ListPartnerClientsOptions struct {
 // PartnerService operates over the partners API.
 type PartnerService service
 
-// Get retrieves all clients.
+// List retrieves all clients.
 //
 // See: https://docs.mollie.com/reference/v2/partners-api/list-clients
 func (ps *PartnerService) List(ctx context.Context, opts *ListPartnerClientsOptions) (pc *PartnerClientList, err error) {

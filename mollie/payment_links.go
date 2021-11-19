@@ -51,6 +51,8 @@ type PaymentLinkOptions struct {
 	Limit     int    `url:"limit,omitempty"`
 }
 
+// PaymentLinksList retrieves a list of payment links for the active
+// profile or account token owner.
 type PaymentLinksList struct {
 	Count    int              `json:"count,omitempty"`
 	Links    PaymentLinkLinks `json:"_links,omitempty"`
