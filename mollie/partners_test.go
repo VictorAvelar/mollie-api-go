@@ -1,12 +1,13 @@
 package mollie
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 	"strings"
 	"testing"
 
-	"github.com/VictorAvelar/mollie-api-go/v2/testdata"
+	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
 )
 
 func TestPartnerService_Get(t *testing.T) {
@@ -25,7 +26,7 @@ func TestPartnerService_Get(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetPartnerClientResponse))
 	})
 
-	res, err := tClient.Partners.Get(id, nil)
+	res, err := tClient.Partners.Get(context.TODO(), id, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -54,7 +55,7 @@ func TestPartnerService_GetWithOptions(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetPartnerClientResponse))
 	})
 
-	res, err := tClient.Partners.Get(id, &GetPartnerClientOptions{Embed: "organization"})
+	res, err := tClient.Partners.Get(context.TODO(), id, &GetPartnerClientOptions{Embed: "organization"})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -79,7 +80,7 @@ func TestPartnerService_List(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListPartnerClientsResponse))
 	})
 
-	res, err := tClient.Partners.List(nil)
+	res, err := tClient.Partners.List(context.TODO(), nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -99,15 +100,14 @@ func TestPartnerService_ListWithOptions(t *testing.T) {
 		if _, ok := r.Header[AuthHeader]; !ok {
 			w.WriteHeader(http.StatusUnauthorized)
 		}
-		if !strings.Contains(r.URL.String(), "?year=2020") {
+		if !strings.Contains(r.URL.String(), "year=2020") {
 			w.WriteHeader(http.StatusBadRequest)
 		}
 
-		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(testdata.ListPartnerClientsResponse))
 	})
 
-	res, err := tClient.Partners.List(&ListPartnerClientsOptions{
+	res, err := tClient.Partners.List(context.TODO(), &ListPartnerClientsOptions{
 		Year: 2020,
 	})
 	if err != nil {
@@ -125,8 +125,8 @@ func TestPartnerService_HttpRequestErrors(t *testing.T) {
 
 	tMux.HandleFunc("/v2/clients/", errorHandler)
 
-	_, gerr := tClient.Partners.Get("org_1337", nil)
-	_, rerr := tClient.Partners.List(nil)
+	_, gerr := tClient.Partners.Get(context.TODO(), "org_1337", nil)
+	_, rerr := tClient.Partners.List(context.TODO(), nil)
 
 	tests := []error{rerr, gerr}
 
@@ -144,8 +144,8 @@ func TestPartnerService_NewAPIRequestErrors(t *testing.T) {
 	tClient.BaseURL = u
 	tMux.HandleFunc("/v2/clients/", errorHandler)
 
-	_, gerr := tClient.Partners.Get("org_1337", nil)
-	_, rerr := tClient.Partners.List(nil)
+	_, gerr := tClient.Partners.Get(context.TODO(), "org_1337", nil)
+	_, rerr := tClient.Partners.List(context.TODO(), nil)
 
 	tests := []error{rerr, gerr}
 
@@ -161,8 +161,8 @@ func TestPartnerService_EncodingResponseErrors(t *testing.T) {
 	defer teardown()
 	tMux.HandleFunc("/v2/clients/", encodingHandler)
 
-	_, gerr := tClient.Partners.Get("org_1337", nil)
-	_, rerr := tClient.Partners.List(nil)
+	_, gerr := tClient.Partners.Get(context.TODO(), "org_1337", nil)
+	_, rerr := tClient.Partners.List(context.TODO(), nil)
 
 	tests := []error{rerr, gerr}
 

@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -8,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/VictorAvelar/mollie-api-go/v2/testdata"
+	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
 )
 
 func TestShipmentsService_Get(t *testing.T) {
@@ -32,7 +33,7 @@ func TestShipmentsService_Get(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetShipmentsResponse))
 	})
 
-	shipment, err := tClient.Shipments.Get(orderID, shipmentID)
+	shipment, err := tClient.Shipments.Get(context.TODO(), orderID, shipmentID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -67,7 +68,7 @@ func TestShipmentsService_Create(t *testing.T) {
 		Tracking: ShipmentTracking{},
 	}
 
-	shipment, err := tClient.Shipments.Create(orderID, csr)
+	shipment, err := tClient.Shipments.Create(context.TODO(), orderID, csr)
 	if err != nil {
 		t.Error(err)
 	}
@@ -102,7 +103,7 @@ func TestShipmentsService_Create_AccessTokens(t *testing.T) {
 		Tracking: ShipmentTracking{},
 	}
 
-	shipment, err := tClient.Shipments.Create(orderID, csr)
+	shipment, err := tClient.Shipments.Create(context.TODO(), orderID, csr)
 	if err != nil {
 		t.Error(err)
 	}
@@ -132,7 +133,7 @@ func TestShipmentsService_List(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetShipmentsResponse))
 	})
 
-	list, err := tClient.Shipments.List(orderID)
+	list, err := tClient.Shipments.List(context.TODO(), orderID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -163,9 +164,10 @@ func TestShipmentsService_Update(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetShipmentsResponse))
 	})
 
-	shipment, err := tClient.Shipments.Update(orderID, shipmentID, ShipmentTracking{
+	shipment, err := tClient.Shipments.Update(context.TODO(), orderID, shipmentID, ShipmentTracking{
 		Carrier: "PostNL",
-	})
+	},
+	)
 	if err != nil {
 		t.Error(err)
 	}
@@ -224,10 +226,10 @@ func TestShipmentsService_HTTPRequestErrors(t *testing.T) {
 }
 
 func forceShipmentsErrors() []error {
-	_, gerr := tClient.Shipments.Get("ord_kEn1PlbGa", "as6da7d8sa9d")
-	_, lerr := tClient.Shipments.List("ord_kEn1PlbGa")
-	_, cerr := tClient.Shipments.Create("ord_kEn1PlbGa", CreateShipmentRequest{})
-	_, uerr := tClient.Shipments.Update("ord_kEn1PlbGa", "as5das67d9s", ShipmentTracking{})
+	_, gerr := tClient.Shipments.Get(context.TODO(), "ord_kEn1PlbGa", "as6da7d8sa9d")
+	_, lerr := tClient.Shipments.List(context.TODO(), "ord_kEn1PlbGa")
+	_, cerr := tClient.Shipments.Create(context.TODO(), "ord_kEn1PlbGa", CreateShipmentRequest{})
+	_, uerr := tClient.Shipments.Update(context.TODO(), "ord_kEn1PlbGa", "as5das67d9s", ShipmentTracking{})
 
 	return []error{gerr, lerr, cerr, uerr}
 }

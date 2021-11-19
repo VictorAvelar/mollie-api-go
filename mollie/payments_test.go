@@ -1,13 +1,14 @@
 package mollie
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/url"
 	"strings"
 	"testing"
 
-	"github.com/VictorAvelar/mollie-api-go/v2/testdata"
+	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
 )
 
 func TestPaymentsService_Get(t *testing.T) {
@@ -30,7 +31,7 @@ func TestPaymentsService_Get(t *testing.T) {
 		Include: "details.qrCode",
 	}
 
-	res, err := tClient.Payments.Get(id, opt)
+	res, err := tClient.Payments.Get(context.TODO(), id, opt)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -63,7 +64,7 @@ func TestPaymentsService_Create(t *testing.T) {
 		Description: "Order #12345",
 	}
 
-	res, err := tClient.Payments.Create(p, nil)
+	res, err := tClient.Payments.Create(context.TODO(), p, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -99,7 +100,7 @@ func TestPaymentsService_Create_AccessTokens(t *testing.T) {
 		Description: "Order #12345",
 	}
 
-	payment, err := tClient.Payments.Create(p, nil)
+	payment, err := tClient.Payments.Create(context.TODO(), p, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -141,7 +142,7 @@ func TestPaymentsService_Create_PaymentMethodFields(t *testing.T) {
 		Issuer:      "ideal_INGBNL2A",
 	}
 
-	payment, err := tClient.Payments.Create(p, nil)
+	payment, err := tClient.Payments.Create(context.TODO(), p, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -171,7 +172,7 @@ func TestPaymentsService_Update(t *testing.T) {
 		Description: "alter description",
 	}
 
-	res, err := tClient.Payments.Update(id, p)
+	res, err := tClient.Payments.Update(context.TODO(), id, p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -197,7 +198,7 @@ func TestPaymentsService_Cancel(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.CancelPaymentResponse))
 	})
 
-	res, err := tClient.Payments.Cancel(id)
+	res, err := tClient.Payments.Cancel(context.TODO(), id)
 	if err != nil {
 		t.Fatalf("%+v", err)
 	}
@@ -222,7 +223,7 @@ func TestPaymentsService_List(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListPaymentsResponse))
 	})
 
-	res, err := tClient.Payments.List(nil)
+	res, err := tClient.Payments.List(context.TODO(), nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -251,7 +252,7 @@ func TestPaymentsService_ListWithOptions(t *testing.T) {
 		ProfileID: "pfl_QkEhN94Ba",
 	}
 
-	res, err := tClient.Payments.List(options)
+	res, err := tClient.Payments.List(context.TODO(), options)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -274,11 +275,11 @@ func TestPaymentsService_HttpRequestErrors(t *testing.T) {
 		Description: "Order #12345",
 	}
 
-	_, cerr := tClient.Payments.Create(p, nil)
-	_, rerr := tClient.Payments.List(nil)
-	_, uerr := tClient.Payments.Update("1212", p)
-	_, derr := tClient.Payments.Cancel("1212")
-	_, gerr := tClient.Payments.Get("1212", nil)
+	_, cerr := tClient.Payments.Create(context.TODO(), p, nil)
+	_, rerr := tClient.Payments.List(context.TODO(), nil)
+	_, uerr := tClient.Payments.Update(context.TODO(), "1212", p)
+	_, derr := tClient.Payments.Cancel(context.TODO(), "1212")
+	_, gerr := tClient.Payments.Get(context.TODO(), "1212", nil)
 
 	tests := []error{cerr, rerr, uerr, derr, gerr}
 
@@ -304,11 +305,11 @@ func TestPaymentsService_NewAPIRequestErrors(t *testing.T) {
 		Description: "Order #12345",
 	}
 
-	_, cerr := tClient.Payments.Create(p, nil)
-	_, rerr := tClient.Payments.List(nil)
-	_, uerr := tClient.Payments.Update("1212", p)
-	_, derr := tClient.Payments.Cancel("1212")
-	_, gerr := tClient.Payments.Get("1212", nil)
+	_, cerr := tClient.Payments.Create(context.TODO(), p, nil)
+	_, rerr := tClient.Payments.List(context.TODO(), nil)
+	_, uerr := tClient.Payments.Update(context.TODO(), "1212", p)
+	_, derr := tClient.Payments.Cancel(context.TODO(), "1212")
+	_, gerr := tClient.Payments.Get(context.TODO(), "1212", nil)
 
 	tests := []error{cerr, rerr, uerr, derr, gerr}
 
@@ -332,11 +333,11 @@ func TestPaymentsService_EncodingResponseErrors(t *testing.T) {
 		Description: "Order #12345",
 	}
 
-	_, cerr := tClient.Payments.Create(p, nil)
-	_, rerr := tClient.Payments.List(nil)
-	_, uerr := tClient.Payments.Update("1212", p)
-	_, derr := tClient.Payments.Cancel("1212")
-	_, gerr := tClient.Payments.Get("1212", nil)
+	_, cerr := tClient.Payments.Create(context.TODO(), p, nil)
+	_, rerr := tClient.Payments.List(context.TODO(), nil)
+	_, uerr := tClient.Payments.Update(context.TODO(), "1212", p)
+	_, derr := tClient.Payments.Cancel(context.TODO(), "1212")
+	_, gerr := tClient.Payments.Get(context.TODO(), "1212", nil)
 
 	tests := []error{cerr, rerr, uerr, derr, gerr}
 
@@ -354,7 +355,7 @@ func TestPaymentFailedResponseAvailable(t *testing.T) {
 	defer teardown()
 	tMux.HandleFunc("/v2/payments/", unprocessableEntityHandler)
 
-	_, err := tClient.Payments.Create(Payment{}, nil)
+	_, err := tClient.Payments.Create(context.TODO(), Payment{}, nil)
 
 	if err == nil {
 		t.Error("expected error and got nil")

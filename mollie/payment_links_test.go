@@ -1,10 +1,11 @@
 package mollie
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
-	"github.com/VictorAvelar/mollie-api-go/v2/testdata"
+	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
 )
 
 func TestPaymentLinkService_Get(t *testing.T) {
@@ -22,7 +23,7 @@ func TestPaymentLinkService_Get(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetPaymentLinkResponse))
 	})
 
-	v, err := tClient.PaymentLinks.Get("test_id")
+	v, err := tClient.PaymentLinks.Get(context.TODO(), "test_id")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -48,6 +49,7 @@ func TestPaymentLinkService_Create(t *testing.T) {
 	})
 
 	v, err := tClient.PaymentLinks.Create(
+		context.TODO(),
 		PaymentLink{
 			Description: "payment_test_desc",
 		},
@@ -78,6 +80,7 @@ func TestPaymentLinkService_List(t *testing.T) {
 	})
 
 	v, err := tClient.PaymentLinks.List(
+		context.TODO(),
 		nil,
 	)
 	if err != nil {

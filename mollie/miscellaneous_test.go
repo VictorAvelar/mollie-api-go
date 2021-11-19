@@ -1,12 +1,13 @@
 package mollie
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 	"strings"
 	"testing"
 
-	"github.com/VictorAvelar/mollie-api-go/v2/testdata"
+	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
 )
 
 func TestMiscellaneousService_ApplePaymentSession(t *testing.T) {
@@ -26,7 +27,7 @@ func TestMiscellaneousService_ApplePaymentSession(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ApplePaySessionResponse))
 	})
 
-	apple, err := tClient.Miscellaneous.ApplePaymentSession(&ApplePaymentSessionRequest{})
+	apple, err := tClient.Miscellaneous.ApplePaymentSession(context.TODO(), &ApplePaymentSessionRequest{})
 	if err != nil {
 		t.Fail()
 	}
@@ -85,6 +86,6 @@ func TestMiscellaneousService_HTTPRequestErrors(t *testing.T) {
 }
 
 func forceMiscellaneousErrors() []error {
-	_, aperr := tClient.Miscellaneous.ApplePaymentSession(nil)
+	_, aperr := tClient.Miscellaneous.ApplePaymentSession(context.TODO(), nil)
 	return []error{aperr}
 }

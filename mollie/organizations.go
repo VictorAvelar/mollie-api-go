@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -76,21 +77,21 @@ type OrganizationPartnerStatus struct {
 type OrganizationsService service
 
 // Get retrieve an organization by its id.
-func (os *OrganizationsService) Get(id string) (o *Organization, err error) {
-	return os.get(fmt.Sprintf("v2/organizations/%s", id))
+func (os *OrganizationsService) Get(ctx context.Context, id string) (o *Organization, err error) {
+	return os.get(ctx, fmt.Sprintf("v2/organizations/%s", id))
 }
 
 // GetCurrent retrieve the currently authenticated organization
-func (os *OrganizationsService) GetCurrent() (o *Organization, err error) {
-	return os.get("v2/organizations/me")
+func (os *OrganizationsService) GetCurrent(ctx context.Context) (o *Organization, err error) {
+	return os.get(ctx, "v2/organizations/me")
 }
 
 // GetPartnerStatus retrieves details about the partner status
 // of the currently authenticated organization.
 //
 // See: https://docs.mollie.com/reference/v2/organizations-api/get-partner
-func (os *OrganizationsService) GetPartnerStatus() (ops *OrganizationPartnerStatus, err error) {
-	req, err := os.client.NewAPIRequest(http.MethodGet, "v2/organizations/me/partner", nil)
+func (os *OrganizationsService) GetPartnerStatus(ctx context.Context) (ops *OrganizationPartnerStatus, err error) {
+	req, err := os.client.NewAPIRequest(ctx, http.MethodGet, "v2/organizations/me/partner", nil)
 	if err != nil {
 		return
 	}
@@ -107,8 +108,8 @@ func (os *OrganizationsService) GetPartnerStatus() (ops *OrganizationPartnerStat
 	return
 }
 
-func (os *OrganizationsService) get(uri string) (o *Organization, err error) {
-	req, err := os.client.NewAPIRequest(http.MethodGet, uri, nil)
+func (os *OrganizationsService) get(ctx context.Context, uri string) (o *Organization, err error) {
+	req, err := os.client.NewAPIRequest(ctx, http.MethodGet, uri, nil)
 	if err != nil {
 		return
 	}

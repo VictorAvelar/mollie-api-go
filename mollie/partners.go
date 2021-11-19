@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -58,17 +59,17 @@ type ListPartnerClientsOptions struct {
 // PartnerService operates over the partners API.
 type PartnerService service
 
-// Get retrieves all clients.
+// List retrieves all clients.
 //
 // See: https://docs.mollie.com/reference/v2/partners-api/list-clients
-func (ps *PartnerService) List(opts *ListPartnerClientsOptions) (pc *PartnerClientList, err error) {
+func (ps *PartnerService) List(ctx context.Context, opts *ListPartnerClientsOptions) (pc *PartnerClientList, err error) {
 	u := "v2/clients"
 	if opts != nil {
 		v, _ := query.Values(opts)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
 
-	req, err := ps.client.NewAPIRequest(http.MethodGet, u, nil)
+	req, err := ps.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
 	if err != nil {
 		return
 	}
@@ -87,14 +88,14 @@ func (ps *PartnerService) List(opts *ListPartnerClientsOptions) (pc *PartnerClie
 // Get retrieves a single client by its ID.
 //
 // See: https://docs.mollie.com/reference/v2/partners-api/get-client
-func (ps *PartnerService) Get(id string, opts *GetPartnerClientOptions) (pc *PartnerClient, err error) {
+func (ps *PartnerService) Get(ctx context.Context, id string, opts *GetPartnerClientOptions) (pc *PartnerClient, err error) {
 	u := fmt.Sprintf("v2/clients/%s", id)
 	if opts != nil {
 		v, _ := query.Values(opts)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
 
-	req, err := ps.client.NewAPIRequest(http.MethodGet, u, nil)
+	req, err := ps.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
 	if err != nil {
 		return
 	}

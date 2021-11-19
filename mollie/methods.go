@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -100,13 +101,13 @@ type MethodsService service
 // query string parameters
 //
 // See: https://docs.mollie.com/reference/v2/methods-api/get-method
-func (ms *MethodsService) Get(id string, options *MethodsOptions) (pmi *PaymentMethodInfo, err error) {
+func (ms *MethodsService) Get(ctx context.Context, id string, options *MethodsOptions) (pmi *PaymentMethodInfo, err error) {
 	u := fmt.Sprintf("v2/methods/%s", id)
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
-	req, err := ms.client.NewAPIRequest(http.MethodGet, u, nil)
+	req, err := ms.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
 	if err != nil {
 		return
 	}
@@ -123,32 +124,32 @@ func (ms *MethodsService) Get(id string, options *MethodsOptions) (pmi *PaymentM
 // All retrieves all the payment methods enabled for your account/organization
 //
 // See: https://docs.mollie.com/reference/v2/methods-api/list-all-methods
-func (ms *MethodsService) All(options *MethodsOptions) (pm *ListMethods, err error) {
+func (ms *MethodsService) All(ctx context.Context, options *MethodsOptions) (pm *ListMethods, err error) {
 	u := "v2/methods/all"
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
 
-	return ms.list(u)
+	return ms.list(ctx, u)
 }
 
 // List retrieves all enabled payment methods.
 // The results are not paginated.
 //
 // See: https://docs.mollie.com/reference/v2/methods-api/list-methods
-func (ms *MethodsService) List(options *MethodsOptions) (pm *ListMethods, err error) {
+func (ms *MethodsService) List(ctx context.Context, options *MethodsOptions) (pm *ListMethods, err error) {
 	u := "v2/methods"
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
 
-	return ms.list(u)
+	return ms.list(ctx, u)
 }
 
-func (ms *MethodsService) list(uri string) (pm *ListMethods, err error) {
-	req, err := ms.client.NewAPIRequest(http.MethodGet, uri, nil)
+func (ms *MethodsService) list(ctx context.Context, uri string) (pm *ListMethods, err error) {
+	req, err := ms.client.NewAPIRequest(ctx, http.MethodGet, uri, nil)
 	if err != nil {
 		return
 	}

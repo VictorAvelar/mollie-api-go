@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -73,10 +74,10 @@ type InvoiceList struct {
 type InvoicesService service
 
 // Get retrieve details of an invoice, using the invoice’s identifier.
-func (is *InvoicesService) Get(id string) (i Invoice, err error) {
+func (is *InvoicesService) Get(ctx context.Context, id string) (i Invoice, err error) {
 	getURL := fmt.Sprintf("v2/invoices/%s", id)
 
-	req, err := is.client.NewAPIRequest(http.MethodGet, getURL, nil)
+	req, err := is.client.NewAPIRequest(ctx, http.MethodGet, getURL, nil)
 	if err != nil {
 		return
 	}
@@ -91,13 +92,13 @@ func (is *InvoicesService) Get(id string) (i Invoice, err error) {
 }
 
 // List retrieves a list of invoices associated with your account/organization.
-func (is *InvoicesService) List(options *ListInvoiceOptions) (il InvoiceList, err error) {
+func (is *InvoicesService) List(ctx context.Context, options *ListInvoiceOptions) (il InvoiceList, err error) {
 	u := "v2/invoices"
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
-	req, err := is.client.NewAPIRequest(http.MethodGet, u, nil)
+	req, err := is.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
 	if err != nil {
 		return
 	}

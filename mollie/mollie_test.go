@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"context"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -84,10 +85,10 @@ func TestClient_NewAPIRequest(t *testing.T) {
 	setup()
 	defer teardown()
 	b := []string{"hello", "bye"}
-	inURL, outURL := "test", tServer.URL+"/test"
+	inURL, outURL := "test", tServer.URL+"/test?testmode=true"
 	inBody, outBody := b, `["hello","bye"]`+"\n"
 	_ = tClient.WithAuthenticationValue("test_token")
-	req, _ := tClient.NewAPIRequest("GET", inURL, inBody)
+	req, _ := tClient.NewAPIRequest(context.TODO(), "GET", inURL, inBody)
 
 	testHeader(t, req, "Accept", RequestContentType)
 	testHeader(t, req, AuthHeader, "Bearer test_token")
@@ -156,7 +157,7 @@ func TestClient_NewAPIRequest_ErrTrailingSlash(t *testing.T) {
 	tClient = &Client{
 		BaseURL: uri,
 	}
-	_, err := tClient.NewAPIRequest("GET", "test", nil)
+	_, err := tClient.NewAPIRequest(context.TODO(), "GET", "test", nil)
 
 	if err == nil {
 		t.Errorf("expected error %v not occurred, got %v", errBadBaseURL, err)
@@ -166,7 +167,7 @@ func TestClient_NewAPIRequest_ErrTrailingSlash(t *testing.T) {
 func TestClient_NewAPIRequest_HTTPReqNativeError(t *testing.T) {
 	setup()
 	defer teardown()
-	_, err := tClient.NewAPIRequest("\\\\\\", "test", nil)
+	_, err := tClient.NewAPIRequest(context.TODO(), "\\\\\\", "test", nil)
 
 	if err == nil {
 		t.Fatal("nil error produced")
@@ -181,7 +182,7 @@ func TestClient_NewAPIRequest_OrgTokenOverApiKey(t *testing.T) {
 	setup()
 	defer teardown()
 	_ = tClient.WithAuthenticationValue("org_token")
-	req, _ := tClient.NewAPIRequest("GET", "test", nil)
+	req, _ := tClient.NewAPIRequest(context.TODO(), "GET", "test", nil)
 
 	testHeader(t, req, AuthHeader, "Bearer org_token")
 }
@@ -200,7 +201,7 @@ func TestClient_NewAPIRequest_ErrorBodySerialization(t *testing.T) {
 	setup()
 	defer teardown()
 	b := make(chan int)
-	_, err := tClient.NewAPIRequest("GET", "test", b)
+	_, err := tClient.NewAPIRequest(context.TODO(), "GET", "test", b)
 
 	if err == nil {
 		t.Fatal("nil error produced")
@@ -214,7 +215,7 @@ func TestClient_NewAPIRequest_ErrorBodySerialization(t *testing.T) {
 func TestClient_NewAPIRequest_NativeURLParseError(t *testing.T) {
 	setup()
 	defer teardown()
-	_, err := tClient.NewAPIRequest("GET", ":", nil)
+	_, err := tClient.NewAPIRequest(context.TODO(), "GET", ":", nil)
 
 	if err == nil {
 		t.Fatal("nil error produced")
@@ -235,7 +236,7 @@ func TestClient_Do(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 	})
 	_ = tClient.WithAuthenticationValue("test_token")
-	req, _ := tClient.NewAPIRequest("GET", "test", nil)
+	req, _ := tClient.NewAPIRequest(context.TODO(), "GET", "test", nil)
 	res, err := tClient.Do(req)
 
 	if err != nil {
@@ -257,7 +258,7 @@ func TestClient_DoErrInvalidJSON(t *testing.T) {
 		w.Write([]byte("{"))
 	})
 	_ = tClient.WithAuthenticationValue("test_token")
-	req, _ := tClient.NewAPIRequest("GET", "test", nil)
+	req, _ := tClient.NewAPIRequest(context.TODO(), "GET", "test", nil)
 	req.URL = nil
 	_, err := tClient.Do(req)
 
@@ -272,7 +273,7 @@ func TestClient_DoErrInvalidJSON(t *testing.T) {
 func TestClient_DoErr(t *testing.T) {
 	setup()
 	defer teardown()
-	req, _ := tClient.NewAPIRequest("GET", "test", nil)
+	req, _ := tClient.NewAPIRequest(context.TODO(), "GET", "test", nil)
 	req.URL = nil
 	_, err := tClient.Do(req)
 

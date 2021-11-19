@@ -6,7 +6,7 @@ import (
 
 	"golang.org/x/oauth2"
 
-	"github.com/VictorAvelar/mollie-api-go/v2/mollie/connect"
+	"github.com/VictorAvelar/mollie-api-go/v3/mollie/connect"
 )
 
 // ----- mollie examples -----

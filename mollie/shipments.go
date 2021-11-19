@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -42,9 +43,9 @@ type ShipmentLinks struct {
 // Get retrieves a single shipment and the order lines shipped by a shipment’s ID.
 //
 // See: https://docs.mollie.com/reference/v2/shipments-api/get-shipment#
-func (ss *ShipmentsService) Get(oID string, sID string) (s *Shipment, err error) {
+func (ss *ShipmentsService) Get(ctx context.Context, oID string, sID string) (s *Shipment, err error) {
 	u := fmt.Sprintf("v2/orders/%s/shipments/%s", oID, sID)
-	req, err := ss.client.NewAPIRequest(http.MethodGet, u, nil)
+	req, err := ss.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
 	if err != nil {
 		return
 	}
@@ -70,14 +71,14 @@ type CreateShipmentRequest struct {
 // Create can be used to ship order lines.
 //
 // See: https://docs.mollie.com/reference/v2/shipments-api/create-shipment
-func (ss *ShipmentsService) Create(oID string, cs CreateShipmentRequest) (s *Shipment, err error) {
+func (ss *ShipmentsService) Create(ctx context.Context, oID string, cs CreateShipmentRequest) (s *Shipment, err error) {
 	u := fmt.Sprintf("v2/orders/%s/shipments", oID)
 
 	if ss.client.HasAccessToken() && ss.client.config.testing {
 		cs.TestMode = true
 	}
 
-	req, err := ss.client.NewAPIRequest(http.MethodPost, u, cs)
+	req, err := ss.client.NewAPIRequest(ctx, http.MethodPost, u, cs)
 	if err != nil {
 		return
 	}
@@ -105,9 +106,9 @@ type ShipmentsList struct {
 // List retrieves all shipments for an order.
 //
 // See: https://docs.mollie.com/reference/v2/shipments-api/list-shipments
-func (ss *ShipmentsService) List(oID string) (sl *ShipmentsList, err error) {
+func (ss *ShipmentsService) List(ctx context.Context, oID string) (sl *ShipmentsList, err error) {
 	u := fmt.Sprintf("v2/orders/%s/shipments", oID)
-	req, err := ss.client.NewAPIRequest(http.MethodGet, u, nil)
+	req, err := ss.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
 	if err != nil {
 		return
 	}
@@ -126,9 +127,9 @@ func (ss *ShipmentsService) List(oID string) (sl *ShipmentsList, err error) {
 // Update can be used to update the tracking information of a shipment
 //
 // See: https://docs.mollie.com/reference/v2/shipments-api/update-shipment
-func (ss *ShipmentsService) Update(oID string, sID string, st ShipmentTracking) (s *Shipment, err error) {
+func (ss *ShipmentsService) Update(ctx context.Context, oID string, sID string, st ShipmentTracking) (s *Shipment, err error) {
 	u := fmt.Sprintf("v2/orders/%s/shipments/%s", oID, sID)
-	req, err := ss.client.NewAPIRequest(http.MethodPatch, u, st)
+	req, err := ss.client.NewAPIRequest(ctx, http.MethodPatch, u, st)
 	if err != nil {
 		return
 	}

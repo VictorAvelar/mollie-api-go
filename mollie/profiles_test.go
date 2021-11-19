@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -8,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/VictorAvelar/mollie-api-go/v2/testdata"
+	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
 )
 
 func TestProfilesService_Get(t *testing.T) {
@@ -29,7 +30,7 @@ func TestProfilesService_Get(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetProfileResponse))
 	})
 
-	p, err := tClient.Profiles.Get(id)
+	p, err := tClient.Profiles.Get(context.TODO(), id)
 	if err != nil {
 		t.Error(err)
 	}
@@ -55,7 +56,7 @@ func ExampleProfilesService_Get() {
 		_, _ = w.Write([]byte(testdata.GetProfileResponse))
 	})
 
-	p, err := tClient.Profiles.Get(id)
+	p, err := tClient.Profiles.Get(context.TODO(), id)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -82,7 +83,7 @@ func TestProfilesService_Current(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetProfileResponse))
 	})
 
-	p, err := tClient.Profiles.Current()
+	p, err := tClient.Profiles.Current(context.TODO())
 	if err != nil {
 		t.Error(err)
 	}
@@ -113,7 +114,7 @@ func TestProfilesService_List(t *testing.T) {
 		Limit: 10,
 	}
 
-	pl, err := tClient.Profiles.List(opt)
+	pl, err := tClient.Profiles.List(context.TODO(), opt)
 	if err != nil {
 		t.Error(err)
 	}
@@ -148,7 +149,7 @@ func TestProfilesService_Create(t *testing.T) {
 		Name:         "My website name",
 	}
 
-	p, err := tClient.Profiles.Create(np)
+	p, err := tClient.Profiles.Create(context.TODO(), np)
 	if err != nil {
 		t.Error(err)
 	}
@@ -185,7 +186,7 @@ func TestProfilesService_Update(t *testing.T) {
 		Phone:        "",
 	}
 
-	p, err := tClient.Profiles.Update(id, np)
+	p, err := tClient.Profiles.Update(context.TODO(), id, np)
 	if err != nil {
 		t.Error(err)
 	}
@@ -212,7 +213,7 @@ func TestProfilesService_Delete(t *testing.T) {
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	err := tClient.Profiles.Delete(id)
+	err := tClient.Profiles.Delete(context.TODO(), id)
 	if err != nil {
 		t.Error(err)
 	}
@@ -236,7 +237,7 @@ func TestProfilesService_EnablePaymentMethod(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.EnablePaymentMethodResponse))
 	})
 
-	res, err := tClient.Profiles.EnablePaymentMethod(id, Bancontact)
+	res, err := tClient.Profiles.EnablePaymentMethod(context.TODO(), id, Bancontact)
 	if err != nil {
 		t.Error(err)
 	}
@@ -263,7 +264,7 @@ func TestProfilesService_DisablePaymentMethod(t *testing.T) {
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	err := tClient.Profiles.DisablePaymentMethod(id, Bancontact)
+	err := tClient.Profiles.DisablePaymentMethod(context.TODO(), id, Bancontact)
 	if err != nil {
 		t.Error(err)
 	}
@@ -293,7 +294,7 @@ func TestProfilesService_EnableGiftCardIssuer(t *testing.T) {
 		},
 	)
 
-	res, err := tClient.Profiles.EnableGiftCardIssuer(id, Festivalcadeau)
+	res, err := tClient.Profiles.EnableGiftCardIssuer(context.TODO(), id, Festivalcadeau)
 
 	if err != nil {
 		t.Error(err)
@@ -327,7 +328,7 @@ func TestProfilesService_DisableGiftCardIssuer(t *testing.T) {
 		},
 	)
 
-	err := tClient.Profiles.DisableGiftCardIssuer(id, Festivalcadeau)
+	err := tClient.Profiles.DisableGiftCardIssuer(context.TODO(), id, Festivalcadeau)
 
 	if err != nil {
 		t.Error(err)
@@ -358,7 +359,7 @@ func TestProfilesService_EnableGiftCardIssuerForCurrent(t *testing.T) {
 		},
 	)
 
-	res, err := tClient.Profiles.EnableGiftCardIssuerForCurrent(Festivalcadeau)
+	res, err := tClient.Profiles.EnableGiftCardIssuerForCurrent(context.TODO(), Festivalcadeau)
 
 	if err != nil {
 		t.Error(err)
@@ -392,7 +393,7 @@ func TestProfilesService_DisableGiftCardIssuerForCurrent(t *testing.T) {
 		},
 	)
 
-	err := tClient.Profiles.DisableGiftCardIssuerForCurrent(Festivalcadeau)
+	err := tClient.Profiles.DisableGiftCardIssuerForCurrent(context.TODO(), Festivalcadeau)
 
 	if err != nil {
 		t.Error(err)
@@ -406,18 +407,18 @@ func TestProfilesService_HttpRequestErrors(t *testing.T) {
 
 	p := Profile{}
 
-	_, cerr := tClient.Profiles.Create(&p)
-	_, rerr := tClient.Profiles.List(nil)
-	_, uerr := tClient.Profiles.Update("1212", &p)
-	derr := tClient.Profiles.Delete("1212")
-	_, gerr := tClient.Profiles.Get("1212")
-	_, ccerr := tClient.Profiles.Current()
-	dderr := tClient.Profiles.DisablePaymentMethod("1212", PayPal)
-	_, eperr := tClient.Profiles.EnablePaymentMethod("1212", PayPal)
-	dgcerr := tClient.Profiles.DisableGiftCardIssuer("1212", Festivalcadeau)
-	_, egcerr := tClient.Profiles.EnableGiftCardIssuer("1212", Festivalcadeau)
-	dgccerr := tClient.Profiles.DisableGiftCardIssuerForCurrent(Festivalcadeau)
-	_, egccerr := tClient.Profiles.EnableGiftCardIssuerForCurrent(Festivalcadeau)
+	_, cerr := tClient.Profiles.Create(context.TODO(), &p)
+	_, rerr := tClient.Profiles.List(context.TODO(), nil)
+	_, uerr := tClient.Profiles.Update(context.TODO(), "1212", &p)
+	derr := tClient.Profiles.Delete(context.TODO(), "1212")
+	_, gerr := tClient.Profiles.Get(context.TODO(), "1212")
+	_, ccerr := tClient.Profiles.Current(context.TODO())
+	dderr := tClient.Profiles.DisablePaymentMethod(context.TODO(), "1212", PayPal)
+	_, eperr := tClient.Profiles.EnablePaymentMethod(context.TODO(), "1212", PayPal)
+	dgcerr := tClient.Profiles.DisableGiftCardIssuer(context.TODO(), "1212", Festivalcadeau)
+	_, egcerr := tClient.Profiles.EnableGiftCardIssuer(context.TODO(), "1212", Festivalcadeau)
+	dgccerr := tClient.Profiles.DisableGiftCardIssuerForCurrent(context.TODO(), Festivalcadeau)
+	_, egccerr := tClient.Profiles.EnableGiftCardIssuerForCurrent(context.TODO(), Festivalcadeau)
 
 	tests := []error{cerr, rerr, uerr, derr, gerr, ccerr, eperr, dderr, dgcerr, egcerr, dgccerr, egccerr}
 
@@ -435,14 +436,14 @@ func TestProfilesService_EncodingResponseErrors(t *testing.T) {
 
 	p := Profile{}
 
-	_, cerr := tClient.Profiles.Create(&p)
-	_, rerr := tClient.Profiles.List(nil)
-	_, uerr := tClient.Profiles.Update("1212", &p)
-	_, gerr := tClient.Profiles.Get("1212")
-	_, ccerr := tClient.Profiles.Current()
-	_, eperr := tClient.Profiles.EnablePaymentMethod("1212", PayPal)
-	_, egcerr := tClient.Profiles.EnableGiftCardIssuer("1212", Festivalcadeau)
-	_, egccerr := tClient.Profiles.EnableGiftCardIssuerForCurrent(Festivalcadeau)
+	_, cerr := tClient.Profiles.Create(context.TODO(), &p)
+	_, rerr := tClient.Profiles.List(context.TODO(), nil)
+	_, uerr := tClient.Profiles.Update(context.TODO(), "1212", &p)
+	_, gerr := tClient.Profiles.Get(context.TODO(), "1212")
+	_, ccerr := tClient.Profiles.Current(context.TODO())
+	_, eperr := tClient.Profiles.EnablePaymentMethod(context.TODO(), "1212", PayPal)
+	_, egcerr := tClient.Profiles.EnableGiftCardIssuer(context.TODO(), "1212", Festivalcadeau)
+	_, egccerr := tClient.Profiles.EnableGiftCardIssuerForCurrent(context.TODO(), Festivalcadeau)
 
 	tests := []error{cerr, rerr, uerr, gerr, ccerr, eperr, egcerr, egccerr}
 
@@ -464,16 +465,16 @@ func TestProfilesService_NewAPIRequestBaseError(t *testing.T) {
 
 	p := Profile{}
 
-	_, cerr := tClient.Profiles.Create(&p)
-	_, rerr := tClient.Profiles.List(nil)
-	_, uerr := tClient.Profiles.Update("1212", &p)
-	_, gerr := tClient.Profiles.Get("1212")
-	_, ccerr := tClient.Profiles.Current()
-	ddcerr := tClient.Profiles.Delete("1212")
-	_, eperr := tClient.Profiles.EnablePaymentMethod("1212", PayPal)
-	deperr := tClient.Profiles.DisablePaymentMethod("1212", PayPal)
-	dgcerr := tClient.Profiles.DisableGiftCardIssuer("1212", Festivalcadeau)
-	_, egcerr := tClient.Profiles.EnableGiftCardIssuer("1212", Festivalcadeau)
+	_, cerr := tClient.Profiles.Create(context.TODO(), &p)
+	_, rerr := tClient.Profiles.List(context.TODO(), nil)
+	_, uerr := tClient.Profiles.Update(context.TODO(), "1212", &p)
+	_, gerr := tClient.Profiles.Get(context.TODO(), "1212")
+	_, ccerr := tClient.Profiles.Current(context.TODO())
+	ddcerr := tClient.Profiles.Delete(context.TODO(), "1212")
+	_, eperr := tClient.Profiles.EnablePaymentMethod(context.TODO(), "1212", PayPal)
+	deperr := tClient.Profiles.DisablePaymentMethod(context.TODO(), "1212", PayPal)
+	dgcerr := tClient.Profiles.DisableGiftCardIssuer(context.TODO(), "1212", Festivalcadeau)
+	_, egcerr := tClient.Profiles.EnableGiftCardIssuer(context.TODO(), "1212", Festivalcadeau)
 
 	tests := []error{cerr, rerr, uerr, gerr, ccerr, eperr, deperr, ddcerr, dgcerr, egcerr}
 

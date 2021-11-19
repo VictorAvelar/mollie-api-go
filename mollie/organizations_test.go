@@ -1,12 +1,13 @@
 package mollie
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 	"strings"
 	"testing"
 
-	"github.com/VictorAvelar/mollie-api-go/v2/testdata"
+	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
 )
 
 func TestOrganizationsService_Get(t *testing.T) {
@@ -25,7 +26,7 @@ func TestOrganizationsService_Get(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetOrganizationResponse))
 	})
 
-	res, err := tClient.Organizations.Get(id)
+	res, err := tClient.Organizations.Get(context.TODO(), id)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -51,7 +52,7 @@ func TestOrganizationsService_GetCurrent(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetCurrentOrganizationResponse))
 	})
 
-	res, err := tClient.Organizations.GetCurrent()
+	res, err := tClient.Organizations.GetCurrent(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -76,7 +77,7 @@ func TestOrganizationsService_GetPartnerStatus(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetPartnerStatusResponse))
 	})
 
-	res, err := tClient.Organizations.GetPartnerStatus()
+	res, err := tClient.Organizations.GetPartnerStatus(context.TODO())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -92,9 +93,9 @@ func TestOrganizationsService_HttpRequestErrors(t *testing.T) {
 	defer teardown()
 	tMux.HandleFunc("/v2/organizations/", errorHandler)
 
-	_, gerr := tClient.Organizations.Get("org_12345678")
-	_, gcerr := tClient.Organizations.GetCurrent()
-	_, gpserr := tClient.Organizations.GetPartnerStatus()
+	_, gerr := tClient.Organizations.Get(context.TODO(), "org_12345678")
+	_, gcerr := tClient.Organizations.GetCurrent(context.TODO())
+	_, gpserr := tClient.Organizations.GetPartnerStatus(context.TODO())
 
 	tests := []error{gerr, gcerr, gpserr}
 
@@ -112,9 +113,9 @@ func TestOrganizationsService_NewAPIRequestErrors(t *testing.T) {
 	tClient.BaseURL = u
 	tMux.HandleFunc("/v2/organizations/", errorHandler)
 
-	_, gerr := tClient.Organizations.Get("org_12345678")
-	_, gcerr := tClient.Organizations.GetCurrent()
-	_, gpserr := tClient.Organizations.GetPartnerStatus()
+	_, gerr := tClient.Organizations.Get(context.TODO(), "org_12345678")
+	_, gcerr := tClient.Organizations.GetCurrent(context.TODO())
+	_, gpserr := tClient.Organizations.GetPartnerStatus(context.TODO())
 
 	tests := []error{gerr, gcerr, gpserr}
 
@@ -130,9 +131,9 @@ func TestOrganizationsService_EncodingResponseErrors(t *testing.T) {
 	defer teardown()
 	tMux.HandleFunc("/v2/organizations/", encodingHandler)
 
-	_, gerr := tClient.Organizations.Get("org_12345678")
-	_, gcerr := tClient.Organizations.GetCurrent()
-	_, gpserr := tClient.Organizations.GetPartnerStatus()
+	_, gerr := tClient.Organizations.Get(context.TODO(), "org_12345678")
+	_, gcerr := tClient.Organizations.GetCurrent(context.TODO())
+	_, gpserr := tClient.Organizations.GetPartnerStatus(context.TODO())
 
 	tests := []error{gerr, gcerr, gpserr}
 

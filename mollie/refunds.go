@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -81,14 +82,14 @@ type RefundsService service
 // Get retrieve a single refund by its ID.
 //
 // If you do not know the original payment’s ID, you can use the List payment refunds endpoint.
-func (rs *RefundsService) Get(paymentID, refundID string, options *RefundOptions) (refund Refund, err error) {
+func (rs *RefundsService) Get(ctx context.Context, paymentID, refundID string, options *RefundOptions) (refund Refund, err error) {
 	u := fmt.Sprintf("v2/payments/%s/refunds/%s", paymentID, refundID)
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
 
-	req, err := rs.client.NewAPIRequest(http.MethodGet, u, nil)
+	req, err := rs.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
 	if err != nil {
 		return
 	}
@@ -108,7 +109,7 @@ func (rs *RefundsService) Get(paymentID, refundID string, options *RefundOptions
 // Create a refund payment request.
 //
 // See https://docs.mollie.com/reference/v2/refunds-api/create-refund.
-func (rs *RefundsService) Create(paymentID string, re Refund, options *RefundOptions) (rf Refund, err error) {
+func (rs *RefundsService) Create(ctx context.Context, paymentID string, re Refund, options *RefundOptions) (rf Refund, err error) {
 	u := fmt.Sprintf("v2/payments/%s/refunds", paymentID)
 	if options != nil {
 		v, _ := query.Values(options)
@@ -119,7 +120,7 @@ func (rs *RefundsService) Create(paymentID string, re Refund, options *RefundOpt
 		re.TestMode = true
 	}
 
-	req, err := rs.client.NewAPIRequest(http.MethodPost, u, re)
+	req, err := rs.client.NewAPIRequest(ctx, http.MethodPost, u, re)
 	if err != nil {
 		return
 	}
@@ -139,14 +140,14 @@ func (rs *RefundsService) Create(paymentID string, re Refund, options *RefundOpt
 // Cancel try to cancel the refund request.
 // The refund can only be canceled while the refund’s status is either queued or pending.
 // See https://docs.mollie.com/reference/v2/refunds-api/cancel-refund
-func (rs *RefundsService) Cancel(paymentID, refundID string, options *RefundOptions) (err error) {
+func (rs *RefundsService) Cancel(ctx context.Context, paymentID, refundID string, options *RefundOptions) (err error) {
 	u := fmt.Sprintf("v2/payments/%s/refunds/%s", paymentID, refundID)
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
 
-	req, err := rs.client.NewAPIRequest(http.MethodDelete, u, nil)
+	req, err := rs.client.NewAPIRequest(ctx, http.MethodDelete, u, nil)
 	if err != nil {
 		return
 	}
@@ -162,30 +163,30 @@ func (rs *RefundsService) Cancel(paymentID, refundID string, options *RefundOpti
 // ListRefund calls the top level https://api.mollie.com/v2/refunds.
 //
 // See https://docs.mollie.com/reference/v2/refunds-api/list-refunds.
-func (rs *RefundsService) ListRefund(options *ListRefundOptions) (rl *RefundList, err error) {
+func (rs *RefundsService) ListRefund(ctx context.Context, options *ListRefundOptions) (rl *RefundList, err error) {
 	u := "v2/refunds"
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
-	return rs.list(u)
+	return rs.list(ctx, u)
 }
 
 // ListRefundPayment calls the payment-specific
 // https://api.mollie.com/v2/payments/*paymentId*/refunds.
 // Only refunds for that specific payment are returned.
 // See https://docs.mollie.com/reference/v2/refunds-api/list-refunds
-func (rs *RefundsService) ListRefundPayment(paymentID string, options *ListRefundOptions) (rl *RefundList, err error) {
+func (rs *RefundsService) ListRefundPayment(ctx context.Context, paymentID string, options *ListRefundOptions) (rl *RefundList, err error) {
 	u := fmt.Sprintf("v2/payments/%s/refunds", paymentID)
 	if options != nil {
 		v, _ := query.Values(options)
 		u = fmt.Sprintf("%s?%s", u, v.Encode())
 	}
-	return rs.list(u)
+	return rs.list(ctx, u)
 }
 
-func (rs *RefundsService) list(uri string) (rl *RefundList, err error) {
-	req, err := rs.client.NewAPIRequest(http.MethodGet, uri, nil)
+func (rs *RefundsService) list(ctx context.Context, uri string) (rl *RefundList, err error) {
+	req, err := rs.client.NewAPIRequest(ctx, http.MethodGet, uri, nil)
 	if err != nil {
 		return
 	}
