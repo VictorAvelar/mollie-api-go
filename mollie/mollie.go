@@ -105,7 +105,9 @@ func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, b
 	}
 
 	if c.config.testing {
-		u.Query().Add("testmode", "true")
+		qp := u.Query()
+		qp.Add("testmode", "true")
+		u.RawQuery = qp.Encode()
 	}
 
 	var buf io.ReadWriter

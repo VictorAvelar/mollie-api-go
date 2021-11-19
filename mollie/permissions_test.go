@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 	"strings"
@@ -25,7 +26,7 @@ func TestPermissionsService_Get(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetPermissionsResponse))
 	})
 
-	p, err := tClient.Permissions.Get(nil, id)
+	p, err := tClient.Permissions.Get(context.TODO(), id)
 	if err != nil {
 		t.Error(err)
 	}
@@ -50,7 +51,7 @@ func TestPermissionsService_List(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListPermissionsResponse))
 	})
 
-	pl, err := tClient.Permissions.List(nil)
+	pl, err := tClient.Permissions.List(context.TODO())
 	if err != nil {
 		t.Error(err)
 	}
@@ -65,8 +66,8 @@ func TestPermissionsService_HttpRequestErrors(t *testing.T) {
 	defer teardown()
 	tMux.HandleFunc("/v2/permissions", errorHandler)
 
-	_, gerr := tClient.Permissions.Get(nil, "payments.read")
-	_, lerr := tClient.Permissions.List(nil)
+	_, gerr := tClient.Permissions.Get(context.TODO(), "payments.read")
+	_, lerr := tClient.Permissions.List(context.TODO())
 
 	tests := []error{lerr, gerr}
 
@@ -84,8 +85,8 @@ func TestPermissionsService_NewAPIRequestErrors(t *testing.T) {
 	tClient.BaseURL = u
 	tMux.HandleFunc("/v2/permissions", errorHandler)
 
-	_, gerr := tClient.Permissions.Get(nil, "payments.read")
-	_, lerr := tClient.Permissions.List(nil)
+	_, gerr := tClient.Permissions.Get(context.TODO(), "payments.read")
+	_, lerr := tClient.Permissions.List(context.TODO())
 
 	tests := []error{lerr, gerr}
 
@@ -101,8 +102,8 @@ func TestPermissionsService_EncodingResponseErrors(t *testing.T) {
 	defer teardown()
 	tMux.HandleFunc("/v2/permissions/", encodingHandler)
 
-	_, gerr := tClient.Permissions.Get(nil, "payments.read")
-	_, lerr := tClient.Permissions.List(nil)
+	_, gerr := tClient.Permissions.Get(context.TODO(), "payments.read")
+	_, lerr := tClient.Permissions.List(context.TODO())
 
 	tests := []error{lerr, gerr}
 

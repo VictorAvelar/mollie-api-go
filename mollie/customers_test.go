@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 	"strings"
@@ -26,7 +27,7 @@ func TestCustomersService_Get(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetCustomerResponse))
 	})
 
-	c, err := tClient.Customers.Get(nil, id)
+	c, err := tClient.Customers.Get(context.TODO(), id)
 	if err != nil {
 		t.Error(err)
 	}
@@ -53,7 +54,7 @@ func TestCustomersService_Create(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.CreateCustomerResponse))
 	})
 
-	c, err := tClient.Customers.Create(nil, Customer{Locale: German})
+	c, err := tClient.Customers.Create(context.TODO(), Customer{Locale: German})
 	if err != nil {
 		t.Error(err)
 	}
@@ -78,7 +79,7 @@ func TestCustomersService_List(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListCustomersResponse))
 	})
 
-	c, err := tClient.Customers.List(nil, &ListCustomersOptions{Limit: 10})
+	c, err := tClient.Customers.List(context.TODO(), &ListCustomersOptions{Limit: 10})
 	if err != nil {
 		t.Error(err)
 	}
@@ -104,7 +105,7 @@ func TestCustomersService_GetPayments(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListPaymentsResponse))
 	})
 
-	p, err := tClient.Customers.GetPayments(nil, id, &ListCustomersOptions{SequenceType: FirstSequence})
+	p, err := tClient.Customers.GetPayments(context.TODO(), id, &ListCustomersOptions{SequenceType: FirstSequence})
 	if err != nil {
 		t.Error(err)
 	}
@@ -130,7 +131,7 @@ func TestCustomersService_CreatePayment(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetPaymentResponse))
 	})
 
-	p, err := tClient.Customers.CreatePayment(nil, id, Payment{Mode: TestMode})
+	p, err := tClient.Customers.CreatePayment(context.TODO(), id, Payment{Mode: TestMode})
 	if err != nil {
 		t.Error(err)
 	}
@@ -156,7 +157,7 @@ func TestCustomersService_Delete(t *testing.T) {
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	err := tClient.Customers.Delete(nil, id)
+	err := tClient.Customers.Delete(context.TODO(), id)
 	if err != nil {
 		t.Error(err)
 	}
@@ -179,7 +180,7 @@ func TestCustomersService_Update(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.UpdateCustomerResponse))
 	})
 
-	c, err := tClient.Customers.Update(nil, id, Customer{
+	c, err := tClient.Customers.Update(context.TODO(), id, Customer{
 		Locale: French,
 	})
 	if err != nil {
@@ -241,17 +242,17 @@ func TestCustomersService_HTTPRequestErrors(t *testing.T) {
 
 func forceCustomersErrors(del bool) []error {
 	id := "cst_kEn1PlbGa"
-	_, lerr := tClient.Customers.List(nil, nil)
-	_, lperr := tClient.Customers.GetPayments(nil, id, nil)
-	_, cperr := tClient.Customers.CreatePayment(nil, id, Payment{})
-	_, gerr := tClient.Customers.Get(nil, id)
-	_, cerr := tClient.Customers.Create(nil, Customer{})
-	_, uerr := tClient.Customers.Update(nil, id, Customer{})
+	_, lerr := tClient.Customers.List(context.TODO(), nil)
+	_, lperr := tClient.Customers.GetPayments(context.TODO(), id, nil)
+	_, cperr := tClient.Customers.CreatePayment(context.TODO(), id, Payment{})
+	_, gerr := tClient.Customers.Get(context.TODO(), id)
+	_, cerr := tClient.Customers.Create(context.TODO(), Customer{})
+	_, uerr := tClient.Customers.Update(context.TODO(), id, Customer{})
 
 	errs := []error{lerr, lperr, cperr, gerr, uerr, cerr}
 
 	if del {
-		derr := tClient.Customers.Delete(nil, id)
+		derr := tClient.Customers.Delete(context.TODO(), id)
 		errs = append(errs, derr)
 	}
 

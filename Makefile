@@ -33,7 +33,7 @@ test: run
 .PHONY: test
 
 test-local:
-	@go test -v ./mollie/... -coverprofile cover.out
+	@go test -v -failfast ./mollie/... -coverprofile cover.out
 .PHONY: test-local
 
 coverage:

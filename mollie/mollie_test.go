@@ -85,7 +85,7 @@ func TestClient_NewAPIRequest(t *testing.T) {
 	setup()
 	defer teardown()
 	b := []string{"hello", "bye"}
-	inURL, outURL := "test", tServer.URL+"/test"
+	inURL, outURL := "test", tServer.URL+"/test?testmode=true"
 	inBody, outBody := b, `["hello","bye"]`+"\n"
 	_ = tClient.WithAuthenticationValue("test_token")
 	req, _ := tClient.NewAPIRequest(context.TODO(), "GET", inURL, inBody)

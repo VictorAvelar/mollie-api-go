@@ -168,7 +168,7 @@ func TestChargebacksService_ListForPaymentWithOptions(t *testing.T) {
 		ProfileID: "pfl_QkEhN94Ba",
 	}
 
-	res, err := tClient.Chargebacks.ListForPayment(nil, paymentID, options)
+	res, err := tClient.Chargebacks.ListForPayment(context.TODO(), paymentID, options)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -183,9 +183,9 @@ func TestChargebacksService_HttpRequestErrors(t *testing.T) {
 	defer teardown()
 	tMux.HandleFunc("/v2/chargebacks/", errorHandler)
 
-	_, rerr := tClient.Chargebacks.List(nil, nil)
-	_, lerr := tClient.Chargebacks.ListForPayment(nil, "1212", nil)
-	_, gerr := tClient.Chargebacks.Get(nil, "1212", "3232", nil)
+	_, rerr := tClient.Chargebacks.List(context.TODO(), nil)
+	_, lerr := tClient.Chargebacks.ListForPayment(context.TODO(), "1212", nil)
+	_, gerr := tClient.Chargebacks.Get(context.TODO(), "1212", "3232", nil)
 
 	tests := []error{rerr, gerr, lerr}
 
@@ -203,9 +203,9 @@ func TestChargebacksService_NewAPIRequestErrors(t *testing.T) {
 	tClient.BaseURL = u
 	tMux.HandleFunc("/v2/chargebacks/", errorHandler)
 
-	_, rerr := tClient.Chargebacks.List(nil, nil)
-	_, lerr := tClient.Chargebacks.ListForPayment(nil, "1212", nil)
-	_, gerr := tClient.Chargebacks.Get(nil, "1212", "3232", nil)
+	_, rerr := tClient.Chargebacks.List(context.TODO(), nil)
+	_, lerr := tClient.Chargebacks.ListForPayment(context.TODO(), "1212", nil)
+	_, gerr := tClient.Chargebacks.Get(context.TODO(), "1212", "3232", nil)
 
 	tests := []error{rerr, gerr, lerr}
 
@@ -221,8 +221,8 @@ func TestChargebacksService_EncodingResponseErrors(t *testing.T) {
 	defer teardown()
 	tMux.HandleFunc("/v2/payments/1212/chargebacks/", encodingHandler)
 
-	_, rerr := tClient.Chargebacks.ListForPayment(nil, "1212", nil)
-	_, gerr := tClient.Chargebacks.Get(nil, "1212", "3232", nil)
+	_, rerr := tClient.Chargebacks.ListForPayment(context.TODO(), "1212", nil)
+	_, gerr := tClient.Chargebacks.Get(context.TODO(), "1212", "3232", nil)
 
 	tests := []error{rerr, gerr}
 
@@ -240,7 +240,7 @@ func TestChargebacksService_EncodingResponseErrors_List(t *testing.T) {
 	defer teardown()
 	tMux.HandleFunc("/v2/chargebacks/", encodingHandler)
 
-	_, rerr := tClient.Chargebacks.List(nil, nil)
+	_, rerr := tClient.Chargebacks.List(context.TODO(), nil)
 
 	tests := []error{rerr}
 

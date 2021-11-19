@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -29,7 +30,7 @@ func TestSettlementsService_Get(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetSettlementsResponse))
 	})
 
-	settlement, err := tClient.Settlements.Get(nil, cID)
+	settlement, err := tClient.Settlements.Get(context.TODO(), cID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -56,7 +57,7 @@ func TestSettlementsService_Next(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetNextSettlementResponse))
 	})
 
-	settlement, err := tClient.Settlements.Next(nil)
+	settlement, err := tClient.Settlements.Next(context.TODO())
 	if err != nil {
 		t.Error(err)
 	}
@@ -83,7 +84,7 @@ func TestSettlementsService_Open(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetOpenSettlementResponse))
 	})
 
-	settlement, err := tClient.Settlements.Open(nil)
+	settlement, err := tClient.Settlements.Open(context.TODO())
 	if err != nil {
 		t.Error(err)
 	}
@@ -110,7 +111,7 @@ func TestSettlementsService_List(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListSettlementsResponse))
 	})
 
-	settlement, err := tClient.Settlements.List(nil, &SettlementsListOptions{
+	settlement, err := tClient.Settlements.List(context.TODO(), &SettlementsListOptions{
 		Limit: 10,
 	},
 	)
@@ -140,7 +141,7 @@ func TestSettlementsService_GetPayments(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListPaymentsResponse))
 	})
 
-	list, err := tClient.Settlements.GetPayments(nil, "stl_jDk30akdN", nil)
+	list, err := tClient.Settlements.GetPayments(context.TODO(), "stl_jDk30akdN", nil)
 	if err != nil {
 		t.Error(err)
 	}
@@ -167,7 +168,7 @@ func TestSettlementsService_GetCaptures(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListCapturesResponse))
 	})
 
-	list, err := tClient.Settlements.GetCaptures(nil, "stl_jDk30akdN", nil)
+	list, err := tClient.Settlements.GetCaptures(context.TODO(), "stl_jDk30akdN", nil)
 	if err != nil {
 		t.Error(err)
 	}
@@ -194,7 +195,7 @@ func TestSettlementsService_GetChargebacks(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListChargebacksResponse))
 	})
 
-	list, err := tClient.Settlements.GetChargebacks(nil, "stl_jDk30akdN", nil)
+	list, err := tClient.Settlements.GetChargebacks(context.TODO(), "stl_jDk30akdN", nil)
 	if err != nil {
 		t.Error(err)
 	}
@@ -221,7 +222,7 @@ func TestSettlementsService_GetRefunds(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListOrderRefundResponse))
 	})
 
-	list, err := tClient.Settlements.GetRefunds(nil, "stl_jDk30akdN", nil)
+	list, err := tClient.Settlements.GetRefunds(context.TODO(), "stl_jDk30akdN", nil)
 	if err != nil {
 		t.Error(err)
 	}
@@ -281,14 +282,14 @@ func TestSettlementsService_JsonEncodingErrors(t *testing.T) {
 }
 
 func forceSettlementsErrors() []error {
-	_, gerr := tClient.Settlements.Get(nil, "10298372891")
-	_, nerr := tClient.Settlements.Next(nil)
-	_, oerr := tClient.Settlements.Open(nil)
-	_, lerr := tClient.Settlements.List(nil, nil)
-	_, perr := tClient.Settlements.GetPayments(nil, "stl_jDk30akdN", nil)
-	_, cerr := tClient.Settlements.GetCaptures(nil, "stl_jDk30akdN", nil)
-	_, cberr := tClient.Settlements.GetChargebacks(nil, "stl_jDk30akdN", nil)
-	_, rerr := tClient.Settlements.GetRefunds(nil, "stl_jDk30akdN", nil)
+	_, gerr := tClient.Settlements.Get(context.TODO(), "10298372891")
+	_, nerr := tClient.Settlements.Next(context.TODO())
+	_, oerr := tClient.Settlements.Open(context.TODO())
+	_, lerr := tClient.Settlements.List(context.TODO(), nil)
+	_, perr := tClient.Settlements.GetPayments(context.TODO(), "stl_jDk30akdN", nil)
+	_, cerr := tClient.Settlements.GetCaptures(context.TODO(), "stl_jDk30akdN", nil)
+	_, cberr := tClient.Settlements.GetChargebacks(context.TODO(), "stl_jDk30akdN", nil)
+	_, rerr := tClient.Settlements.GetRefunds(context.TODO(), "stl_jDk30akdN", nil)
 
 	return []error{gerr, nerr, oerr, lerr, perr, cerr, cberr, rerr}
 }

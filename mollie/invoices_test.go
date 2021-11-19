@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 	"strings"
@@ -25,7 +26,7 @@ func TestInvoicesService_Get(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetInvoiceResponse))
 	})
 
-	res, err := tClient.Invoices.Get(nil, id)
+	res, err := tClient.Invoices.Get(context.TODO(), id)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -50,7 +51,7 @@ func TestInvoicesService_List(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListInvoicesResponse))
 	})
 
-	res, err := tClient.Invoices.List(nil, nil)
+	res, err := tClient.Invoices.List(context.TODO(), nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -79,7 +80,7 @@ func TestInvoicesService_ListWithOptions(t *testing.T) {
 		Reference: "2016.10000",
 	}
 
-	res, err := tClient.Invoices.List(nil, options)
+	res, err := tClient.Invoices.List(context.TODO(), options)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -140,8 +141,8 @@ func TestInvoicesService_JsonEncodingErrors(t *testing.T) {
 }
 
 func forceInvoicesErrors() []error {
-	_, gerr := tClient.Invoices.Get(nil, "g6d7f8gds76dfs78")
-	_, lerr := tClient.Invoices.List(nil, nil)
+	_, gerr := tClient.Invoices.Get(context.TODO(), "g6d7f8gds76dfs78")
+	_, lerr := tClient.Invoices.List(context.TODO(), nil)
 
 	return []error{gerr, lerr}
 }

@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 	"strings"
@@ -21,7 +22,7 @@ func TestMethodsService_ListWithQueryOptionsAmountCurrency(t *testing.T) {
 			w.WriteHeader(http.StatusUnauthorized)
 		}
 
-		if r.URL.RawQuery != "amount%5Bcurrency%5D=USD&amount%5Bvalue%5D=100.00" {
+		if r.URL.RawQuery != "amount%5Bcurrency%5D=USD&amount%5Bvalue%5D=100.00&testmode=true" {
 			t.Fatal(r.URL.RawQuery)
 		}
 
@@ -34,7 +35,7 @@ func TestMethodsService_ListWithQueryOptionsAmountCurrency(t *testing.T) {
 		AmountValue:    "100.00",
 	}
 
-	res, err := tClient.Methods.List(nil, opts)
+	res, err := tClient.Methods.List(context.TODO(), opts)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -56,7 +57,7 @@ func TestMethodsService_ListWithQueryOptionsAll(t *testing.T) {
 			w.WriteHeader(http.StatusUnauthorized)
 		}
 
-		if r.URL.RawQuery != "amount%5Bcurrency%5D=USD&amount%5Bvalue%5D=100.00&billingCountry=DE&includeWallets=applepay&locale=de_DE&resource=orders&sequenceType=first" {
+		if r.URL.RawQuery != "amount%5Bcurrency%5D=USD&amount%5Bvalue%5D=100.00&billingCountry=DE&includeWallets=applepay&locale=de_DE&resource=orders&sequenceType=first&testmode=true" {
 			t.Fatal(r.URL.RawQuery)
 		}
 
@@ -74,7 +75,7 @@ func TestMethodsService_ListWithQueryOptionsAll(t *testing.T) {
 		IncludeWallets: "applepay",
 	}
 
-	res, err := tClient.Methods.List(nil, opts)
+	res, err := tClient.Methods.List(context.TODO(), opts)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -100,7 +101,7 @@ func TestMethodsService_Get(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetMethodResponse))
 	})
 
-	res, err := tClient.Methods.Get(nil, id, nil)
+	res, err := tClient.Methods.Get(context.TODO(), id, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -113,7 +114,7 @@ func TestMethodsService_Get(t *testing.T) {
 	mo := &MethodsOptions{
 		Locale: English,
 	}
-	_, err2 := tClient.Methods.Get(nil, "sofort", mo)
+	_, err2 := tClient.Methods.Get(context.TODO(), "sofort", mo)
 	if err2 == nil {
 		t.Fatal(err)
 	} else if !strings.Contains(err2.Error(), "Not Found") {
@@ -136,7 +137,7 @@ func TestMethodsService_All(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListMethodsResponse))
 	})
 
-	res, err := tClient.Methods.All(nil, &MethodsOptions{
+	res, err := tClient.Methods.All(context.TODO(), &MethodsOptions{
 		Locale: Dutch,
 	})
 	if err != nil {
@@ -163,7 +164,7 @@ func TestMethodsService_List(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListMethodsResponse))
 	})
 
-	res, err := tClient.Methods.List(nil, &MethodsOptions{
+	res, err := tClient.Methods.List(context.TODO(), &MethodsOptions{
 		SequenceType: FirstSequence,
 	})
 	if err != nil {
@@ -180,9 +181,9 @@ func TestMethodsService_HttpRequestErrors(t *testing.T) {
 	defer teardown()
 	tMux.HandleFunc("/v2/methods/", errorHandler)
 
-	_, lerr := tClient.Methods.List(nil, nil)
-	_, aerr := tClient.Methods.All(nil, nil)
-	_, gerr := tClient.Methods.Get(nil, "ideal", nil)
+	_, lerr := tClient.Methods.List(context.TODO(), nil)
+	_, aerr := tClient.Methods.All(context.TODO(), nil)
+	_, gerr := tClient.Methods.Get(context.TODO(), "ideal", nil)
 
 	tests := []error{lerr, aerr, gerr}
 
@@ -200,9 +201,9 @@ func TestMethodsService_NewAPIRequestErrors(t *testing.T) {
 	tClient.BaseURL = u
 	tMux.HandleFunc("/v2/methods/", errorHandler)
 
-	_, rerr := tClient.Methods.List(nil, nil)
-	_, derr := tClient.Methods.All(nil, nil)
-	_, gerr := tClient.Methods.Get(nil, "1212", nil)
+	_, rerr := tClient.Methods.List(context.TODO(), nil)
+	_, derr := tClient.Methods.All(context.TODO(), nil)
+	_, gerr := tClient.Methods.Get(context.TODO(), "1212", nil)
 
 	tests := []error{rerr, derr, gerr}
 
@@ -218,9 +219,9 @@ func TestMethodsService_EncodingResponseErrors(t *testing.T) {
 	defer teardown()
 	tMux.HandleFunc("/v2/methods/", encodingHandler)
 
-	_, cerr := tClient.Methods.All(nil, nil)
-	_, rerr := tClient.Methods.List(nil, nil)
-	_, uerr := tClient.Methods.Get(nil, "1212", nil)
+	_, cerr := tClient.Methods.All(context.TODO(), nil)
+	_, rerr := tClient.Methods.List(context.TODO(), nil)
+	_, uerr := tClient.Methods.Get(context.TODO(), "1212", nil)
 
 	tests := []error{cerr, rerr, uerr}
 

@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -31,7 +32,7 @@ func TestSubscriptionsService_Get(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetSubscriptionResponse))
 	})
 
-	sub, err := tClient.Subscriptions.Get(nil, cID, sID)
+	sub, err := tClient.Subscriptions.Get(context.TODO(), cID, sID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -69,7 +70,7 @@ func TestSubscriptionsService_Create(t *testing.T) {
 		Interval: "12 months",
 	}
 
-	sub, err := tClient.Subscriptions.Create(nil, cID, &s)
+	sub, err := tClient.Subscriptions.Create(context.TODO(), cID, &s)
 	if err != nil {
 		t.Error(err)
 	}
@@ -108,7 +109,7 @@ func TestSubscriptionsService_Create_AccessTokens(t *testing.T) {
 		Interval: "12 months",
 	}
 
-	sub, err := tClient.Subscriptions.Create(nil, cID, &s)
+	sub, err := tClient.Subscriptions.Create(context.TODO(), cID, &s)
 	if err != nil {
 		t.Error(err)
 	}
@@ -146,7 +147,7 @@ func TestSubscriptionsService_Update(t *testing.T) {
 		Interval: "12 months",
 	}
 
-	sub, err := tClient.Subscriptions.Update(nil, cID, sID, &s)
+	sub, err := tClient.Subscriptions.Update(context.TODO(), cID, sID, &s)
 	if err != nil {
 		t.Error(err)
 	}
@@ -176,7 +177,7 @@ func TestSubscriptionsService_Delete(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetSubscriptionResponse))
 	})
 
-	sub, err := tClient.Subscriptions.Delete(nil, cID, sID)
+	sub, err := tClient.Subscriptions.Delete(context.TODO(), cID, sID)
 	if err != nil {
 		t.Error(err)
 	}
@@ -205,7 +206,7 @@ func TestSubscriptionsService_List(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListAllSubscriptionsResponse))
 	})
 
-	sub, err := tClient.Subscriptions.List(nil, cID, &SubscriptionListOptions{Limit: 6})
+	sub, err := tClient.Subscriptions.List(context.TODO(), cID, &SubscriptionListOptions{Limit: 6})
 	if err != nil {
 		t.Error(err)
 	}
@@ -231,7 +232,7 @@ func TestSubscriptionsService_All(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.ListAllSubscriptionsResponse))
 	})
 
-	sub, err := tClient.Subscriptions.All(nil, &SubscriptionListOptions{Limit: 6})
+	sub, err := tClient.Subscriptions.All(context.TODO(), &SubscriptionListOptions{Limit: 6})
 	if err != nil {
 		t.Error(err)
 	}
@@ -259,7 +260,7 @@ func TestSubscriptionsService_GetPayments(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(testdata.ListPaymentsResponse))
 	})
-	sub, err := tClient.Subscriptions.GetPayments(nil, cID, sID, &SubscriptionListOptions{Limit: 6})
+	sub, err := tClient.Subscriptions.GetPayments(context.TODO(), cID, sID, &SubscriptionListOptions{Limit: 6})
 	if err != nil {
 		t.Error(err)
 	}
@@ -317,13 +318,13 @@ func TestSubscriptionsService_NewAPIRequestErrors(t *testing.T) {
 }
 
 func forceSubscriptionsErrors() []error {
-	_, gerr := tClient.Subscriptions.Get(nil, "6s7d89a", "sd9af8ds")
-	_, cerr := tClient.Subscriptions.Create(nil, "6s7d89a", &Subscription{Mode: LiveMode})
-	_, uerr := tClient.Subscriptions.Update(nil, "6s7d89a", "0re9w0e", &Subscription{Mode: LiveMode})
-	_, derr := tClient.Subscriptions.Delete(nil, "6s7d89a", "0re9w0e")
-	_, lerr := tClient.Subscriptions.List(nil, "6s7d89a", nil)
-	_, aerr := tClient.Subscriptions.All(nil, nil)
-	_, perr := tClient.Subscriptions.GetPayments(nil, "6s7d89a", "0re9w0e", nil)
+	_, gerr := tClient.Subscriptions.Get(context.TODO(), "6s7d89a", "sd9af8ds")
+	_, cerr := tClient.Subscriptions.Create(context.TODO(), "6s7d89a", &Subscription{Mode: LiveMode})
+	_, uerr := tClient.Subscriptions.Update(context.TODO(), "6s7d89a", "0re9w0e", &Subscription{Mode: LiveMode})
+	_, derr := tClient.Subscriptions.Delete(context.TODO(), "6s7d89a", "0re9w0e")
+	_, lerr := tClient.Subscriptions.List(context.TODO(), "6s7d89a", nil)
+	_, aerr := tClient.Subscriptions.All(context.TODO(), nil)
+	_, perr := tClient.Subscriptions.GetPayments(context.TODO(), "6s7d89a", "0re9w0e", nil)
 
 	return []error{gerr, cerr, uerr, derr, lerr, aerr, perr}
 }

@@ -26,7 +26,7 @@ func TestOrganizationsService_Get(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetOrganizationResponse))
 	})
 
-	res, err := tClient.Organizations.Get(nil, id)
+	res, err := tClient.Organizations.Get(context.TODO(), id)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -77,7 +77,7 @@ func TestOrganizationsService_GetPartnerStatus(t *testing.T) {
 		_, _ = w.Write([]byte(testdata.GetPartnerStatusResponse))
 	})
 
-	res, err := tClient.Organizations.GetPartnerStatus(nil)
+	res, err := tClient.Organizations.GetPartnerStatus(context.TODO())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -93,9 +93,9 @@ func TestOrganizationsService_HttpRequestErrors(t *testing.T) {
 	defer teardown()
 	tMux.HandleFunc("/v2/organizations/", errorHandler)
 
-	_, gerr := tClient.Organizations.Get(nil, "org_12345678")
-	_, gcerr := tClient.Organizations.GetCurrent(nil)
-	_, gpserr := tClient.Organizations.GetPartnerStatus(nil)
+	_, gerr := tClient.Organizations.Get(context.TODO(), "org_12345678")
+	_, gcerr := tClient.Organizations.GetCurrent(context.TODO())
+	_, gpserr := tClient.Organizations.GetPartnerStatus(context.TODO())
 
 	tests := []error{gerr, gcerr, gpserr}
 
@@ -113,9 +113,9 @@ func TestOrganizationsService_NewAPIRequestErrors(t *testing.T) {
 	tClient.BaseURL = u
 	tMux.HandleFunc("/v2/organizations/", errorHandler)
 
-	_, gerr := tClient.Organizations.Get(nil, "org_12345678")
-	_, gcerr := tClient.Organizations.GetCurrent(nil)
-	_, gpserr := tClient.Organizations.GetPartnerStatus(nil)
+	_, gerr := tClient.Organizations.Get(context.TODO(), "org_12345678")
+	_, gcerr := tClient.Organizations.GetCurrent(context.TODO())
+	_, gpserr := tClient.Organizations.GetPartnerStatus(context.TODO())
 
 	tests := []error{gerr, gcerr, gpserr}
 
@@ -131,9 +131,9 @@ func TestOrganizationsService_EncodingResponseErrors(t *testing.T) {
 	defer teardown()
 	tMux.HandleFunc("/v2/organizations/", encodingHandler)
 
-	_, gerr := tClient.Organizations.Get(nil, "org_12345678")
-	_, gcerr := tClient.Organizations.GetCurrent(nil)
-	_, gpserr := tClient.Organizations.GetPartnerStatus(nil)
+	_, gerr := tClient.Organizations.Get(context.TODO(), "org_12345678")
+	_, gcerr := tClient.Organizations.GetCurrent(context.TODO())
+	_, gpserr := tClient.Organizations.GetPartnerStatus(context.TODO())
 
 	tests := []error{gerr, gcerr, gpserr}
 
