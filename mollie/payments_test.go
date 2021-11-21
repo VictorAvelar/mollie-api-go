@@ -362,15 +362,6 @@ func TestPaymentFailedResponseAvailable(t *testing.T) {
 	}
 }
 
-func errorHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusInternalServerError)
-}
-
-func encodingHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write([]byte(`{hello: [{},]}`))
-}
-
 func unprocessableEntityHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusUnprocessableEntity)
 	_, _ = w.Write([]byte(testdata.CreateOrderPaymentResponseFailed))

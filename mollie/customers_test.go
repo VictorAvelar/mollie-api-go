@@ -4,19 +4,10 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"net/url"
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
 	"github.com/stretchr/testify/suite"
-)
-
-var (
-	noPre    = func() {}
-	crashSrv = func() {
-		u, _ := url.Parse(tServer.URL)
-		tClient.BaseURL = u
-	}
 )
 
 type CustomersTestSuite struct{ suite.Suite }

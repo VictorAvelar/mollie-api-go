@@ -429,6 +429,14 @@ var (
 	tConf   *Config
 )
 
+var (
+	noPre    = func() {}
+	crashSrv = func() {
+		u, _ := url.Parse(tServer.URL)
+		tClient.BaseURL = u
+	}
+)
+
 // the parameter indicates if you want to prepare your tests against the US sandbox
 // just to be used when doing integration testing.
 func setup() {
@@ -464,6 +472,15 @@ func testHeader(t *testing.T, r *http.Request, header string, want string) {
 	if got := r.Header.Get(header); got != want {
 		t.Errorf("Header.Get(%q) returned %q, want %q", header, got, want)
 	}
+}
+
+func errorHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusInternalServerError)
+}
+
+func encodingHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write([]byte(`{hello: [{},]}`))
 }
 
 // <----- .Testing helpers ----->
