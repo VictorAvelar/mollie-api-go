@@ -2,147 +2,231 @@ package mollie
 
 import (
 	"context"
+	"fmt"
 	"net/http"
-	"net/url"
-	"strings"
+	"strconv"
 	"testing"
+	"time"
 
 	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestInvoicesService_Get(t *testing.T) {
-	setup()
-	defer teardown()
-	id := "inv_xBEbP9rvAq"
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/invoices/"+id, func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
+type invoiceServiceSuite struct{ suite.Suite }
 
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetInvoiceResponse))
-	})
+func (is *invoiceServiceSuite) SetupSuite() { setEnv() }
 
-	res, err := tClient.Invoices.Get(context.TODO(), id)
-	if err != nil {
-		t.Fatal(err)
+func (is *invoiceServiceSuite) TearDownSuite() { unsetEnv() }
+
+func (is *invoiceServiceSuite) TestInvoicesService_Get() {
+	type args struct {
+		ctx     context.Context
+		invoice string
+		options *ListInvoiceOptions
 	}
 
-	if res.ID != id {
-		t.Errorf("mismatching info. want %v, got %v", id, res.ID)
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"get invoice works as expecter",
+			args{
+				context.Background(),
+				"inv_xBEbP9rvAq",
+				nil,
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(is.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(is.T(), r, "GET")
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+
+				w.WriteHeader(http.StatusOK)
+				_, _ = w.Write([]byte(testdata.GetInvoiceResponse))
+			},
+		},
+		{
+			"get invoice, an error is returned from the server",
+			args{
+				context.Background(),
+				"inv_xBEbP9rvAq",
+				nil,
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"get invoice, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"inv_xBEbP9rvAq",
+				nil,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"get invoice, invalid url when building request",
+			args{
+				context.Background(),
+				"inv_xBEbP9rvAq",
+				nil,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
 	}
-}
 
-func TestInvoicesService_List(t *testing.T) {
-	setup()
-	defer teardown()
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/invoices", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
+	for _, c := range cases {
+		setup()
+		defer teardown()
+		is.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/invoices/%s", c.args.invoice), c.handler)
 
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.ListInvoicesResponse))
-	})
-
-	res, err := tClient.Invoices.List(context.TODO(), nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if res.Count == 0 {
-		t.Errorf("mismatching info. want %v, got %v", 0, res.Count)
-	}
-}
-
-func TestInvoicesService_ListWithOptions(t *testing.T) {
-	setup()
-	defer teardown()
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/invoices", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.ListInvoicesResponse))
-	})
-
-	options := &ListInvoiceOptions{
-		Reference: "2016.10000",
-	}
-
-	res, err := tClient.Invoices.List(context.TODO(), options)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if res.Count == 0 {
-		t.Errorf("mismatching info. want %v, got %v", 0, res.Count)
-	}
-
-	if res.Embedded.Invoices[0].Reference != "2016.10000" {
-		t.Errorf("mismatching info. want %v, got %v", 0, res.Embedded.Invoices[0].Reference)
-	}
-}
-
-func TestInvoicesService_HTTPErrors(t *testing.T) {
-	setup()
-	defer teardown()
-
-	tMux.HandleFunc("/v2/invoices/", errorHandler)
-
-	tests := forceInvoicesErrors()
-	for _, tt := range tests {
-		if !strings.Contains(tt.Error(), "Internal Server Error") {
-			t.Error(tt)
-		}
-	}
-}
-
-func TestInvoicesService_NewAPIRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	u, _ := url.Parse(tServer.URL)
-	tClient.BaseURL = u
-
-	tMux.HandleFunc("/v2/invoices/", errorHandler)
-
-	tests := forceInvoicesErrors()
-	for _, tt := range tests {
-		if tt != errBadBaseURL {
-			t.Error(tt)
-		}
+			i, err := tClient.Invoices.Get(c.args.ctx, c.args.invoice)
+			if c.wantErr {
+				is.NotNil(err)
+				is.EqualError(err, c.err.Error())
+			} else {
+				is.Nil(err)
+				is.IsType(&Invoice{}, i)
+			}
+		})
 	}
 }
 
-func TestInvoicesService_JsonEncodingErrors(t *testing.T) {
-	setup()
-	defer teardown()
+func (is *invoiceServiceSuite) TestInvoicesService_List() {
+	type args struct {
+		ctx     context.Context
+		invoice string
+		options *ListInvoiceOptions
+	}
 
-	tMux.HandleFunc("/v2/invoices/", encodingHandler)
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"list invoices works as expecter",
+			args{
+				context.Background(),
+				"inv_xBEbP9rvAq",
+				nil,
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(is.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(is.T(), r, "GET")
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
 
-	tests := forceInvoicesErrors()
-	for _, tt := range tests {
-		if tt == nil {
-			t.Error(tt)
-		} else if !strings.Contains(tt.Error(), "invalid character") {
-			t.Errorf("unexpected error %v", tt)
-		}
+				w.WriteHeader(http.StatusOK)
+				_, _ = w.Write([]byte(testdata.ListInvoicesResponse))
+			},
+		},
+		{
+			"list invoices with options works as expecter",
+			args{
+				context.Background(),
+				"inv_xBEbP9rvAq",
+				&ListInvoiceOptions{
+					Year: strconv.Itoa(time.Now().Year()),
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(is.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(is.T(), r, "GET")
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+
+				w.WriteHeader(http.StatusOK)
+				_, _ = w.Write([]byte(testdata.ListInvoicesResponse))
+			},
+		},
+		{
+			"list invoices, an error is returned from the server",
+			args{
+				context.Background(),
+				"inv_xBEbP9rvAq",
+				nil,
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"list invoices, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"inv_xBEbP9rvAq",
+				nil,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"list invoices, invalid url when building request",
+			args{
+				context.Background(),
+				"inv_xBEbP9rvAq",
+				nil,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+		is.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc("/v2/invoices", c.handler)
+
+			i, err := tClient.Invoices.List(c.args.ctx, c.args.options)
+			if c.wantErr {
+				is.NotNil(err)
+				is.EqualError(err, c.err.Error())
+			} else {
+				is.Nil(err)
+				is.IsType(&InvoiceList{}, i)
+			}
+		})
 	}
 }
 
-func forceInvoicesErrors() []error {
-	_, gerr := tClient.Invoices.Get(context.TODO(), "g6d7f8gds76dfs78")
-	_, lerr := tClient.Invoices.List(context.TODO(), nil)
-
-	return []error{gerr, lerr}
+func TestInvoicesService(t *testing.T) {
+	suite.Run(t, new(invoiceServiceSuite))
 }
