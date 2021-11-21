@@ -1,8 +1,9 @@
 package mollie
 
 import (
-	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewConfig(t *testing.T) {
@@ -62,9 +63,8 @@ func TestNewConfig(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewConfig(tt.args.t, tt.args.auth); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewConfig() = %v, want %v", got, tt.want)
-			}
+			got := NewConfig(tt.args.t, tt.args.auth)
+			assert.Equal(t, got, tt.want)
 		})
 	}
 }
