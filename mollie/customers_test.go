@@ -10,13 +10,13 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type CustomersTestSuite struct{ suite.Suite }
+type customersTestSuite struct{ suite.Suite }
 
-func (cs *CustomersTestSuite) SetupSuite() { setEnv() }
+func (cs *customersTestSuite) SetupSuite() { setEnv() }
 
-func (cs *CustomersTestSuite) TearDownSuite() { unsetEnv() }
+func (cs *customersTestSuite) TearDownSuite() { unsetEnv() }
 
-func (cs *CustomersTestSuite) TestCustomerService_Get() {
+func (cs *customersTestSuite) TestCustomerService_Get() {
 	type args struct {
 		ctx      context.Context
 		customer string
@@ -102,7 +102,7 @@ func (cs *CustomersTestSuite) TestCustomerService_Get() {
 	}
 }
 
-func (cs *CustomersTestSuite) TestCustomersService_Create() {
+func (cs *customersTestSuite) TestCustomersService_Create() {
 	type args struct {
 		ctx      context.Context
 		customer Customer
@@ -193,7 +193,7 @@ func (cs *CustomersTestSuite) TestCustomersService_Create() {
 	}
 }
 
-func (cs *CustomersTestSuite) TestCustomersService_Update() {
+func (cs *customersTestSuite) TestCustomersService_Update() {
 	type args struct {
 		ctx        context.Context
 		customerID string
@@ -289,7 +289,7 @@ func (cs *CustomersTestSuite) TestCustomersService_Update() {
 	}
 }
 
-func (cs *CustomersTestSuite) TestCustomersService_List() {
+func (cs *customersTestSuite) TestCustomersService_List() {
 	type args struct {
 		ctx     context.Context
 		options *ListCustomersOptions
@@ -406,7 +406,7 @@ func (cs *CustomersTestSuite) TestCustomersService_List() {
 	}
 }
 
-func (cs *CustomersTestSuite) TestCustomersService_Delete() {
+func (cs *customersTestSuite) TestCustomersService_Delete() {
 	type args struct {
 		ctx      context.Context
 		customer string
@@ -484,7 +484,7 @@ func (cs *CustomersTestSuite) TestCustomersService_Delete() {
 	}
 }
 
-func (cs *CustomersTestSuite) TestCustomerService_GetPayments() {
+func (cs *customersTestSuite) TestCustomerService_GetPayments() {
 	type args struct {
 		ctx      context.Context
 		customer string
@@ -595,7 +595,7 @@ func (cs *CustomersTestSuite) TestCustomerService_GetPayments() {
 	}
 }
 
-func (cs *CustomersTestSuite) TestCustomerService_CreatePayment() {
+func (cs *customersTestSuite) TestCustomerService_CreatePayment() {
 	type args struct {
 		ctx      context.Context
 		customer string
@@ -687,5 +687,5 @@ func (cs *CustomersTestSuite) TestCustomerService_CreatePayment() {
 }
 
 func TestCustomersService(t *testing.T) {
-	suite.Run(t, new(CustomersTestSuite))
+	suite.Run(t, new(customersTestSuite))
 }
