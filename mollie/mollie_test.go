@@ -474,6 +474,12 @@ func testHeader(t *testing.T, r *http.Request, header string, want string) {
 	}
 }
 
+func testQuery(t *testing.T, r *http.Request, want string) {
+	if r.URL.Query().Encode() != want {
+		t.Errorf("Query().Encode() retuned unexpected values, want: %q, got %q", want, r.URL.Query().Encode())
+	}
+}
+
 func errorHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusInternalServerError)
 }

@@ -2,234 +2,359 @@ package mollie
 
 import (
 	"context"
+	"fmt"
 	"net/http"
-	"net/url"
-	"strings"
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestMethodsService_ListWithQueryOptionsAmountCurrency(t *testing.T) {
-	setup()
-	defer teardown()
-	_ = tClient.WithAuthenticationValue("test_token")
+type methodsServiceSuite struct{ suite.Suite }
 
-	tMux.HandleFunc("/v2/methods", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
+func (ms *methodsServiceSuite) SetupSuite() { setEnv() }
 
-		if r.URL.RawQuery != "amount%5Bcurrency%5D=USD&amount%5Bvalue%5D=100.00&testmode=true" {
-			t.Fatal(r.URL.RawQuery)
-		}
+func (ms *methodsServiceSuite) TearDownSuite() { unsetEnv() }
 
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.ListMethodsResponse))
-	})
-
-	opts := &MethodsOptions{
-		AmountCurrency: "USD",
-		AmountValue:    "100.00",
+func (ms *methodsServiceSuite) TestMethodsService_List() {
+	type args struct {
+		ctx     context.Context
+		options *ListMethodsOptions
 	}
 
-	res, err := tClient.Methods.List(context.TODO(), opts)
-	if err != nil {
-		t.Fatal(err)
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"list methods works as expected.",
+			args{
+				context.Background(),
+				nil,
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ms.T(), r, "GET")
+				testQuery(ms.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.ListMethodsResponse))
+			},
+		},
+		{
+			"list methods with options works as expected.",
+			args{
+				context.Background(),
+				&ListMethodsOptions{
+					AmountCurrency: "EUR",
+					AmountValue:    "100.00",
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ms.T(), r, "GET")
+				testQuery(ms.T(), r, "amount%5Bcurrency%5D=EUR&amount%5Bvalue%5D=100.00&testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.ListMethodsResponse))
+			},
+		},
+		{
+			"list methods, an error is returned from the server",
+			args{
+				context.Background(),
+				nil,
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"list methods, an error occurs when parsing json",
+			args{
+				context.Background(),
+				nil,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"list methods, invalid url when building request",
+			args{
+				context.Background(),
+				nil,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
 	}
 
-	if res.Count <= 0 {
-		t.Error("expecting methods and got 0")
-	}
-}
+	for _, c := range cases {
+		setup()
+		defer teardown()
 
-func TestMethodsService_ListWithQueryOptionsAll(t *testing.T) {
-	setup()
-	defer teardown()
-	_ = tClient.WithAuthenticationValue("test_token")
+		ms.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc("/v2/methods", c.handler)
 
-	tMux.HandleFunc("/v2/methods", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		if r.URL.RawQuery != "amount%5Bcurrency%5D=USD&amount%5Bvalue%5D=100.00&billingCountry=DE&includeWallets=applepay&locale=de_DE&resource=orders&sequenceType=first&testmode=true" {
-			t.Fatal(r.URL.RawQuery)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.ListMethodsResponse))
-	})
-
-	opts := &MethodsOptions{
-		AmountCurrency: "USD",
-		AmountValue:    "100.00",
-		Resource:       "orders",
-		SequenceType:   FirstSequence,
-		Locale:         German,
-		BillingCountry: "DE",
-		IncludeWallets: "applepay",
-	}
-
-	res, err := tClient.Methods.List(context.TODO(), opts)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if res.Count <= 0 {
-		t.Error("expecting methods and got 0")
-	}
-}
-
-func TestMethodsService_Get(t *testing.T) {
-	setup()
-	defer teardown()
-	id := "ideal"
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/methods/"+id, func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetMethodResponse))
-	})
-
-	res, err := tClient.Methods.Get(context.TODO(), id, nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if res.ID != id {
-		t.Errorf("mismatching info. want %v, got %v", id, res.ID)
-	}
-
-	// 404 when not found
-	mo := &MethodsOptions{
-		Locale: English,
-	}
-	_, err2 := tClient.Methods.Get(context.TODO(), "sofort", mo)
-	if err2 == nil {
-		t.Fatal(err)
-	} else if !strings.Contains(err2.Error(), "Not Found") {
-		t.Fail()
-	}
-}
-
-func TestMethodsService_All(t *testing.T) {
-	setup()
-	defer teardown()
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/methods/all", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.ListMethodsResponse))
-	})
-
-	res, err := tClient.Methods.All(context.TODO(), &MethodsOptions{
-		Locale: Dutch,
-	})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if res.Count == 0 {
-		t.Errorf("mismatching info. want %v, got %v", 13, res.Count)
+			m, err := tClient.Methods.List(c.args.ctx, c.args.options)
+			if c.wantErr {
+				ms.NotNil(err)
+				ms.EqualError(err, c.err.Error())
+			} else {
+				ms.Nil(err)
+				ms.IsType(&ListMethods{}, m)
+			}
+		})
 	}
 }
 
-func TestMethodsService_List(t *testing.T) {
-	setup()
-	defer teardown()
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/methods", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.ListMethodsResponse))
-	})
-
-	res, err := tClient.Methods.List(context.TODO(), &MethodsOptions{
-		SequenceType: FirstSequence,
-	})
-	if err != nil {
-		t.Fatal(err)
+func (ms *methodsServiceSuite) TestMethodsService_All() {
+	type args struct {
+		ctx     context.Context
+		options *ListMethodsOptions
 	}
 
-	if res.Count == 0 {
-		t.Errorf("mismatching info. want %v, got %v", 13, res.Count)
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"list methods works as expected.",
+			args{
+				context.Background(),
+				nil,
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ms.T(), r, "GET")
+				testQuery(ms.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.ListMethodsResponse))
+			},
+		},
+		{
+			"list methods with options works as expected.",
+			args{
+				context.Background(),
+				&ListMethodsOptions{
+					AmountCurrency: "EUR",
+					AmountValue:    "100.00",
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ms.T(), r, "GET")
+				testQuery(ms.T(), r, "amount%5Bcurrency%5D=EUR&amount%5Bvalue%5D=100.00&testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.ListMethodsResponse))
+			},
+		},
+		{
+			"list methods, an error is returned from the server",
+			args{
+				context.Background(),
+				nil,
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"list methods, an error occurs when parsing json",
+			args{
+				context.Background(),
+				nil,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"list methods, invalid url when building request",
+			args{
+				context.Background(),
+				nil,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		ms.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc("/v2/methods/all", c.handler)
+
+			m, err := tClient.Methods.All(c.args.ctx, c.args.options)
+			if c.wantErr {
+				ms.NotNil(err)
+				ms.EqualError(err, c.err.Error())
+			} else {
+				ms.Nil(err)
+				ms.IsType(&ListMethods{}, m)
+			}
+		})
 	}
 }
 
-func TestMethodsService_HttpRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	tMux.HandleFunc("/v2/methods/", errorHandler)
+func (ms *methodsServiceSuite) TestMethodsService_Get() {
+	type args struct {
+		ctx     context.Context
+		options *GetMethodsOptions
+		method  PaymentMethod
+	}
 
-	_, lerr := tClient.Methods.List(context.TODO(), nil)
-	_, aerr := tClient.Methods.All(context.TODO(), nil)
-	_, gerr := tClient.Methods.Get(context.TODO(), "ideal", nil)
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"get methods works as expected.",
+			args{
+				context.Background(),
+				nil,
+				PayPal,
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ms.T(), r, "GET")
+				testQuery(ms.T(), r, "testmode=true")
 
-	tests := []error{lerr, aerr, gerr}
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.ListMethodsResponse))
+			},
+		},
+		{
+			"get methods with options works as expected.",
+			args{
+				context.Background(),
+				&GetMethodsOptions{Locale: Catalan},
+				PayPal,
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ms.T(), r, "GET")
+				testQuery(ms.T(), r, "locale=ca_ES&testmode=true")
 
-	for _, tt := range tests {
-		if tt == nil {
-			t.Fail()
-		}
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.ListMethodsResponse))
+			},
+		},
+		{
+			"get methods, an error is returned from the server",
+			args{
+				context.Background(),
+				nil,
+				PayPal,
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"get methods, an error occurs when parsing json",
+			args{
+				context.Background(),
+				nil,
+				PayPal,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"get methods, invalid url when building request",
+			args{
+				context.Background(),
+				nil,
+				PayPal,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		ms.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/methods/%s", c.args.method), c.handler)
+
+			m, err := tClient.Methods.Get(c.args.ctx, string(c.args.method), c.args.options)
+			if c.wantErr {
+				ms.NotNil(err)
+				ms.EqualError(err, c.err.Error())
+			} else {
+				ms.Nil(err)
+				ms.IsType(&PaymentMethodInfo{}, m)
+			}
+		})
 	}
 }
 
-func TestMethodsService_NewAPIRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	u, _ := url.Parse(tServer.URL)
-	tClient.BaseURL = u
-	tMux.HandleFunc("/v2/methods/", errorHandler)
-
-	_, rerr := tClient.Methods.List(context.TODO(), nil)
-	_, derr := tClient.Methods.All(context.TODO(), nil)
-	_, gerr := tClient.Methods.Get(context.TODO(), "1212", nil)
-
-	tests := []error{rerr, derr, gerr}
-
-	for _, tt := range tests {
-		if tt != errBadBaseURL {
-			t.Fail()
-		}
-	}
-}
-
-func TestMethodsService_EncodingResponseErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	tMux.HandleFunc("/v2/methods/", encodingHandler)
-
-	_, cerr := tClient.Methods.All(context.TODO(), nil)
-	_, rerr := tClient.Methods.List(context.TODO(), nil)
-	_, uerr := tClient.Methods.Get(context.TODO(), "1212", nil)
-
-	tests := []error{cerr, rerr, uerr}
-
-	for _, tt := range tests {
-		if tt == nil {
-			t.Fail()
-		} else if !strings.Contains(tt.Error(), "invalid character") {
-			t.Errorf("unexpected error %v", tt)
-		}
-	}
+func TestMethodsService(t *testing.T) {
+	suite.Run(t, new(methodsServiceSuite))
 }
