@@ -2,175 +2,254 @@ package mollie
 
 import (
 	"context"
+	"fmt"
 	"net/http"
-	"net/url"
-	"strings"
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestPartnerService_Get(t *testing.T) {
-	setup()
-	defer teardown()
-	id := "org_1337"
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/clients/"+id, func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
+type partnersServiceSuite struct{ suite.Suite }
 
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetPartnerClientResponse))
-	})
+func (os *partnersServiceSuite) SetupSuite() { setEnv() }
 
-	res, err := tClient.Partners.Get(context.TODO(), id, nil)
-	if err != nil {
-		t.Fatal(err)
+func (os *partnersServiceSuite) TearDownSuite() { unsetEnv() }
+
+func (os *partnersServiceSuite) TestPartnerService_Get() {
+	type args struct {
+		ctx    context.Context
+		client string
+		opts   *GetPartnerClientOptions
 	}
 
-	if res.ID != id {
-		t.Errorf("mismatching info. want %v, got %v", id, res.ID)
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"get partner client works as expected.",
+			args{
+				context.Background(),
+				"org_1337",
+				nil,
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(os.T(), r, "GET")
+				testQuery(os.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetPartnerClientResponse))
+			},
+		},
+		{
+			"get partner client with options works as expected.",
+			args{
+				context.Background(),
+				"org_1337",
+				&GetPartnerClientOptions{
+					Embed: "organization",
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(os.T(), r, "GET")
+				testQuery(os.T(), r, "embed=organization&testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetPartnerClientResponse))
+			},
+		},
+		{
+			"get partner client, an error is returned from the server",
+			args{
+				context.Background(),
+				"org_1337",
+				nil,
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"get partner client, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"org_1337",
+				nil,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"get partner client, invalid url when building request",
+			args{
+				context.Background(),
+				"org_1337",
+				nil,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
 	}
-}
 
-func TestPartnerService_GetWithOptions(t *testing.T) {
-	setup()
-	defer teardown()
-	id := "org_1337"
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/clients/"+id, func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if !strings.Contains(r.URL.String(), "?embed=organization") {
-			w.WriteHeader(http.StatusBadRequest)
-		}
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
+	for _, c := range cases {
+		setup()
+		defer teardown()
 
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetPartnerClientResponse))
-	})
+		os.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/clients/%s", c.args.client), c.handler)
 
-	res, err := tClient.Partners.Get(context.TODO(), id, &GetPartnerClientOptions{Embed: "organization"})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if res.ID != id {
-		t.Errorf("mismatching info. want %v, got %v", id, res.ID)
-	}
-}
-
-func TestPartnerService_List(t *testing.T) {
-	setup()
-	defer teardown()
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/clients", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.ListPartnerClientsResponse))
-	})
-
-	res, err := tClient.Partners.List(context.TODO(), nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if len(res.PartnerClients.Clients) != res.Count {
-		t.Error("mismatching info.")
-	}
-}
-
-func TestPartnerService_ListWithOptions(t *testing.T) {
-	setup()
-	defer teardown()
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/clients", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-		if !strings.Contains(r.URL.String(), "year=2020") {
-			w.WriteHeader(http.StatusBadRequest)
-		}
-
-		_, _ = w.Write([]byte(testdata.ListPartnerClientsResponse))
-	})
-
-	res, err := tClient.Partners.List(context.TODO(), &ListPartnerClientsOptions{
-		Year: 2020,
-	})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if len(res.PartnerClients.Clients) != res.Count {
-		t.Error("mismatching info.")
-	}
-}
-
-func TestPartnerService_HttpRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
-
-	tMux.HandleFunc("/v2/clients/", errorHandler)
-
-	_, gerr := tClient.Partners.Get(context.TODO(), "org_1337", nil)
-	_, rerr := tClient.Partners.List(context.TODO(), nil)
-
-	tests := []error{rerr, gerr}
-
-	for _, tt := range tests {
-		if tt == nil {
-			t.Fail()
-		}
+			m, err := tClient.Partners.Get(c.args.ctx, c.args.client, c.args.opts)
+			if c.wantErr {
+				os.NotNil(err)
+				os.EqualError(err, c.err.Error())
+			} else {
+				os.Nil(err)
+				os.IsType(&PartnerClient{}, m)
+			}
+		})
 	}
 }
 
-func TestPartnerService_NewAPIRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	u, _ := url.Parse(tServer.URL)
-	tClient.BaseURL = u
-	tMux.HandleFunc("/v2/clients/", errorHandler)
+func (os *partnersServiceSuite) TestPartnerService_List() {
+	type args struct {
+		ctx    context.Context
+		client string
+		opts   *ListPartnerClientsOptions
+	}
 
-	_, gerr := tClient.Partners.Get(context.TODO(), "org_1337", nil)
-	_, rerr := tClient.Partners.List(context.TODO(), nil)
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"list partner client works as expected.",
+			args{
+				context.Background(),
+				"org_1337",
+				nil,
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(os.T(), r, "GET")
+				testQuery(os.T(), r, "testmode=true")
 
-	tests := []error{rerr, gerr}
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetPartnerClientResponse))
+			},
+		},
+		{
+			"list partner client with options works as expected.",
+			args{
+				context.Background(),
+				"org_1337",
+				&ListPartnerClientsOptions{
+					Year: 2021,
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(os.T(), r, "GET")
+				testQuery(os.T(), r, "testmode=true&year=2021")
 
-	for _, tt := range tests {
-		if tt != errBadBaseURL {
-			t.Fail()
-		}
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetPartnerClientResponse))
+			},
+		},
+		{
+			"list partner client, an error is returned from the server",
+			args{
+				context.Background(),
+				"org_1337",
+				nil,
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"list partner client, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"org_1337",
+				nil,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"list partner client, invalid url when building request",
+			args{
+				context.Background(),
+				"org_1337",
+				nil,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		os.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc("/v2/clients", c.handler)
+
+			m, err := tClient.Partners.List(c.args.ctx, c.args.opts)
+			if c.wantErr {
+				os.NotNil(err)
+				os.EqualError(err, c.err.Error())
+			} else {
+				os.Nil(err)
+				os.IsType(&PartnerClientList{}, m)
+			}
+		})
 	}
 }
 
-func TestPartnerService_EncodingResponseErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	tMux.HandleFunc("/v2/clients/", encodingHandler)
-
-	_, gerr := tClient.Partners.Get(context.TODO(), "org_1337", nil)
-	_, rerr := tClient.Partners.List(context.TODO(), nil)
-
-	tests := []error{rerr, gerr}
-
-	for _, tt := range tests {
-		if tt == nil {
-			t.Fail()
-		} else if !strings.Contains(tt.Error(), "invalid character") {
-			t.Errorf("unexpected error %v", tt)
-		}
-	}
+func TestPartnersService(t *testing.T) {
+	suite.Run(t, new(partnersServiceSuite))
 }

@@ -85,7 +85,7 @@ func (ps *PartnerService) List(ctx context.Context, opts *ListPartnerClientsOpti
 	return
 }
 
-// Get retrieves a single client by its ID.
+// Get retrieves a single client, linked to your partner account, by its ID.
 //
 // See: https://docs.mollie.com/reference/v2/partners-api/get-client
 func (ps *PartnerService) Get(ctx context.Context, id string, opts *GetPartnerClientOptions) (pc *PartnerClient, err error) {
