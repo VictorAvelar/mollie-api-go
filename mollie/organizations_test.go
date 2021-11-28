@@ -2,146 +2,277 @@ package mollie
 
 import (
 	"context"
+	"fmt"
 	"net/http"
-	"net/url"
-	"strings"
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestOrganizationsService_Get(t *testing.T) {
-	setup()
-	defer teardown()
-	id := "org_12345678"
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/organizations/"+id, func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
+type organizationsServiceSuite struct{ suite.Suite }
 
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetOrganizationResponse))
-	})
+func (os *organizationsServiceSuite) SetupSuite() { setEnv() }
 
-	res, err := tClient.Organizations.Get(context.TODO(), id)
-	if err != nil {
-		t.Fatal(err)
+func (os *organizationsServiceSuite) TearDownSuite() { unsetEnv() }
+
+func (os *organizationsServiceSuite) TestOrganizationsService_Get() {
+	type args struct {
+		ctx          context.Context
+		organization string
 	}
 
-	if res.ID != id {
-		t.Errorf("mismatching info. want %v, got %v", id, res.ID)
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"get partner client works as expected.",
+			args{
+				context.Background(),
+				"org_12345678",
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(os.T(), r, "GET")
+				testQuery(os.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetOrganizationResponse))
+			},
+		},
+		{
+			"get organization, an error is returned from the server",
+			args{
+				context.Background(),
+				"org_12345678",
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"get organization, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"org_12345678",
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"get organization, invalid url when building request",
+			args{
+				context.Background(),
+				"org_12345678",
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
 	}
-}
 
-func TestOrganizationsService_GetCurrent(t *testing.T) {
-	setup()
-	defer teardown()
-	id := "org_12345678"
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/organizations/me", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
+	for _, c := range cases {
+		setup()
+		defer teardown()
 
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetCurrentOrganizationResponse))
-	})
+		os.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/organizations/%s", c.args.organization), c.handler)
 
-	res, err := tClient.Organizations.GetCurrent(context.Background())
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if res.ID != id {
-		t.Errorf("mismatching info. want %v, got %v", id, res.ID)
-	}
-}
-
-func TestOrganizationsService_GetPartnerStatus(t *testing.T) {
-	setup()
-	defer teardown()
-	_ = tClient.WithAuthenticationValue("access_token")
-	tMux.HandleFunc("/v2/organizations/me/partner", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer access_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetPartnerStatusResponse))
-	})
-
-	res, err := tClient.Organizations.GetPartnerStatus(context.TODO())
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if res.PartnerType != PartnerTypeSignUpLink {
-		t.Errorf("mismatching info. got %v, want %v", res.PartnerType, PartnerTypeSignUpLink)
-	}
-
-}
-
-func TestOrganizationsService_HttpRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	tMux.HandleFunc("/v2/organizations/", errorHandler)
-
-	_, gerr := tClient.Organizations.Get(context.TODO(), "org_12345678")
-	_, gcerr := tClient.Organizations.GetCurrent(context.TODO())
-	_, gpserr := tClient.Organizations.GetPartnerStatus(context.TODO())
-
-	tests := []error{gerr, gcerr, gpserr}
-
-	for _, tt := range tests {
-		if tt == nil {
-			t.Fail()
-		}
-	}
-}
-
-func TestOrganizationsService_NewAPIRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	u, _ := url.Parse(tServer.URL)
-	tClient.BaseURL = u
-	tMux.HandleFunc("/v2/organizations/", errorHandler)
-
-	_, gerr := tClient.Organizations.Get(context.TODO(), "org_12345678")
-	_, gcerr := tClient.Organizations.GetCurrent(context.TODO())
-	_, gpserr := tClient.Organizations.GetPartnerStatus(context.TODO())
-
-	tests := []error{gerr, gcerr, gpserr}
-
-	for _, tt := range tests {
-		if tt != errBadBaseURL {
-			t.Fail()
-		}
+			m, err := tClient.Organizations.Get(c.args.ctx, c.args.organization)
+			if c.wantErr {
+				os.NotNil(err)
+				os.EqualError(err, c.err.Error())
+			} else {
+				os.Nil(err)
+				os.IsType(&Organization{}, m)
+			}
+		})
 	}
 }
 
-func TestOrganizationsService_EncodingResponseErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	tMux.HandleFunc("/v2/organizations/", encodingHandler)
-
-	_, gerr := tClient.Organizations.Get(context.TODO(), "org_12345678")
-	_, gcerr := tClient.Organizations.GetCurrent(context.TODO())
-	_, gpserr := tClient.Organizations.GetPartnerStatus(context.TODO())
-
-	tests := []error{gerr, gcerr, gpserr}
-
-	for _, tt := range tests {
-		if tt == nil {
-			t.Fail()
-		} else if !strings.Contains(tt.Error(), "invalid character") {
-			t.Errorf("unexpected error %v", tt)
-		}
+func (os *organizationsServiceSuite) TestOrganizationsService_GetCurrent() {
+	type args struct {
+		ctx context.Context
 	}
+
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"get current organization works as expected.",
+			args{
+				context.Background(),
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(os.T(), r, "GET")
+				testQuery(os.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetOrganizationResponse))
+			},
+		},
+		{
+			"get current organization, an error is returned from the server",
+			args{
+				context.Background(),
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"get current organization, an error occurs when parsing json",
+			args{
+				context.Background(),
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"get current organization, invalid url when building request",
+			args{
+				context.Background(),
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		os.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc("/v2/organizations/me", c.handler)
+
+			m, err := tClient.Organizations.GetCurrent(c.args.ctx)
+			if c.wantErr {
+				os.NotNil(err)
+				os.EqualError(err, c.err.Error())
+			} else {
+				os.Nil(err)
+				os.IsType(&Organization{}, m)
+			}
+		})
+	}
+}
+
+func (os *organizationsServiceSuite) TestOrganizationsService_GetPartnerStatus() {
+	type args struct {
+		ctx context.Context
+	}
+
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"get current partner status works as expected.",
+			args{
+				context.Background(),
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(os.T(), r, "GET")
+				testQuery(os.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetPartnerStatusResponse))
+			},
+		},
+		{
+			"get current partner status, an error is returned from the server",
+			args{
+				context.Background(),
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"get current partner status, an error occurs when parsing json",
+			args{
+				context.Background(),
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"get current partner status, invalid url when building request",
+			args{
+				context.Background(),
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		os.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc("/v2/organizations/me/partner", c.handler)
+
+			m, err := tClient.Organizations.GetPartnerStatus(c.args.ctx)
+			if c.wantErr {
+				os.NotNil(err)
+				os.EqualError(err, c.err.Error())
+			} else {
+				os.Nil(err)
+				os.IsType(&OrganizationPartnerStatus{}, m)
+			}
+		})
+	}
+}
+
+func TestOrganizationsService(t *testing.T) {
+	suite.Run(t, new(organizationsServiceSuite))
 }
