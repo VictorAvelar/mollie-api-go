@@ -2,7 +2,6 @@ package mollie
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -10,113 +9,256 @@ import (
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestSubscriptionsService_Get(t *testing.T) {
-	setup()
-	defer teardown()
+type subscriptionsServiceSuite struct{ suite.Suite }
 
-	cID := "cst_stTC2WHAuS"
-	sID := "sub_rVKGtNd6s3"
-	u := fmt.Sprintf("/v2/customers/%s/subscriptions/%s", cID, sID)
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc(u, func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, http.MethodGet)
+func (ps *subscriptionsServiceSuite) SetupSuite() { setEnv() }
 
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
+func (ps *subscriptionsServiceSuite) TearDownSuite() { unsetEnv() }
 
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetSubscriptionResponse))
-	})
+func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Get() {
+	type args struct {
+		ctx          context.Context
+		customer     string
+		subscription string
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"get subscription works as expected.",
+			args{
+				context.Background(),
+				"cst_stTC2WHAuS",
+				"sub_rVKGtNd6s3",
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "GET")
+				testQuery(ps.T(), r, "testmode=true")
 
-	sub, err := tClient.Subscriptions.Get(context.TODO(), cID, sID)
-	if err != nil {
-		t.Error(err)
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetSubscriptionResponse))
+			},
+		},
+		{
+			"get subscription, an error is returned from the server",
+			args{
+				context.Background(),
+				"cst_stTC2WHAuS",
+				"sub_rVKGtNd6s3",
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"get subscription, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"cst_stTC2WHAuS",
+				"sub_rVKGtNd6s3",
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"get subscription, invalid url when building request",
+			args{
+				context.Background(),
+				"cst_stTC2WHAuS",
+				"sub_rVKGtNd6s3",
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
 	}
 
-	if sub.ID != sID {
-		t.Errorf("unexpected response: got %v, want %v", sub.ID, sID)
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/subscriptions/%s", c.args.customer, c.args.subscription), c.handler)
+
+			m, err := tClient.Subscriptions.Get(c.args.ctx, c.args.customer, c.args.subscription)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&Subscription{}, m)
+			}
+		})
 	}
 }
 
-func TestSubscriptionsService_Create(t *testing.T) {
-	setup()
-	defer teardown()
+func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Create() {
+	type args struct {
+		ctx          context.Context
+		customer     string
+		subscription *Subscription
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"create subscription works as expected.",
+			args{
+				context.Background(),
+				"cst_stTC2WHAuS",
+				&Subscription{
+					Amount: &Amount{
+						Currency: "EUR",
+						Value:    "100.00",
+					},
+					Times: 12,
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "POST")
+				testQuery(ps.T(), r, "testmode=true")
 
-	cID := "cst_stTC2WHAuS"
-	sID := "sub_rVKGtNd6s3"
-	u := fmt.Sprintf("/v2/customers/%s/subscriptions", cID)
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc(u, func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, http.MethodPost)
-
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetSubscriptionResponse))
-	})
-
-	s := Subscription{
-		Amount: &Amount{
-			Currency: "EUR",
-			Value:    "11.99",
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetSubscriptionResponse))
+			},
 		},
-		Interval: "12 months",
+		{
+			"create subscription with access tokens works as expected.",
+			args{
+				context.Background(),
+				"cst_stTC2WHAuS",
+				&Subscription{
+					Amount: &Amount{
+						Currency: "EUR",
+						Value:    "100.00",
+					},
+					Times: 12,
+				},
+			},
+			false,
+			nil,
+			func() {
+				tClient.WithAuthenticationValue("access_token_test")
+			},
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer access_token_test")
+				testMethod(ps.T(), r, "POST")
+				testQuery(ps.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetSubscriptionResponse))
+			},
+		},
+		{
+			"create subscription, an error is returned from the server",
+			args{
+				context.Background(),
+				"cst_stTC2WHAuS",
+				&Subscription{
+					Amount: &Amount{
+						Currency: "EUR",
+						Value:    "100.00",
+					},
+					Times: 12,
+				},
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"create subscription, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"cst_stTC2WHAuS",
+				&Subscription{
+					Amount: &Amount{
+						Currency: "EUR",
+						Value:    "100.00",
+					},
+					Times: 12,
+				},
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"create subscription, invalid url when building request",
+			args{
+				context.Background(),
+				"cst_stTC2WHAuS",
+				&Subscription{
+					Amount: &Amount{
+						Currency: "EUR",
+						Value:    "100.00",
+					},
+					Times: 12,
+				},
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
 	}
 
-	sub, err := tClient.Subscriptions.Create(context.TODO(), cID, &s)
-	if err != nil {
-		t.Error(err)
-	}
+	for _, c := range cases {
+		setup()
+		defer teardown()
 
-	if sub.ID != sID {
-		t.Errorf("unexpected response: got %v, want %v", sub.ID, sID)
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/subscriptions", c.args.customer), c.handler)
+
+			m, err := tClient.Subscriptions.Create(c.args.ctx, c.args.customer, c.args.subscription)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&Subscription{}, m)
+			}
+		})
 	}
 }
 
-func TestSubscriptionsService_Create_AccessTokens(t *testing.T) {
-	setup()
-	defer teardown()
-	_ = tClient.WithAuthenticationValue("access_token")
-
-	cID := "cst_stTC2WHAuS"
-	u := fmt.Sprintf("/v2/customers/%s/subscriptions", cID)
-
-	tMux.HandleFunc(u, func(rw http.ResponseWriter, r *http.Request) {
-		var ship Shipment
-		defer r.Body.Close()
-		if err := json.NewDecoder(r.Body).Decode(&ship); err != nil {
-			rw.WriteHeader(http.StatusBadRequest)
-			return
-		}
-
-		rw.Header().Set("Content-Type", "application/json")
-		rw.WriteHeader(http.StatusCreated)
-		json.NewEncoder(rw).Encode(ship)
-	})
-
-	s := Subscription{
-		Amount: &Amount{
-			Currency: "EUR",
-			Value:    "11.99",
-		},
-		Interval: "12 months",
-	}
-
-	sub, err := tClient.Subscriptions.Create(context.TODO(), cID, &s)
-	if err != nil {
-		t.Error(err)
-	}
-
-	if sub.TestMode != true {
-		t.Fatal("testmode flag is not set for access tokens")
-	}
+func TestSubscriptionService(t *testing.T) {
+	suite.Run(t, new(subscriptionsServiceSuite))
 }
 
 func TestSubscriptionsService_Update(t *testing.T) {
