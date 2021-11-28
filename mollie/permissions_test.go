@@ -2,116 +2,193 @@ package mollie
 
 import (
 	"context"
+	"fmt"
 	"net/http"
-	"net/url"
-	"strings"
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestPermissionsService_Get(t *testing.T) {
-	setup()
-	defer teardown()
-	id := string(PaymentsRead)
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/permissions/"+id, func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
+type permissionsServiceSuite struct{ suite.Suite }
 
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetPermissionsResponse))
-	})
+func (os *permissionsServiceSuite) SetupSuite() { setEnv() }
 
-	p, err := tClient.Permissions.Get(context.TODO(), id)
-	if err != nil {
-		t.Error(err)
+func (os *permissionsServiceSuite) TearDownSuite() { unsetEnv() }
+
+func (os *permissionsServiceSuite) TestPermissionsService_Get() { unsetEnv() }
+
+func (ps *profilesServiceSuite) TestPermissionsService_Get() {
+	type args struct {
+		ctx        context.Context
+		permission PermissionGrant
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"get permission works as expected.",
+			args{
+				context.Background(),
+				PaymentsRead,
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "GET")
+				testQuery(ps.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetPermissionsResponse))
+			},
+		},
+		{
+			"get permission, an error is returned from the server",
+			args{
+				context.Background(),
+				PaymentsWrite,
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"get permission, an error occurs when parsing json",
+			args{
+				context.Background(),
+				PaymentsWrite,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"get permission, invalid url when building request",
+			args{
+				context.Background(),
+				PaymentsWrite,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
 	}
 
-	if p.ID != PaymentsRead {
-		t.Errorf("the response content doesn't match expectations")
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/permissions/%s", c.args.permission), c.handler)
+
+			m, err := tClient.Permissions.Get(c.args.ctx, c.args.permission)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&Permission{}, m)
+			}
+		})
 	}
 }
 
-func TestPermissionsService_List(t *testing.T) {
-	setup()
-	defer teardown()
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/permissions", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
+func (ps *profilesServiceSuite) TestPermissionsService_List() {
+	type args struct {
+		ctx context.Context
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"get permission works as expected.",
+			args{
+				context.Background(),
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "GET")
+				testQuery(ps.T(), r, "testmode=true")
 
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.ListPermissionsResponse))
-	})
-
-	pl, err := tClient.Permissions.List(context.TODO())
-	if err != nil {
-		t.Error(err)
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetPermissionsResponse))
+			},
+		},
+		{
+			"get permission, an error is returned from the server",
+			args{
+				context.Background(),
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"get permission, an error occurs when parsing json",
+			args{
+				context.Background(),
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"get permission, invalid url when building request",
+			args{
+				context.Background(),
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
 	}
 
-	if pl.Count != 15 {
-		t.Errorf("the response content doesn't match expectations")
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc("/v2/permissions", c.handler)
+
+			m, err := tClient.Permissions.List(c.args.ctx)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&PermissionsList{}, m)
+			}
+		})
 	}
 }
 
-func TestPermissionsService_HttpRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	tMux.HandleFunc("/v2/permissions", errorHandler)
-
-	_, gerr := tClient.Permissions.Get(context.TODO(), "payments.read")
-	_, lerr := tClient.Permissions.List(context.TODO())
-
-	tests := []error{lerr, gerr}
-
-	for _, tt := range tests {
-		if tt == nil {
-			t.Fail()
-		}
-	}
-}
-
-func TestPermissionsService_NewAPIRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	u, _ := url.Parse(tServer.URL)
-	tClient.BaseURL = u
-	tMux.HandleFunc("/v2/permissions", errorHandler)
-
-	_, gerr := tClient.Permissions.Get(context.TODO(), "payments.read")
-	_, lerr := tClient.Permissions.List(context.TODO())
-
-	tests := []error{lerr, gerr}
-
-	for _, tt := range tests {
-		if tt != errBadBaseURL {
-			t.Fail()
-		}
-	}
-}
-
-func TestPermissionsService_EncodingResponseErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	tMux.HandleFunc("/v2/permissions/", encodingHandler)
-
-	_, gerr := tClient.Permissions.Get(context.TODO(), "payments.read")
-	_, lerr := tClient.Permissions.List(context.TODO())
-
-	tests := []error{lerr, gerr}
-
-	for _, tt := range tests {
-		if tt == nil {
-			t.Fail()
-		} else if !strings.Contains(tt.Error(), "invalid character") {
-			t.Errorf("unexpected error %v", tt)
-		}
-	}
+func TestPermissionService(t *testing.T) {
+	suite.Run(t, new(permissionsServiceSuite))
 }
