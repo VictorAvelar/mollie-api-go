@@ -435,6 +435,9 @@ var (
 		u, _ := url.Parse(tServer.URL)
 		tClient.BaseURL = u
 	}
+	setAccesstoken = func() {
+		tClient.WithAuthenticationValue("access_token_test")
+	}
 )
 
 // the parameter indicates if you want to prepare your tests against the US sandbox
