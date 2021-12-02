@@ -2,90 +2,111 @@ package mollie
 
 import (
 	"context"
+	"fmt"
 	"net/http"
-	"net/url"
-	"strings"
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestMiscellaneousService_ApplePaymentSession(t *testing.T) {
-	setup()
-	defer teardown()
+type miscellaneousServiceSuite struct{ suite.Suite }
 
-	_ = tClient.WithAuthenticationValue("test_token")
+func (ms *miscellaneousServiceSuite) SetupSuite() { setEnv() }
 
-	tMux.HandleFunc("/v2/wallets/applepay/sessions", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "POST")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
+func (ms *miscellaneousServiceSuite) TearDownSuite() { unsetEnv() }
 
-		w.WriteHeader(http.StatusCreated)
-		_, _ = w.Write([]byte(testdata.ApplePaySessionResponse))
-	})
-
-	apple, err := tClient.Miscellaneous.ApplePaymentSession(context.TODO(), &ApplePaymentSessionRequest{})
-	if err != nil {
-		t.Fail()
+func (ms *miscellaneousServiceSuite) TestMiscellaneousService_ApplePaymentSession() {
+	type args struct {
+		ctx       context.Context
+		appleSess *ApplePaymentSessionRequest
 	}
 
-	if apple == nil {
-		t.Error("nil session received")
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"get apple payment session works as expected.",
+			args{
+				context.Background(),
+				&ApplePaymentSessionRequest{
+					Domain: "https://example.com",
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ms.T(), r, "POST")
+				testQuery(ms.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.ListMethodsResponse))
+			},
+		},
+		{
+			"get apple payment session, an error is returned from the server",
+			args{
+				context.Background(),
+				nil,
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"get apple payment session, an error occurs when parsing json",
+			args{
+				context.Background(),
+				nil,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"get apple payment session, invalid url when building request",
+			args{
+				context.Background(),
+				nil,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		ms.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc("/v2/wallets/applepay/sessions", c.handler)
+
+			m, err := tClient.Miscellaneous.ApplePaymentSession(c.args.ctx, c.args.appleSess)
+			if c.wantErr {
+				ms.NotNil(err)
+				ms.EqualError(err, c.err.Error())
+			} else {
+				ms.Nil(err)
+				ms.IsType(&ApplePaymentSession{}, m)
+			}
+		})
 	}
 }
 
-func TestMiscellaneousService_NewAPIRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	u, _ := url.Parse(tServer.URL)
-	tClient.BaseURL = u
-
-	tMux.HandleFunc("/v2/wallets", errorHandler)
-
-	tests := forceMiscellaneousErrors()
-
-	for _, tt := range tests {
-		if tt != errBadBaseURL {
-			t.Error(tt)
-		}
-	}
-}
-
-func TestMiscellaneousService_JsonDecodingErrors(t *testing.T) {
-	setup()
-	defer teardown()
-
-	tMux.HandleFunc("/v2/wallets/", encodingHandler)
-
-	tests := forceMiscellaneousErrors()
-
-	for _, tt := range tests {
-		if tt == nil {
-			t.Error(tt)
-		} else if !strings.Contains(tt.Error(), "invalid character") {
-			t.Errorf("unexpected error %v", tt)
-		}
-	}
-}
-
-func TestMiscellaneousService_HTTPRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
-
-	tMux.HandleFunc("/v2/wallets/", errorHandler)
-
-	tests := forceMiscellaneousErrors()
-	for _, tt := range tests {
-		if !strings.Contains(tt.Error(), "Internal Server Error") {
-			t.Error(tt)
-		}
-	}
-}
-
-func forceMiscellaneousErrors() []error {
-	_, aperr := tClient.Miscellaneous.ApplePaymentSession(context.TODO(), nil)
-	return []error{aperr}
+func TestMiscellaneousService(t *testing.T) {
+	suite.Run(t, new(miscellaneousServiceSuite))
 }

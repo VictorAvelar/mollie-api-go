@@ -4,124 +4,219 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"net/url"
-	"strings"
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestCapturesService_Get(t *testing.T) {
-	setup()
-	defer teardown()
+type capturesServiceSuite struct{ suite.Suite }
 
-	pID := "tr_WDqYK6vllg"
-	cID := "cpt_4qqhO89gsT"
+func (cs *capturesServiceSuite) SetupSuite() { setEnv() }
 
-	_ = tClient.WithAuthenticationValue("test_token")
+func (cs *capturesServiceSuite) TearDownSuite() { unsetEnv() }
 
-	tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s/captures/%s", pID, cID), func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetCaptureResponse))
-	})
-
-	capture, err := tClient.Captures.Get(context.TODO(), pID, cID)
-	if err != nil {
-		t.Error(err)
+func (cs *capturesServiceSuite) TestCapturesService_Get() {
+	type args struct {
+		ctx     context.Context
+		payment string
+		capture string
 	}
 
-	if capture.ID != cID {
-		t.Errorf("unexpected response: got %v, want %v", capture.ID, cID)
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		handler http.HandlerFunc
+		pre     func()
+	}{
+		{
+			"get captures works as expected",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				"cpt_4qqhO89gsT",
+			},
+			false,
+			nil,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(cs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(cs.T(), r, "GET")
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+
+				_, _ = w.Write([]byte(testdata.GetCaptureResponse))
+			},
+			noPre,
+		},
+		{
+			"get captures returns an http error from the server",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				"cpt_4qqhO89gsT",
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			errorHandler,
+			noPre,
+		},
+		{
+			"get captures returns an error when creating the request",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				"cpt_4qqhO89gsT",
+			},
+			true,
+			errBadBaseURL,
+			errorHandler,
+			crashSrv,
+		},
+		{
+			"get captures returns an error when trying to parse the json response",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				"cpt_4qqhO89gsT",
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			encodingHandler,
+			noPre,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		cs.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+
+			tMux.HandleFunc(
+				fmt.Sprintf(
+					"/v2/payments/%s/captures/%s",
+					c.args.payment,
+					c.args.capture,
+				),
+				c.handler,
+			)
+
+			res, err := tClient.Captures.Get(c.args.ctx, c.args.payment, c.args.capture)
+			if c.wantErr {
+				cs.NotNil(err)
+				cs.EqualError(err, c.err.Error())
+			} else {
+				cs.Nil(err)
+				cs.IsType(&Capture{}, res)
+			}
+		})
 	}
 }
 
-func TestCapturesService_List(t *testing.T) {
-	setup()
-	defer teardown()
-
-	pID := "tr_WDqYK6vllg"
-
-	_ = tClient.WithAuthenticationValue("test_token")
-
-	tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s/captures", pID), func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.ListCapturesResponse))
-	})
-
-	captures, err := tClient.Captures.List(context.TODO(), pID)
-	if err != nil {
-		t.Error(err)
+func (cs *capturesServiceSuite) TestCapturesService_List() {
+	type args struct {
+		ctx     context.Context
+		payment string
+		capture string
 	}
 
-	if len(captures.Embedded.Captures) < 1 {
-		t.Errorf("empty response with %d captures, expecting 1", len(captures.Embedded.Captures))
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		handler http.HandlerFunc
+		pre     func()
+	}{
+		{
+			"list captures works as expected",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				"cpt_4qqhO89gsT",
+			},
+			false,
+			nil,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(cs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(cs.T(), r, "GET")
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+
+				_, _ = w.Write([]byte(testdata.ListCapturesResponse))
+			},
+			noPre,
+		},
+		{
+			"list captures returns an http error from the server",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				"cpt_4qqhO89gsT",
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			errorHandler,
+			noPre,
+		},
+		{
+			"list captures returns an error when creating the request",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				"cpt_4qqhO89gsT",
+			},
+			true,
+			errBadBaseURL,
+			errorHandler,
+			crashSrv,
+		},
+		{
+			"list captures returns an error when trying to parse the json response",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				"cpt_4qqhO89gsT",
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			encodingHandler,
+			noPre,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		cs.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+
+			tMux.HandleFunc(
+				fmt.Sprintf(
+					"/v2/payments/%s/captures",
+					c.args.payment,
+				),
+				c.handler,
+			)
+
+			res, err := tClient.Captures.List(c.args.ctx, c.args.payment)
+			if c.wantErr {
+				cs.NotNil(err)
+				cs.EqualError(err, c.err.Error())
+			} else {
+				cs.Nil(err)
+				cs.IsType(&CapturesList{}, res)
+			}
+		})
 	}
 }
 
-func TestCapturesService_HTTPRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
-
-	tMux.HandleFunc("/v2/payments/09d87sd8a9d/captures/", errorHandler)
-
-	tests := forceCapturesErrors()
-
-	for _, tt := range tests {
-		if !strings.Contains(tt.Error(), "Internal Server Error") {
-			t.Error(tt)
-		}
-	}
-}
-
-func TestCapturesService_NewAPIRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	u, _ := url.Parse(tServer.URL)
-	tClient.BaseURL = u
-
-	tMux.HandleFunc("/v2/payments/09d87sd8a9d/captures/", errorHandler)
-
-	tests := forceCapturesErrors()
-
-	for _, tt := range tests {
-		if tt != errBadBaseURL {
-			t.Error(tt)
-		}
-	}
-}
-
-func TestCapturesService_JsonEncodingErrors(t *testing.T) {
-	setup()
-	defer teardown()
-
-	tMux.HandleFunc("/v2/payments/09d87sd8a9d/captures/", encodingHandler)
-
-	tests := forceCapturesErrors()
-
-	for _, tt := range tests {
-		if tt == nil {
-			t.Error(tt)
-		} else if !strings.Contains(tt.Error(), "invalid character") {
-			t.Errorf("unexpected error %v", tt)
-		}
-	}
-}
-
-func forceCapturesErrors() []error {
-	_, lerr := tClient.Captures.List(context.TODO(), "09d87sd8a9d")
-	_, gerr := tClient.Captures.Get(context.TODO(), "09d87sd8a9d", "4asd5ad6")
-
-	return []error{lerr, gerr}
+func TestCapturesService(t *testing.T) {
+	suite.Run(t, new(capturesServiceSuite))
 }

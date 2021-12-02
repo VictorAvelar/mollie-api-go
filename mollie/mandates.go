@@ -167,7 +167,7 @@ func (ms *MandatesService) Revoke(ctx context.Context, cID, mID string) (err err
 // ordered from newest to oldest.
 //
 // See: https://docs.mollie.com/reference/v2/mandates-api/list-mandates
-func (ms *MandatesService) List(ctx context.Context, cID string, opt *ListMandatesOptions) (ml MandateList, err error) {
+func (ms *MandatesService) List(ctx context.Context, cID string, opt *ListMandatesOptions) (ml *MandateList, err error) {
 	u := fmt.Sprintf("v2/customers/%s/mandates", cID)
 	if opt != nil {
 		v, _ := query.Values(opt)

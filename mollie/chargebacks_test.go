@@ -3,252 +3,366 @@ package mollie
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
-	"strings"
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestChargebacksService_Get(t *testing.T) {
-	setup()
-	defer teardown()
-	paymentID := "tr_WDqYK6vllg"
-	chargebackID := "chb_n9z0tp"
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/payments/"+paymentID+"/chargebacks/"+chargebackID, func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
+type chargebacksSuite struct{ suite.Suite }
 
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetChargebackResponse))
-	})
+func (cbs *chargebacksSuite) SetupSuite() { setEnv() }
 
-	opt := &ChargebackOptions{
-		Include: "details.qrCode",
+func (cbs *chargebacksSuite) TearDownSuite() { unsetEnv() }
+
+func (cbs *chargebacksSuite) TestChargebacksService_Get() {
+	type args struct {
+		ctx        context.Context
+		payment    string
+		chargeback string
+		options    *ChargebackOptions
 	}
 
-	res, err := tClient.Chargebacks.Get(context.TODO(), paymentID, chargebackID, opt)
-	if err != nil {
-		t.Fatal(err)
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		handler http.HandlerFunc
+		pre     func()
+	}{
+		{
+			"get chargebacks",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				"chb_n9z0tp",
+				&ChargebackOptions{
+					Include: "details.qrCode",
+				},
+			},
+			false,
+			nil,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(cbs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(cbs.T(), r, "GET")
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+
+				_, _ = w.Write([]byte(testdata.GetChargebackResponse))
+			},
+			noPre,
+		},
+		{
+			"get chargebacks returns an http error from the server",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				"chb_n9z0tp",
+				&ChargebackOptions{
+					Include: "details.qrCode",
+				},
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			errorHandler,
+			noPre,
+		},
+		{
+			"get chargebacks returns an error when creating the request",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				"chb_n9z0tp",
+				&ChargebackOptions{
+					Include: "details.qrCode",
+				},
+			},
+			true,
+			errBadBaseURL,
+			errorHandler,
+			func() {
+				u, _ := url.Parse(tServer.URL)
+				tClient.BaseURL = u
+			},
+		},
+		{
+			"get chargebacks returns an error when trying to parse the json response",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				"chb_n9z0tp",
+				&ChargebackOptions{
+					Include: "details.qrCode",
+				},
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			encodingHandler,
+			noPre,
+		},
 	}
 
-	if res.ID != chargebackID {
-		t.Errorf("mismatching info. want %v, got %v", chargebackID, res.ID)
-	}
-}
+	for _, c := range cases {
+		setup()
+		defer teardown()
+		cbs.T().Run(c.name, func(t *testing.T) {
+			tMux.HandleFunc(
+				fmt.Sprintf(
+					"/v2/payments/%s/chargebacks/%s",
+					c.args.payment,
+					c.args.chargeback,
+				),
+				c.handler,
+			)
+			c.pre()
 
-func ExampleChargebacksService_Get() {
-	setup()
-	defer teardown()
-
-	paymentID := "tr_WDqYK6vllg"
-	chargebackID := "chb_n9z0tp"
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/payments/"+paymentID+"/chargebacks/"+chargebackID, func(w http.ResponseWriter, r *http.Request) {
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetChargebackResponse))
-	})
-
-	chargeback, err := tClient.Chargebacks.Get(context.TODO(), paymentID, chargebackID, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(chargeback.ID)
-	// Output: chb_n9z0tp
-}
-
-func TestChargebacksService_List(t *testing.T) {
-	setup()
-	defer teardown()
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/chargebacks", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.ListChargebacksResponse))
-	})
-
-	res, err := tClient.Chargebacks.List(context.TODO(), nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if res.Count == 0 {
-		t.Errorf("mismatching info. want %v, got %v", 0, res.Count)
-	}
-}
-
-func TestChargebacksService_ListForPayment(t *testing.T) {
-	setup()
-	defer teardown()
-	paymentID := "tr_WDqYK6vllg"
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/payments/"+paymentID+"/chargebacks", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.ListChargebacksResponse))
-	})
-
-	res, err := tClient.Chargebacks.ListForPayment(context.TODO(), paymentID, nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if res.Count == 0 {
-		t.Errorf("mismatching info. want %v, got %v", 0, res.Count)
-	}
-}
-
-func TestChargebacksService_ListWithOptions(t *testing.T) {
-	setup()
-	defer teardown()
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/chargebacks", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.ListChargebacksResponse))
-	})
-
-	options := &ListChargebackOptions{
-		ProfileID: "pfl_QkEhN94Ba",
-	}
-
-	res, err := tClient.Chargebacks.List(context.TODO(), options)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if res.Count == 0 {
-		t.Errorf("mismatching info. want %v, got %v", 0, res.Count)
+			res, err := tClient.Chargebacks.Get(c.args.ctx, c.args.payment, c.args.chargeback, c.args.options)
+			if c.wantErr {
+				require.Error(t, err)
+				assert.EqualError(t, err, c.err.Error())
+			} else {
+				require.Nil(t, err)
+				assert.Equal(t, res.ID, c.args.chargeback)
+			}
+		})
 	}
 }
 
-func TestChargebacksService_ListForPaymentWithOptions(t *testing.T) {
-	setup()
-	defer teardown()
-	paymentID := "tr_WDqYK6vllg"
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/payments/"+paymentID+"/chargebacks", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.ListChargebacksResponse))
-	})
-
-	options := &ListChargebackOptions{
-		ProfileID: "pfl_QkEhN94Ba",
+func (cbs *chargebacksSuite) TestChargebacksService_List() {
+	type args struct {
+		ctx     context.Context
+		options *ListChargebackOptions
 	}
 
-	res, err := tClient.Chargebacks.ListForPayment(context.TODO(), paymentID, options)
-	if err != nil {
-		t.Fatal(err)
+	noPre := func() {}
+
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		handler http.HandlerFunc
+		pre     func()
+	}{
+		{
+			"list chargebacks",
+			args{
+				context.Background(),
+				nil,
+			},
+			false,
+			nil,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(cbs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(cbs.T(), r, "GET")
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+
+				_, _ = w.Write([]byte(testdata.ListChargebacksResponse))
+			},
+			noPre,
+		},
+		{
+			"list chargebacks with options",
+			args{
+				context.Background(),
+				&ListChargebackOptions{
+					ProfileID: "pfl_QkEhN94Ba",
+				},
+			},
+			false,
+			nil,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(cbs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(cbs.T(), r, "GET")
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+
+				_, _ = w.Write([]byte(testdata.ListChargebacksResponse))
+			},
+			noPre,
+		},
+		{
+			"list chargebacks return an http error from the remote server",
+			args{
+				context.Background(),
+				nil,
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			errorHandler,
+			noPre,
+		},
+		{
+			"list chargebacks return an error when creating the requests",
+			args{
+				context.Background(),
+				nil,
+			},
+			true,
+			errBadBaseURL,
+			errorHandler,
+			crashSrv,
+		},
+		{
+			"list chargebacks return an error when parsing the json response",
+			args{
+				context.Background(),
+				nil,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			encodingHandler,
+			noPre,
+		},
 	}
 
-	if res.Count == 0 {
-		t.Errorf("mismatching info. want %v, got %v", 0, res.Count)
+	for _, c := range cases {
+		setup()
+		defer teardown()
+		cbs.T().Run(c.name, func(t *testing.T) {
+			tMux.HandleFunc("/v2/chargebacks", c.handler)
+
+			c.pre()
+			res, err := tClient.Chargebacks.List(c.args.ctx, c.args.options)
+			if c.wantErr {
+				require.Error(t, err)
+				assert.EqualError(t, err, c.err.Error())
+			} else {
+				require.Nil(t, err)
+				assert.NotZero(t, res.Count)
+			}
+		})
 	}
 }
 
-func TestChargebacksService_HttpRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	tMux.HandleFunc("/v2/chargebacks/", errorHandler)
+func (cbs *chargebacksSuite) TestChargebacksService_ListForPayment() {
+	type args struct {
+		ctx     context.Context
+		payment string
+		options *ListChargebackOptions
+	}
 
-	_, rerr := tClient.Chargebacks.List(context.TODO(), nil)
-	_, lerr := tClient.Chargebacks.ListForPayment(context.TODO(), "1212", nil)
-	_, gerr := tClient.Chargebacks.Get(context.TODO(), "1212", "3232", nil)
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		handler http.HandlerFunc
+		pre     func()
+	}{
+		{
+			"list chargebacks attached to a payment",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				nil,
+			},
+			false,
+			nil,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(cbs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(cbs.T(), r, "GET")
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
 
-	tests := []error{rerr, gerr, lerr}
+				_, _ = w.Write([]byte(testdata.ListChargebacksResponse))
+			},
+			noPre,
+		},
+		{
+			"list chargebacks attached to a payment, with options",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				&ListChargebackOptions{
+					ProfileID: "pfl_QkEhN94Ba",
+				},
+			},
+			false,
+			nil,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(cbs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(cbs.T(), r, "GET")
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
 
-	for _, tt := range tests {
-		if tt == nil {
-			t.Fail()
-		}
+				_, _ = w.Write([]byte(testdata.ListChargebacksResponse))
+			},
+			noPre,
+		},
+		{
+			"list chargebacks returns an http error from the remote server",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				nil,
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			errorHandler,
+			noPre,
+		},
+		{
+			"list chargebacks returns an error when building the request",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				nil,
+			},
+			true,
+			errBadBaseURL,
+			func(rw http.ResponseWriter, r *http.Request) {},
+			crashSrv,
+		},
+		{
+			"list chargebacks returns an error when parsing the json response",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				nil,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			encodingHandler,
+			noPre,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+		cbs.T().Run(c.name, func(t *testing.T) {
+			tMux.HandleFunc(
+				fmt.Sprintf("/v2/payments/%s/chargebacks", c.args.payment),
+				c.handler,
+			)
+
+			c.pre()
+
+			res, err := tClient.Chargebacks.ListForPayment(c.args.ctx, c.args.payment, c.args.options)
+			if c.wantErr {
+				require.Error(t, err)
+				assert.EqualError(t, err, c.err.Error())
+			} else {
+				require.Nil(t, err)
+				assert.NotZero(t, res.Count)
+				assert.IsType(t, &ChargebackList{}, res)
+			}
+		})
 	}
 }
 
-func TestChargebacksService_NewAPIRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	u, _ := url.Parse(tServer.URL)
-	tClient.BaseURL = u
-	tMux.HandleFunc("/v2/chargebacks/", errorHandler)
-
-	_, rerr := tClient.Chargebacks.List(context.TODO(), nil)
-	_, lerr := tClient.Chargebacks.ListForPayment(context.TODO(), "1212", nil)
-	_, gerr := tClient.Chargebacks.Get(context.TODO(), "1212", "3232", nil)
-
-	tests := []error{rerr, gerr, lerr}
-
-	for _, tt := range tests {
-		if tt != errBadBaseURL {
-			t.Fail()
-		}
-	}
-}
-
-func TestChargebacksService_EncodingResponseErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	tMux.HandleFunc("/v2/payments/1212/chargebacks/", encodingHandler)
-
-	_, rerr := tClient.Chargebacks.ListForPayment(context.TODO(), "1212", nil)
-	_, gerr := tClient.Chargebacks.Get(context.TODO(), "1212", "3232", nil)
-
-	tests := []error{rerr, gerr}
-
-	for _, tt := range tests {
-		if tt == nil {
-			t.Fail()
-		} else if !strings.Contains(tt.Error(), "invalid character") {
-			t.Errorf("unexpected error %v", tt)
-		}
-	}
-}
-
-func TestChargebacksService_EncodingResponseErrors_List(t *testing.T) {
-	setup()
-	defer teardown()
-	tMux.HandleFunc("/v2/chargebacks/", encodingHandler)
-
-	_, rerr := tClient.Chargebacks.List(context.TODO(), nil)
-
-	tests := []error{rerr}
-
-	for _, tt := range tests {
-		if tt == nil {
-			t.Fail()
-		} else if !strings.Contains(tt.Error(), "invalid character") {
-			t.Errorf("unexpected error %v", tt)
-		}
-	}
+func TestChargebacksService(t *testing.T) {
+	suite.Run(t, new(chargebacksSuite))
 }

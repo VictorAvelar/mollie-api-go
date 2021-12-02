@@ -2,234 +2,464 @@ package mollie
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
-	"net/url"
-	"strings"
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestShipmentsService_Get(t *testing.T) {
-	setup()
-	defer teardown()
+type shipmentsServiceSuite struct{ suite.Suite }
 
-	orderID := "ord_kEn1PlbGa"
-	shipmentID := "shp_3wmsgCJN4U"
+func (ps *shipmentsServiceSuite) SetupSuite() { setEnv() }
 
-	_ = tClient.WithAuthenticationValue("test_token")
+func (ps *shipmentsServiceSuite) TearDownSuite() { unsetEnv() }
 
-	tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/shipments/%s", orderID, shipmentID), func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, http.MethodGet)
+func (ps *shipmentsServiceSuite) TestShipmentsService_Get() {
+	type args struct {
+		ctx      context.Context
+		order    string
+		shipment string
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"get shipment works as expected.",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				"shp_3wmsgCJN4U",
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "GET")
+				testQuery(ps.T(), r, "testmode=true")
 
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetShipmentsResponse))
-	})
-
-	shipment, err := tClient.Shipments.Get(context.TODO(), orderID, shipmentID)
-	if err != nil {
-		t.Error(err)
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetShipmentsResponse))
+			},
+		},
+		{
+			"get shipment, an error is returned from the server",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				"shp_3wmsgCJN4U",
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"get shipment, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				"shp_3wmsgCJN4U",
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"get shipment, invalid url when building request",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				"shp_3wmsgCJN4U",
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
 	}
 
-	if shipment.ID != shipmentID {
-		t.Errorf("unexpected response, got: %v want: %v", shipment.ID, shipmentID)
-	}
-}
+	for _, c := range cases {
+		setup()
+		defer teardown()
 
-func TestShipmentsService_Create(t *testing.T) {
-	setup()
-	defer teardown()
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/shipments/%s", c.args.order, c.args.shipment), c.handler)
 
-	orderID := "ord_kEn1PlbGa"
-
-	_ = tClient.WithAuthenticationValue("test_token")
-
-	tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/shipments", orderID), func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, http.MethodPost)
-
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusCreated)
-		_, _ = w.Write([]byte(testdata.GetShipmentsResponse))
-	})
-
-	csr := CreateShipmentRequest{
-		Lines:    []OrderLine{},
-		Tracking: ShipmentTracking{},
-	}
-
-	shipment, err := tClient.Shipments.Create(context.TODO(), orderID, csr)
-	if err != nil {
-		t.Error(err)
-	}
-
-	if shipment.OrderID != orderID {
-		t.Errorf("unexpected response, got: %v want: %v", shipment.OrderID, orderID)
-	}
-}
-
-func TestShipmentsService_Create_AccessTokens(t *testing.T) {
-	setup()
-	defer teardown()
-	_ = tClient.WithAuthenticationValue("access_token")
-
-	orderID := "ord_kEn1PlbGa"
-
-	tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/shipments", orderID), func(rw http.ResponseWriter, r *http.Request) {
-		var ship Shipment
-		defer r.Body.Close()
-		if err := json.NewDecoder(r.Body).Decode(&ship); err != nil {
-			rw.WriteHeader(http.StatusBadRequest)
-			return
-		}
-
-		rw.Header().Set("Content-Type", "application/json")
-		rw.WriteHeader(http.StatusCreated)
-		json.NewEncoder(rw).Encode(ship)
-	})
-
-	csr := CreateShipmentRequest{
-		Lines:    []OrderLine{},
-		Tracking: ShipmentTracking{},
-	}
-
-	shipment, err := tClient.Shipments.Create(context.TODO(), orderID, csr)
-	if err != nil {
-		t.Error(err)
-	}
-
-	if shipment.TestMode != true {
-		t.Fatal("testmode flag is not set for access tokens")
+			m, err := tClient.Shipments.Get(c.args.ctx, c.args.order, c.args.shipment)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&Shipment{}, m)
+			}
+		})
 	}
 }
 
-func TestShipmentsService_List(t *testing.T) {
-	setup()
-	defer teardown()
+func (ps *shipmentsServiceSuite) TestShipmentsService_List() {
+	type args struct {
+		ctx      context.Context
+		order    string
+		shipment string
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"list shipment works as expected.",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				"shp_3wmsgCJN4U",
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "GET")
+				testQuery(ps.T(), r, "testmode=true")
 
-	orderID := "ord_kEn1PlbGa"
-
-	_ = tClient.WithAuthenticationValue("test_token")
-
-	tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/shipments", orderID), func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, http.MethodGet)
-
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetShipmentsResponse))
-	})
-
-	list, err := tClient.Shipments.List(context.TODO(), orderID)
-	if err != nil {
-		t.Error(err)
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				w.Write([]byte(testdata.ListShipmentsResponse))
+			},
+		},
+		{
+			"list shipment, an error is returned from the server",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				"shp_3wmsgCJN4U",
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"list shipment, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				"shp_3wmsgCJN4U",
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"list shipment, invalid url when building request",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				"shp_3wmsgCJN4U",
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
 	}
 
-	if list.Count != len(list.Embedded.Shipments) {
-		t.Error("the response doesn't match the reference")
-	}
-}
+	for _, c := range cases {
+		setup()
+		defer teardown()
 
-func TestShipmentsService_Update(t *testing.T) {
-	setup()
-	defer teardown()
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/shipments", c.args.order), c.handler)
 
-	orderID := "ord_kEn1PlbGa"
-	shipmentID := "shp_3wmsgCJN4U"
-
-	_ = tClient.WithAuthenticationValue("test_token")
-
-	tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/shipments/%s", orderID, shipmentID), func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, http.MethodPatch)
-
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetShipmentsResponse))
-	})
-
-	shipment, err := tClient.Shipments.Update(context.TODO(), orderID, shipmentID, ShipmentTracking{
-		Carrier: "PostNL",
-	},
-	)
-	if err != nil {
-		t.Error(err)
-	}
-
-	if shipment.ID != shipmentID {
-		t.Errorf("unexpected response, got: %v want: %v", shipment.ID, shipmentID)
-	}
-}
-
-func TestShipmentsService_NewAPIRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	u, _ := url.Parse(tServer.URL)
-	tClient.BaseURL = u
-
-	tMux.HandleFunc("/v2/orders/ord_kEn1PlbGa/shipments/", errorHandler)
-
-	tests := forceShipmentsErrors()
-
-	for _, tt := range tests {
-		if tt != errBadBaseURL {
-			t.Error(tt)
-		}
-	}
-}
-
-func TestShipmentsService_JsonDecodingErrors(t *testing.T) {
-	setup()
-	defer teardown()
-
-	tMux.HandleFunc("/v2/orders/ord_kEn1PlbGa/shipments/", encodingHandler)
-
-	tests := forceShipmentsErrors()
-
-	for _, tt := range tests {
-		if tt == nil {
-			t.Error(tt)
-		} else if !strings.Contains(tt.Error(), "invalid character") {
-			t.Errorf("unexpected error %v", tt)
-		}
+			m, err := tClient.Shipments.List(c.args.ctx, c.args.order)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&ShipmentsList{}, m)
+			}
+		})
 	}
 }
 
-func TestShipmentsService_HTTPRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
+func (ps *shipmentsServiceSuite) TestShipmentsService_Create() {
+	type args struct {
+		ctx      context.Context
+		order    string
+		shipment CreateShipmentRequest
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"create shipment works as expected.",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				CreateShipmentRequest{
+					TestMode: true,
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "POST")
+				testQuery(ps.T(), r, "testmode=true")
 
-	tMux.HandleFunc("/v2/orders/ord_kEn1PlbGa/shipments/", errorHandler)
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetShipmentsResponse))
+			},
+		},
+		{
+			"create shipment using access tokens works as expected.",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				CreateShipmentRequest{
+					TestMode: true,
+				},
+			},
+			false,
+			nil,
+			func() {
+				tClient.WithAuthenticationValue("access_token_test")
+			},
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer access_token_test")
+				testMethod(ps.T(), r, "POST")
+				testQuery(ps.T(), r, "testmode=true")
 
-	tests := forceShipmentsErrors()
-	for _, tt := range tests {
-		if !strings.Contains(tt.Error(), "Internal Server Error") {
-			t.Error(tt)
-		}
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetShipmentsResponse))
+			},
+		},
+		{
+			"create shipment, an error is returned from the server",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				CreateShipmentRequest{
+					TestMode: true,
+				},
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"create shipment, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				CreateShipmentRequest{
+					TestMode: true,
+				},
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"create shipment, invalid url when building request",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				CreateShipmentRequest{
+					TestMode: true,
+				},
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/shipments", c.args.order), c.handler)
+
+			m, err := tClient.Shipments.Create(c.args.ctx, c.args.order, c.args.shipment)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&Shipment{}, m)
+			}
+		})
 	}
 }
 
-func forceShipmentsErrors() []error {
-	_, gerr := tClient.Shipments.Get(context.TODO(), "ord_kEn1PlbGa", "as6da7d8sa9d")
-	_, lerr := tClient.Shipments.List(context.TODO(), "ord_kEn1PlbGa")
-	_, cerr := tClient.Shipments.Create(context.TODO(), "ord_kEn1PlbGa", CreateShipmentRequest{})
-	_, uerr := tClient.Shipments.Update(context.TODO(), "ord_kEn1PlbGa", "as5das67d9s", ShipmentTracking{})
+func (ps *shipmentsServiceSuite) TestShipmentsService_Update() {
+	type args struct {
+		ctx      context.Context
+		order    string
+		shipment string
+		st       ShipmentTracking
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"update shipment works as expected.",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				"shp_3wmsgCJN4U",
+				ShipmentTracking{
+					Carrier: "fedex",
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "PATCH")
+				testQuery(ps.T(), r, "testmode=true")
 
-	return []error{gerr, lerr, cerr, uerr}
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetShipmentsResponse))
+			},
+		},
+		{
+			"update shipment using access tokens works as expected.",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				"shp_3wmsgCJN4U",
+				ShipmentTracking{
+					Carrier: "fedex",
+				},
+			},
+			false,
+			nil,
+			func() {
+				tClient.WithAuthenticationValue("access_token_test")
+			},
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer access_token_test")
+				testMethod(ps.T(), r, "PATCH")
+				testQuery(ps.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetShipmentsResponse))
+			},
+		},
+		{
+			"update shipment, an error is returned from the server",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				"shp_3wmsgCJN4U",
+				ShipmentTracking{
+					Carrier: "fedex",
+				},
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"update shipment, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				"shp_3wmsgCJN4U",
+				ShipmentTracking{
+					Carrier: "fedex",
+				},
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"update shipment, invalid url when building request",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				"shp_3wmsgCJN4U",
+				ShipmentTracking{
+					Carrier: "fedex",
+				},
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/shipments/%s", c.args.order, c.args.shipment), c.handler)
+
+			m, err := tClient.Shipments.Update(c.args.ctx, c.args.order, c.args.shipment, c.args.st)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&Shipment{}, m)
+			}
+		})
+	}
+}
+
+func TestShipmentsService(t *testing.T) {
+	suite.Run(t, new(shipmentsServiceSuite))
 }

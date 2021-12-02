@@ -2,442 +2,1187 @@ package mollie
 
 import (
 	"context"
-	"encoding/json"
+	"fmt"
 	"net/http"
-	"net/url"
-	"strings"
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestOrdersService_Get(t *testing.T) {
-	setup()
-	defer teardown()
+type ordersServiceSuite struct{ suite.Suite }
 
-	ordID := "ord_kEn1PlbGa"
+func (os *ordersServiceSuite) SetupSuite() { setEnv() }
 
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/orders/"+ordID, func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, http.MethodGet)
+func (os *ordersServiceSuite) TearDownSuite() { unsetEnv() }
 
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetOrderResponse))
-	})
-
-	opt := &OrderOptions{
-		Embed: []EmbedValue{
-			EmbedPayment,
-			EmbedRefund,
-			EmbedShipments,
-		},
+func (os *ordersServiceSuite) TestOrdersService_Get() {
+	type args struct {
+		ctx     context.Context
+		order   string
+		options *OrderOptions
 	}
-
-	res, err := tClient.Orders.Get(context.TODO(), ordID, opt)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if res.ID != ordID {
-		t.Errorf("mismatching info. want %v got %v", ordID, res.ID)
-	}
-}
-
-func TestOrdersService_Create(t *testing.T) {
-	setup()
-	defer teardown()
-
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/orders", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, http.MethodPost)
-
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusCreated)
-		_, _ = w.Write([]byte(testdata.CreateOrderResponse))
-	})
-
-	order := Order{}
-	opt := &OrderOptions{
-		ProfileID: "pfl_3RkSN1zuPE",
-	}
-
-	res, err := tClient.Orders.Create(context.TODO(), order, opt)
-	if err != nil {
-		t.Error(err)
-	}
-
-	if res.ID != "ord_pbjz8x" {
-		t.Errorf("mismatching info. want %v got %v", "ord_pbjz8x", res.ID)
-	}
-}
-
-func TestOrdersService_Create_AccessTokens(t *testing.T) {
-	setup()
-	defer teardown()
-	_ = tClient.WithAuthenticationValue("access_token")
-
-	tMux.HandleFunc("/v2/orders", func(rw http.ResponseWriter, r *http.Request) {
-		var ord Order
-		defer r.Body.Close()
-		if err := json.NewDecoder(r.Body).Decode(&ord); err != nil {
-			rw.WriteHeader(http.StatusBadRequest)
-			return
-		}
-
-		rw.Header().Set("Content-Type", "application/json")
-		rw.WriteHeader(http.StatusCreated)
-		json.NewEncoder(rw).Encode(ord)
-	})
-
-	order := Order{}
-	opt := &OrderOptions{
-		ProfileID: "pfl_3RkSN1zuPE",
-	}
-
-	res, err := tClient.Orders.Create(context.TODO(), order, opt)
-	if err != nil {
-		t.Error(err)
-	}
-
-	if res.TestMode != true {
-		t.Fatal("testmode flag is not set for access tokens")
-	}
-}
-
-func TestOrdersService_Update(t *testing.T) {
-	setup()
-	defer teardown()
-
-	orderID := "ord_kEn1PlbGa"
-
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/orders/"+orderID, func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, http.MethodPatch)
-
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.UpdateOrderResponse))
-	})
-
-	order := Order{}
-	res, err := tClient.Orders.Update(context.TODO(), orderID, order)
-	if err != nil {
-		t.Error(err)
-	}
-
-	if res.ID != orderID {
-		t.Errorf("mismatching info. want %v got %v", orderID, res.ID)
-	}
-}
-
-func TestOrdersService_Cancel(t *testing.T) {
-	setup()
-	defer teardown()
-
-	orderID := "ord_8wmqcHMN4U"
-
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/orders/"+orderID, func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, http.MethodDelete)
-
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.CancelOrderResponse))
-	})
-
-	res, err := tClient.Orders.Cancel(context.TODO(), orderID)
-	if err != nil {
-		t.Error(err)
-	}
-
-	if res.ID != orderID {
-		t.Errorf("mismatching info. want %v got %v", orderID, res.ID)
-	}
-}
-
-func TestOrdersService_List(t *testing.T) {
-	setup()
-	defer teardown()
-
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/orders", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, http.MethodGet)
-
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.OrderListResponse))
-	})
-
-	opt := &OrderListOptions{
-		ProfileID: "pfl_3RkSN1zuPE",
-	}
-
-	res, err := tClient.Orders.List(context.TODO(), opt)
-	if err != nil {
-		t.Error(err)
-	}
-
-	if res.Count != 3 {
-		t.Errorf("mismatching info. want %v got %v", 3, res.Count)
-	}
-}
-
-func TestOrdersService_UpdateOrderline(t *testing.T) {
-	setup()
-	defer teardown()
-
-	orderID := "ord_pbjz8x"
-	orderlineID := "odl_dgtxyl"
-
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/orders/"+orderID+"/lines/"+orderlineID, func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, http.MethodPatch)
-
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.UpdateOrderlineResponse))
-	})
-
-	var orderline OrderLine
-	if err := json.Unmarshal([]byte(testdata.UpdateOrderlineRequest), &orderline); err != nil {
-		t.Error(err)
-	}
-
-	res, err := tClient.Orders.UpdateOrderLine(context.TODO(), orderID, orderlineID, orderline)
-	if err != nil {
-		t.Error(err)
-	}
-
-	if res.ID != orderID {
-		t.Errorf("mismatching info. want %v got %v", orderID, res.ID)
-	}
-}
-
-func TestOrdersService_CancelOrderLines(t *testing.T) {
-	setup()
-	defer teardown()
-
-	orderID := "ord_8wmqcHMN4U"
-
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/orders/"+orderID+"/lines", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, http.MethodDelete)
-
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-		w.WriteHeader(http.StatusNoContent)
-	})
-
-	orderLines := []OrderLine{
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
 		{
-			Name: "something",
+			"get orders works as expected.",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				&OrderOptions{
+					ProfileID: "pfl_1236h213bv1",
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(os.T(), r, "GET")
+				testQuery(os.T(), r, "profileId=pfl_1236h213bv1&testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetOrderResponse))
+			},
+		},
+		{
+			"get orders, an error is returned from the server",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				nil,
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"get orders, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				nil,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"get orders, invalid url when building request",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				nil,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
 		},
 	}
-	err := tClient.Orders.CancelOrderLines(context.TODO(), orderID, orderLines)
 
-	if err != nil {
-		t.Error(err)
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		os.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s", c.args.order), c.handler)
+
+			m, err := tClient.Orders.Get(c.args.ctx, c.args.order, c.args.options)
+			if c.wantErr {
+				os.NotNil(err)
+				os.EqualError(err, c.err.Error())
+			} else {
+				os.Nil(err)
+				os.IsType(&Order{}, m)
+			}
+		})
 	}
 }
 
-func TestOrdersService_CreatePayment(t *testing.T) {
-	setup()
-	defer teardown()
+func (os *ordersServiceSuite) TestOrdersService_List() {
+	type args struct {
+		ctx     context.Context
+		order   string
+		options *OrderListOptions
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"list orders works as expected.",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				&OrderListOptions{
+					ProfileID: "pfl_1236h213bv1",
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(os.T(), r, "GET")
+				testQuery(os.T(), r, "profileId=pfl_1236h213bv1&testmode=true")
 
-	orderID := "ord_8wmqcHMN4U"
-
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/orders/"+orderID+"/payments", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, http.MethodPost)
-
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusCreated)
-		_, _ = w.Write([]byte(testdata.CreateOrderPaymentResponse))
-	})
-
-	var ordPay OrderPayment
-	if err := json.Unmarshal([]byte(testdata.CreateOrderPaymentRequest), &ordPay); err != nil {
-		t.Error(err)
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetOrderResponse))
+			},
+		},
+		{
+			"list orders, an error is returned from the server",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				nil,
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"list orders, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				nil,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"list orders, invalid url when building request",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				nil,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
 	}
 
-	res, err := tClient.Orders.CreateOrderPayment(context.TODO(), orderID, &ordPay)
-	if err != nil {
-		t.Error(err)
-	}
+	for _, c := range cases {
+		setup()
+		defer teardown()
 
-	if res.ID != "tr_WDqYK6vllg" {
-		t.Errorf("mismatching info. want %v got %v", "tr_WDqYK6vllg", res.ID)
-	}
-}
+		os.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc("/v2/orders", c.handler)
 
-func TestOrdersService_CreateOrderRefund(t *testing.T) {
-	setup()
-	defer teardown()
-
-	orderID := "ord_stTC2WHAuS"
-
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/orders/"+orderID+"/refunds", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, http.MethodPost)
-
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusCreated)
-		_, _ = w.Write([]byte(testdata.CreateOrderRefundResponse))
-	})
-
-	var order Order
-	if err := json.Unmarshal([]byte(testdata.CreateOrderRefundRequest), &order); err != nil {
-		t.Error(err)
-	}
-
-	res, err := tClient.Orders.CreateOrderRefund(context.TODO(), orderID, &order)
-	if err != nil {
-		t.Error(err)
-	}
-
-	if res.ID != "re_4qqhO89gsT" {
-		t.Errorf("mismatching info. want %v got %v", "re_4qqhO89gsT", res.ID)
-	}
-}
-
-func TestOrdersService_ListOrderRefund(t *testing.T) {
-	setup()
-	defer teardown()
-
-	orderID := "ord_pbjz8x"
-
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/orders/"+orderID+"/refunds", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, http.MethodGet)
-
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.ListOrderRefundResponse))
-	})
-
-	opt := &OrderListRefundOptions{
-		Embed: EmbedPayment,
-	}
-
-	res, err := tClient.Orders.ListOrderRefunds(context.TODO(), orderID, opt)
-	if err != nil {
-		t.Error(err)
-	}
-
-	if res.Count != 1 {
-		t.Errorf("mismatching info. want %v got %v", 1, res.Count)
+			m, err := tClient.Orders.List(c.args.ctx, c.args.options)
+			if c.wantErr {
+				os.NotNil(err)
+				os.EqualError(err, c.err.Error())
+			} else {
+				os.Nil(err)
+				os.IsType(&OrderList{}, m)
+			}
+		})
 	}
 }
 
-func TestOrdersService_NewAPIRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
+func (os *ordersServiceSuite) TestOrdersService_Create() {
+	type args struct {
+		ctx     context.Context
+		order   Order
+		options *OrderOptions
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"create orders works as expected.",
+			args{
+				context.Background(),
+				Order{
+					Method: PayPal,
+				},
+				&OrderOptions{},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(os.T(), r, "POST")
+				testQuery(os.T(), r, "testmode=true")
 
-	u, _ := url.Parse(tServer.URL)
-	tClient.BaseURL = u
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetOrderResponse))
+			},
+		},
+		{
+			"create orders works as expected.",
+			args{
+				context.Background(),
+				Order{
+					Method: PayPal,
+				},
+				&OrderOptions{},
+			},
+			false,
+			nil,
+			func() {
+				tClient.WithAuthenticationValue("access_token_test")
+			},
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
+				testMethod(os.T(), r, "POST")
+				testQuery(os.T(), r, "testmode=true")
 
-	tMux.HandleFunc("/v2/orders/", errorHandler)
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetOrderResponse))
+			},
+		},
+		{
+			"create orders, an error is returned from the server",
+			args{
+				context.Background(),
+				Order{
+					Method: PayPal,
+				},
+				nil,
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"create orders, an error occurs when parsing json",
+			args{
+				context.Background(),
+				Order{
+					Method: PayPal,
+				},
+				nil,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"create orders, invalid url when building request",
+			args{
+				context.Background(),
+				Order{
+					Method: PayPal,
+				},
+				nil,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
 
-	tests := forceOrdersErrors(true)
+	for _, c := range cases {
+		setup()
+		defer teardown()
 
-	for _, tt := range tests {
-		if tt != errBadBaseURL {
-			t.Error(tt)
-		}
+		os.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc("/v2/orders", c.handler)
+
+			m, err := tClient.Orders.Create(c.args.ctx, c.args.order, c.args.options)
+			if c.wantErr {
+				os.NotNil(err)
+				os.EqualError(err, c.err.Error())
+			} else {
+				os.Nil(err)
+				os.IsType(&Order{}, m)
+			}
+		})
 	}
 }
 
-func TestOrdersService_JsonDecodingErrors(t *testing.T) {
-	setup()
-	defer teardown()
+func (os *ordersServiceSuite) TestOrdersService_Update() {
+	type args struct {
+		ctx     context.Context
+		order   Order
+		options *OrderOptions
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"update orders works as expected.",
+			args{
+				context.Background(),
+				Order{
+					Method: PayPal,
+					ID:     "ord_kEn1PlbGa",
+				},
+				&OrderOptions{},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(os.T(), r, "PATCH")
+				testQuery(os.T(), r, "testmode=true")
 
-	tMux.HandleFunc("/v2/orders/", encodingHandler)
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.UpdateOrderResponse))
+			},
+		},
+		{
+			"update orders works as expected.",
+			args{
+				context.Background(),
+				Order{
+					Method: PayPal,
+				},
+				&OrderOptions{},
+			},
+			false,
+			nil,
+			func() {
+				tClient.WithAuthenticationValue("access_token_test")
+			},
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
+				testMethod(os.T(), r, "PATCH")
+				testQuery(os.T(), r, "testmode=true")
 
-	tests := forceOrdersErrors(false)
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.UpdateOrderResponse))
+			},
+		},
+		{
+			"update orders, an error is returned from the server",
+			args{
+				context.Background(),
+				Order{
+					Method: PayPal,
+				},
+				nil,
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"update orders, an error occurs when parsing json",
+			args{
+				context.Background(),
+				Order{
+					Method: PayPal,
+				},
+				nil,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"update orders, invalid url when building request",
+			args{
+				context.Background(),
+				Order{
+					Method: PayPal,
+				},
+				nil,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
 
-	for _, tt := range tests {
-		if tt == nil {
-			t.Error(tt)
-		} else if !strings.Contains(tt.Error(), "invalid character") {
-			t.Errorf("unexpected error %v", tt)
-		}
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		os.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s", c.args.order.ID), c.handler)
+
+			m, err := tClient.Orders.Update(c.args.ctx, c.args.order.ID, c.args.order)
+			if c.wantErr {
+				os.NotNil(err)
+				os.EqualError(err, c.err.Error())
+			} else {
+				os.Nil(err)
+				os.IsType(&Order{}, m)
+			}
+		})
 	}
 }
 
-func TestOrdersService_HTTPRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
+func (os *ordersServiceSuite) TestOrdersService_Cancel() {
+	type args struct {
+		ctx     context.Context
+		order   Order
+		options *OrderOptions
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"cancel orders works as expected.",
+			args{
+				context.Background(),
+				Order{
+					Method: PayPal,
+					ID:     "ord_kEn1PlbGa",
+				},
+				&OrderOptions{},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(os.T(), r, "DELETE")
+				testQuery(os.T(), r, "testmode=true")
 
-	tMux.HandleFunc("/v2/orders/", errorHandler)
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.CancelOrderResponse))
+			},
+		},
+		{
+			"cancel orders works as expected.",
+			args{
+				context.Background(),
+				Order{
+					Method: PayPal,
+				},
+				&OrderOptions{},
+			},
+			false,
+			nil,
+			func() {
+				tClient.WithAuthenticationValue("access_token_test")
+			},
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
+				testMethod(os.T(), r, "DELETE")
+				testQuery(os.T(), r, "testmode=true")
 
-	tests := forceOrdersErrors(true)
-	for _, tt := range tests {
-		if !strings.Contains(tt.Error(), "Internal Server Error") {
-			t.Error(tt)
-		}
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.CancelOrderResponse))
+			},
+		},
+		{
+			"cancel orders, an error is returned from the server",
+			args{
+				context.Background(),
+				Order{
+					Method: PayPal,
+				},
+				nil,
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"cancel orders, an error occurs when parsing json",
+			args{
+				context.Background(),
+				Order{
+					Method: PayPal,
+				},
+				nil,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"cancel orders, invalid url when building request",
+			args{
+				context.Background(),
+				Order{
+					Method: PayPal,
+				},
+				nil,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		os.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s", c.args.order.ID), c.handler)
+
+			m, err := tClient.Orders.Cancel(c.args.ctx, c.args.order.ID)
+			if c.wantErr {
+				os.NotNil(err)
+				os.EqualError(err, c.err.Error())
+			} else {
+				os.Nil(err)
+				os.IsType(&Order{}, m)
+			}
+		})
 	}
 }
 
-func forceOrdersErrors(del bool) []error {
-	id := "ord_8wmqcHMN4U"
+func (os *ordersServiceSuite) TestOrdersService_UpdateOrderLine() {
+	type args struct {
+		ctx   context.Context
+		order string
+		line  OrderLine
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"update orders works as expected.",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				OrderLine{
+					ID:     "odl_dgtxyl",
+					Status: OrderLinePaid,
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(os.T(), r, "PATCH")
+				testQuery(os.T(), r, "testmode=true")
 
-	_, cerr := tClient.Orders.Create(context.TODO(), Order{}, nil)
-	_, coperr := tClient.Orders.CreateOrderPayment(context.TODO(), id, nil)
-	_, corerr := tClient.Orders.CreateOrderRefund(context.TODO(), id, nil)
-	_, rerr := tClient.Orders.Get(context.TODO(), id, nil)
-	_, lerr := tClient.Orders.List(context.TODO(), nil)
-	_, lorerr := tClient.Orders.ListOrderRefunds(context.TODO(), id, nil)
-	_, uerr := tClient.Orders.Update(context.TODO(), id, Order{})
-	_, uolerr := tClient.Orders.UpdateOrderLine(context.TODO(), id, "", OrderLine{})
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.UpdateOrderlineResponse))
+			},
+		},
+		{
+			"update order lines works as expected.",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				OrderLine{
+					ID:     "odl_dgtxyl",
+					Status: OrderLinePaid,
+				},
+			},
+			false,
+			nil,
+			func() {
+				tClient.WithAuthenticationValue("access_token_test")
+			},
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
+				testMethod(os.T(), r, "PATCH")
+				testQuery(os.T(), r, "testmode=true")
 
-	errs := []error{cerr, coperr, corerr, rerr, lerr, lorerr, uerr, uolerr}
-
-	if del {
-		_, cnlerr := tClient.Orders.Cancel(context.TODO(), id)
-		errs = append(errs, cnlerr)
-
-		colerr := tClient.Orders.CancelOrderLines(context.TODO(), id, []OrderLine{})
-		errs = append(errs, colerr)
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.UpdateOrderlineResponse))
+			},
+		},
+		{
+			"update order lines, an error is returned from the server",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				OrderLine{
+					ID:     "odl_dgtxyl",
+					Status: OrderLinePaid,
+				},
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"update order lines, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				OrderLine{
+					ID:     "odl_dgtxyl",
+					Status: OrderLinePaid,
+				},
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"update order lines, invalid url when building request",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				OrderLine{
+					ID:     "odl_dgtxyl",
+					Status: OrderLinePaid,
+				},
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
 	}
 
-	return errs
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		os.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/lines/%s", c.args.order, c.args.line.ID), c.handler)
+
+			m, err := tClient.Orders.UpdateOrderLine(c.args.ctx, c.args.order, c.args.line.ID, c.args.line)
+			if c.wantErr {
+				os.NotNil(err)
+				os.EqualError(err, c.err.Error())
+			} else {
+				os.Nil(err)
+				os.IsType(&Order{}, m)
+			}
+		})
+	}
+}
+
+func (os *ordersServiceSuite) TestOrdersService_CancelOrderLine() {
+	type args struct {
+		ctx   context.Context
+		order string
+		line  OrderLine
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"update orders works as expected.",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				OrderLine{
+					ID:     "odl_dgtxyl",
+					Status: OrderLinePaid,
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(os.T(), r, "DELETE")
+				testQuery(os.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.UpdateOrderlineResponse))
+			},
+		},
+		{
+			"update order lines works as expected.",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				OrderLine{
+					ID:     "odl_dgtxyl",
+					Status: OrderLinePaid,
+				},
+			},
+			false,
+			nil,
+			func() {
+				tClient.WithAuthenticationValue("access_token_test")
+			},
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
+				testMethod(os.T(), r, "DELETE")
+				testQuery(os.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.UpdateOrderlineResponse))
+			},
+		},
+		{
+			"update order lines, an error is returned from the server",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				OrderLine{
+					ID:     "odl_dgtxyl",
+					Status: OrderLinePaid,
+				},
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"update order lines, invalid url when building request",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				OrderLine{
+					ID:     "odl_dgtxyl",
+					Status: OrderLinePaid,
+				},
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		os.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/lines", c.args.order), c.handler)
+
+			l := []OrderLine{
+				c.args.line,
+			}
+
+			err := tClient.Orders.CancelOrderLines(c.args.ctx, c.args.order, l)
+			if c.wantErr {
+				os.NotNil(err)
+				os.EqualError(err, c.err.Error())
+			} else {
+				os.Nil(err)
+			}
+		})
+	}
+}
+
+func (os *ordersServiceSuite) TestOrdersService_CreateOrderPayment() {
+	type args struct {
+		ctx     context.Context
+		order   string
+		payment *OrderPayment
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"create order payments works as expected.",
+			args{
+				context.Background(),
+				"ord_8wmqcHMN4U",
+				&OrderPayment{
+					Method: PayPal,
+					Issuer: "tr_asdajnasd",
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(os.T(), r, "POST")
+				testQuery(os.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.CreateOrderPaymentResponse))
+			},
+		},
+		{
+			"create order payments works as expected.",
+			args{
+				context.Background(),
+				"ord_8wmqcHMN4U",
+				&OrderPayment{
+					Method: PayPal,
+					Issuer: "tr_asdajnasd",
+				},
+			},
+			false,
+			nil,
+			func() {
+				tClient.WithAuthenticationValue("access_token_test")
+			},
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
+				testMethod(os.T(), r, "POST")
+				testQuery(os.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.CreateOrderPaymentResponse))
+			},
+		},
+		{
+			"create order payments, an error is returned from the server",
+			args{
+				context.Background(),
+				"ord_8wmqcHMN4U",
+				nil,
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"create order payments, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"ord_8wmqcHMN4U",
+				nil,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"create order payments, invalid url when building request",
+			args{
+				context.Background(),
+				"ord_8wmqcHMN4U",
+				nil,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		os.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/payments", c.args.order), c.handler)
+
+			m, err := tClient.Orders.CreateOrderPayment(c.args.ctx, c.args.order, c.args.payment)
+			if c.wantErr {
+				os.NotNil(err)
+				os.EqualError(err, c.err.Error())
+			} else {
+				os.Nil(err)
+				os.IsType(&Payment{}, m)
+			}
+		})
+	}
+}
+
+func (os *ordersServiceSuite) TestOrdersService_CreateOrderRefund() {
+	type args struct {
+		ctx   context.Context
+		order *Order
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"create order refund works as expected.",
+			args{
+				context.Background(),
+				&Order{ID: "ord_8wmqcHMN4U"},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(os.T(), r, "POST")
+				testQuery(os.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.CreateOrderRefundResponse))
+			},
+		},
+		{
+			"create order refund works as expected.",
+			args{
+				context.Background(),
+				&Order{ID: "ord_8wmqcHMN4U"},
+			},
+			false,
+			nil,
+			func() {
+				tClient.WithAuthenticationValue("access_token_test")
+			},
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
+				testMethod(os.T(), r, "POST")
+				testQuery(os.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.CreateOrderRefundResponse))
+			},
+		},
+		{
+			"create order refund, an error is returned from the server",
+			args{
+				context.Background(),
+				&Order{ID: "ord_8wmqcHMN4U"},
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"create order refund, an error occurs when parsing json",
+			args{
+				context.Background(),
+				&Order{ID: "ord_8wmqcHMN4U"},
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"create order refund, invalid url when building request",
+			args{
+				context.Background(),
+				&Order{ID: "ord_8wmqcHMN4U"},
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		os.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/refunds", c.args.order.ID), c.handler)
+
+			m, err := tClient.Orders.CreateOrderRefund(c.args.ctx, c.args.order.ID, c.args.order)
+			if c.wantErr {
+				os.NotNil(err)
+				os.EqualError(err, c.err.Error())
+			} else {
+				os.Nil(err)
+				os.IsType(Refund{}, m)
+			}
+		})
+	}
+}
+
+func (os *ordersServiceSuite) TestOrdersService_ListOrderRefund() {
+	type args struct {
+		ctx     context.Context
+		order   *Order
+		options *OrderListRefundOptions
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"list order refunds works as expected.",
+			args{
+				context.Background(),
+				&Order{ID: "ord_8wmqcHMN4U"},
+				&OrderListRefundOptions{Limit: 100},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(os.T(), r, "GET")
+				testQuery(os.T(), r, "limit=100&testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.CreateOrderRefundResponse))
+			},
+		},
+		{
+			"list order refunds works as expected.",
+			args{
+				context.Background(),
+				&Order{ID: "ord_8wmqcHMN4U"},
+				nil,
+			},
+			false,
+			nil,
+			func() {
+				tClient.WithAuthenticationValue("access_token_test")
+			},
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
+				testMethod(os.T(), r, "GET")
+				testQuery(os.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.CreateOrderRefundResponse))
+			},
+		},
+		{
+			"list order refunds, an error is returned from the server",
+			args{
+				context.Background(),
+				&Order{ID: "ord_8wmqcHMN4U"},
+				nil,
+			},
+			true,
+			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			noPre,
+			errorHandler,
+		},
+		{
+			"list order refunds, an error occurs when parsing json",
+			args{
+				context.Background(),
+				&Order{ID: "ord_8wmqcHMN4U"},
+				nil,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"list order refunds, invalid url when building request",
+			args{
+				context.Background(),
+				&Order{ID: "ord_8wmqcHMN4U"},
+				nil,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		os.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/refunds", c.args.order.ID), c.handler)
+
+			m, err := tClient.Orders.ListOrderRefunds(c.args.ctx, c.args.order.ID, c.args.options)
+			if c.wantErr {
+				os.NotNil(err)
+				os.EqualError(err, c.err.Error())
+			} else {
+				os.Nil(err)
+				os.IsType(OrderListRefund{}, m)
+			}
+		})
+	}
+}
+func TestOrdersService(t *testing.T) {
+	suite.Run(t, new(ordersServiceSuite))
 }

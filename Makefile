@@ -36,10 +36,13 @@ test-local:
 	@go test -v -failfast ./mollie/... -coverprofile cover.out
 .PHONY: test-local
 
-coverage:
-	@go test ./mollie/... -coverprofile cover.out
+coverage: test-local
 	@go tool cover -func=cover.out
 .PHONY:  coverage
+
+cover-report: test-local
+	@go tool cover -html=cover.out
+.PHONY: cover-report
 
 clean:
 	@go mod verify

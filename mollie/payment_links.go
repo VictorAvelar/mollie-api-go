@@ -47,7 +47,7 @@ type PaymentLinkLinks struct {
 // the payment links requests.
 type PaymentLinkOptions struct {
 	ProfileID string `url:"profileId,omitempty"`
-	From      string `url:"from,omitemtpy"`
+	From      string `url:"from,omitempty"`
 	Limit     int    `url:"limit,omitempty"`
 }
 

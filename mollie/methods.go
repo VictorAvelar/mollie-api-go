@@ -77,14 +77,21 @@ type ListMethods struct {
 	Links PaginationLinks `json:"_links,omitempty"`
 }
 
-// MethodsOptions are applicable query string parameters to methods
-// service endpoints.
-type MethodsOptions struct {
+// MethodsOptions are applicable query string parameters to get methods
+// from mollie's API.
+type GetMethodsOptions struct {
 	Locale    Locale `url:"locale,omitempty"`
 	Currency  string `url:"currency,omitempty"`
 	ProfileID string `url:"profileId,omitempty"`
 	Include   string `url:"include,omitempty"`
-	// Use for List method only
+}
+
+// ListMethodsOptions are applicable query string parameters to list methods
+// from mollie's API.
+//
+// It contains list specific options and embeds GetMethodOptions.
+type ListMethodsOptions struct {
+	GetMethodsOptions
 	SequenceType   SequenceType `url:"sequenceType,omitempty"`
 	AmountCurrency string       `url:"amount[currency],omitempty"`
 	AmountValue    string       `url:"amount[value],omitempty"`
@@ -101,7 +108,7 @@ type MethodsService service
 // query string parameters
 //
 // See: https://docs.mollie.com/reference/v2/methods-api/get-method
-func (ms *MethodsService) Get(ctx context.Context, id string, options *MethodsOptions) (pmi *PaymentMethodInfo, err error) {
+func (ms *MethodsService) Get(ctx context.Context, id string, options *GetMethodsOptions) (pmi *PaymentMethodInfo, err error) {
 	u := fmt.Sprintf("v2/methods/%s", id)
 	if options != nil {
 		v, _ := query.Values(options)
@@ -124,7 +131,7 @@ func (ms *MethodsService) Get(ctx context.Context, id string, options *MethodsOp
 // All retrieves all the payment methods enabled for your account/organization
 //
 // See: https://docs.mollie.com/reference/v2/methods-api/list-all-methods
-func (ms *MethodsService) All(ctx context.Context, options *MethodsOptions) (pm *ListMethods, err error) {
+func (ms *MethodsService) All(ctx context.Context, options *ListMethodsOptions) (pm *ListMethods, err error) {
 	u := "v2/methods/all"
 	if options != nil {
 		v, _ := query.Values(options)
@@ -138,7 +145,7 @@ func (ms *MethodsService) All(ctx context.Context, options *MethodsOptions) (pm 
 // The results are not paginated.
 //
 // See: https://docs.mollie.com/reference/v2/methods-api/list-methods
-func (ms *MethodsService) List(ctx context.Context, options *MethodsOptions) (pm *ListMethods, err error) {
+func (ms *MethodsService) List(ctx context.Context, options *ListMethodsOptions) (pm *ListMethods, err error) {
 	u := "v2/methods"
 	if options != nil {
 		v, _ := query.Values(options)

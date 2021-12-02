@@ -2,6 +2,8 @@ package mollie
 
 import (
 	"context"
+	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -10,6 +12,9 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNewClient(t *testing.T) {
@@ -37,9 +42,7 @@ func TestNewClient(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			_, err := NewClient(tt.client, conf)
-			if err != nil {
-				t.Errorf("not nil error received: %v", err)
-			}
+			assert.Nil(t, err)
 		})
 	}
 }
@@ -70,37 +73,157 @@ func TestNewClientWithEnvVars(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := NewClient(tt.client, tConf)
-			if err != nil {
-				t.Errorf("not nil error received: %v", err)
-			}
-
-			if got.authentication == "" {
-				t.Errorf("got empty api key %v, value %s expected", got.authentication, "token_X12b31ggg23")
-			}
+			require.Nil(t, err)
+			assert.NotEmpty(t, got.authentication)
 		})
 	}
 }
 
 func TestClient_NewAPIRequest(t *testing.T) {
-	setup()
-	defer teardown()
-	b := []string{"hello", "bye"}
-	inURL, outURL := "test", tServer.URL+"/test?testmode=true"
-	inBody, outBody := b, `["hello","bye"]`+"\n"
-	_ = tClient.WithAuthenticationValue("test_token")
-	req, _ := tClient.NewAPIRequest(context.TODO(), "GET", inURL, inBody)
-
-	testHeader(t, req, "Accept", RequestContentType)
-	testHeader(t, req, AuthHeader, "Bearer test_token")
-	// test that relative URL was expanded
-	if got, want := req.URL.String(), outURL; got != want {
-		t.Errorf("NewRequest(%q) URL is %v, want %v", inURL, got, want)
+	type args struct {
+		ctx    context.Context
+		method string
+		uri    string
+		body   interface{}
 	}
 
-	// test that body was JSON encoded
-	body, _ := ioutil.ReadAll(req.Body)
-	if got, want := string(body), outBody; got != want {
-		t.Errorf("NewRequest(%q) Body is %v, want %v", inBody, got, want)
+	type testCtxKey string
+
+	cases := []struct {
+		name    string
+		args    args
+		outBody string
+		outURI  string
+		wantCtx bool
+	}{
+		{
+			"request with empty context works as expected",
+			args{
+				ctx:    nil,
+				method: http.MethodGet,
+				uri:    "test",
+				body:   []string{"hello", "world"},
+			},
+			`["hello","world"]` + "\n",
+			"/test?testmode=true",
+			false,
+		},
+		{
+			"request with context works and the same as without context",
+			args{
+				ctx:    context.WithValue(context.Background(), testCtxKey("test-key"), "I will make it to the other side"),
+				method: http.MethodGet,
+				uri:    "test",
+				body:   "some simple string",
+			},
+			"\"some simple string\"\n",
+			"/test?testmode=true",
+			true,
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			setEnv()
+			setup()
+			defer teardown()
+			defer unsetEnv()
+
+			req, _ := tClient.NewAPIRequest(c.args.ctx, c.args.method, c.args.uri, c.args.body)
+
+			testHeader(t, req, "Accept", RequestContentType)
+			testHeader(t, req, AuthHeader, "Bearer token_X12b31ggg23")
+
+			assert.Equal(t, tServer.URL+c.outURI, req.URL.String())
+			body, _ := io.ReadAll(req.Body)
+			assert.Equal(t, c.outBody, string(body))
+		})
+	}
+}
+
+func TestClient_NewAPIRequest_ForceErrors(t *testing.T) {
+	type args struct {
+		ctx    context.Context
+		method string
+		uri    string
+		body   interface{}
+	}
+
+	noPre := func() error {
+		return nil
+	}
+
+	cases := []struct {
+		name string
+		args args
+		err  error
+		pre  func() error
+	}{
+		{
+			"err uri without trailing slash",
+			args{
+				context.Background(),
+				http.MethodGet,
+				"test",
+				nil,
+			},
+			errBadBaseURL,
+			func() error {
+				uri, err := url.Parse("http://localhost")
+				if err != nil {
+					return err
+				}
+				tClient = &Client{
+					BaseURL: uri,
+				}
+				return nil
+			},
+		},
+		{
+			"err parsing request uri",
+			args{
+				context.Background(),
+				"\\\\\\",
+				"test",
+				nil,
+			},
+			fmt.Errorf("net/http: invalid method \"\\\\\\\\\\\\\""),
+			noPre,
+		},
+		{
+			"err serializing request body",
+			args{
+				context.Background(),
+				http.MethodPost,
+				"test",
+				make(chan int),
+			},
+			fmt.Errorf("json: unsupported type: chan int"),
+			noPre,
+		},
+		{
+			"err when parsing requested uri",
+			args{
+				context.Background(),
+				http.MethodPut,
+				":",
+				nil,
+			},
+			fmt.Errorf("parse \":\": missing protocol scheme"),
+			noPre,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+		t.Run(c.name, func(t *testing.T) {
+			err := c.pre()
+			require.Nil(t, err)
+			_, err = tClient.NewAPIRequest(c.args.ctx, c.args.method, c.args.uri, c.args.body)
+			assert.NotNil(t, err)
+			assert.EqualError(t, err, c.err.Error())
+		})
 	}
 }
 
@@ -144,37 +267,8 @@ func TestClient_IsAccessToken(t *testing.T) {
 			}
 
 			got := client.HasAccessToken()
-
-			if got != c.want {
-				t.Errorf("Mismatching token check, want %v, got %v", c.want, got)
-			}
+			assert.Equal(t, c.want, got)
 		})
-	}
-}
-
-func TestClient_NewAPIRequest_ErrTrailingSlash(t *testing.T) {
-	uri, _ := url.Parse("http://localhost")
-	tClient = &Client{
-		BaseURL: uri,
-	}
-	_, err := tClient.NewAPIRequest(context.TODO(), "GET", "test", nil)
-
-	if err == nil {
-		t.Errorf("expected error %v not occurred, got %v", errBadBaseURL, err)
-	}
-}
-
-func TestClient_NewAPIRequest_HTTPReqNativeError(t *testing.T) {
-	setup()
-	defer teardown()
-	_, err := tClient.NewAPIRequest(context.TODO(), "\\\\\\", "test", nil)
-
-	if err == nil {
-		t.Fatal("nil error produced")
-	}
-
-	if !strings.Contains(err.Error(), "invalid method") {
-		t.Errorf("unexpected err received %v", err)
 	}
 }
 
@@ -197,92 +291,80 @@ func TestClient_WithAuthenticationValue_Error(t *testing.T) {
 	}
 }
 
-func TestClient_NewAPIRequest_ErrorBodySerialization(t *testing.T) {
-	setup()
-	defer teardown()
-	b := make(chan int)
-	_, err := tClient.NewAPIRequest(context.TODO(), "GET", "test", b)
-
-	if err == nil {
-		t.Fatal("nil error produced")
-	}
-
-	if !strings.Contains(err.Error(), "unsupported type") {
-		t.Errorf("unexpected err received %v", err)
-	}
-}
-
-func TestClient_NewAPIRequest_NativeURLParseError(t *testing.T) {
-	setup()
-	defer teardown()
-	_, err := tClient.NewAPIRequest(context.TODO(), "GET", ":", nil)
-
-	if err == nil {
-		t.Fatal("nil error produced")
-	}
-
-	if !strings.Contains(err.Error(), "parse") {
-		t.Errorf("unexpected err received %v", err)
-	}
-}
-
 func TestClient_Do(t *testing.T) {
-	setup()
-	defer teardown()
-
-	tMux.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		w.WriteHeader(http.StatusOK)
-	})
-	_ = tClient.WithAuthenticationValue("test_token")
-	req, _ := tClient.NewAPIRequest(context.TODO(), "GET", "test", nil)
-	res, err := tClient.Do(req)
-
-	if err != nil {
-		t.Errorf("unexpected error received: %v", err)
+	type args struct {
+		ctx    context.Context
+		method string
+		uri    string
+		body   interface{}
 	}
 
-	if res.StatusCode != http.StatusOK {
-		t.Errorf("request failed: %+v", res)
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		want    int
+		handler http.HandlerFunc
+		pre     func(r *http.Request)
+	}{
+		{
+			"execute successful request",
+			args{
+				context.Background(),
+				http.MethodGet,
+				"/test",
+				nil,
+			},
+			false,
+			nil,
+			http.StatusOK,
+			func(w http.ResponseWriter, r *http.Request) {
+				testMethod(t, r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				w.WriteHeader(http.StatusOK)
+			},
+			func(r *http.Request) {},
+		},
+		{
+			"error when request url is invalid (nil)",
+			args{
+				context.Background(),
+				http.MethodGet,
+				"/test",
+				nil,
+			},
+			true,
+			fmt.Errorf("Get \"\": http: nil Request.URL"),
+			http.StatusOK,
+			func(w http.ResponseWriter, r *http.Request) {
+				testMethod(t, r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				w.Write([]byte("nothing"))
+			},
+			func(r *http.Request) {
+				r.URL = nil
+			},
+		},
 	}
-}
 
-func TestClient_DoErrInvalidJSON(t *testing.T) {
-	setup()
-	defer teardown()
-	tMux.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "GET")
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("{"))
-	})
-	_ = tClient.WithAuthenticationValue("test_token")
-	req, _ := tClient.NewAPIRequest(context.TODO(), "GET", "test", nil)
-	req.URL = nil
-	_, err := tClient.Do(req)
-
-	if err == nil {
-		t.Error(err)
-	}
-	if !strings.Contains(err.Error(), "nil Request.URL") {
-		t.Errorf("unexpected response, got %v", err)
-	}
-}
-
-func TestClient_DoErr(t *testing.T) {
-	setup()
-	defer teardown()
-	req, _ := tClient.NewAPIRequest(context.TODO(), "GET", "test", nil)
-	req.URL = nil
-	_, err := tClient.Do(req)
-
-	if err == nil {
-		t.Error(err)
-	}
-
-	if !strings.Contains(err.Error(), "nil Request.URL") {
-		t.Errorf("unexpected response, got %v", err)
+	for _, c := range cases {
+		setEnv()
+		setup()
+		defer teardown()
+		defer unsetEnv()
+		t.Run(c.name, func(t *testing.T) {
+			tMux.HandleFunc(c.args.uri, c.handler)
+			req, _ := tClient.NewAPIRequest(c.args.ctx, c.args.method, c.args.uri, c.args.body)
+			c.pre(req)
+			res, err := tClient.Do(req)
+			if c.wantErr {
+				assert.EqualError(t, err, c.err.Error())
+			} else {
+				assert.Nil(t, err)
+				assert.Equal(t, c.want, res.StatusCode)
+			}
+		})
 	}
 }
 
@@ -347,6 +429,17 @@ var (
 	tConf   *Config
 )
 
+var (
+	noPre    = func() {}
+	crashSrv = func() {
+		u, _ := url.Parse(tServer.URL)
+		tClient.BaseURL = u
+	}
+	setAccesstoken = func() {
+		tClient.WithAuthenticationValue("access_token_test")
+	}
+)
+
 // the parameter indicates if you want to prepare your tests against the US sandbox
 // just to be used when doing integration testing.
 func setup() {
@@ -382,6 +475,21 @@ func testHeader(t *testing.T, r *http.Request, header string, want string) {
 	if got := r.Header.Get(header); got != want {
 		t.Errorf("Header.Get(%q) returned %q, want %q", header, got, want)
 	}
+}
+
+func testQuery(t *testing.T, r *http.Request, want string) {
+	if r.URL.Query().Encode() != want {
+		t.Errorf("Query().Encode() retuned unexpected values, want: %q, got %q", want, r.URL.Query().Encode())
+	}
+}
+
+func errorHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusInternalServerError)
+}
+
+func encodingHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write([]byte(`{hello: [{},]}`))
 }
 
 // <----- .Testing helpers ----->

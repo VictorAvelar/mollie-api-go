@@ -68,7 +68,7 @@ type PermissionsService service
 // Get returns a permission by its id.
 //
 // See: https://docs.mollie.com/reference/v2/permissions-api/get-permission
-func (ps *PermissionsService) Get(ctx context.Context, id string) (p *Permission, err error) {
+func (ps *PermissionsService) Get(ctx context.Context, id PermissionGrant) (p *Permission, err error) {
 	u := fmt.Sprintf("v2/permissions/%s", id)
 	req, err := ps.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
 	if err != nil {

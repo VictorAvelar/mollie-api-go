@@ -118,7 +118,7 @@ const ListShipmentsResponse = `{
                 "tracking": {
                     "carrier": "PostNL",
                     "code": "3SKABA000000000",
-                    "url": "http://postnl.nl/tracktrace/?B=3SKABA000000000&P=1016EE&D=NL&T=C"
+                    "url": "http://postnl.nl/tracktrace/?B=3SKABA000000000&P=1015CW&D=NL&T=C"
                 },
                 "lines": [
                     {
@@ -162,7 +162,7 @@ const ListShipmentsResponse = `{
                         }
                     },
                     { }
-                ]
+                ],
                 "_links": {
                     "self": {
                         "href": "https://api.mollie.com/v2/order/ord_kEn1PlbGa/shipments/shp_3wmsgCJN4U",

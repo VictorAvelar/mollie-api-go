@@ -74,7 +74,7 @@ type InvoiceList struct {
 type InvoicesService service
 
 // Get retrieve details of an invoice, using the invoice’s identifier.
-func (is *InvoicesService) Get(ctx context.Context, id string) (i Invoice, err error) {
+func (is *InvoicesService) Get(ctx context.Context, id string) (i *Invoice, err error) {
 	getURL := fmt.Sprintf("v2/invoices/%s", id)
 
 	req, err := is.client.NewAPIRequest(ctx, http.MethodGet, getURL, nil)
@@ -92,7 +92,7 @@ func (is *InvoicesService) Get(ctx context.Context, id string) (i Invoice, err e
 }
 
 // List retrieves a list of invoices associated with your account/organization.
-func (is *InvoicesService) List(ctx context.Context, options *ListInvoiceOptions) (il InvoiceList, err error) {
+func (is *InvoicesService) List(ctx context.Context, options *ListInvoiceOptions) (il *InvoiceList, err error) {
 	u := "v2/invoices"
 	if options != nil {
 		v, _ := query.Values(options)
