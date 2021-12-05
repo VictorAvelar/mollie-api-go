@@ -66,6 +66,50 @@ type service struct {
 	client *Client
 }
 
+func (c *Client) get(ctx context.Context, uri string) (res *Response, err error) {
+	req, err := c.NewAPIRequest(ctx, http.MethodGet, uri, nil)
+	if err != nil {
+		return
+	}
+
+	return c.Do(req)
+}
+
+func (c *Client) post(ctx context.Context, uri string, body interface{}) (res *Response, err error) {
+	req, err := c.NewAPIRequest(ctx, http.MethodPost, uri, body)
+	if err != nil {
+		return
+	}
+
+	return c.Do(req)
+}
+
+func (c *Client) patch(ctx context.Context, uri string, body interface{}) (res *Response, err error) {
+	req, err := c.NewAPIRequest(ctx, http.MethodPatch, uri, body)
+	if err != nil {
+		return
+	}
+
+	return c.Do(req)
+}
+
+func (c *Client) delete(ctx context.Context, uri string) (res *Response, err error) {
+	req, err := c.NewAPIRequest(ctx, http.MethodDelete, uri, nil)
+	if err != nil {
+		return
+	}
+
+	return c.Do(req)
+}
+
+func (c *Client) usePathValue(v ...string) []string {
+	for i, val := range v {
+		v[i] = url.PathEscape(val)
+	}
+
+	return v
+}
+
 // WithAuthenticationValue offers a convenient setter for any of the valid authentication
 // tokens provided by Mollie.
 //
