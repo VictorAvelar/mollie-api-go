@@ -49,7 +49,7 @@ type CapturesList struct {
 // See: https://docs.mollie.com/reference/v2/captures-api/get-capture
 func (cs *CapturesService) Get(ctx context.Context, payment, capture string) (res *Response, c *Capture, err error) {
 	u := fmt.Sprintf("v2/payments/%s/captures/%s", payment, capture)
-	res, err = cs.client.get(ctx, u)
+	res, err = cs.client.get(ctx, u, nil)
 	if err != nil {
 		return
 	}
@@ -66,7 +66,7 @@ func (cs *CapturesService) Get(ctx context.Context, payment, capture string) (re
 // See: https://docs.mollie.com/reference/v2/captures-api/list-captures
 func (cs *CapturesService) List(ctx context.Context, payment string) (res *Response, cl *CapturesList, err error) {
 	u := fmt.Sprintf("v2/payments/%s/captures", payment)
-	res, err = cs.client.get(ctx, u)
+	res, err = cs.client.get(ctx, u, nil)
 	if err != nil {
 		return
 	}
