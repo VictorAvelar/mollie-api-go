@@ -103,13 +103,15 @@ func (ms *mandateServiceSuite) TestMandatesService_Get() {
 				c.handler,
 			)
 
-			m, err := tClient.Mandates.Get(c.args.ctx, c.args.customer, c.args.mandate)
+			res, m, err := tClient.Mandates.Get(c.args.ctx, c.args.customer, c.args.mandate)
 			if c.wantErr {
 				ms.NotNil(err)
 				ms.EqualError(err, c.err.Error())
 			} else {
 				ms.Nil(err)
 				ms.IsType(&Mandate{}, m)
+				ms.Same(c.args.ctx, res.Request.Context())
+				ms.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -210,13 +212,15 @@ func (ms *mandateServiceSuite) TestMandatesService_Create() {
 				c.handler,
 			)
 
-			m, err := tClient.Mandates.Create(c.args.ctx, c.args.customer, c.args.mandate)
+			res, m, err := tClient.Mandates.Create(c.args.ctx, c.args.customer, c.args.mandate)
 			if c.wantErr {
 				ms.NotNil(err)
 				ms.EqualError(err, c.err.Error())
 			} else {
 				ms.Nil(err)
 				ms.IsType(&Mandate{}, m)
+				ms.Same(c.args.ctx, res.Request.Context())
+				ms.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -298,12 +302,14 @@ func (ms *mandateServiceSuite) TestMandatesService_Revoke() {
 				c.handler,
 			)
 
-			err := tClient.Mandates.Revoke(c.args.ctx, c.args.customer, c.args.mandate)
+			res, err := tClient.Mandates.Revoke(c.args.ctx, c.args.customer, c.args.mandate)
 			if c.wantErr {
 				ms.NotNil(err)
 				ms.EqualError(err, c.err.Error())
 			} else {
 				ms.Nil(err)
+				ms.Same(c.args.ctx, res.Request.Context())
+				ms.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -312,7 +318,7 @@ func (ms *mandateServiceSuite) TestMandatesService_Revoke() {
 func (ms *mandateServiceSuite) TestMandatesService_List() {
 	type args struct {
 		ctx      context.Context
-		options  *ListMandatesOptions
+		options  *MandatesListOptions
 		customer string
 	}
 
@@ -347,7 +353,7 @@ func (ms *mandateServiceSuite) TestMandatesService_List() {
 			"list mandates with options works as expected.",
 			args{
 				context.Background(),
-				&ListMandatesOptions{
+				&MandatesListOptions{
 					Limit: 10,
 				},
 				"cst_4qqhO89gsT",
@@ -416,13 +422,15 @@ func (ms *mandateServiceSuite) TestMandatesService_List() {
 				c.handler,
 			)
 
-			m, err := tClient.Mandates.List(c.args.ctx, c.args.customer, c.args.options)
+			res, m, err := tClient.Mandates.List(c.args.ctx, c.args.customer, c.args.options)
 			if c.wantErr {
 				ms.NotNil(err)
 				ms.EqualError(err, c.err.Error())
 			} else {
 				ms.Nil(err)
-				ms.IsType(&MandateList{}, m)
+				ms.IsType(&MandatesList{}, m)
+				ms.Same(c.args.ctx, res.Request.Context())
+				ms.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
