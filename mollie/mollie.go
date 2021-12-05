@@ -66,7 +66,7 @@ type service struct {
 	client *Client
 }
 
-func (c *Client) get(ctx context.Context, uri string) (res *Response, err error) {
+func (c *Client) get(ctx context.Context, uri string, options interface{}) (res *Response, err error) {
 	req, err := c.NewAPIRequest(ctx, http.MethodGet, uri, nil)
 	if err != nil {
 		return
@@ -75,7 +75,7 @@ func (c *Client) get(ctx context.Context, uri string) (res *Response, err error)
 	return c.Do(req)
 }
 
-func (c *Client) post(ctx context.Context, uri string, body interface{}) (res *Response, err error) {
+func (c *Client) post(ctx context.Context, uri string, body interface{}, options interface{}) (res *Response, err error) {
 	req, err := c.NewAPIRequest(ctx, http.MethodPost, uri, body)
 	if err != nil {
 		return
@@ -84,7 +84,7 @@ func (c *Client) post(ctx context.Context, uri string, body interface{}) (res *R
 	return c.Do(req)
 }
 
-func (c *Client) patch(ctx context.Context, uri string, body interface{}) (res *Response, err error) {
+func (c *Client) patch(ctx context.Context, uri string, body interface{}, options interface{}) (res *Response, err error) {
 	req, err := c.NewAPIRequest(ctx, http.MethodPatch, uri, body)
 	if err != nil {
 		return
@@ -93,7 +93,7 @@ func (c *Client) patch(ctx context.Context, uri string, body interface{}) (res *
 	return c.Do(req)
 }
 
-func (c *Client) delete(ctx context.Context, uri string) (res *Response, err error) {
+func (c *Client) delete(ctx context.Context, uri string, options interface{}) (res *Response, err error) {
 	req, err := c.NewAPIRequest(ctx, http.MethodDelete, uri, nil)
 	if err != nil {
 		return
