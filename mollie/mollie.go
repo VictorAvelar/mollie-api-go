@@ -14,6 +14,8 @@ import (
 	"regexp"
 	"runtime"
 	"strings"
+
+	"github.com/google/go-querystring/query"
 )
 
 // Constants holding values for client initialization and request instantiation.
@@ -72,6 +74,11 @@ func (c *Client) get(ctx context.Context, uri string, options interface{}) (res 
 		return
 	}
 
+	if options != nil {
+		v, _ := query.Values(options)
+		req.URL.RawQuery = v.Encode()
+	}
+
 	return c.Do(req)
 }
 
@@ -79,6 +86,11 @@ func (c *Client) post(ctx context.Context, uri string, body interface{}, options
 	req, err := c.NewAPIRequest(ctx, http.MethodPost, uri, body)
 	if err != nil {
 		return
+	}
+
+	if options != nil {
+		v, _ := query.Values(options)
+		req.URL.RawQuery = v.Encode()
 	}
 
 	return c.Do(req)
@@ -90,6 +102,11 @@ func (c *Client) patch(ctx context.Context, uri string, body interface{}, option
 		return
 	}
 
+	if options != nil {
+		v, _ := query.Values(options)
+		req.URL.RawQuery = v.Encode()
+	}
+
 	return c.Do(req)
 }
 
@@ -99,15 +116,12 @@ func (c *Client) delete(ctx context.Context, uri string, options interface{}) (r
 		return
 	}
 
-	return c.Do(req)
-}
-
-func (c *Client) usePathValue(v ...string) []string {
-	for i, val := range v {
-		v[i] = url.PathEscape(val)
+	if options != nil {
+		v, _ := query.Values(options)
+		req.URL.RawQuery = v.Encode()
 	}
 
-	return v
+	return c.Do(req)
 }
 
 // WithAuthenticationValue offers a convenient setter for any of the valid authentication
