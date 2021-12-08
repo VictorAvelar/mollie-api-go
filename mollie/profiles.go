@@ -167,7 +167,7 @@ func (ps *ProfilesService) Delete(ctx context.Context, id string) (err error) {
 
 // EnablePaymentMethod enables a payment method on a specific or authenticated profile.
 // If you're using API tokens for authentication, pass "me" as id.
-func (ps *ProfilesService) EnablePaymentMethod(ctx context.Context, id string, pm PaymentMethod) (pmi *PaymentMethodInfo, err error) {
+func (ps *ProfilesService) EnablePaymentMethod(ctx context.Context, id string, pm PaymentMethod) (pmi *PaymentMethodDetails, err error) {
 	u := fmt.Sprintf("v2/profiles/%s/methods/%s", id, pm)
 	req, err := ps.client.NewAPIRequest(ctx, http.MethodPost, u, nil)
 	if err != nil {

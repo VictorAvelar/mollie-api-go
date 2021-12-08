@@ -673,7 +673,7 @@ func (ps *settlementsServiceSuite) TestSettlementsService_GetChargebacks() {
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
-				ps.IsType(&ChargebackList{}, m)
+				ps.IsType(&ChargebacksList{}, m)
 			}
 		})
 	}

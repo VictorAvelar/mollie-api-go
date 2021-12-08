@@ -629,7 +629,7 @@ func (ps *profilesServiceSuite) TestProfilesService_EnablePaymentMethod() {
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
-				ps.IsType(&PaymentMethodInfo{}, m)
+				ps.IsType(&PaymentMethodDetails{}, m)
 			}
 		})
 	}

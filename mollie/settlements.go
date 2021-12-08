@@ -166,7 +166,7 @@ func (ss *SettlementsService) GetRefunds(ctx context.Context, id string, slo *Se
 // GetChargebacks retrieves all chargebacks included in a settlement.
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-chargebacks
-func (ss *SettlementsService) GetChargebacks(ctx context.Context, id string, slo *SettlementsListOptions) (cl *ChargebackList, err error) {
+func (ss *SettlementsService) GetChargebacks(ctx context.Context, id string, slo *SettlementsListOptions) (cl *ChargebacksList, err error) {
 	res, err := ss.list(ctx, id, "chargebacks", slo)
 	if err != nil {
 		return
