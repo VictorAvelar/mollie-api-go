@@ -43,25 +43,25 @@ type Client struct {
 	common         service // Reuse a single struct instead of allocating one for each service on the heap.
 	config         *Config
 	// Services
-	Payments      *PaymentsService
-	Chargebacks   *ChargebacksService
-	Methods       *MethodsService
-	Invoices      *InvoicesService
-	Organizations *OrganizationsService
-	Profiles      *ProfilesService
-	Refunds       *RefundsService
-	Shipments     *ShipmentsService
-	Orders        *OrdersService
-	Settlements   *SettlementsService
-	Captures      *CapturesService
-	Subscriptions *SubscriptionsService
-	Customers     *CustomersService
-	Miscellaneous *MiscellaneousService
-	Mandates      *MandatesService
-	Permissions   *PermissionsService
-	Onboarding    *OnboardingService
-	PaymentLinks  *PaymentLinksService
-	Partners      *PartnerService
+	Payments       *PaymentsService
+	Chargebacks    *ChargebacksService
+	PaymentMethods *PaymentMethodsService
+	Invoices       *InvoicesService
+	Organizations  *OrganizationsService
+	Profiles       *ProfilesService
+	Refunds        *RefundsService
+	Shipments      *ShipmentsService
+	Orders         *OrdersService
+	Settlements    *SettlementsService
+	Captures       *CapturesService
+	Subscriptions  *SubscriptionsService
+	Customers      *CustomersService
+	Miscellaneous  *MiscellaneousService
+	Mandates       *MandatesService
+	Permissions    *PermissionsService
+	Onboarding     *OnboardingService
+	PaymentLinks   *PaymentLinksService
+	Partners       *PartnerService
 }
 
 type service struct {
@@ -69,56 +69,56 @@ type service struct {
 }
 
 func (c *Client) get(ctx context.Context, uri string, options interface{}) (res *Response, err error) {
+	if options != nil {
+		v, _ := query.Values(options)
+		uri = fmt.Sprintf("%s?%s", uri, v.Encode())
+	}
+
 	req, err := c.NewAPIRequest(ctx, http.MethodGet, uri, nil)
 	if err != nil {
 		return
-	}
-
-	if options != nil {
-		v, _ := query.Values(options)
-		req.URL.RawQuery = v.Encode()
 	}
 
 	return c.Do(req)
 }
 
 func (c *Client) post(ctx context.Context, uri string, body interface{}, options interface{}) (res *Response, err error) {
+	if options != nil {
+		v, _ := query.Values(options)
+		uri = fmt.Sprintf("%s?%s", uri, v.Encode())
+	}
+
 	req, err := c.NewAPIRequest(ctx, http.MethodPost, uri, body)
 	if err != nil {
 		return
-	}
-
-	if options != nil {
-		v, _ := query.Values(options)
-		req.URL.RawQuery = v.Encode()
 	}
 
 	return c.Do(req)
 }
 
 func (c *Client) patch(ctx context.Context, uri string, body interface{}, options interface{}) (res *Response, err error) {
+	if options != nil {
+		v, _ := query.Values(options)
+		uri = fmt.Sprintf("%s?%s", uri, v.Encode())
+	}
+
 	req, err := c.NewAPIRequest(ctx, http.MethodPatch, uri, body)
 	if err != nil {
 		return
-	}
-
-	if options != nil {
-		v, _ := query.Values(options)
-		req.URL.RawQuery = v.Encode()
 	}
 
 	return c.Do(req)
 }
 
 func (c *Client) delete(ctx context.Context, uri string, options interface{}) (res *Response, err error) {
+	if options != nil {
+		v, _ := query.Values(options)
+		uri = fmt.Sprintf("%s?%s", uri, v.Encode())
+	}
+
 	req, err := c.NewAPIRequest(ctx, http.MethodDelete, uri, nil)
 	if err != nil {
 		return
-	}
-
-	if options != nil {
-		v, _ := query.Values(options)
-		req.URL.RawQuery = v.Encode()
 	}
 
 	return c.Do(req)
@@ -241,7 +241,7 @@ func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
 	// services for resources
 	mollie.Payments = (*PaymentsService)(&mollie.common)
 	mollie.Chargebacks = (*ChargebacksService)(&mollie.common)
-	mollie.Methods = (*MethodsService)(&mollie.common)
+	mollie.PaymentMethods = (*PaymentMethodsService)(&mollie.common)
 	mollie.Invoices = (*InvoicesService)(&mollie.common)
 	mollie.Organizations = (*OrganizationsService)(&mollie.common)
 	mollie.Profiles = (*ProfilesService)(&mollie.common)

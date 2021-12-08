@@ -19,7 +19,7 @@ func (ms *methodsServiceSuite) TearDownSuite() { unsetEnv() }
 func (ms *methodsServiceSuite) TestMethodsService_List() {
 	type args struct {
 		ctx     context.Context
-		options *ListMethodsOptions
+		options *PaymentMethodsListOptions
 	}
 
 	cases := []struct {
@@ -54,7 +54,7 @@ func (ms *methodsServiceSuite) TestMethodsService_List() {
 			"list methods with options works as expected.",
 			args{
 				context.Background(),
-				&ListMethodsOptions{
+				&PaymentMethodsListOptions{
 					AmountCurrency: "EUR",
 					AmountValue:    "100.00",
 				},
@@ -116,13 +116,15 @@ func (ms *methodsServiceSuite) TestMethodsService_List() {
 			c.pre()
 			tMux.HandleFunc("/v2/methods", c.handler)
 
-			m, err := tClient.Methods.List(c.args.ctx, c.args.options)
+			res, m, err := tClient.PaymentMethods.List(c.args.ctx, c.args.options)
 			if c.wantErr {
 				ms.NotNil(err)
 				ms.EqualError(err, c.err.Error())
 			} else {
 				ms.Nil(err)
-				ms.IsType(&ListMethods{}, m)
+				ms.IsType(&PaymentMethodsList{}, m)
+				ms.Same(c.args.ctx, res.Request.Context())
+				ms.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -131,7 +133,7 @@ func (ms *methodsServiceSuite) TestMethodsService_List() {
 func (ms *methodsServiceSuite) TestMethodsService_All() {
 	type args struct {
 		ctx     context.Context
-		options *ListMethodsOptions
+		options *PaymentMethodsListOptions
 	}
 
 	cases := []struct {
@@ -166,7 +168,7 @@ func (ms *methodsServiceSuite) TestMethodsService_All() {
 			"list methods with options works as expected.",
 			args{
 				context.Background(),
-				&ListMethodsOptions{
+				&PaymentMethodsListOptions{
 					AmountCurrency: "EUR",
 					AmountValue:    "100.00",
 				},
@@ -228,13 +230,15 @@ func (ms *methodsServiceSuite) TestMethodsService_All() {
 			c.pre()
 			tMux.HandleFunc("/v2/methods/all", c.handler)
 
-			m, err := tClient.Methods.All(c.args.ctx, c.args.options)
+			res, m, err := tClient.PaymentMethods.All(c.args.ctx, c.args.options)
 			if c.wantErr {
 				ms.NotNil(err)
 				ms.EqualError(err, c.err.Error())
 			} else {
 				ms.Nil(err)
-				ms.IsType(&ListMethods{}, m)
+				ms.IsType(&PaymentMethodsList{}, m)
+				ms.Same(c.args.ctx, res.Request.Context())
+				ms.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -243,7 +247,7 @@ func (ms *methodsServiceSuite) TestMethodsService_All() {
 func (ms *methodsServiceSuite) TestMethodsService_Get() {
 	type args struct {
 		ctx     context.Context
-		options *GetMethodsOptions
+		options *PaymentMethodOptions
 		method  PaymentMethod
 	}
 
@@ -280,7 +284,7 @@ func (ms *methodsServiceSuite) TestMethodsService_Get() {
 			"get methods with options works as expected.",
 			args{
 				context.Background(),
-				&GetMethodsOptions{Locale: Catalan},
+				&PaymentMethodOptions{Locale: Catalan},
 				PayPal,
 			},
 			false,
@@ -343,13 +347,15 @@ func (ms *methodsServiceSuite) TestMethodsService_Get() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/methods/%s", c.args.method), c.handler)
 
-			m, err := tClient.Methods.Get(c.args.ctx, string(c.args.method), c.args.options)
+			res, m, err := tClient.PaymentMethods.Get(c.args.ctx, string(c.args.method), c.args.options)
 			if c.wantErr {
 				ms.NotNil(err)
 				ms.EqualError(err, c.err.Error())
 			} else {
 				ms.Nil(err)
-				ms.IsType(&PaymentMethodInfo{}, m)
+				ms.IsType(&PaymentMethodDetails{}, m)
+				ms.Same(c.args.ctx, res.Request.Context())
+				ms.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
