@@ -95,13 +95,14 @@ func (ms *miscellaneousServiceSuite) TestMiscellaneousService_ApplePaymentSessio
 			c.pre()
 			tMux.HandleFunc("/v2/wallets/applepay/sessions", c.handler)
 
-			m, err := tClient.Miscellaneous.ApplePaymentSession(c.args.ctx, c.args.appleSess)
+			res, m, err := tClient.Miscellaneous.ApplePaymentSession(c.args.ctx, c.args.appleSess)
 			if c.wantErr {
 				ms.NotNil(err)
 				ms.EqualError(err, c.err.Error())
 			} else {
 				ms.Nil(err)
 				ms.IsType(&ApplePaymentSession{}, m)
+				ms.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
