@@ -71,13 +71,14 @@ func (os *onboardingServiceSuite) TestOnboardingService_GetOnboardingStatus() {
 			c.pre()
 			tMux.HandleFunc("/v2/onboarding/me", c.handler)
 
-			m, err := tClient.Onboarding.GetOnboardingStatus(context.Background())
+			res, m, err := tClient.Onboarding.GetOnboardingStatus(context.Background())
 			if c.wantErr {
 				os.NotNil(err)
 				os.EqualError(err, c.err.Error())
 			} else {
 				os.Nil(err)
 				os.IsType(&Onboarding{}, m)
+				os.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -135,12 +136,13 @@ func (os *onboardingServiceSuite) TestOnboardingService_SubmitOnboardingData() {
 			c.pre()
 			tMux.HandleFunc("/v2/onboarding/me", c.handler)
 
-			err := tClient.Onboarding.SubmitOnboardingData(context.Background(), c.data)
+			res, err := tClient.Onboarding.SubmitOnboardingData(context.Background(), c.data)
 			if c.wantErr {
 				os.NotNil(err)
 				os.EqualError(err, c.err.Error())
 			} else {
 				os.Nil(err)
+				os.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
