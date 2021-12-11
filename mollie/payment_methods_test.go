@@ -123,7 +123,6 @@ func (ms *paymentMethodsServiceSuite) TestMethodsService_List() {
 			} else {
 				ms.Nil(err)
 				ms.IsType(&PaymentMethodsList{}, m)
-				ms.Same(c.args.ctx, res.Request.Context())
 				ms.IsType(&http.Response{}, res.Response)
 			}
 		})
@@ -237,7 +236,6 @@ func (ms *paymentMethodsServiceSuite) TestMethodsService_All() {
 			} else {
 				ms.Nil(err)
 				ms.IsType(&PaymentMethodsList{}, m)
-				ms.Same(c.args.ctx, res.Request.Context())
 				ms.IsType(&http.Response{}, res.Response)
 			}
 		})
@@ -355,7 +353,6 @@ func (ms *paymentMethodsServiceSuite) TestMethodsService_Get() {
 			} else {
 				ms.Nil(err)
 				ms.IsType(&PaymentMethodDetails{}, m)
-				ms.Same(c.args.ctx, res.Request.Context())
 				ms.IsType(&http.Response{}, res.Response)
 			}
 		})
