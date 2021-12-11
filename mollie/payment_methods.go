@@ -98,7 +98,7 @@ type PaymentMethodsService service
 // query string parameters.
 //
 // See: https://docs.mollie.com/reference/v2/methods-api/get-method
-func (ms *PaymentMethodsService) Get(ctx context.Context, id string, options *PaymentMethodOptions) (res *Response, pmd *PaymentMethodDetails, err error) {
+func (ms *PaymentMethodsService) Get(ctx context.Context, id PaymentMethod, options *PaymentMethodOptions) (res *Response, pmd *PaymentMethodDetails, err error) {
 	u := fmt.Sprintf("v2/methods/%s", id)
 
 	res, err = ms.client.get(ctx, u, options)
