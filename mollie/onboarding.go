@@ -85,7 +85,7 @@ type OnboardingData struct {
 //
 // See: https://docs.mollie.com/reference/v2/onboarding-api/submit-onboarding-data
 func (os *OnboardingService) SubmitOnboardingData(ctx context.Context, d *OnboardingData) (res *Response, err error) {
-	res, err = os.client.get(ctx, onboardingTarget, d)
+	res, err = os.client.post(ctx, onboardingTarget, d, nil)
 	if err != nil {
 		return
 	}

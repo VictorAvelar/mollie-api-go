@@ -121,13 +121,14 @@ func (os *partnersServiceSuite) TestPartnerService_Get() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/clients/%s", c.args.client), c.handler)
 
-			m, err := tClient.Partners.Get(c.args.ctx, c.args.client, c.args.opts)
+			res, m, err := tClient.Partners.Get(c.args.ctx, c.args.client, c.args.opts)
 			if c.wantErr {
 				os.NotNil(err)
 				os.EqualError(err, c.err.Error())
 			} else {
 				os.Nil(err)
 				os.IsType(&PartnerClient{}, m)
+				os.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -238,13 +239,14 @@ func (os *partnersServiceSuite) TestPartnerService_List() {
 			c.pre()
 			tMux.HandleFunc("/v2/clients", c.handler)
 
-			m, err := tClient.Partners.List(c.args.ctx, c.args.opts)
+			res, m, err := tClient.Partners.List(c.args.ctx, c.args.opts)
 			if c.wantErr {
 				os.NotNil(err)
 				os.EqualError(err, c.err.Error())
 			} else {
 				os.Nil(err)
 				os.IsType(&PartnerClientList{}, m)
+				os.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
