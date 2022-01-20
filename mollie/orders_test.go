@@ -99,13 +99,14 @@ func (os *ordersServiceSuite) TestOrdersService_Get() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s", c.args.order), c.handler)
 
-			m, err := tClient.Orders.Get(c.args.ctx, c.args.order, c.args.options)
+			res, m, err := tClient.Orders.Get(c.args.ctx, c.args.order, c.args.options)
 			if c.wantErr {
 				os.NotNil(err)
 				os.EqualError(err, c.err.Error())
 			} else {
 				os.Nil(err)
 				os.IsType(&Order{}, m)
+				os.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -194,13 +195,14 @@ func (os *ordersServiceSuite) TestOrdersService_List() {
 			c.pre()
 			tMux.HandleFunc("/v2/orders", c.handler)
 
-			m, err := tClient.Orders.List(c.args.ctx, c.args.options)
+			res, m, err := tClient.Orders.List(c.args.ctx, c.args.options)
 			if c.wantErr {
 				os.NotNil(err)
 				os.EqualError(err, c.err.Error())
 			} else {
 				os.Nil(err)
 				os.IsType(&OrderList{}, m)
+				os.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -320,13 +322,14 @@ func (os *ordersServiceSuite) TestOrdersService_Create() {
 			c.pre()
 			tMux.HandleFunc("/v2/orders", c.handler)
 
-			m, err := tClient.Orders.Create(c.args.ctx, c.args.order, c.args.options)
+			res, m, err := tClient.Orders.Create(c.args.ctx, c.args.order, c.args.options)
 			if c.wantErr {
 				os.NotNil(err)
 				os.EqualError(err, c.err.Error())
 			} else {
 				os.Nil(err)
 				os.IsType(&Order{}, m)
+				os.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -447,13 +450,14 @@ func (os *ordersServiceSuite) TestOrdersService_Update() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s", c.args.order.ID), c.handler)
 
-			m, err := tClient.Orders.Update(c.args.ctx, c.args.order.ID, c.args.order)
+			res, m, err := tClient.Orders.Update(c.args.ctx, c.args.order.ID, c.args.order)
 			if c.wantErr {
 				os.NotNil(err)
 				os.EqualError(err, c.err.Error())
 			} else {
 				os.Nil(err)
 				os.IsType(&Order{}, m)
+				os.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -574,13 +578,14 @@ func (os *ordersServiceSuite) TestOrdersService_Cancel() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s", c.args.order.ID), c.handler)
 
-			m, err := tClient.Orders.Cancel(c.args.ctx, c.args.order.ID)
+			res, m, err := tClient.Orders.Cancel(c.args.ctx, c.args.order.ID)
 			if c.wantErr {
 				os.NotNil(err)
 				os.EqualError(err, c.err.Error())
 			} else {
 				os.Nil(err)
 				os.IsType(&Order{}, m)
+				os.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -705,13 +710,14 @@ func (os *ordersServiceSuite) TestOrdersService_UpdateOrderLine() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/lines/%s", c.args.order, c.args.line.ID), c.handler)
 
-			m, err := tClient.Orders.UpdateOrderLine(c.args.ctx, c.args.order, c.args.line.ID, c.args.line)
+			res, m, err := tClient.Orders.UpdateOrderLine(c.args.ctx, c.args.order, c.args.line.ID, c.args.line)
 			if c.wantErr {
 				os.NotNil(err)
 				os.EqualError(err, c.err.Error())
 			} else {
 				os.Nil(err)
 				os.IsType(&Order{}, m)
+				os.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -825,12 +831,13 @@ func (os *ordersServiceSuite) TestOrdersService_CancelOrderLine() {
 				c.args.line,
 			}
 
-			err := tClient.Orders.CancelOrderLines(c.args.ctx, c.args.order, l)
+			res, err := tClient.Orders.CancelOrderLines(c.args.ctx, c.args.order, l)
 			if c.wantErr {
 				os.NotNil(err)
 				os.EqualError(err, c.err.Error())
 			} else {
 				os.Nil(err)
+				os.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -946,13 +953,14 @@ func (os *ordersServiceSuite) TestOrdersService_CreateOrderPayment() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/payments", c.args.order), c.handler)
 
-			m, err := tClient.Orders.CreateOrderPayment(c.args.ctx, c.args.order, c.args.payment)
+			res, m, err := tClient.Orders.CreateOrderPayment(c.args.ctx, c.args.order, c.args.payment)
 			if c.wantErr {
 				os.NotNil(err)
 				os.EqualError(err, c.err.Error())
 			} else {
 				os.Nil(err)
 				os.IsType(&Payment{}, m)
+				os.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -1056,13 +1064,14 @@ func (os *ordersServiceSuite) TestOrdersService_CreateOrderRefund() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/refunds", c.args.order.ID), c.handler)
 
-			m, err := tClient.Orders.CreateOrderRefund(c.args.ctx, c.args.order.ID, c.args.order)
+			res, m, err := tClient.Orders.CreateOrderRefund(c.args.ctx, c.args.order.ID, c.args.order)
 			if c.wantErr {
 				os.NotNil(err)
 				os.EqualError(err, c.err.Error())
 			} else {
 				os.Nil(err)
-				os.IsType(Refund{}, m)
+				os.IsType(&Refund{}, m)
+				os.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -1172,13 +1181,14 @@ func (os *ordersServiceSuite) TestOrdersService_ListOrderRefund() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/refunds", c.args.order.ID), c.handler)
 
-			m, err := tClient.Orders.ListOrderRefunds(c.args.ctx, c.args.order.ID, c.args.options)
+			res, m, err := tClient.Orders.ListOrderRefunds(c.args.ctx, c.args.order.ID, c.args.options)
 			if c.wantErr {
 				os.NotNil(err)
 				os.EqualError(err, c.err.Error())
 			} else {
 				os.Nil(err)
-				os.IsType(OrderListRefund{}, m)
+				os.IsType(&OrderListRefund{}, m)
+				os.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
