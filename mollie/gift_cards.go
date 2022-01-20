@@ -19,6 +19,7 @@ const (
 	Festivalcadeau             GiftCardIssuer = "festivalcadeau"
 	Good4fun                   GiftCardIssuer = "good4fun"
 	HuistuinCadeauKaart        GiftCardIssuer = "huistuincadeaukaart"
+	JewelCard                  GiftCardIssuer = "jewelcard"
 	KlusCadeu                  GiftCardIssuer = "kluscadeau"
 	Kunstencultuurcadeaukaart  GiftCardIssuer = "kunstencultuurcadeaukaart"
 	Nationalebioscoopbon       GiftCardIssuer = "nationalebioscoopbon"
@@ -36,6 +37,7 @@ const (
 	Vvvdinercheque             GiftCardIssuer = "vvvdinercheque"
 	Vvvlekkerweg               GiftCardIssuer = "vvvlekkerweg"
 	Webshopgiftcard            GiftCardIssuer = "webshopgiftcard"
+	Wijncadeukaart             GiftCardIssuer = "wijncadeaukaart"
 	Yourgift                   GiftCardIssuer = "yourgift"
 )
 
