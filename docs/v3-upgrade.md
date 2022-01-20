@@ -1,4 +1,4 @@
-# Upgrade to v3
+# Changes included in v3
 
 ## Breaking changes
 
@@ -15,6 +15,16 @@
   - For Links: {Value}Links | {Value}ListLinks
 - Params now contain the full name of the value they contain. Ex. pID now is payment.
 - Methods and its references is not PaymentMethods to make its purpose clear.
+- Services that now return the full response object as part of the returned values (the response is always the first value of `n` returned):
+  - Captures
+  - Chargebacks
+  - Customers
+  - Invoices
+  - Mandates
+  - Miscellaneous
+  - Onboarding
+  - Partners
+  - Orders
 
 ## Other changes
 
