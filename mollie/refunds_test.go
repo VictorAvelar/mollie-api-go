@@ -104,13 +104,14 @@ func (rs *refundsServiceTest) TestRefundsService_Get() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s/refunds/%s", c.args.payment, c.args.refund), c.handler)
 
-			m, err := tClient.Refunds.Get(c.args.ctx, c.args.payment, c.args.refund, c.args.options)
+			res, m, err := tClient.Refunds.Get(c.args.ctx, c.args.payment, c.args.refund, c.args.options)
 			if c.wantErr {
 				rs.NotNil(err)
 				rs.EqualError(err, c.err.Error())
 			} else {
 				rs.Nil(err)
 				rs.IsType(&Refund{}, m)
+				rs.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -251,13 +252,14 @@ func (rs *refundsServiceTest) TestRefundsService_Create() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s/refunds", c.args.payment), c.handler)
 
-			m, err := tClient.Refunds.Create(c.args.ctx, c.args.payment, c.args.refund, c.args.options)
+			res, m, err := tClient.Refunds.Create(c.args.ctx, c.args.payment, c.args.refund, c.args.options)
 			if c.wantErr {
 				rs.NotNil(err)
 				rs.EqualError(err, c.err.Error())
 			} else {
 				rs.Nil(err)
 				rs.IsType(&Refund{}, m)
+				rs.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -332,12 +334,13 @@ func (rs *refundsServiceTest) TestRefundsService_Cancel() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s/refunds/%s", c.args.payment, c.args.refund), c.handler)
 
-			err := tClient.Refunds.Cancel(c.args.ctx, c.args.payment, c.args.refund)
+			res, err := tClient.Refunds.Cancel(c.args.ctx, c.args.payment, c.args.refund)
 			if c.wantErr {
 				rs.NotNil(err)
 				rs.EqualError(err, c.err.Error())
 			} else {
 				rs.Nil(err)
+				rs.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -426,13 +429,14 @@ func (rs *refundsServiceTest) TestRefundsService_List() {
 			c.pre()
 			tMux.HandleFunc("/v2/refunds", c.handler)
 
-			m, err := tClient.Refunds.ListRefund(c.args.ctx, c.args.options)
+			res, m, err := tClient.Refunds.ListRefund(c.args.ctx, c.args.options)
 			if c.wantErr {
 				rs.NotNil(err)
 				rs.EqualError(err, c.err.Error())
 			} else {
 				rs.Nil(err)
 				rs.IsType(&RefundList{}, m)
+				rs.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -526,13 +530,14 @@ func (rs *refundsServiceTest) TestRefundsService_ListPaynents() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s/refunds", c.args.payment), c.handler)
 
-			m, err := tClient.Refunds.ListRefundPayment(c.args.ctx, c.args.payment, c.args.options)
+			res, m, err := tClient.Refunds.ListRefundPayment(c.args.ctx, c.args.payment, c.args.options)
 			if c.wantErr {
 				rs.NotNil(err)
 				rs.EqualError(err, c.err.Error())
 			} else {
 				rs.Nil(err)
 				rs.IsType(&RefundList{}, m)
+				rs.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
