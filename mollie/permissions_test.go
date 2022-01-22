@@ -170,10 +170,11 @@ func (ps *permissionsServiceSuite) TestPermissionsService_List() {
 		},
 	}
 
+	setEnv()
+	defer unsetEnv()
 	for _, c := range cases {
 		setup()
 		defer teardown()
-
 		ps.T().Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/permissions", c.handler)

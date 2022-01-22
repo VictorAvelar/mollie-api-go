@@ -169,8 +169,8 @@ func (ps *PaymentsService) Create(ctx context.Context, p Payment, opts *PaymentO
 // Cancel removes a payment (if possible) from your Mollie account.
 //
 // See: https://docs.mollie.com/reference/v2/payments-api/cancel-payment
-func (ps *PaymentsService) Cancel(ctx context.Context, id string) (p *Payment, err error) {
-	res, err := ps.client.delete(ctx, fmt.Sprintf("v2/payments/%s", id), nil)
+func (ps *PaymentsService) Cancel(ctx context.Context, id string) (res *Response, p *Payment, err error) {
+	res, err = ps.client.delete(ctx, fmt.Sprintf("v2/payments/%s", id), nil)
 	if err != nil {
 		return
 	}

@@ -525,13 +525,14 @@ func (ps *paymentsServiceSuite) TestPaymentsService_Cancel() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s", c.args.id), c.handler)
 
-			m, err := tClient.Payments.Cancel(c.args.ctx, c.args.id)
+			res, m, err := tClient.Payments.Cancel(c.args.ctx, c.args.id)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
-				ps.IsType(Payment{}, m)
+				ps.IsType(&Payment{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
