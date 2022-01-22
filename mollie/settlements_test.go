@@ -92,13 +92,14 @@ func (ps *settlementsServiceSuite) TestSettlementsService_Get() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/settlements/%s", c.args.settlement), c.handler)
 
-			m, err := tClient.Settlements.Get(c.args.ctx, c.args.settlement)
+			res, m, err := tClient.Settlements.Get(c.args.ctx, c.args.settlement)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&Settlement{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -180,13 +181,14 @@ func (ps *settlementsServiceSuite) TestSettlementsService_Next() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/settlements/%s", c.args.settlement), c.handler)
 
-			m, err := tClient.Settlements.Next(c.args.ctx)
+			res, m, err := tClient.Settlements.Next(c.args.ctx)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&Settlement{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -268,13 +270,14 @@ func (ps *settlementsServiceSuite) TestSettlementsService_Open() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/settlements/%s", c.args.settlement), c.handler)
 
-			m, err := tClient.Settlements.Open(c.args.ctx)
+			res, m, err := tClient.Settlements.Open(c.args.ctx)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&Settlement{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -364,13 +367,14 @@ func (ps *settlementsServiceSuite) TestSettlementsService_List() {
 			c.pre()
 			tMux.HandleFunc("/v2/settlements", c.handler)
 
-			m, err := tClient.Settlements.List(c.args.ctx, c.args.options)
+			res, m, err := tClient.Settlements.List(c.args.ctx, c.args.options)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&SettlementsList{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -465,13 +469,14 @@ func (ps *settlementsServiceSuite) TestSettlementsService_GetPayments() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/settlements/%s/payments", c.args.settlement), c.handler)
 
-			m, err := tClient.Settlements.GetPayments(c.args.ctx, c.args.settlement, c.args.options)
+			res, m, err := tClient.Settlements.GetPayments(c.args.ctx, c.args.settlement, c.args.options)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&PaymentList{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -566,13 +571,14 @@ func (ps *settlementsServiceSuite) TestSettlementsService_GetCaptures() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/settlements/%s/captures", c.args.settlement), c.handler)
 
-			m, err := tClient.Settlements.GetCaptures(c.args.ctx, c.args.settlement, c.args.options)
+			res, m, err := tClient.Settlements.GetCaptures(c.args.ctx, c.args.settlement, c.args.options)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&CapturesList{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -667,13 +673,14 @@ func (ps *settlementsServiceSuite) TestSettlementsService_GetChargebacks() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/settlements/%s/chargebacks", c.args.settlement), c.handler)
 
-			m, err := tClient.Settlements.GetChargebacks(c.args.ctx, c.args.settlement, c.args.options)
+			res, m, err := tClient.Settlements.GetChargebacks(c.args.ctx, c.args.settlement, c.args.options)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&ChargebacksList{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -768,13 +775,14 @@ func (ps *settlementsServiceSuite) TestSettlementsService_GetRefunds() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/settlements/%s/refunds", c.args.settlement), c.handler)
 
-			m, err := tClient.Settlements.GetRefunds(c.args.ctx, c.args.settlement, c.args.options)
+			res, m, err := tClient.Settlements.GetRefunds(c.args.ctx, c.args.settlement, c.args.options)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&RefundList{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
