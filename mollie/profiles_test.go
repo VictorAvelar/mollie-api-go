@@ -92,13 +92,14 @@ func (ps *profilesServiceSuite) TestProfilesService_Get() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s", c.args.profile), c.handler)
 
-			m, err := tClient.Profiles.Get(c.args.ctx, c.args.profile)
+			res, m, err := tClient.Profiles.Get(c.args.ctx, c.args.profile)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&Profile{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -159,13 +160,14 @@ func (ps *profilesServiceSuite) TestProfilesService_GetCurrent() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s", "me"), c.handler)
 
-			m, err := tClient.Profiles.Current(context.Background())
+			res, m, err := tClient.Profiles.Current(context.Background())
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&Profile{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -269,13 +271,14 @@ func (ps *profilesServiceSuite) TestProfilesService_List() {
 			c.pre()
 			tMux.HandleFunc("/v2/profiles", c.handler)
 
-			m, err := tClient.Profiles.List(c.args.ctx, c.args.options)
+			res, m, err := tClient.Profiles.List(c.args.ctx, c.args.options)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&ProfileList{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -359,13 +362,14 @@ func (ps *profilesServiceSuite) TestProfilesService_Create() {
 			c.pre()
 			tMux.HandleFunc("/v2/profiles", c.handler)
 
-			m, err := tClient.Profiles.Create(c.args.ctx, c.args.profile)
+			res, m, err := tClient.Profiles.Create(c.args.ctx, c.args.profile)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&Profile{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -454,13 +458,14 @@ func (ps *profilesServiceSuite) TestProfilesService_Update() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s", c.args.profileID), c.handler)
 
-			m, err := tClient.Profiles.Update(c.args.ctx, c.args.profileID, c.args.profile)
+			res, m, err := tClient.Profiles.Update(c.args.ctx, c.args.profileID, c.args.profile)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&Profile{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -531,12 +536,13 @@ func (ps *profilesServiceSuite) TestProfilesService_Delete() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s", c.args.profile), c.handler)
 
-			err := tClient.Profiles.Delete(c.args.ctx, c.args.profile)
+			res, err := tClient.Profiles.Delete(c.args.ctx, c.args.profile)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -623,13 +629,14 @@ func (ps *profilesServiceSuite) TestProfilesService_EnablePaymentMethod() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s/methods/%s", c.args.profile, c.args.method), c.handler)
 
-			m, err := tClient.Profiles.EnablePaymentMethod(c.args.ctx, c.args.profile, c.args.method)
+			res, m, err := tClient.Profiles.EnablePaymentMethod(c.args.ctx, c.args.profile, c.args.method)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&PaymentMethodDetails{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -705,12 +712,13 @@ func (ps *profilesServiceSuite) TestProfilesService_DisablePaymentMethod() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s/methods/%s", c.args.profile, c.args.method), c.handler)
 
-			err := tClient.Profiles.DisablePaymentMethod(c.args.ctx, c.args.profile, c.args.method)
+			res, err := tClient.Profiles.DisablePaymentMethod(c.args.ctx, c.args.profile, c.args.method)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -797,13 +805,14 @@ func (ps *profilesServiceSuite) TestProfilesService_EnableGiftCardIssuer() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s/methods/giftcard/issuers/%s", c.args.profile, c.args.issuer), c.handler)
 
-			m, err := tClient.Profiles.EnableGiftCardIssuer(c.args.ctx, c.args.profile, c.args.issuer)
+			res, m, err := tClient.Profiles.EnableGiftCardIssuer(c.args.ctx, c.args.profile, c.args.issuer)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&GiftCardEnabled{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -879,12 +888,13 @@ func (ps *profilesServiceSuite) TestProfilesService_DisableGiftCardIssuer() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s/methods/giftcard/issuers/%s", c.args.profile, c.args.issuer), c.handler)
 
-			err := tClient.Profiles.DisableGiftCardIssuer(c.args.ctx, c.args.profile, c.args.issuer)
+			res, err := tClient.Profiles.DisableGiftCardIssuer(c.args.ctx, c.args.profile, c.args.issuer)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -966,13 +976,14 @@ func (ps *profilesServiceSuite) TestProfilesService_EnableGiftCardIssuerForCurre
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/me/methods/giftcard/issuers/%s", c.args.issuer), c.handler)
 
-			m, err := tClient.Profiles.EnableGiftCardIssuerForCurrent(c.args.ctx, c.args.issuer)
+			res, m, err := tClient.Profiles.EnableGiftCardIssuerForCurrent(c.args.ctx, c.args.issuer)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&GiftCardEnabled{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -1044,12 +1055,13 @@ func (ps *profilesServiceSuite) TestProfilesService_DisableGiftCardIssuerForCurr
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/me/methods/giftcard/issuers/%s", c.args.issuer), c.handler)
 
-			err := tClient.Profiles.DisableGiftCardIssuerForCurrent(c.args.ctx, c.args.issuer)
+			res, err := tClient.Profiles.DisableGiftCardIssuerForCurrent(c.args.ctx, c.args.issuer)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
