@@ -105,13 +105,15 @@ func (cs *capturesServiceSuite) TestCapturesService_Get() {
 				c.handler,
 			)
 
-			res, err := tClient.Captures.Get(c.args.ctx, c.args.payment, c.args.capture)
+			res, capture, err := tClient.Captures.Get(c.args.ctx, c.args.payment, c.args.capture)
 			if c.wantErr {
 				cs.NotNil(err)
 				cs.EqualError(err, c.err.Error())
 			} else {
 				cs.Nil(err)
-				cs.IsType(&Capture{}, res)
+				cs.IsType(&Capture{}, capture)
+				cs.Same(c.args.ctx, res.Request.Context())
+				cs.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -123,6 +125,8 @@ func (cs *capturesServiceSuite) TestCapturesService_List() {
 		payment string
 		capture string
 	}
+
+	type key string
 
 	cases := []struct {
 		name    string
@@ -155,7 +159,7 @@ func (cs *capturesServiceSuite) TestCapturesService_List() {
 		{
 			"list captures returns an http error from the server",
 			args{
-				context.Background(),
+				context.WithValue(context.Background(), key("test"), "test-value"),
 				"tr_WDqYK6vllg",
 				"cpt_4qqhO89gsT",
 			},
@@ -205,13 +209,15 @@ func (cs *capturesServiceSuite) TestCapturesService_List() {
 				c.handler,
 			)
 
-			res, err := tClient.Captures.List(c.args.ctx, c.args.payment)
+			res, list, err := tClient.Captures.List(c.args.ctx, c.args.payment)
 			if c.wantErr {
 				cs.NotNil(err)
 				cs.EqualError(err, c.err.Error())
 			} else {
 				cs.Nil(err)
-				cs.IsType(&CapturesList{}, res)
+				cs.IsType(&CapturesList{}, list)
+				cs.Same(c.args.ctx, res.Request.Context())
+				cs.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}

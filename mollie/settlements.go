@@ -4,10 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"time"
-
-	"github.com/google/go-querystring/query"
 )
 
 // SettlementsService operates over settlements resource
@@ -99,14 +96,14 @@ type SettlementsList struct {
 // Get returns a settlement by its id or the bank reference id
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/get-settlement
-func (ss *SettlementsService) Get(ctx context.Context, id string) (s *Settlement, err error) {
+func (ss *SettlementsService) Get(ctx context.Context, id string) (res *Response, s *Settlement, err error) {
 	return ss.get(ctx, id)
 }
 
 // Next retrieves the details of the current settlement that has not yet been paid out.
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/get-next-settlement
-func (ss *SettlementsService) Next(ctx context.Context) (s *Settlement, err error) {
+func (ss *SettlementsService) Next(ctx context.Context) (res *Response, s *Settlement, err error) {
 	return ss.get(ctx, "next")
 }
 
@@ -114,15 +111,15 @@ func (ss *SettlementsService) Next(ctx context.Context) (s *Settlement, err erro
 // This will return a settlement object representing your organization’s balance.
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/get-open-settlement
-func (ss *SettlementsService) Open(ctx context.Context) (s *Settlement, err error) {
+func (ss *SettlementsService) Open(ctx context.Context) (res *Response, s *Settlement, err error) {
 	return ss.get(ctx, "open")
 }
 
 // List retrieves all settlements, ordered from new to old
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/list-settlements
-func (ss *SettlementsService) List(ctx context.Context, slo *SettlementsListOptions) (sl *SettlementsList, err error) {
-	res, err := ss.list(ctx, "", "", slo)
+func (ss *SettlementsService) List(ctx context.Context, slo *SettlementsListOptions) (res *Response, sl *SettlementsList, err error) {
+	res, err = ss.list(ctx, "", "", slo)
 	if err != nil {
 		return
 	}
@@ -136,8 +133,8 @@ func (ss *SettlementsService) List(ctx context.Context, slo *SettlementsListOpti
 // GetPayments retrieves all payments included in a settlement.
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-payments
-func (ss *SettlementsService) GetPayments(ctx context.Context, id string, slo *SettlementsListOptions) (pl *PaymentList, err error) {
-	res, err := ss.list(ctx, id, "payments", slo)
+func (ss *SettlementsService) GetPayments(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, pl *PaymentList, err error) {
+	res, err = ss.list(ctx, id, "payments", slo)
 	if err != nil {
 		return
 	}
@@ -151,8 +148,8 @@ func (ss *SettlementsService) GetPayments(ctx context.Context, id string, slo *S
 // GetRefunds retrieves all refunds included in a settlement.
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-refunds
-func (ss *SettlementsService) GetRefunds(ctx context.Context, id string, slo *SettlementsListOptions) (rl *RefundList, err error) {
-	res, err := ss.list(ctx, id, "refunds", slo)
+func (ss *SettlementsService) GetRefunds(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, rl *RefundList, err error) {
+	res, err = ss.list(ctx, id, "refunds", slo)
 	if err != nil {
 		return
 	}
@@ -166,8 +163,8 @@ func (ss *SettlementsService) GetRefunds(ctx context.Context, id string, slo *Se
 // GetChargebacks retrieves all chargebacks included in a settlement.
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-chargebacks
-func (ss *SettlementsService) GetChargebacks(ctx context.Context, id string, slo *SettlementsListOptions) (cl *ChargebackList, err error) {
-	res, err := ss.list(ctx, id, "chargebacks", slo)
+func (ss *SettlementsService) GetChargebacks(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, cl *ChargebacksList, err error) {
+	res, err = ss.list(ctx, id, "chargebacks", slo)
 	if err != nil {
 		return
 	}
@@ -181,8 +178,8 @@ func (ss *SettlementsService) GetChargebacks(ctx context.Context, id string, slo
 // GetCaptures retrieves all captures included in a settlement.
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-captures
-func (ss *SettlementsService) GetCaptures(ctx context.Context, id string, slo *SettlementsListOptions) (cl *CapturesList, err error) {
-	res, err := ss.list(ctx, id, "captures", slo)
+func (ss *SettlementsService) GetCaptures(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, cl *CapturesList, err error) {
+	res, err = ss.list(ctx, id, "captures", slo)
 	if err != nil {
 		return
 	}
@@ -193,14 +190,8 @@ func (ss *SettlementsService) GetCaptures(ctx context.Context, id string, slo *S
 	return
 }
 
-func (ss *SettlementsService) get(ctx context.Context, element string) (s *Settlement, err error) {
-	u := fmt.Sprintf("v2/settlements/%s", element)
-	req, err := ss.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
-	if err != nil {
-		return
-	}
-
-	res, err := ss.client.Do(req)
+func (ss *SettlementsService) get(ctx context.Context, element string) (res *Response, s *Settlement, err error) {
+	res, err = ss.client.get(ctx, fmt.Sprintf("v2/settlements/%s", element), nil)
 	if err != nil {
 		return
 	}
@@ -211,7 +202,7 @@ func (ss *SettlementsService) get(ctx context.Context, element string) (s *Settl
 	return
 }
 
-func (ss *SettlementsService) list(ctx context.Context, id string, category string, slo *SettlementsListOptions) (res *Response, err error) {
+func (ss *SettlementsService) list(ctx context.Context, id string, category string, opts *SettlementsListOptions) (res *Response, err error) {
 	u := "v2/settlements"
 
 	if id != "" {
@@ -222,17 +213,7 @@ func (ss *SettlementsService) list(ctx context.Context, id string, category stri
 		}
 	}
 
-	if slo != nil {
-		v, _ := query.Values(slo)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-
-	req, err := ss.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
-	if err != nil {
-		return
-	}
-
-	res, err = ss.client.Do(req)
+	res, err = ss.client.get(ctx, u, opts)
 	if err != nil {
 		return
 	}

@@ -97,13 +97,14 @@ func (ps *shipmentsServiceSuite) TestShipmentsService_Get() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/shipments/%s", c.args.order, c.args.shipment), c.handler)
 
-			m, err := tClient.Shipments.Get(c.args.ctx, c.args.order, c.args.shipment)
+			res, m, err := tClient.Shipments.Get(c.args.ctx, c.args.order, c.args.shipment)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&Shipment{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -190,13 +191,14 @@ func (ps *shipmentsServiceSuite) TestShipmentsService_List() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/shipments", c.args.order), c.handler)
 
-			m, err := tClient.Shipments.List(c.args.ctx, c.args.order)
+			res, m, err := tClient.Shipments.List(c.args.ctx, c.args.order)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&ShipmentsList{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -316,13 +318,14 @@ func (ps *shipmentsServiceSuite) TestShipmentsService_Create() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/shipments", c.args.order), c.handler)
 
-			m, err := tClient.Shipments.Create(c.args.ctx, c.args.order, c.args.shipment)
+			res, m, err := tClient.Shipments.Create(c.args.ctx, c.args.order, c.args.shipment)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&Shipment{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -448,13 +451,14 @@ func (ps *shipmentsServiceSuite) TestShipmentsService_Update() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/shipments/%s", c.args.order, c.args.shipment), c.handler)
 
-			m, err := tClient.Shipments.Update(c.args.ctx, c.args.order, c.args.shipment, c.args.st)
+			res, m, err := tClient.Shipments.Update(c.args.ctx, c.args.order, c.args.shipment, c.args.st)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&Shipment{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}

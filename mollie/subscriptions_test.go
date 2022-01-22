@@ -97,13 +97,14 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Get() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/subscriptions/%s", c.args.customer, c.args.subscription), c.handler)
 
-			m, err := tClient.Subscriptions.Get(c.args.ctx, c.args.customer, c.args.subscription)
+			res, m, err := tClient.Subscriptions.Get(c.args.ctx, c.args.customer, c.args.subscription)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&Subscription{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -241,13 +242,14 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Create() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/subscriptions", c.args.customer), c.handler)
 
-			m, err := tClient.Subscriptions.Create(c.args.ctx, c.args.customer, c.args.subscription)
+			res, m, err := tClient.Subscriptions.Create(c.args.ctx, c.args.customer, c.args.subscription)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&Subscription{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -391,13 +393,14 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Update() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/subscriptions/%s", c.args.customer, c.args.sid), c.handler)
 
-			m, err := tClient.Subscriptions.Update(c.args.ctx, c.args.customer, c.args.sid, c.args.subscription)
+			res, m, err := tClient.Subscriptions.Update(c.args.ctx, c.args.customer, c.args.sid, c.args.subscription)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&Subscription{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -505,13 +508,14 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Delete() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/subscriptions/%s", c.args.customer, c.args.sid), c.handler)
 
-			m, err := tClient.Subscriptions.Delete(c.args.ctx, c.args.customer, c.args.sid)
+			res, m, err := tClient.Subscriptions.Delete(c.args.ctx, c.args.customer, c.args.sid)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&Subscription{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -621,13 +625,14 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_List() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/subscriptions", c.args.customer), c.handler)
 
-			m, err := tClient.Subscriptions.List(c.args.ctx, c.args.customer, c.args.options)
+			res, m, err := tClient.Subscriptions.List(c.args.ctx, c.args.customer, c.args.options)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&SubscriptionList{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -731,13 +736,14 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_All() {
 			c.pre()
 			tMux.HandleFunc("/v2/subscriptions", c.handler)
 
-			m, err := tClient.Subscriptions.All(c.args.ctx, c.args.options)
+			res, m, err := tClient.Subscriptions.All(c.args.ctx, c.args.options)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&SubscriptionList{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -853,13 +859,14 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_GetPayments() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/subscriptions/%s/payments", c.args.customer, c.args.subscription), c.handler)
 
-			m, err := tClient.Subscriptions.GetPayments(c.args.ctx, c.args.customer, c.args.subscription, c.args.options)
+			res, m, err := tClient.Subscriptions.GetPayments(c.args.ctx, c.args.customer, c.args.subscription, c.args.options)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&PaymentList{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}

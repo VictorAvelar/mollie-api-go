@@ -4,10 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"time"
-
-	"github.com/google/go-querystring/query"
 )
 
 // CustomersService operates over the customer resource
@@ -36,8 +33,8 @@ type Customer struct {
 	Links     CustomerLinks          `json:"_links,omitempty"`
 }
 
-// ListCustomersOptions contains valid query parameters for the list customers endpoint.
-type ListCustomersOptions struct {
+// CustomersListOptions contains valid query parameters for the list customers endpoint.
+type CustomersListOptions struct {
 	From         string       `url:"from,omitempty"`
 	Limit        int          `url:"limit,omitempty"`
 	ProfileID    string       `url:"profileId,omitempty"`
@@ -55,17 +52,13 @@ type CustomersList struct {
 	Links PaginationLinks `json:"links,omitempty"`
 }
 
-// Get finds a customer by its ID
+// Get finds a customer by its ID.
 //
 // See: https://docs.mollie.com/reference/v2/customers-api/get-customer
-func (cs *CustomersService) Get(ctx context.Context, id string) (c *Customer, err error) {
+func (cs *CustomersService) Get(ctx context.Context, id string) (res *Response, c *Customer, err error) {
 	u := fmt.Sprintf("v2/customers/%s", id)
-	req, err := cs.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
-	if err != nil {
-		return
-	}
 
-	res, err := cs.client.Do(req)
+	res, err = cs.client.get(ctx, u, nil)
 	if err != nil {
 		return
 	}
@@ -77,16 +70,11 @@ func (cs *CustomersService) Get(ctx context.Context, id string) (c *Customer, er
 }
 
 // Create creates a simple minimal representation of a customer in the Mollie API
-// to use for the Mollie Checkout and Recurring features
+// to use for the Mollie Checkout and Recurring features.
 //
 // See: https://docs.mollie.com/reference/v2/customers-api/create-customer
-func (cs *CustomersService) Create(ctx context.Context, c Customer) (cc *Customer, err error) {
-	req, err := cs.client.NewAPIRequest(ctx, http.MethodPost, "v2/customers", c)
-	if err != nil {
-		return
-	}
-
-	res, err := cs.client.Do(req)
+func (cs *CustomersService) Create(ctx context.Context, c Customer) (res *Response, cc *Customer, err error) {
+	res, err = cs.client.post(ctx, "v2/customers", c, nil)
 	if err != nil {
 		return
 	}
@@ -97,17 +85,13 @@ func (cs *CustomersService) Create(ctx context.Context, c Customer) (cc *Custome
 	return
 }
 
-// Update mutates an existing customer
+// Update an existing customer.
 //
 // See: https://docs.mollie.com/reference/v2/customers-api/update-customer
-func (cs *CustomersService) Update(ctx context.Context, id string, c Customer) (cc *Customer, err error) {
+func (cs *CustomersService) Update(ctx context.Context, id string, c Customer) (res *Response, cc *Customer, err error) {
 	u := fmt.Sprintf("v2/customers/%s", id)
-	req, err := cs.client.NewAPIRequest(ctx, http.MethodPatch, u, c)
-	if err != nil {
-		return
-	}
 
-	res, err := cs.client.Do(req)
+	res, err = cs.client.patch(ctx, u, c, nil)
 	if err != nil {
 		return
 	}
@@ -115,38 +99,31 @@ func (cs *CustomersService) Update(ctx context.Context, id string, c Customer) (
 	if err = json.Unmarshal(res.content, &cc); err != nil {
 		return
 	}
+
 	return
 }
 
 // Delete a customer.
+//
 // All mandates and subscriptions created for this customer will be canceled as well.
 //
 // See: https://docs.mollie.com/reference/v2/customers-api/delete-customer
-func (cs *CustomersService) Delete(ctx context.Context, id string) (err error) {
+func (cs *CustomersService) Delete(ctx context.Context, id string) (res *Response, err error) {
 	u := fmt.Sprintf("v2/customers/%s", id)
-	req, err := cs.client.NewAPIRequest(ctx, http.MethodDelete, u, nil)
+
+	res, err = cs.client.delete(ctx, u, nil)
 	if err != nil {
 		return
 	}
 
-	_, err = cs.client.Do(req)
-	if err != nil {
-		return
-	}
 	return
 }
 
 // List retrieves all customers created.
 //
 // See: https://docs.mollie.com/reference/v2/customers-api/list-customers
-func (cs *CustomersService) List(ctx context.Context, options *ListCustomersOptions) (cl *CustomersList, err error) {
-	u := "v2/customers"
-	if options != nil {
-		v, _ := query.Values(options)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-
-	res, err := cs.list(ctx, u)
+func (cs *CustomersService) List(ctx context.Context, options *CustomersListOptions) (res *Response, cl *CustomersList, err error) {
+	res, err = cs.list(ctx, "v2/customers", options)
 	if err != nil {
 		return
 	}
@@ -154,20 +131,17 @@ func (cs *CustomersService) List(ctx context.Context, options *ListCustomersOpti
 	if err = json.Unmarshal(res.content, &cl); err != nil {
 		return
 	}
+
 	return
 }
 
 // GetPayments retrieves all payments linked to the customer.
 //
 // See: https://docs.mollie.com/reference/v2/customers-api/list-customer-payments
-func (cs *CustomersService) GetPayments(ctx context.Context, id string, options *ListCustomersOptions) (pl *PaymentList, err error) {
+func (cs *CustomersService) GetPayments(ctx context.Context, id string, options *CustomersListOptions) (res *Response, pl *PaymentList, err error) {
 	u := fmt.Sprintf("v2/customers/%s/payments", id)
-	if options != nil {
-		v, _ := query.Values(options)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
 
-	res, err := cs.list(ctx, u)
+	res, err = cs.list(ctx, u, options)
 	if err != nil {
 		return
 	}
@@ -175,20 +149,17 @@ func (cs *CustomersService) GetPayments(ctx context.Context, id string, options 
 	if err = json.Unmarshal(res.content, &pl); err != nil {
 		return
 	}
+
 	return
 }
 
 // CreatePayment creates a payment for the customer.
 //
 // See: https://docs.mollie.com/reference/v2/customers-api/create-customer-payment
-func (cs *CustomersService) CreatePayment(ctx context.Context, id string, p Payment) (pp *Payment, err error) {
+func (cs *CustomersService) CreatePayment(ctx context.Context, id string, p Payment) (res *Response, pp *Payment, err error) {
 	u := fmt.Sprintf("v2/customers/%s/payments", id)
-	req, err := cs.client.NewAPIRequest(ctx, http.MethodPost, u, p)
-	if err != nil {
-		return
-	}
 
-	res, err := cs.client.Do(req)
+	res, err = cs.client.post(ctx, u, p, nil)
 	if err != nil {
 		return
 	}
@@ -196,18 +167,15 @@ func (cs *CustomersService) CreatePayment(ctx context.Context, id string, p Paym
 	if err = json.Unmarshal(res.content, &pp); err != nil {
 		return
 	}
+
 	return
 }
 
-func (cs *CustomersService) list(ctx context.Context, uri string) (r *Response, err error) {
-	req, err := cs.client.NewAPIRequest(ctx, http.MethodGet, uri, nil)
+func (cs *CustomersService) list(ctx context.Context, uri string, options interface{}) (r *Response, err error) {
+	r, err = cs.client.get(ctx, uri, options)
 	if err != nil {
 		return
 	}
 
-	r, err = cs.client.Do(req)
-	if err != nil {
-		return
-	}
 	return
 }

@@ -90,13 +90,15 @@ func (cs *customersTestSuite) TestCustomerService_Get() {
 			defer teardown()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s", c.args.customer), c.handler)
 			c.pre()
-			cc, err := tClient.Customers.Get(c.args.ctx, c.args.customer)
+			res, cc, err := tClient.Customers.Get(c.args.ctx, c.args.customer)
 			if c.wantErr {
 				cs.NotNil(err)
 				cs.EqualError(err, c.err.Error())
 			} else {
 				cs.Nil(err)
-				cs.Equal(c.args.customer, cc.ID)
+				cs.IsType(&Customer{}, cc)
+				cs.Same(c.args.ctx, res.Request.Context())
+				cs.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -181,13 +183,15 @@ func (cs *customersTestSuite) TestCustomersService_Create() {
 			defer teardown()
 			tMux.HandleFunc("/v2/customers", c.handler)
 			c.pre()
-			cc, err := tClient.Customers.Create(c.args.ctx, c.args.customer)
+			res, cc, err := tClient.Customers.Create(c.args.ctx, c.args.customer)
 			if c.wantErr {
 				cs.NotNil(err)
 				cs.EqualError(err, c.err.Error())
 			} else {
 				cs.Nil(err)
 				cs.IsType(&Customer{}, cc)
+				cs.Same(c.args.ctx, res.Request.Context())
+				cs.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -277,13 +281,15 @@ func (cs *customersTestSuite) TestCustomersService_Update() {
 			defer teardown()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s", c.args.customerID), c.handler)
 			c.pre()
-			cc, err := tClient.Customers.Update(c.args.ctx, c.args.customerID, c.args.customer)
+			res, cc, err := tClient.Customers.Update(c.args.ctx, c.args.customerID, c.args.customer)
 			if c.wantErr {
 				cs.NotNil(err)
 				cs.EqualError(err, c.err.Error())
 			} else {
 				cs.Nil(err)
 				cs.IsType(&Customer{}, cc)
+				cs.Same(c.args.ctx, res.Request.Context())
+				cs.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -292,7 +298,7 @@ func (cs *customersTestSuite) TestCustomersService_Update() {
 func (cs *customersTestSuite) TestCustomersService_List() {
 	type args struct {
 		ctx     context.Context
-		options *ListCustomersOptions
+		options *CustomersListOptions
 	}
 
 	cases := []struct {
@@ -309,7 +315,7 @@ func (cs *customersTestSuite) TestCustomersService_List() {
 			http.StatusAccepted,
 			args{
 				context.Background(),
-				&ListCustomersOptions{
+				&CustomersListOptions{
 					SequenceType: OneOffSequence,
 				},
 			},
@@ -363,7 +369,7 @@ func (cs *customersTestSuite) TestCustomersService_List() {
 			http.StatusInternalServerError,
 			args{
 				context.Background(),
-				&ListCustomersOptions{
+				&CustomersListOptions{
 					SequenceType: OneOffSequence,
 				},
 			},
@@ -377,7 +383,7 @@ func (cs *customersTestSuite) TestCustomersService_List() {
 			http.StatusInternalServerError,
 			args{
 				context.Background(),
-				&ListCustomersOptions{
+				&CustomersListOptions{
 					SequenceType: OneOffSequence,
 				},
 			},
@@ -394,13 +400,15 @@ func (cs *customersTestSuite) TestCustomersService_List() {
 			defer teardown()
 			tMux.HandleFunc("/v2/customers", c.handler)
 			c.pre()
-			cc, err := tClient.Customers.List(c.args.ctx, c.args.options)
+			res, cc, err := tClient.Customers.List(c.args.ctx, c.args.options)
 			if c.wantErr {
 				cs.NotNil(err)
 				cs.EqualError(err, c.err.Error())
 			} else {
 				cs.Nil(err)
 				cs.IsType(&CustomersList{}, cc)
+				cs.Same(c.args.ctx, res.Request.Context())
+				cs.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -473,12 +481,14 @@ func (cs *customersTestSuite) TestCustomersService_Delete() {
 			defer teardown()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s", c.args.customer), c.handler)
 			c.pre()
-			err := tClient.Customers.Delete(c.args.ctx, c.args.customer)
+			res, err := tClient.Customers.Delete(c.args.ctx, c.args.customer)
 			if c.wantErr {
 				cs.NotNil(err)
 				cs.EqualError(err, c.err.Error())
 			} else {
 				cs.Nil(err)
+				cs.Same(c.args.ctx, res.Request.Context())
+				cs.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -488,7 +498,7 @@ func (cs *customersTestSuite) TestCustomerService_GetPayments() {
 	type args struct {
 		ctx      context.Context
 		customer string
-		options  *ListCustomersOptions
+		options  *CustomersListOptions
 	}
 
 	cases := []struct {
@@ -524,7 +534,7 @@ func (cs *customersTestSuite) TestCustomerService_GetPayments() {
 			args{
 				context.Background(),
 				"cst_kEn1PlbGa",
-				&ListCustomersOptions{Limit: 100},
+				&CustomersListOptions{Limit: 100},
 			},
 			false,
 			nil,
@@ -544,7 +554,7 @@ func (cs *customersTestSuite) TestCustomerService_GetPayments() {
 			args{
 				context.Background(),
 				"cst_kEn1PlbGa",
-				&ListCustomersOptions{SequenceType: RecurringSequence},
+				&CustomersListOptions{SequenceType: RecurringSequence},
 			},
 			true,
 			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
@@ -583,13 +593,15 @@ func (cs *customersTestSuite) TestCustomerService_GetPayments() {
 			defer teardown()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/payments", c.args.customer), c.handler)
 			c.pre()
-			cc, err := tClient.Customers.GetPayments(c.args.ctx, c.args.customer, c.args.options)
+			res, cc, err := tClient.Customers.GetPayments(c.args.ctx, c.args.customer, c.args.options)
 			if c.wantErr {
 				cs.NotNil(err)
 				cs.EqualError(err, c.err.Error())
 			} else {
 				cs.Nil(err)
-				cs.NotZero(cc.Count)
+				cs.IsType(&PaymentList{}, cc)
+				cs.Same(c.args.ctx, res.Request.Context())
+				cs.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -674,13 +686,16 @@ func (cs *customersTestSuite) TestCustomerService_CreatePayment() {
 			defer teardown()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/payments", c.args.customer), c.handler)
 			c.pre()
-			cc, err := tClient.Customers.CreatePayment(c.args.ctx, c.args.customer, c.args.payment)
+			res, cc, err := tClient.Customers.CreatePayment(c.args.ctx, c.args.customer, c.args.payment)
 			if c.wantErr {
 				cs.NotNil(err)
 				cs.EqualError(err, c.err.Error())
 			} else {
 				cs.Nil(err)
+				cs.Nil(err)
 				cs.IsType(&Payment{}, cc)
+				cs.Same(c.args.ctx, res.Request.Context())
+				cs.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}

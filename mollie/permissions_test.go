@@ -94,19 +94,20 @@ func (ps *profilesServiceSuite) TestPermissionsService_Get() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/permissions/%s", c.args.permission), c.handler)
 
-			m, err := tClient.Permissions.Get(c.args.ctx, c.args.permission)
+			res, m, err := tClient.Permissions.Get(c.args.ctx, c.args.permission)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&Permission{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *profilesServiceSuite) TestPermissionsService_List() {
+func (ps *permissionsServiceSuite) TestPermissionsService_List() {
 	type args struct {
 		ctx context.Context
 	}
@@ -169,21 +170,23 @@ func (ps *profilesServiceSuite) TestPermissionsService_List() {
 		},
 	}
 
+	setEnv()
+	defer unsetEnv()
 	for _, c := range cases {
 		setup()
 		defer teardown()
-
 		ps.T().Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/permissions", c.handler)
 
-			m, err := tClient.Permissions.List(c.args.ctx)
+			res, m, err := tClient.Permissions.List(c.args.ctx)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&PermissionsList{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}

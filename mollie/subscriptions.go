@@ -4,10 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"time"
-
-	"github.com/google/go-querystring/query"
 )
 
 // SubscriptionsService operates over subscriptions resource
@@ -76,14 +73,10 @@ type SubscriptionListOptions struct {
 // Get retrieves a customer's subscription
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/get-subscription
-func (ss *SubscriptionsService) Get(ctx context.Context, cID, sID string) (s *Subscription, err error) {
+func (ss *SubscriptionsService) Get(ctx context.Context, cID, sID string) (res *Response, s *Subscription, err error) {
 	u := fmt.Sprintf("v2/customers/%s/subscriptions/%s", cID, sID)
-	req, err := ss.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
-	if err != nil {
-		return
-	}
 
-	res, err := ss.client.Do(req)
+	res, err = ss.client.get(ctx, u, nil)
 	if err != nil {
 		return
 	}
@@ -97,19 +90,14 @@ func (ss *SubscriptionsService) Get(ctx context.Context, cID, sID string) (s *Su
 // Create stores a new subscription for a given customer
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/create-subscription
-func (ss *SubscriptionsService) Create(ctx context.Context, cID string, sc *Subscription) (s *Subscription, err error) {
+func (ss *SubscriptionsService) Create(ctx context.Context, cID string, sc *Subscription) (res *Response, s *Subscription, err error) {
 	u := fmt.Sprintf("v2/customers/%s/subscriptions", cID)
 
 	if ss.client.HasAccessToken() && ss.client.config.testing {
 		sc.TestMode = true
 	}
 
-	req, err := ss.client.NewAPIRequest(ctx, http.MethodPost, u, sc)
-	if err != nil {
-		return
-	}
-
-	res, err := ss.client.Do(req)
+	res, err = ss.client.post(ctx, u, sc, nil)
 	if err != nil {
 		return
 	}
@@ -123,15 +111,10 @@ func (ss *SubscriptionsService) Create(ctx context.Context, cID string, sc *Subs
 // Update changes fields on a subscription object
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/update-subscription
-func (ss *SubscriptionsService) Update(ctx context.Context, cID, sID string, sc *Subscription) (s *Subscription, err error) {
+func (ss *SubscriptionsService) Update(ctx context.Context, cID, sID string, sc *Subscription) (res *Response, s *Subscription, err error) {
 	u := fmt.Sprintf("v2/customers/%s/subscriptions/%s", cID, sID)
 
-	req, err := ss.client.NewAPIRequest(ctx, http.MethodPatch, u, sc)
-	if err != nil {
-		return
-	}
-
-	res, err := ss.client.Do(req)
+	res, err = ss.client.patch(ctx, u, sc, nil)
 	if err != nil {
 		return
 	}
@@ -145,14 +128,10 @@ func (ss *SubscriptionsService) Update(ctx context.Context, cID, sID string, sc 
 // Delete cancels a subscription
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/cancel-subscription
-func (ss *SubscriptionsService) Delete(ctx context.Context, cID, sID string) (s *Subscription, err error) {
+func (ss *SubscriptionsService) Delete(ctx context.Context, cID, sID string) (res *Response, s *Subscription, err error) {
 	u := fmt.Sprintf("v2/customers/%s/subscriptions/%s", cID, sID)
-	req, err := ss.client.NewAPIRequest(ctx, http.MethodDelete, u, nil)
-	if err != nil {
-		return
-	}
 
-	res, err := ss.client.Do(req)
+	res, err = ss.client.delete(ctx, u, nil)
 	if err != nil {
 		return
 	}
@@ -168,15 +147,10 @@ func (ss *SubscriptionsService) Delete(ctx context.Context, cID, sID string) (s 
 // In the case of an OAuth Access Token relies the website profile on the profileId field
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/list-all-subscriptions
-func (ss *SubscriptionsService) All(ctx context.Context, options *SubscriptionListOptions) (sl *SubscriptionList, err error) {
+func (ss *SubscriptionsService) All(ctx context.Context, opts *SubscriptionListOptions) (res *Response, sl *SubscriptionList, err error) {
 	u := "v2/subscriptions"
 
-	if options != nil {
-		v, _ := query.Values(options)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-
-	res, err := ss.list(ctx, u)
+	res, err = ss.list(ctx, u, opts)
 	if err != nil {
 		return
 	}
@@ -190,15 +164,10 @@ func (ss *SubscriptionsService) All(ctx context.Context, options *SubscriptionLi
 // List retrieves all subscriptions of a customer
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/list-subscriptions
-func (ss *SubscriptionsService) List(ctx context.Context, cID string, options *SubscriptionListOptions) (sl *SubscriptionList, err error) {
+func (ss *SubscriptionsService) List(ctx context.Context, cID string, opts *SubscriptionListOptions) (res *Response, sl *SubscriptionList, err error) {
 	u := fmt.Sprintf("v2/customers/%s/subscriptions", cID)
 
-	if options != nil {
-		v, _ := query.Values(options)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-
-	res, err := ss.list(ctx, u)
+	res, err = ss.list(ctx, u, opts)
 	if err != nil {
 		return
 	}
@@ -212,15 +181,10 @@ func (ss *SubscriptionsService) List(ctx context.Context, cID string, options *S
 // GetPayments retrieves all payments of a specific subscriptions of a customer
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/list-subscriptions-payments
-func (ss *SubscriptionsService) GetPayments(ctx context.Context, cID, sID string, options *SubscriptionListOptions) (sl *PaymentList, err error) {
+func (ss *SubscriptionsService) GetPayments(ctx context.Context, cID, sID string, opts *SubscriptionListOptions) (res *Response, sl *PaymentList, err error) {
 	u := fmt.Sprintf("v2/customers/%s/subscriptions/%s/payments", cID, sID)
 
-	if options != nil {
-		v, _ := query.Values(options)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-
-	res, err := ss.list(ctx, u)
+	res, err = ss.list(ctx, u, opts)
 	if err != nil {
 		return
 	}
@@ -231,15 +195,11 @@ func (ss *SubscriptionsService) GetPayments(ctx context.Context, cID, sID string
 	return
 }
 
-func (ss *SubscriptionsService) list(ctx context.Context, uri string) (r *Response, err error) {
-	req, err := ss.client.NewAPIRequest(ctx, http.MethodGet, uri, nil)
+func (ss *SubscriptionsService) list(ctx context.Context, uri string, opts interface{}) (r *Response, err error) {
+	r, err = ss.client.get(ctx, uri, opts)
 	if err != nil {
 		return
 	}
 
-	r, err = ss.client.Do(req)
-	if err != nil {
-		return
-	}
 	return
 }

@@ -22,7 +22,7 @@ func (is *invoiceServiceSuite) TestInvoicesService_Get() {
 	type args struct {
 		ctx     context.Context
 		invoice string
-		options *ListInvoiceOptions
+		options *InvoicesListOptions
 	}
 
 	cases := []struct {
@@ -99,13 +99,15 @@ func (is *invoiceServiceSuite) TestInvoicesService_Get() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/invoices/%s", c.args.invoice), c.handler)
 
-			i, err := tClient.Invoices.Get(c.args.ctx, c.args.invoice)
+			res, i, err := tClient.Invoices.Get(c.args.ctx, c.args.invoice)
 			if c.wantErr {
 				is.NotNil(err)
 				is.EqualError(err, c.err.Error())
 			} else {
 				is.Nil(err)
 				is.IsType(&Invoice{}, i)
+				is.Same(c.args.ctx, res.Request.Context())
+				is.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -115,7 +117,7 @@ func (is *invoiceServiceSuite) TestInvoicesService_List() {
 	type args struct {
 		ctx     context.Context
 		invoice string
-		options *ListInvoiceOptions
+		options *InvoicesListOptions
 	}
 
 	cases := []struct {
@@ -152,7 +154,7 @@ func (is *invoiceServiceSuite) TestInvoicesService_List() {
 			args{
 				context.Background(),
 				"inv_xBEbP9rvAq",
-				&ListInvoiceOptions{
+				&InvoicesListOptions{
 					Year: strconv.Itoa(time.Now().Year()),
 				},
 			},
@@ -215,13 +217,15 @@ func (is *invoiceServiceSuite) TestInvoicesService_List() {
 			c.pre()
 			tMux.HandleFunc("/v2/invoices", c.handler)
 
-			i, err := tClient.Invoices.List(c.args.ctx, c.args.options)
+			res, i, err := tClient.Invoices.List(c.args.ctx, c.args.options)
 			if c.wantErr {
 				is.NotNil(err)
 				is.EqualError(err, c.err.Error())
 			} else {
 				is.Nil(err)
-				is.IsType(&InvoiceList{}, i)
+				is.IsType(&InvoicesList{}, i)
+				is.Same(c.args.ctx, res.Request.Context())
+				is.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}

@@ -8,8 +8,6 @@ import (
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -122,13 +120,15 @@ func (cbs *chargebacksSuite) TestChargebacksService_Get() {
 			)
 			c.pre()
 
-			res, err := tClient.Chargebacks.Get(c.args.ctx, c.args.payment, c.args.chargeback, c.args.options)
+			res, cb, err := tClient.Chargebacks.Get(c.args.ctx, c.args.payment, c.args.chargeback, c.args.options)
 			if c.wantErr {
-				require.Error(t, err)
-				assert.EqualError(t, err, c.err.Error())
+				cbs.Error(err)
+				cbs.EqualError(err, c.err.Error())
 			} else {
-				require.Nil(t, err)
-				assert.Equal(t, res.ID, c.args.chargeback)
+				cbs.Nil(err)
+				cbs.Same(c.args.ctx, res.Request.Context())
+				cbs.IsType(&Chargeback{}, cb)
+				cbs.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -137,7 +137,7 @@ func (cbs *chargebacksSuite) TestChargebacksService_Get() {
 func (cbs *chargebacksSuite) TestChargebacksService_List() {
 	type args struct {
 		ctx     context.Context
-		options *ListChargebackOptions
+		options *ChargebacksListOptions
 	}
 
 	noPre := func() {}
@@ -173,7 +173,7 @@ func (cbs *chargebacksSuite) TestChargebacksService_List() {
 			"list chargebacks with options",
 			args{
 				context.Background(),
-				&ListChargebackOptions{
+				&ChargebacksListOptions{
 					ProfileID: "pfl_QkEhN94Ba",
 				},
 			},
@@ -232,13 +232,15 @@ func (cbs *chargebacksSuite) TestChargebacksService_List() {
 			tMux.HandleFunc("/v2/chargebacks", c.handler)
 
 			c.pre()
-			res, err := tClient.Chargebacks.List(c.args.ctx, c.args.options)
+			res, cbl, err := tClient.Chargebacks.List(c.args.ctx, c.args.options)
 			if c.wantErr {
-				require.Error(t, err)
-				assert.EqualError(t, err, c.err.Error())
+				cbs.Error(err)
+				cbs.EqualError(err, c.err.Error())
 			} else {
-				require.Nil(t, err)
-				assert.NotZero(t, res.Count)
+				cbs.Nil(err)
+				cbs.Same(c.args.ctx, res.Request.Context())
+				cbs.IsType(&ChargebacksList{}, cbl)
+				cbs.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -248,7 +250,7 @@ func (cbs *chargebacksSuite) TestChargebacksService_ListForPayment() {
 	type args struct {
 		ctx     context.Context
 		payment string
-		options *ListChargebackOptions
+		options *ChargebacksListOptions
 	}
 
 	cases := []struct {
@@ -284,7 +286,7 @@ func (cbs *chargebacksSuite) TestChargebacksService_ListForPayment() {
 			args{
 				context.Background(),
 				"tr_WDqYK6vllg",
-				&ListChargebackOptions{
+				&ChargebacksListOptions{
 					ProfileID: "pfl_QkEhN94Ba",
 				},
 			},
@@ -350,14 +352,15 @@ func (cbs *chargebacksSuite) TestChargebacksService_ListForPayment() {
 
 			c.pre()
 
-			res, err := tClient.Chargebacks.ListForPayment(c.args.ctx, c.args.payment, c.args.options)
+			res, cbl, err := tClient.Chargebacks.ListForPayment(c.args.ctx, c.args.payment, c.args.options)
 			if c.wantErr {
-				require.Error(t, err)
-				assert.EqualError(t, err, c.err.Error())
+				cbs.Error(err)
+				cbs.EqualError(err, c.err.Error())
 			} else {
-				require.Nil(t, err)
-				assert.NotZero(t, res.Count)
-				assert.IsType(t, &ChargebackList{}, res)
+				cbs.Nil(err)
+				cbs.Same(c.args.ctx, res.Request.Context())
+				cbs.IsType(&ChargebacksList{}, cbl)
+				cbs.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}

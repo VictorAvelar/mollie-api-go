@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"time"
 )
 
@@ -77,12 +76,12 @@ type OrganizationPartnerStatus struct {
 type OrganizationsService service
 
 // Get retrieve an organization by its id.
-func (os *OrganizationsService) Get(ctx context.Context, id string) (o *Organization, err error) {
+func (os *OrganizationsService) Get(ctx context.Context, id string) (res *Response, o *Organization, err error) {
 	return os.get(ctx, fmt.Sprintf("v2/organizations/%s", id))
 }
 
 // GetCurrent retrieve the currently authenticated organization
-func (os *OrganizationsService) GetCurrent(ctx context.Context) (o *Organization, err error) {
+func (os *OrganizationsService) GetCurrent(ctx context.Context) (res *Response, o *Organization, err error) {
 	return os.get(ctx, "v2/organizations/me")
 }
 
@@ -90,13 +89,8 @@ func (os *OrganizationsService) GetCurrent(ctx context.Context) (o *Organization
 // of the currently authenticated organization.
 //
 // See: https://docs.mollie.com/reference/v2/organizations-api/get-partner
-func (os *OrganizationsService) GetPartnerStatus(ctx context.Context) (ops *OrganizationPartnerStatus, err error) {
-	req, err := os.client.NewAPIRequest(ctx, http.MethodGet, "v2/organizations/me/partner", nil)
-	if err != nil {
-		return
-	}
-
-	res, err := os.client.Do(req)
+func (os *OrganizationsService) GetPartnerStatus(ctx context.Context) (res *Response, ops *OrganizationPartnerStatus, err error) {
+	res, err = os.client.get(ctx, "v2/organizations/me/partner", nil)
 	if err != nil {
 		return
 	}
@@ -108,12 +102,8 @@ func (os *OrganizationsService) GetPartnerStatus(ctx context.Context) (ops *Orga
 	return
 }
 
-func (os *OrganizationsService) get(ctx context.Context, uri string) (o *Organization, err error) {
-	req, err := os.client.NewAPIRequest(ctx, http.MethodGet, uri, nil)
-	if err != nil {
-		return
-	}
-	res, err := os.client.Do(req)
+func (os *OrganizationsService) get(ctx context.Context, uri string) (res *Response, o *Organization, err error) {
+	res, err = os.client.get(ctx, uri, nil)
 	if err != nil {
 		return
 	}

@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"net/http"
 	"time"
-
-	"github.com/google/go-querystring/query"
 )
 
 // ProfileStatus determines whether the profile is able to receive live payments
@@ -70,20 +68,12 @@ type ProfileList struct {
 type ProfilesService service
 
 // List returns all the profiles for the authenticated account
-func (ps *ProfilesService) List(ctx context.Context, options *ProfileListOptions) (pl *ProfileList, err error) {
-	u := "v2/profiles"
-	if options != nil {
-		v, _ := query.Values(options)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-	req, err := ps.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
+func (ps *ProfilesService) List(ctx context.Context, opts *ProfileListOptions) (res *Response, pl *ProfileList, err error) {
+	res, err = ps.client.get(ctx, "v2/profiles", opts)
 	if err != nil {
 		return
 	}
-	res, err := ps.client.Do(req)
-	if err != nil {
-		return
-	}
+
 	if err = json.Unmarshal(res.content, &pl); err != nil {
 		return
 	}
@@ -91,26 +81,22 @@ func (ps *ProfilesService) List(ctx context.Context, options *ProfileListOptions
 }
 
 // Get retrieves the a profile by ID.
-func (ps *ProfilesService) Get(ctx context.Context, id string) (p *Profile, err error) {
+func (ps *ProfilesService) Get(ctx context.Context, id string) (res *Response, p *Profile, err error) {
 	return ps.get(ctx, id)
 }
 
 // Current returns the profile belonging to the API key.
 // This method only works when using API keys.
-func (ps *ProfilesService) Current(ctx context.Context) (p *Profile, err error) {
+func (ps *ProfilesService) Current(ctx context.Context) (res *Response, p *Profile, err error) {
 	return ps.get(ctx, "me")
 }
 
-func (ps *ProfilesService) get(ctx context.Context, id string) (p *Profile, err error) {
-	u := fmt.Sprintf("v2/profiles/%s", id)
-	req, err := ps.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
+func (ps *ProfilesService) get(ctx context.Context, id string) (res *Response, p *Profile, err error) {
+	res, err = ps.client.get(ctx, fmt.Sprintf("v2/profiles/%s", id), nil)
 	if err != nil {
 		return
 	}
-	res, err := ps.client.Do(req)
-	if err != nil {
-		return
-	}
+
 	if err = json.Unmarshal(res.content, &p); err != nil {
 		return
 	}
@@ -118,15 +104,12 @@ func (ps *ProfilesService) get(ctx context.Context, id string) (p *Profile, err 
 }
 
 // Create stores a new profile in your Mollie account.
-func (ps *ProfilesService) Create(ctx context.Context, np *Profile) (p *Profile, err error) {
-	req, err := ps.client.NewAPIRequest(ctx, http.MethodPost, "v2/profiles", np)
+func (ps *ProfilesService) Create(ctx context.Context, np *Profile) (res *Response, p *Profile, err error) {
+	res, err = ps.client.post(ctx, "v2/profiles", np, nil)
 	if err != nil {
 		return
 	}
-	res, err := ps.client.Do(req)
-	if err != nil {
-		return
-	}
+
 	if err = json.Unmarshal(res.content, &p); err != nil {
 		return
 	}
@@ -134,16 +117,12 @@ func (ps *ProfilesService) Create(ctx context.Context, np *Profile) (p *Profile,
 }
 
 // Update allows you to perform mutations on a profile
-func (ps *ProfilesService) Update(ctx context.Context, id string, up *Profile) (p *Profile, err error) {
-	u := fmt.Sprintf("v2/profiles/%s", id)
-	req, err := ps.client.NewAPIRequest(ctx, http.MethodPatch, u, up)
+func (ps *ProfilesService) Update(ctx context.Context, id string, up *Profile) (res *Response, p *Profile, err error) {
+	res, err = ps.client.patch(ctx, fmt.Sprintf("v2/profiles/%s", id), up, nil)
 	if err != nil {
 		return
 	}
-	res, err := ps.client.Do(req)
-	if err != nil {
-		return
-	}
+
 	if err = json.Unmarshal(res.content, &p); err != nil {
 		return
 	}
@@ -152,13 +131,8 @@ func (ps *ProfilesService) Update(ctx context.Context, id string, up *Profile) (
 
 // Delete  enables profile deletions, rendering the profile unavailable
 // for further API calls and transactions.
-func (ps *ProfilesService) Delete(ctx context.Context, id string) (err error) {
-	u := fmt.Sprintf("v2/profiles/%s", id)
-	req, err := ps.client.NewAPIRequest(ctx, http.MethodDelete, u, nil)
-	if err != nil {
-		return
-	}
-	_, err = ps.client.Do(req)
+func (ps *ProfilesService) Delete(ctx context.Context, id string) (res *Response, err error) {
+	res, err = ps.client.delete(ctx, fmt.Sprintf("v2/profiles/%s", id), nil)
 	if err != nil {
 		return
 	}
@@ -167,16 +141,12 @@ func (ps *ProfilesService) Delete(ctx context.Context, id string) (err error) {
 
 // EnablePaymentMethod enables a payment method on a specific or authenticated profile.
 // If you're using API tokens for authentication, pass "me" as id.
-func (ps *ProfilesService) EnablePaymentMethod(ctx context.Context, id string, pm PaymentMethod) (pmi *PaymentMethodInfo, err error) {
-	u := fmt.Sprintf("v2/profiles/%s/methods/%s", id, pm)
-	req, err := ps.client.NewAPIRequest(ctx, http.MethodPost, u, nil)
+func (ps *ProfilesService) EnablePaymentMethod(ctx context.Context, id string, pm PaymentMethod) (res *Response, pmi *PaymentMethodDetails, err error) {
+	res, err = ps.client.post(ctx, fmt.Sprintf("v2/profiles/%s/methods/%s", id, pm), nil, nil)
 	if err != nil {
 		return
 	}
-	res, err := ps.client.Do(req)
-	if err != nil {
-		return
-	}
+
 	if err = json.Unmarshal(res.content, &pmi); err != nil {
 		return
 	}
@@ -185,13 +155,8 @@ func (ps *ProfilesService) EnablePaymentMethod(ctx context.Context, id string, p
 
 // DisablePaymentMethod disables a payment method on a specific or authenticated profile.
 // If you're using API tokens for authentication, pass "me" as id.
-func (ps *ProfilesService) DisablePaymentMethod(ctx context.Context, id string, pm PaymentMethod) (err error) {
-	u := fmt.Sprintf("v2/profiles/%s/methods/%s", id, pm)
-	req, err := ps.client.NewAPIRequest(ctx, http.MethodDelete, u, nil)
-	if err != nil {
-		return
-	}
-	_, err = ps.client.Do(req)
+func (ps *ProfilesService) DisablePaymentMethod(ctx context.Context, id string, pm PaymentMethod) (res *Response, err error) {
+	res, err = ps.client.delete(ctx, fmt.Sprintf("v2/profiles/%s/methods/%s", id, pm), nil)
 	if err != nil {
 		return
 	}
@@ -202,8 +167,8 @@ func (ps *ProfilesService) DisablePaymentMethod(ctx context.Context, id string, 
 // profile id.
 //
 // See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
-func (ps *ProfilesService) EnableGiftCardIssuer(ctx context.Context, profileID string, issuer GiftCardIssuer) (gc *GiftCardEnabled, err error) {
-	res, err := ps.toggleGiftCardIssuerStatus(ctx, profileID, http.MethodPost, issuer)
+func (ps *ProfilesService) EnableGiftCardIssuer(ctx context.Context, profileID string, issuer GiftCardIssuer) (res *Response, gc *GiftCardEnabled, err error) {
+	res, err = ps.toggleGiftCardIssuerStatus(ctx, profileID, http.MethodPost, issuer)
 	if err != nil {
 		return
 	}
@@ -218,8 +183,8 @@ func (ps *ProfilesService) EnableGiftCardIssuer(ctx context.Context, profileID s
 // profile id.
 //
 // See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
-func (ps *ProfilesService) DisableGiftCardIssuer(ctx context.Context, profileID string, issuer GiftCardIssuer) (err error) {
-	_, err = ps.toggleGiftCardIssuerStatus(ctx, profileID, http.MethodDelete, issuer)
+func (ps *ProfilesService) DisableGiftCardIssuer(ctx context.Context, profileID string, issuer GiftCardIssuer) (res *Response, err error) {
+	res, err = ps.toggleGiftCardIssuerStatus(ctx, profileID, http.MethodDelete, issuer)
 	if err != nil {
 		return
 	}
@@ -230,8 +195,8 @@ func (ps *ProfilesService) DisableGiftCardIssuer(ctx context.Context, profileID 
 // curent profile (token owner).
 //
 // See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
-func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(ctx context.Context, issuer GiftCardIssuer) (gc *GiftCardEnabled, err error) {
-	res, err := ps.toggleGiftCardIssuerStatus(ctx, "me", http.MethodPost, issuer)
+func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(ctx context.Context, issuer GiftCardIssuer) (res *Response, gc *GiftCardEnabled, err error) {
+	res, err = ps.toggleGiftCardIssuerStatus(ctx, "me", http.MethodPost, issuer)
 	if err != nil {
 		return
 	}
@@ -246,8 +211,8 @@ func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(ctx context.Context, i
 // curent profile (token owner).
 //
 // See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
-func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(ctx context.Context, issuer GiftCardIssuer) (err error) {
-	_, err = ps.toggleGiftCardIssuerStatus(ctx, "me", http.MethodDelete, issuer)
+func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(ctx context.Context, issuer GiftCardIssuer) (res *Response, err error) {
+	res, err = ps.toggleGiftCardIssuerStatus(ctx, "me", http.MethodDelete, issuer)
 	if err != nil {
 		return
 	}
@@ -256,14 +221,16 @@ func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(ctx context.Context, 
 
 func (ps *ProfilesService) toggleGiftCardIssuerStatus(ctx context.Context, profileID string, method string, issuer GiftCardIssuer) (r *Response, err error) {
 	u := fmt.Sprintf("v2/profiles/%s/methods/giftcard/issuers/%s", profileID, issuer)
-	req, err := ps.client.NewAPIRequest(ctx, method, u, nil)
+
+	if method == http.MethodDelete {
+		r, err = ps.client.delete(ctx, u, nil)
+	} else if method == http.MethodPost {
+		r, err = ps.client.post(ctx, u, nil, nil)
+	}
+
 	if err != nil {
 		return
 	}
 
-	r, err = ps.client.Do(req)
-	if err != nil {
-		return
-	}
 	return
 }

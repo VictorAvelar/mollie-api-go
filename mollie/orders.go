@@ -4,10 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"time"
-
-	"github.com/google/go-querystring/query"
 )
 
 // Order explain the items that customers need to pay for.
@@ -215,19 +212,8 @@ type OrdersService service
 // Get retrieve a single order by its ID.
 //
 // See https://docs.mollie.com/reference/v2/orders-api/get-order
-func (ors *OrdersService) Get(ctx context.Context, orID string, opt *OrderOptions) (order *Order, err error) {
-	u := fmt.Sprintf("v2/orders/%s", orID)
-	if opt != nil {
-		v, _ := query.Values(opt)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-
-	req, err := ors.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
-	if err != nil {
-		return
-	}
-
-	res, err := ors.client.Do(req)
+func (ors *OrdersService) Get(ctx context.Context, orID string, opts *OrderOptions) (res *Response, order *Order, err error) {
+	res, err = ors.client.get(ctx, fmt.Sprintf("v2/orders/%s", orID), opts)
 	if err != nil {
 		return
 	}
@@ -242,23 +228,12 @@ func (ors *OrdersService) Get(ctx context.Context, orID string, opt *OrderOption
 // Create an order will automatically create the required payment to allow your customer to pay for the order.
 //
 // See https://docs.mollie.com/reference/v2/orders-api/create-order
-func (ors *OrdersService) Create(ctx context.Context, ord Order, opt *OrderOptions) (order *Order, err error) {
-	u := "v2/orders"
-	if opt != nil {
-		v, _ := query.Values(opt)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-
+func (ors *OrdersService) Create(ctx context.Context, ord Order, opts *OrderOptions) (res *Response, order *Order, err error) {
 	if ors.client.HasAccessToken() && ors.client.config.testing {
 		ord.TestMode = true
 	}
 
-	req, err := ors.client.NewAPIRequest(ctx, http.MethodPost, u, ord)
-	if err != nil {
-		return
-	}
-
-	res, err := ors.client.Do(req)
+	res, err = ors.client.post(ctx, "v2/orders", ord, opts)
 	if err != nil {
 		return
 	}
@@ -273,15 +248,8 @@ func (ors *OrdersService) Create(ctx context.Context, ord Order, opt *OrderOptio
 // Update is used to update the billing and/or shipping address of an order.
 //
 // See https://docs.mollie.com/reference/v2/orders-api/update-order
-func (ors *OrdersService) Update(ctx context.Context, orderID string, ord Order) (order *Order, err error) {
-	u := fmt.Sprintf("v2/orders/%s", orderID)
-
-	req, err := ors.client.NewAPIRequest(ctx, http.MethodPatch, u, ord)
-	if err != nil {
-		return
-	}
-
-	res, err := ors.client.Do(req)
+func (ors *OrdersService) Update(ctx context.Context, orderID string, ord Order) (res *Response, order *Order, err error) {
+	res, err = ors.client.patch(ctx, fmt.Sprintf("v2/orders/%s", orderID), ord, nil)
 	if err != nil {
 		return
 	}
@@ -296,15 +264,8 @@ func (ors *OrdersService) Update(ctx context.Context, orderID string, ord Order)
 // Cancel try to cancel the order that fulfill certain requirements.
 //
 // See https://docs.mollie.com/reference/v2/orders-api/cancel-order
-func (ors *OrdersService) Cancel(ctx context.Context, orderID string) (order *Order, err error) {
-	u := fmt.Sprintf("v2/orders/%s", orderID)
-
-	req, err := ors.client.NewAPIRequest(ctx, http.MethodDelete, u, nil)
-	if err != nil {
-		return
-	}
-
-	res, err := ors.client.Do(req)
+func (ors *OrdersService) Cancel(ctx context.Context, orderID string) (res *Response, order *Order, err error) {
+	res, err = ors.client.delete(ctx, fmt.Sprintf("v2/orders/%s", orderID), nil)
 	if err != nil {
 		return
 	}
@@ -319,19 +280,8 @@ func (ors *OrdersService) Cancel(ctx context.Context, orderID string) (order *Or
 // List is to retrieve all orders.
 //
 // See https://docs.mollie.com/reference/v2/orders-api/list-orders
-func (ors *OrdersService) List(ctx context.Context, opt *OrderListOptions) (ordList *OrderList, err error) {
-	u := "v2/orders"
-	if opt != nil {
-		v, _ := query.Values(opt)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-
-	req, err := ors.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
-	if err != nil {
-		return
-	}
-
-	res, err := ors.client.Do(req)
+func (ors *OrdersService) List(ctx context.Context, opts *OrderListOptions) (res *Response, ordList *OrderList, err error) {
+	res, err = ors.client.get(ctx, "v2/orders", opts)
 	if err != nil {
 		return
 	}
@@ -346,15 +296,10 @@ func (ors *OrdersService) List(ctx context.Context, opt *OrderListOptions) (ordL
 // UpdateOrderLine can be used to update an order line.
 //
 // See https://docs.mollie.com/reference/v2/orders-api/update-orderline
-func (ors *OrdersService) UpdateOrderLine(ctx context.Context, orderID string, orderLineID string, orderLine OrderLine) (order *Order, err error) {
+func (ors *OrdersService) UpdateOrderLine(ctx context.Context, orderID string, orderLineID string, orderLine OrderLine) (res *Response, order *Order, err error) {
 	u := fmt.Sprintf("v2/orders/%s/lines/%s", orderID, orderLineID)
 
-	req, err := ors.client.NewAPIRequest(ctx, http.MethodPatch, u, orderLine)
-	if err != nil {
-		return
-	}
-
-	res, err := ors.client.Do(req)
+	res, err = ors.client.patch(ctx, u, orderLine, nil)
 	if err != nil {
 		return
 	}
@@ -371,15 +316,10 @@ func (ors *OrdersService) UpdateOrderLine(ctx context.Context, orderID string, o
 // Use the Cancel Order API if you want to cancel the entire order or the remainder of the order.
 //
 // See https://docs.mollie.com/reference/v2/orders-api/cancel-order-lines
-func (ors *OrdersService) CancelOrderLines(ctx context.Context, orderID string, orderLines []OrderLine) (err error) {
+func (ors *OrdersService) CancelOrderLines(ctx context.Context, orderID string, orderLines []OrderLine) (res *Response, err error) {
 	u := fmt.Sprintf("v2/orders/%s/lines", orderID)
 
-	req, err := ors.client.NewAPIRequest(ctx, http.MethodDelete, u, orderLines)
-	if err != nil {
-		return
-	}
-
-	_, err = ors.client.Do(req)
+	res, err = ors.client.delete(ctx, u, nil)
 	if err != nil {
 		return
 	}
@@ -389,16 +329,12 @@ func (ors *OrdersService) CancelOrderLines(ctx context.Context, orderID string, 
 
 // CreateOrderPayment can only be created while the status of the order is created,
 // and when the status of the existing payment is either expired, canceled or failed.
+//
 // See https://docs.mollie.com/reference/v2/orders-api/create-order-payment
-func (ors *OrdersService) CreateOrderPayment(ctx context.Context, orderID string, ordPay *OrderPayment) (payment *Payment, err error) {
+func (ors *OrdersService) CreateOrderPayment(ctx context.Context, orderID string, ordPay *OrderPayment) (res *Response, payment *Payment, err error) {
 	u := fmt.Sprintf("v2/orders/%s/payments", orderID)
 
-	req, err := ors.client.NewAPIRequest(ctx, http.MethodPost, u, ordPay)
-	if err != nil {
-		return
-	}
-
-	res, err := ors.client.Do(req)
+	res, err = ors.client.post(ctx, u, ordPay, nil)
 	if err != nil {
 		return
 	}
@@ -411,16 +347,12 @@ func (ors *OrdersService) CreateOrderPayment(ctx context.Context, orderID string
 }
 
 // CreateOrderRefund using the Orders API, refunds should be made against the order.
+//
 // See https://docs.mollie.com/reference/v2/orders-api/create-order-refund
-func (ors *OrdersService) CreateOrderRefund(ctx context.Context, orderID string, order *Order) (refund Refund, err error) {
+func (ors *OrdersService) CreateOrderRefund(ctx context.Context, orderID string, order *Order) (res *Response, refund *Refund, err error) {
 	u := fmt.Sprintf("v2/orders/%s/refunds", orderID)
 
-	req, err := ors.client.NewAPIRequest(ctx, http.MethodPost, u, order)
-	if err != nil {
-		return
-	}
-
-	res, err := ors.client.Do(req)
+	res, err = ors.client.post(ctx, u, order, nil)
 	if err != nil {
 		return
 	}
@@ -433,20 +365,12 @@ func (ors *OrdersService) CreateOrderRefund(ctx context.Context, orderID string,
 }
 
 // ListOrderRefunds retrieve all order refunds.
+//
 // See https://docs.mollie.com/reference/v2/orders-api/list-order-refunds
-func (ors *OrdersService) ListOrderRefunds(ctx context.Context, orderID string, opt *OrderListRefundOptions) (orderListRefund OrderListRefund, err error) {
+func (ors *OrdersService) ListOrderRefunds(ctx context.Context, orderID string, opts *OrderListRefundOptions) (res *Response, orderListRefund *OrderListRefund, err error) {
 	u := fmt.Sprintf("v2/orders/%s/refunds", orderID)
-	if opt != nil {
-		v, _ := query.Values(opt)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
 
-	req, err := ors.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
-	if err != nil {
-		return
-	}
-
-	res, err := ors.client.Do(req)
+	res, err = ors.client.get(ctx, u, opts)
 	if err != nil {
 		return
 	}

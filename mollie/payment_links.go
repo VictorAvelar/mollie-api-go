@@ -4,10 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"time"
-
-	"github.com/google/go-querystring/query"
 )
 
 // PaymentLink is a resource that can be shared with your customers
@@ -67,16 +64,12 @@ type PaymentLinksService service
 // Get retrieves a single payment link object by its id/token.
 //
 // See: https://docs.mollie.com/reference/v2/payment-links-api/get-payment-link
-func (pls *PaymentLinksService) Get(ctx context.Context, id string) (pl *PaymentLink, err error) {
-	req, err := pls.client.NewAPIRequest(ctx, http.MethodGet, fmt.Sprintf("v2/payment-links/%s", id), nil)
+func (pls *PaymentLinksService) Get(ctx context.Context, id string) (res *Response, pl *PaymentLink, err error) {
+	res, err = pls.client.get(ctx, fmt.Sprintf("v2/payment-links/%s", id), nil)
 	if err != nil {
 		return
 	}
 
-	res, err := pls.client.Do(req)
-	if err != nil {
-		return
-	}
 	if err = json.Unmarshal(res.content, &pl); err != nil {
 		return
 	}
@@ -86,21 +79,12 @@ func (pls *PaymentLinksService) Get(ctx context.Context, id string) (pl *Payment
 // Create generates payment links that by default, unlike regular payments, do not expire.
 //
 // See: https://docs.mollie.com/reference/v2/payment-links-api/create-payment-link
-func (pls *PaymentLinksService) Create(ctx context.Context, p PaymentLink, opts *PaymentLinkOptions) (np *PaymentLink, err error) {
-	u := "v2/payment-links"
-	if opts != nil {
-		v, _ := query.Values(opts)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-	req, err := pls.client.NewAPIRequest(ctx, http.MethodPost, u, p)
+func (pls *PaymentLinksService) Create(ctx context.Context, p PaymentLink, opts *PaymentLinkOptions) (res *Response, np *PaymentLink, err error) {
+	res, err = pls.client.post(ctx, "v2/payment-links", p, opts)
 	if err != nil {
 		return
 	}
 
-	res, err := pls.client.Do(req)
-	if err != nil {
-		return
-	}
 	if err = json.Unmarshal(res.content, &np); err != nil {
 		return
 	}
@@ -111,21 +95,12 @@ func (pls *PaymentLinksService) Create(ctx context.Context, p PaymentLink, opts 
 // ordered from newest to oldest.
 //
 // See: https://docs.mollie.com/reference/v2/payment-links-api/list-payment-links
-func (pls *PaymentLinksService) List(ctx context.Context, opts *PaymentLinkOptions) (pl *PaymentLinksList, err error) {
-	u := "v2/payment-links"
-	if opts != nil {
-		v, _ := query.Values(opts)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-	req, err := pls.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
+func (pls *PaymentLinksService) List(ctx context.Context, opts *PaymentLinkOptions) (res *Response, pl *PaymentLinksList, err error) {
+	res, err = pls.client.get(ctx, "v2/payment-links", opts)
 	if err != nil {
 		return
 	}
 
-	res, err := pls.client.Do(req)
-	if err != nil {
-		return
-	}
 	if err = json.Unmarshal(res.content, &pl); err != nil {
 		return
 	}

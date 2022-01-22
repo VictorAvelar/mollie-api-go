@@ -4,9 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
-
-	"github.com/google/go-querystring/query"
 )
 
 // PaymentMethodStatus tels the status that the method is in.
@@ -23,8 +20,8 @@ const (
 	PaymentMethodRejected        PaymentMethodStatus = "pending-rejected"
 )
 
-// PaymentMethodInfo describes a single method with details.
-type PaymentMethodInfo struct {
+// PaymentMethodDetails describes a single method with details.
+type PaymentMethodDetails struct {
 	Resource      string                  `json:"resource,omitempty"`
 	ID            string                  `json:"id,omitempty"`
 	Description   string                  `json:"description,omitempty"`
@@ -41,13 +38,6 @@ type PaymentMethodInfo struct {
 type MethodsLinks struct {
 	Self          *URL `json:"self,omitempty"`
 	Documentation *URL `json:"documentation,omitempty"`
-}
-
-// Image describes a generic image resource retrieved by Mollie.
-type Image struct {
-	Size1x string `json:"size1X,omitempty"`
-	Size2X string `json:"size2X,omitempty"`
-	Svg    string `json:"svg,omitempty"`
 }
 
 // PaymentMethodPricing contains information about commissions and fees
@@ -68,30 +58,30 @@ type PaymentMethodIssuer struct {
 	Image    Image  `json:"image,omitempty"`
 }
 
-// ListMethods describes a list of paginated payment methods.
-type ListMethods struct {
+// PaymentMethodsList describes a list of paginated payment methods.
+type PaymentMethodsList struct {
 	Count    int `json:"count,omitempty"`
 	Embedded struct {
-		Methods []*PaymentMethodInfo
+		Methods []*PaymentMethodDetails
 	} `json:"_embedded,omitempty"`
 	Links PaginationLinks `json:"_links,omitempty"`
 }
 
-// MethodsOptions are applicable query string parameters to get methods
+// PaymentMethodOptions are applicable query string parameters to get methods
 // from mollie's API.
-type GetMethodsOptions struct {
+type PaymentMethodOptions struct {
 	Locale    Locale `url:"locale,omitempty"`
 	Currency  string `url:"currency,omitempty"`
 	ProfileID string `url:"profileId,omitempty"`
 	Include   string `url:"include,omitempty"`
 }
 
-// ListMethodsOptions are applicable query string parameters to list methods
+// PaymentMethodsListOptions are applicable query string parameters to list methods
 // from mollie's API.
 //
 // It contains list specific options and embeds GetMethodOptions.
-type ListMethodsOptions struct {
-	GetMethodsOptions
+type PaymentMethodsListOptions struct {
+	PaymentMethodOptions
 	SequenceType   SequenceType `url:"sequenceType,omitempty"`
 	AmountCurrency string       `url:"amount[currency],omitempty"`
 	AmountValue    string       `url:"amount[value],omitempty"`
@@ -100,72 +90,54 @@ type ListMethodsOptions struct {
 	IncludeWallets string       `url:"includeWallets,omitempty"`
 }
 
-// MethodsService operates on methods endpoints
-type MethodsService service
+// PaymentMethodsService operates on methods endpoints
+type PaymentMethodsService service
 
 // Get returns information about the payment method specified by id,
 // it also receives a pointer to the method options containing applicable
-// query string parameters
+// query string parameters.
 //
 // See: https://docs.mollie.com/reference/v2/methods-api/get-method
-func (ms *MethodsService) Get(ctx context.Context, id string, options *GetMethodsOptions) (pmi *PaymentMethodInfo, err error) {
+func (ms *PaymentMethodsService) Get(ctx context.Context, id PaymentMethod, options *PaymentMethodOptions) (res *Response, pmd *PaymentMethodDetails, err error) {
 	u := fmt.Sprintf("v2/methods/%s", id)
-	if options != nil {
-		v, _ := query.Values(options)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-	req, err := ms.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
+
+	res, err = ms.client.get(ctx, u, options)
 	if err != nil {
 		return
 	}
-	res, err := ms.client.Do(req)
-	if err != nil {
+
+	if err = json.Unmarshal(res.content, &pmd); err != nil {
 		return
 	}
-	if err = json.Unmarshal(res.content, &pmi); err != nil {
-		return
-	}
+
 	return
 }
 
-// All retrieves all the payment methods enabled for your account/organization
+// All retrieves all the payment methods enabled for your account/organization.
 //
 // See: https://docs.mollie.com/reference/v2/methods-api/list-all-methods
-func (ms *MethodsService) All(ctx context.Context, options *ListMethodsOptions) (pm *ListMethods, err error) {
-	u := "v2/methods/all"
-	if options != nil {
-		v, _ := query.Values(options)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-
-	return ms.list(ctx, u)
+func (ms *PaymentMethodsService) All(ctx context.Context, options *PaymentMethodsListOptions) (res *Response, pm *PaymentMethodsList, err error) {
+	return ms.list(ctx, "v2/methods/all", options)
 }
 
 // List retrieves all enabled payment methods.
+//
 // The results are not paginated.
 //
 // See: https://docs.mollie.com/reference/v2/methods-api/list-methods
-func (ms *MethodsService) List(ctx context.Context, options *ListMethodsOptions) (pm *ListMethods, err error) {
-	u := "v2/methods"
-	if options != nil {
-		v, _ := query.Values(options)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-
-	return ms.list(ctx, u)
+func (ms *PaymentMethodsService) List(ctx context.Context, options *PaymentMethodsListOptions) (res *Response, pm *PaymentMethodsList, err error) {
+	return ms.list(ctx, "v2/methods", options)
 }
 
-func (ms *MethodsService) list(ctx context.Context, uri string) (pm *ListMethods, err error) {
-	req, err := ms.client.NewAPIRequest(ctx, http.MethodGet, uri, nil)
+func (ms *PaymentMethodsService) list(ctx context.Context, uri string, options interface{}) (res *Response, pm *PaymentMethodsList, err error) {
+	res, err = ms.client.get(ctx, uri, options)
 	if err != nil {
 		return
 	}
-	res, err := ms.client.Do(req)
-	if err != nil {
-		return
-	}
+
 	if err = json.Unmarshal(res.content, &pm); err != nil {
 		return
 	}
+
 	return
 }

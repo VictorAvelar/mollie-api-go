@@ -157,3 +157,10 @@ type Rate struct {
 	Fixed    *Amount `json:"fixed,omitempty"`
 	Variable string  `json:"variable,omitempty"`
 }
+
+// Image describes a generic image resource retrieved by Mollie.
+type Image struct {
+	Size1x string `json:"size1X,omitempty"`
+	Size2X string `json:"size2X,omitempty"`
+	Svg    string `json:"svg,omitempty"`
+}

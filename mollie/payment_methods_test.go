@@ -10,16 +10,16 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type methodsServiceSuite struct{ suite.Suite }
+type paymentMethodsServiceSuite struct{ suite.Suite }
 
-func (ms *methodsServiceSuite) SetupSuite() { setEnv() }
+func (ms *paymentMethodsServiceSuite) SetupSuite() { setEnv() }
 
-func (ms *methodsServiceSuite) TearDownSuite() { unsetEnv() }
+func (ms *paymentMethodsServiceSuite) TearDownSuite() { unsetEnv() }
 
-func (ms *methodsServiceSuite) TestMethodsService_List() {
+func (ms *paymentMethodsServiceSuite) TestMethodsService_List() {
 	type args struct {
 		ctx     context.Context
-		options *ListMethodsOptions
+		options *PaymentMethodsListOptions
 	}
 
 	cases := []struct {
@@ -54,7 +54,7 @@ func (ms *methodsServiceSuite) TestMethodsService_List() {
 			"list methods with options works as expected.",
 			args{
 				context.Background(),
-				&ListMethodsOptions{
+				&PaymentMethodsListOptions{
 					AmountCurrency: "EUR",
 					AmountValue:    "100.00",
 				},
@@ -116,22 +116,23 @@ func (ms *methodsServiceSuite) TestMethodsService_List() {
 			c.pre()
 			tMux.HandleFunc("/v2/methods", c.handler)
 
-			m, err := tClient.Methods.List(c.args.ctx, c.args.options)
+			res, m, err := tClient.PaymentMethods.List(c.args.ctx, c.args.options)
 			if c.wantErr {
 				ms.NotNil(err)
 				ms.EqualError(err, c.err.Error())
 			} else {
 				ms.Nil(err)
-				ms.IsType(&ListMethods{}, m)
+				ms.IsType(&PaymentMethodsList{}, m)
+				ms.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ms *methodsServiceSuite) TestMethodsService_All() {
+func (ms *paymentMethodsServiceSuite) TestMethodsService_All() {
 	type args struct {
 		ctx     context.Context
-		options *ListMethodsOptions
+		options *PaymentMethodsListOptions
 	}
 
 	cases := []struct {
@@ -166,7 +167,7 @@ func (ms *methodsServiceSuite) TestMethodsService_All() {
 			"list methods with options works as expected.",
 			args{
 				context.Background(),
-				&ListMethodsOptions{
+				&PaymentMethodsListOptions{
 					AmountCurrency: "EUR",
 					AmountValue:    "100.00",
 				},
@@ -228,22 +229,23 @@ func (ms *methodsServiceSuite) TestMethodsService_All() {
 			c.pre()
 			tMux.HandleFunc("/v2/methods/all", c.handler)
 
-			m, err := tClient.Methods.All(c.args.ctx, c.args.options)
+			res, m, err := tClient.PaymentMethods.All(c.args.ctx, c.args.options)
 			if c.wantErr {
 				ms.NotNil(err)
 				ms.EqualError(err, c.err.Error())
 			} else {
 				ms.Nil(err)
-				ms.IsType(&ListMethods{}, m)
+				ms.IsType(&PaymentMethodsList{}, m)
+				ms.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ms *methodsServiceSuite) TestMethodsService_Get() {
+func (ms *paymentMethodsServiceSuite) TestMethodsService_Get() {
 	type args struct {
 		ctx     context.Context
-		options *GetMethodsOptions
+		options *PaymentMethodOptions
 		method  PaymentMethod
 	}
 
@@ -280,7 +282,7 @@ func (ms *methodsServiceSuite) TestMethodsService_Get() {
 			"get methods with options works as expected.",
 			args{
 				context.Background(),
-				&GetMethodsOptions{Locale: Catalan},
+				&PaymentMethodOptions{Locale: Catalan},
 				PayPal,
 			},
 			false,
@@ -290,6 +292,8 @@ func (ms *methodsServiceSuite) TestMethodsService_Get() {
 				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ms.T(), r, "GET")
 				testQuery(ms.T(), r, "locale=ca_ES&testmode=true")
+
+				fmt.Println(r.Context())
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -338,23 +342,23 @@ func (ms *methodsServiceSuite) TestMethodsService_Get() {
 	for _, c := range cases {
 		setup()
 		defer teardown()
-
 		ms.T().Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/methods/%s", c.args.method), c.handler)
 
-			m, err := tClient.Methods.Get(c.args.ctx, string(c.args.method), c.args.options)
+			res, m, err := tClient.PaymentMethods.Get(c.args.ctx, c.args.method, c.args.options)
 			if c.wantErr {
 				ms.NotNil(err)
 				ms.EqualError(err, c.err.Error())
 			} else {
 				ms.Nil(err)
-				ms.IsType(&PaymentMethodInfo{}, m)
+				ms.IsType(&PaymentMethodDetails{}, m)
+				ms.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
 func TestMethodsService(t *testing.T) {
-	suite.Run(t, new(methodsServiceSuite))
+	suite.Run(t, new(paymentMethodsServiceSuite))
 }

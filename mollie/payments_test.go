@@ -99,13 +99,14 @@ func (ps *paymentsServiceSuite) TestPaymentsService_Get() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s", c.args.payment), c.handler)
 
-			m, err := tClient.Payments.Get(c.args.ctx, c.args.payment, c.args.options)
+			res, m, err := tClient.Payments.Get(c.args.ctx, c.args.payment, c.args.options)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
-				ps.IsType(Payment{}, m)
+				ps.IsType(&Payment{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -189,13 +190,14 @@ func (ps *paymentsServiceSuite) TestPaymentsService_List() {
 			c.pre()
 			tMux.HandleFunc("/v2/payments", c.handler)
 
-			m, err := tClient.Payments.List(c.args.ctx, c.args.options)
+			res, m, err := tClient.Payments.List(c.args.ctx, c.args.options)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
-				ps.IsType(PaymentList{}, m)
+				ps.IsType(&PaymentList{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -313,13 +315,14 @@ func (ps *paymentsServiceSuite) TestPaymentsService_Create() {
 			c.pre()
 			tMux.HandleFunc("/v2/payments", c.handler)
 
-			m, err := tClient.Payments.Create(c.args.ctx, c.args.payment, c.args.options)
+			res, m, err := tClient.Payments.Create(c.args.ctx, c.args.payment, c.args.options)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
-				ps.IsType(Payment{}, m)
+				ps.IsType(&Payment{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -433,13 +436,14 @@ func (ps *paymentsServiceSuite) TestPaymentsService_Update() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s", c.args.id), c.handler)
 
-			m, err := tClient.Payments.Update(c.args.ctx, c.args.id, c.args.payment)
+			res, m, err := tClient.Payments.Update(c.args.ctx, c.args.id, c.args.payment)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
-				ps.IsType(Payment{}, m)
+				ps.IsType(&Payment{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -521,13 +525,14 @@ func (ps *paymentsServiceSuite) TestPaymentsService_Cancel() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s", c.args.id), c.handler)
 
-			m, err := tClient.Payments.Cancel(c.args.ctx, c.args.id)
+			res, m, err := tClient.Payments.Cancel(c.args.ctx, c.args.id)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
-				ps.IsType(Payment{}, m)
+				ps.IsType(&Payment{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
