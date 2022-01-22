@@ -7,6 +7,7 @@
 - Methods service actions now return pointers instead of struct literals.
 - Invoice service actions now return pointers instead of struct literals.
 - Mandates service actions now return pointers instead of struct literals.
+- Payments service actions now return pointers instead of struct literals.
 - Get permissions now accepts a direct reference to a PermissionGrant struct instead of a string.
 - All services now return an instance of mollie.Response as first value changing the signature from (value, error) to (response, value, error).
 - All structs are changed to the following naming patterns
@@ -27,6 +28,14 @@
   - Orders
   - Organizations
   - PaymentLinks
+  - PaymentMethods
+  - Payments
+  - Permissions
+  - Profiles
+  - Refunds
+  - Settlements
+  - Shipments
+  - Subscriptions
 
 ## Other changes
 
