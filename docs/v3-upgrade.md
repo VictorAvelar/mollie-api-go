@@ -25,6 +25,8 @@
   - Onboarding
   - Partners
   - Orders
+  - Organizations
+  - PaymentLinks
 
 ## Other changes
 

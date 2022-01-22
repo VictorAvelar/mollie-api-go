@@ -98,13 +98,14 @@ func (ps *paymentLinksSuite) TestPaymentLinkService_Get() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/payment-links/%s", c.args.paymentLink), c.handler)
 
-			m, err := tClient.PaymentLinks.Get(c.args.ctx, c.args.paymentLink)
+			res, m, err := tClient.PaymentLinks.Get(c.args.ctx, c.args.paymentLink)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&PaymentLink{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -194,13 +195,14 @@ func (ps *paymentLinksSuite) TestPaymentLinkService_Create() {
 			c.pre()
 			tMux.HandleFunc("/v2/payment-links", c.handler)
 
-			m, err := tClient.PaymentLinks.Create(c.args.ctx, c.args.paymentLink, c.args.options)
+			res, m, err := tClient.PaymentLinks.Create(c.args.ctx, c.args.paymentLink, c.args.options)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&PaymentLink{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -305,13 +307,14 @@ func (ps *paymentLinksSuite) TestPaymentLinkService_List() {
 			c.pre()
 			tMux.HandleFunc("/v2/payment-links", c.handler)
 
-			m, err := tClient.PaymentLinks.List(c.args.ctx, c.args.opts)
+			res, m, err := tClient.PaymentLinks.List(c.args.ctx, c.args.opts)
 			if c.wantErr {
 				ps.NotNil(err)
 				ps.EqualError(err, c.err.Error())
 			} else {
 				ps.Nil(err)
 				ps.IsType(&PaymentLinksList{}, m)
+				ps.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
