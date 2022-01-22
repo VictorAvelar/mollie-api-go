@@ -4,10 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"time"
-
-	"github.com/google/go-querystring/query"
 )
 
 // PaymentMethod is a payment method supported by Mollie.
@@ -138,20 +135,12 @@ type ListPaymentOptions struct {
 type PaymentsService service
 
 // Get retrieves a single payment object by its payment token.
-func (ps *PaymentsService) Get(ctx context.Context, id string, options *PaymentOptions) (p Payment, err error) {
-	u := fmt.Sprintf("v2/payments/%s", id)
-	if options != nil {
-		v, _ := query.Values(options)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-	req, err := ps.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
+func (ps *PaymentsService) Get(ctx context.Context, id string, opts *PaymentOptions) (res *Response, p *Payment, err error) {
+	res, err = ps.client.get(ctx, fmt.Sprintf("v2/payments/%s", id), opts)
 	if err != nil {
 		return
 	}
-	res, err := ps.client.Do(req)
-	if err != nil {
-		return
-	}
+
 	if err = json.Unmarshal(res.content, &p); err != nil {
 		return
 	}
@@ -161,26 +150,16 @@ func (ps *PaymentsService) Get(ctx context.Context, id string, options *PaymentO
 // Create stores a new payment object attached to your Mollie account.
 //
 // See: https://docs.mollie.com/reference/v2/payments-api/create-payment#
-func (ps *PaymentsService) Create(ctx context.Context, p Payment, options *PaymentOptions) (np Payment, err error) {
-	u := "v2/payments"
-	if options != nil {
-		v, _ := query.Values(options)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-
+func (ps *PaymentsService) Create(ctx context.Context, p Payment, opts *PaymentOptions) (res *Response, np *Payment, err error) {
 	if ps.client.HasAccessToken() && ps.client.config.testing {
 		p.TestMode = true
 	}
 
-	req, err := ps.client.NewAPIRequest(ctx, http.MethodPost, u, p)
+	res, err = ps.client.post(ctx, "v2/payments", p, opts)
 	if err != nil {
 		return
 	}
 
-	res, err := ps.client.Do(req)
-	if err != nil {
-		return
-	}
 	if err = json.Unmarshal(res.content, &np); err != nil {
 		return
 	}
@@ -190,16 +169,12 @@ func (ps *PaymentsService) Create(ctx context.Context, p Payment, options *Payme
 // Cancel removes a payment (if possible) from your Mollie account.
 //
 // See: https://docs.mollie.com/reference/v2/payments-api/cancel-payment
-func (ps *PaymentsService) Cancel(ctx context.Context, id string) (p Payment, err error) {
-	u := fmt.Sprintf("v2/payments/%s", id)
-	req, err := ps.client.NewAPIRequest(ctx, http.MethodDelete, u, nil)
+func (ps *PaymentsService) Cancel(ctx context.Context, id string) (p *Payment, err error) {
+	res, err := ps.client.delete(ctx, fmt.Sprintf("v2/payments/%s", id), nil)
 	if err != nil {
 		return
 	}
-	res, err := ps.client.Do(req)
-	if err != nil {
-		return
-	}
+
 	if err = json.Unmarshal(res.content, &p); err != nil {
 		return
 	}
@@ -209,16 +184,12 @@ func (ps *PaymentsService) Cancel(ctx context.Context, id string) (p Payment, er
 // Update can be used to update some details of a created payment.
 //
 // See: https://docs.mollie.com/reference/v2/payments-api/update-payment#
-func (ps *PaymentsService) Update(ctx context.Context, id string, up Payment) (p Payment, err error) {
-	u := fmt.Sprintf("v2/payments/%s", id)
-	req, err := ps.client.NewAPIRequest(ctx, http.MethodPatch, u, up)
+func (ps *PaymentsService) Update(ctx context.Context, id string, up Payment) (res *Response, p *Payment, err error) {
+	res, err = ps.client.patch(ctx, fmt.Sprintf("v2/payments/%s", id), up, nil)
 	if err != nil {
 		return
 	}
-	res, err := ps.client.Do(req)
-	if err != nil {
-		return
-	}
+
 	if err = json.Unmarshal(res.content, &p); err != nil {
 		return
 	}
@@ -237,20 +208,12 @@ type PaymentList struct {
 // List retrieves a list of payments associated with your account/organization.
 //
 // See: https://docs.mollie.com/reference/v2/payments-api/list-payments
-func (ps *PaymentsService) List(ctx context.Context, options *ListPaymentOptions) (pl PaymentList, err error) {
-	u := "v2/payments"
-	if options != nil {
-		v, _ := query.Values(options)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-	req, err := ps.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
+func (ps *PaymentsService) List(ctx context.Context, opts *ListPaymentOptions) (res *Response, pl *PaymentList, err error) {
+	res, err = ps.client.get(ctx, "v2/payments", opts)
 	if err != nil {
 		return
 	}
-	res, err := ps.client.Do(req)
-	if err != nil {
-		return
-	}
+
 	if err = json.Unmarshal(res.content, &pl); err != nil {
 		return
 	}
