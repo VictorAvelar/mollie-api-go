@@ -93,13 +93,14 @@ func (os *organizationsServiceSuite) TestOrganizationsService_Get() {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/organizations/%s", c.args.organization), c.handler)
 
-			m, err := tClient.Organizations.Get(c.args.ctx, c.args.organization)
+			res, m, err := tClient.Organizations.Get(c.args.ctx, c.args.organization)
 			if c.wantErr {
 				os.NotNil(err)
 				os.EqualError(err, c.err.Error())
 			} else {
 				os.Nil(err)
 				os.IsType(&Organization{}, m)
+				os.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -177,13 +178,14 @@ func (os *organizationsServiceSuite) TestOrganizationsService_GetCurrent() {
 			c.pre()
 			tMux.HandleFunc("/v2/organizations/me", c.handler)
 
-			m, err := tClient.Organizations.GetCurrent(c.args.ctx)
+			res, m, err := tClient.Organizations.GetCurrent(c.args.ctx)
 			if c.wantErr {
 				os.NotNil(err)
 				os.EqualError(err, c.err.Error())
 			} else {
 				os.Nil(err)
 				os.IsType(&Organization{}, m)
+				os.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
@@ -261,13 +263,14 @@ func (os *organizationsServiceSuite) TestOrganizationsService_GetPartnerStatus()
 			c.pre()
 			tMux.HandleFunc("/v2/organizations/me/partner", c.handler)
 
-			m, err := tClient.Organizations.GetPartnerStatus(c.args.ctx)
+			res, m, err := tClient.Organizations.GetPartnerStatus(c.args.ctx)
 			if c.wantErr {
 				os.NotNil(err)
 				os.EqualError(err, c.err.Error())
 			} else {
 				os.Nil(err)
 				os.IsType(&OrganizationPartnerStatus{}, m)
+				os.IsType(&http.Response{}, res.Response)
 			}
 		})
 	}
