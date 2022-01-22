@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 )
 
 // PermissionGrant defines supported permissions.
@@ -68,16 +67,12 @@ type PermissionsService service
 // Get returns a permission by its id.
 //
 // See: https://docs.mollie.com/reference/v2/permissions-api/get-permission
-func (ps *PermissionsService) Get(ctx context.Context, id PermissionGrant) (p *Permission, err error) {
-	u := fmt.Sprintf("v2/permissions/%s", id)
-	req, err := ps.client.NewAPIRequest(ctx, http.MethodGet, u, nil)
+func (ps *PermissionsService) Get(ctx context.Context, id PermissionGrant) (res *Response, p *Permission, err error) {
+	res, err = ps.client.get(ctx, fmt.Sprintf("v2/permissions/%s", id), nil)
 	if err != nil {
 		return
 	}
-	res, err := ps.client.Do(req)
-	if err != nil {
-		return
-	}
+
 	if err = json.Unmarshal(res.content, &p); err != nil {
 		return
 	}
@@ -88,15 +83,12 @@ func (ps *PermissionsService) Get(ctx context.Context, id PermissionGrant) (p *P
 // The list is not paginated.
 //
 // See: https://docs.mollie.com/reference/v2/permissions-api/list-permissions
-func (ps *PermissionsService) List(ctx context.Context) (pl *PermissionsList, err error) {
-	req, err := ps.client.NewAPIRequest(ctx, http.MethodGet, "v2/permissions", nil)
+func (ps *PermissionsService) List(ctx context.Context) (res *Response, pl *PermissionsList, err error) {
+	res, err = ps.client.get(ctx, "v2/oermissions", nil)
 	if err != nil {
 		return
 	}
-	res, err := ps.client.Do(req)
-	if err != nil {
-		return
-	}
+
 	if err = json.Unmarshal(res.content, &pl); err != nil {
 		return
 	}
