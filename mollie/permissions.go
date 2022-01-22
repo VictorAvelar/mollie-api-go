@@ -84,7 +84,7 @@ func (ps *PermissionsService) Get(ctx context.Context, id PermissionGrant) (res 
 //
 // See: https://docs.mollie.com/reference/v2/permissions-api/list-permissions
 func (ps *PermissionsService) List(ctx context.Context) (res *Response, pl *PermissionsList, err error) {
-	res, err = ps.client.get(ctx, "v2/oermissions", nil)
+	res, err = ps.client.get(ctx, "v2/permissions", nil)
 	if err != nil {
 		return
 	}

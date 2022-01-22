@@ -107,7 +107,7 @@ func (ps *profilesServiceSuite) TestPermissionsService_Get() {
 	}
 }
 
-func (ps *profilesServiceSuite) TestPermissionsService_List() {
+func (ps *permissionsServiceSuite) TestPermissionsService_List() {
 	type args struct {
 		ctx context.Context
 	}
