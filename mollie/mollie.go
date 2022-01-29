@@ -283,13 +283,13 @@ type Error struct {
 	Response *http.Response `json:"response"` // the full response that produced the error
 }
 
-// Error function complies with the error interface
+// Error function complies with the error interface.
 func (e *Error) Error() string {
 	return fmt.Sprintf("response failed with status %s\npayload: %v", e.Message, e.Content)
 }
 
 /*
-Constructor for Error
+Constructor for Error.
 */
 func newError(r *http.Response) *Error {
 	var e Error

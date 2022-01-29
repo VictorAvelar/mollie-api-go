@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-// Organization describes an organization detail
+// Organization describes an organization detail.
 type Organization struct {
 	Resource           string            `json:"resource,omitempty"`
 	ID                 string            `json:"id,omitempty"`
@@ -72,7 +72,7 @@ type OrganizationPartnerStatus struct {
 	Links                          OrganizationPartnerLinks `json:"_links,omitempty"`
 }
 
-// OrganizationsService instance operates over organization resources
+// OrganizationsService instance operates over organization resources.
 type OrganizationsService service
 
 // Get retrieve an organization by its id.
@@ -80,7 +80,7 @@ func (os *OrganizationsService) Get(ctx context.Context, id string) (res *Respon
 	return os.get(ctx, fmt.Sprintf("v2/organizations/%s", id))
 }
 
-// GetCurrent retrieve the currently authenticated organization
+// GetCurrent retrieve the currently authenticated organization.
 func (os *OrganizationsService) GetCurrent(ctx context.Context) (res *Response, o *Organization, err error) {
 	return os.get(ctx, "v2/organizations/me")
 }

@@ -56,7 +56,7 @@ func (ss *ShipmentsService) Get(ctx context.Context, oID string, sID string) (re
 	return
 }
 
-// CreateShipmentRequest defines information required to create a new shipment
+// CreateShipmentRequest defines information required to create a new shipment.
 type CreateShipmentRequest struct {
 	Lines    []OrderLine      `json:"lines,omitempty"`
 	Tracking ShipmentTracking `json:"tracking,omitempty"`

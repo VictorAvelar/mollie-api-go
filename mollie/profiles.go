@@ -8,10 +8,10 @@ import (
 	"time"
 )
 
-// ProfileStatus determines whether the profile is able to receive live payments
+// ProfileStatus determines whether the profile is able to receive live payments.
 type ProfileStatus string
 
-// Possible profile statuses
+// Possible profile statuses.
 const (
 	StatusUnverified ProfileStatus = "unverified"
 	StatusVerified   ProfileStatus = "verified"
@@ -49,7 +49,7 @@ type ProfileLinks struct {
 	Dashboard          *URL `json:"dashboard,omitempty"`
 }
 
-// ProfileListOptions are optional query string parameters for the list profiles request
+// ProfileListOptions are optional query string parameters for the list profiles request.
 type ProfileListOptions struct {
 	From  string `url:"from,omitempty"`
 	Limit uint   `url:"limit,omitempty"`
@@ -64,10 +64,10 @@ type ProfileList struct {
 	Links PaginationLinks `json:"_links,omitempty"`
 }
 
-// ProfilesService operates over profile resource
+// ProfilesService operates over profile resource.
 type ProfilesService service
 
-// List returns all the profiles for the authenticated account
+// List returns all the profiles for the authenticated account.
 func (ps *ProfilesService) List(ctx context.Context, opts *ProfileListOptions) (res *Response, pl *ProfileList, err error) {
 	res, err = ps.client.get(ctx, "v2/profiles", opts)
 	if err != nil {
@@ -116,7 +116,7 @@ func (ps *ProfilesService) Create(ctx context.Context, np *Profile) (res *Respon
 	return
 }
 
-// Update allows you to perform mutations on a profile
+// Update allows you to perform mutations on a profile.
 func (ps *ProfilesService) Update(ctx context.Context, id string, up *Profile) (res *Response, p *Profile, err error) {
 	res, err = ps.client.patch(ctx, fmt.Sprintf("v2/profiles/%s", id), up, nil)
 	if err != nil {
@@ -192,7 +192,7 @@ func (ps *ProfilesService) DisableGiftCardIssuer(ctx context.Context, profileID 
 }
 
 // EnableGiftCardIssuerForCurrent activates the specified issuer for the
-// curent profile (token owner).
+// current profile (token owner).
 //
 // See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
 func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(ctx context.Context, issuer GiftCardIssuer) (res *Response, gc *GiftCardEnabled, err error) {
@@ -208,7 +208,7 @@ func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(ctx context.Context, i
 }
 
 // DisableGiftCardIssuerForCurrent deactivates the specified issuer for the
-// curent profile (token owner).
+// current profile (token owner).
 //
 // See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
 func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(ctx context.Context, issuer GiftCardIssuer) (res *Response, err error) {

@@ -6,17 +6,17 @@ import (
 	"fmt"
 )
 
-// InvoiceStatus status of the invoice
+// InvoiceStatus status of the invoice.
 type InvoiceStatus string
 
-// Valid status of the invoice
+// Valid status of the invoice.
 const (
 	InvoiceStatusOpen    InvoiceStatus = "open"
 	InvoiceStatusPaid    InvoiceStatus = "paid"
 	InvoiceStatusOverdue InvoiceStatus = "overdue"
 )
 
-// Invoice describes an invoice details
+// Invoice describes an invoice details.
 type Invoice struct {
 	Resource    string        `json:"resource,omitempty"`
 	ID          string        `json:"id,omitempty"`
@@ -67,7 +67,7 @@ type InvoicesList struct {
 	Links PaginationLinks `json:"_links,omitempty"`
 }
 
-// InvoicesService instance operates over invoice resources
+// InvoicesService instance operates over invoice resources.
 type InvoicesService service
 
 // Get retrieve details of an invoice, using the invoice’s identifier.

@@ -55,7 +55,7 @@ func (d *ShortDate) UnmarshalJSON(b []byte) error {
 // Locale represents a country and language in ISO-15897 format.
 type Locale string
 
-// Mollie supported locales
+// Mollie supported locales.
 const (
 	English       Locale = "en_US"
 	Dutch         Locale = "nl_NL"
@@ -104,10 +104,10 @@ type PaginationLinks struct {
 	Documentation URL `json:"documentation,omitempty"`
 }
 
-// CategoryCode specifies an industry or category
+// CategoryCode specifies an industry or category.
 type CategoryCode uint
 
-// Available category codes
+// Available category codes.
 const (
 	BookMagazinesAndNewspapers          CategoryCode = 5192
 	GeneralMerchandise                  CategoryCode = 5399
@@ -135,7 +135,7 @@ const (
 // Mode contains information about the creation environment.
 type Mode string
 
-// Valid modes
+// Valid modes.
 const (
 	LiveMode Mode = "live"
 	TestMode Mode = "test"

@@ -24,7 +24,7 @@ type Mandate struct {
 	Links            MandateLinks   `json:"_links,omitempty"`
 }
 
-// MandateDetails are possible values inside the mandate.details field
+// MandateDetails are possible values inside the mandate.details field.
 type MandateDetails struct {
 	ConsumerName    string     `json:"consumerName,omitempty"`
 	ConsumerAccount string     `json:"consumerAccount,omitempty"`
@@ -36,10 +36,10 @@ type MandateDetails struct {
 	CardExpiryDate  *ShortDate `json:"cardExpiryDate,omitempty"`
 }
 
-// MandateStatus for the Mandate object
+// MandateStatus for the Mandate object.
 type MandateStatus string
 
-// Valid mandate statuses
+// Valid mandate statuses.
 const (
 	PendingMandate MandateStatus = "pending"
 	ValidMandate   MandateStatus = "valid"
@@ -49,7 +49,7 @@ const (
 // CardLabel Note that not all labels can be processed through Mollie.
 type CardLabel string
 
-// Available card labels
+// Available card labels.
 const (
 	AmericaExpress CardLabel = "American Express"
 	CartaSi        CardLabel = "Carta Si"
@@ -69,7 +69,7 @@ const (
 // MandatesService operates over customer mandates endpoints.
 type MandatesService service
 
-// MandateLinks response objects
+// MandateLinks response objects.
 type MandateLinks struct {
 	Self          *URL `json:"self,omitempty"`
 	Customer      *URL `json:"customer,omitempty"`
@@ -80,7 +80,7 @@ type MandateLinks struct {
 // to filter the List mandates actions.
 //
 // From is a mandate id to offset from (inclusive)
-// Limit is the max number of mandates to retrieve
+// Limit is the max number of mandates to retrieve.
 type MandatesListOptions struct {
 	From  string `url:"from,omitempty"`
 	Limit int    `url:"limit,omitempty"`

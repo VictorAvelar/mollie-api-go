@@ -47,7 +47,7 @@ type Order struct {
 	} `json:"_embedded,omitempty"`
 }
 
-// OrderPayment describes payment specific parameters that can be passed during order creation
+// OrderPayment describes payment specific parameters that can be passed during order creation.
 type OrderPayment struct {
 	ConsumerAccount   string          `json:"consumerAccount,omitempty"`
 	CustomerID        string          `json:"customerId,omitempty"`
@@ -135,7 +135,7 @@ type OrderLine struct {
 	Metadata           interface{}     `json:"metadata,omitempty"`
 }
 
-// OrderList for containing the response of list orders
+// OrderList for containing the response of list orders.
 type OrderList struct {
 	Count    int `json:"count,omitempty"`
 	Embedded struct {
@@ -144,7 +144,7 @@ type OrderList struct {
 	Links PaginationLinks `json:"links,omitempty"`
 }
 
-// OrderListRefund for containing the response of list orders
+// OrderListRefund for containing the response of list orders.
 type OrderListRefund struct {
 	Count    int `json:"count,omitempty"`
 	Embedded struct {

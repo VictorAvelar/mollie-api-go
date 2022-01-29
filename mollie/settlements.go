@@ -7,13 +7,13 @@ import (
 	"time"
 )
 
-// SettlementsService operates over settlements resource
+// SettlementsService operates over settlements resource.
 type SettlementsService service
 
-// SettlementStatus describes the status of the settlement
+// SettlementStatus describes the status of the settlement.
 type SettlementStatus string
 
-// Available settlement statuses
+// Available settlement statuses.
 const (
 	SettlementStatusOpen    SettlementStatus = "open"
 	SettlementStatusPending SettlementStatus = "pending"
@@ -21,7 +21,7 @@ const (
 	SettlementStatusFailed  SettlementStatus = "failed"
 )
 
-// SettlementRevenue objects contain the total revenue for each payment method during this period
+// SettlementRevenue objects contain the total revenue for each payment method during this period.
 type SettlementRevenue struct {
 	Description string        `json:"description,omitempty"`
 	AmountNet   *Amount       `json:"amountNet,omitempty"`
@@ -31,7 +31,7 @@ type SettlementRevenue struct {
 	Method      PaymentMethod `json:"method,omitempty"`
 }
 
-// SettlementCosts contains information about costs related to a settlement
+// SettlementCosts contains information about costs related to a settlement.
 type SettlementCosts struct {
 	Description string        `json:"description,omitempty"`
 	AmountNet   *Amount       `json:"amountNet,omitempty"`
@@ -42,16 +42,16 @@ type SettlementCosts struct {
 	Method      PaymentMethod `json:"method,omitempty"`
 }
 
-// SettlementPeriod describe the settlement by month in full detail
+// SettlementPeriod describe the settlement by month in full detail.
 type SettlementPeriod struct {
 	Revenue []*SettlementRevenue `json:"revenue,omitempty"`
 	Costs   []*SettlementCosts   `json:"costs,omitempty"`
 }
 
-// SettlementObject nests as describes for settlement periods
+// SettlementObject nests as describes for settlement periods.
 type SettlementObject map[string]map[string]SettlementPeriod
 
-// SettlementLinks is an object with several URL objects relevant to the settlement
+// SettlementLinks is an object with several URL objects relevant to the settlement.
 type SettlementLinks struct {
 	Self          *URL `json:"self,omitempty"`
 	Payments      *URL `json:"payments,omitempty"`
@@ -63,7 +63,7 @@ type SettlementLinks struct {
 }
 
 // Settlement contains successful payments, together with refunds,
-// captures and chargebacks into settlements
+// captures and chargebacks into settlements.
 type Settlement struct {
 	ID        string           `json:"id,omitempty"`
 	Resource  string           `json:"resource,omitempty"`

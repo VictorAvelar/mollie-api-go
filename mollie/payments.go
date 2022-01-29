@@ -10,7 +10,7 @@ import (
 // PaymentMethod is a payment method supported by Mollie.
 type PaymentMethod string
 
-// Supported payment methods
+// Supported payment methods.
 const (
 	Bancontact     PaymentMethod = "bancontact"
 	BankTransfer   PaymentMethod = "banktransfer"
@@ -34,7 +34,7 @@ const (
 // SequenceType indicates which type of payment this is in a recurring sequence.
 type SequenceType string
 
-// Valid sequence types
+// Valid sequence types.
 const (
 	OneOffSequence    SequenceType = "oneoff"
 	FirstSequence     SequenceType = "first"
@@ -131,7 +131,7 @@ type ListPaymentOptions struct {
 	From      string `url:"from,omitempty"`
 }
 
-// PaymentsService instance operates over payment resources
+// PaymentsService instance operates over payment resources.
 type PaymentsService service
 
 // Get retrieves a single payment object by its payment token.
