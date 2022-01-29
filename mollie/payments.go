@@ -144,6 +144,7 @@ func (ps *PaymentsService) Get(ctx context.Context, id string, opts *PaymentOpti
 	if err = json.Unmarshal(res.content, &p); err != nil {
 		return
 	}
+
 	return
 }
 
@@ -163,6 +164,7 @@ func (ps *PaymentsService) Create(ctx context.Context, p Payment, opts *PaymentO
 	if err = json.Unmarshal(res.content, &np); err != nil {
 		return
 	}
+
 	return
 }
 
@@ -178,6 +180,7 @@ func (ps *PaymentsService) Cancel(ctx context.Context, id string) (res *Response
 	if err = json.Unmarshal(res.content, &p); err != nil {
 		return
 	}
+
 	return
 }
 

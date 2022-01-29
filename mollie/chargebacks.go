@@ -57,9 +57,10 @@ type ChargebacksService service
 // Note the original payment’s ID is needed as well.
 //
 // See: https://docs.mollie.com/reference/v2/chargebacks-api/get-chargeback
-func (cs *ChargebacksService) Get(ctx context.Context, payment, chargeback string, options *ChargebackOptions) (res *Response, p *Chargeback, err error) {
+func (cs *ChargebacksService) Get(ctx context.Context, payment, chargeback string, opts *ChargebackOptions) (res *Response, p *Chargeback, err error) {
 	u := fmt.Sprintf("v2/payments/%s/chargebacks/%s", payment, chargeback)
-	res, err = cs.client.get(ctx, u, options)
+
+	res, err = cs.client.get(ctx, u, opts)
 	if err != nil {
 		return
 	}

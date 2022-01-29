@@ -42,5 +42,6 @@ func (ms *MiscellaneousService) ApplePaymentSession(ctx context.Context, asr *Ap
 	if err = json.Unmarshal(res.content, &aps); err != nil {
 		return
 	}
+
 	return
 }

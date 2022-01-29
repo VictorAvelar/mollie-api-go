@@ -203,17 +203,17 @@ func (ss *SettlementsService) get(ctx context.Context, element string) (res *Res
 }
 
 func (ss *SettlementsService) list(ctx context.Context, id string, category string, opts *SettlementsListOptions) (res *Response, err error) {
-	u := "v2/settlements"
+	uri := "v2/settlements"
 
 	if id != "" {
-		u = fmt.Sprintf("%s/%s", u, id)
+		uri = fmt.Sprintf("%s/%s", uri, id)
 
 		if category != "" {
-			u = fmt.Sprintf("%s/%s", u, category)
+			uri = fmt.Sprintf("%s/%s", uri, category)
 		}
 	}
 
-	res, err = ss.client.get(ctx, u, opts)
+	res, err = ss.client.get(ctx, uri, opts)
 	if err != nil {
 		return
 	}

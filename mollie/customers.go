@@ -66,6 +66,7 @@ func (cs *CustomersService) Get(ctx context.Context, id string) (res *Response, 
 	if err = json.Unmarshal(res.content, &c); err != nil {
 		return
 	}
+
 	return
 }
 
@@ -82,6 +83,7 @@ func (cs *CustomersService) Create(ctx context.Context, c Customer) (res *Respon
 	if err = json.Unmarshal(res.content, &cc); err != nil {
 		return
 	}
+
 	return
 }
 

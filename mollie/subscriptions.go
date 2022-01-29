@@ -91,13 +91,13 @@ func (ss *SubscriptionsService) Get(ctx context.Context, cID, sID string) (res *
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/create-subscription
 func (ss *SubscriptionsService) Create(ctx context.Context, cID string, sc *Subscription) (res *Response, s *Subscription, err error) {
-	u := fmt.Sprintf("v2/customers/%s/subscriptions", cID)
+	uri := fmt.Sprintf("v2/customers/%s/subscriptions", cID)
 
 	if ss.client.HasAccessToken() && ss.client.config.testing {
 		sc.TestMode = true
 	}
 
-	res, err = ss.client.post(ctx, u, sc, nil)
+	res, err = ss.client.post(ctx, uri, sc, nil)
 	if err != nil {
 		return
 	}

@@ -107,8 +107,10 @@ func (os *OrganizationsService) get(ctx context.Context, uri string) (res *Respo
 	if err != nil {
 		return
 	}
+
 	if err = json.Unmarshal(res.content, &o); err != nil {
 		return
 	}
+
 	return
 }
