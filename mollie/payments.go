@@ -10,7 +10,7 @@ import (
 // PaymentMethod is a payment method supported by Mollie.
 type PaymentMethod string
 
-// Supported payment methods
+// Supported payment methods.
 const (
 	Bancontact     PaymentMethod = "bancontact"
 	BankTransfer   PaymentMethod = "banktransfer"
@@ -34,7 +34,7 @@ const (
 // SequenceType indicates which type of payment this is in a recurring sequence.
 type SequenceType string
 
-// Valid sequence types
+// Valid sequence types.
 const (
 	OneOffSequence    SequenceType = "oneoff"
 	FirstSequence     SequenceType = "first"
@@ -131,7 +131,7 @@ type ListPaymentOptions struct {
 	From      string `url:"from,omitempty"`
 }
 
-// PaymentsService instance operates over payment resources
+// PaymentsService instance operates over payment resources.
 type PaymentsService service
 
 // Get retrieves a single payment object by its payment token.
@@ -144,6 +144,7 @@ func (ps *PaymentsService) Get(ctx context.Context, id string, opts *PaymentOpti
 	if err = json.Unmarshal(res.content, &p); err != nil {
 		return
 	}
+
 	return
 }
 
@@ -163,6 +164,7 @@ func (ps *PaymentsService) Create(ctx context.Context, p Payment, opts *PaymentO
 	if err = json.Unmarshal(res.content, &np); err != nil {
 		return
 	}
+
 	return
 }
 
@@ -178,6 +180,7 @@ func (ps *PaymentsService) Cancel(ctx context.Context, id string) (res *Response
 	if err = json.Unmarshal(res.content, &p); err != nil {
 		return
 	}
+
 	return
 }
 

@@ -198,7 +198,7 @@ func TestClient_NewAPIRequest_ForceErrors(t *testing.T) {
 				"test",
 				make(chan int),
 			},
-			fmt.Errorf("json: unsupported type: chan int"),
+			fmt.Errorf("encoding_error: json: unsupported type: chan int"),
 			noPre,
 		},
 		{
@@ -209,7 +209,7 @@ func TestClient_NewAPIRequest_ForceErrors(t *testing.T) {
 				":",
 				nil,
 			},
-			fmt.Errorf("parse \":\": missing protocol scheme"),
+			fmt.Errorf("url_parsing_error: parse \":\": missing protocol scheme"),
 			noPre,
 		},
 	}
@@ -335,7 +335,7 @@ func TestClient_Do(t *testing.T) {
 				nil,
 			},
 			true,
-			fmt.Errorf("Get \"\": http: nil Request.URL"),
+			fmt.Errorf("httperror: Get \"\": http: nil Request.URL"),
 			http.StatusOK,
 			func(w http.ResponseWriter, r *http.Request) {
 				testMethod(t, r, "GET")

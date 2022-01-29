@@ -11,7 +11,7 @@ import (
 // pending-external rejected.
 type PaymentMethodStatus string
 
-// Available payment method statuses
+// Available payment method statuses.
 const (
 	PaymentMethodActivated       PaymentMethodStatus = "activated"
 	PaymentMethodPendingBoarding PaymentMethodStatus = "pending-boarding"
@@ -90,7 +90,7 @@ type PaymentMethodsListOptions struct {
 	IncludeWallets string       `url:"includeWallets,omitempty"`
 }
 
-// PaymentMethodsService operates on methods endpoints
+// PaymentMethodsService operates on methods endpoints.
 type PaymentMethodsService service
 
 // Get returns information about the payment method specified by id,

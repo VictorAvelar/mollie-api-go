@@ -98,13 +98,13 @@ func (rs *RefundsService) Get(ctx context.Context, paymentID, refundID string, o
 //
 // See https://docs.mollie.com/reference/v2/refunds-api/create-refund.
 func (rs *RefundsService) Create(ctx context.Context, paymentID string, re Refund, options *RefundOptions) (res *Response, rf *Refund, err error) {
-	u := fmt.Sprintf("v2/payments/%s/refunds", paymentID)
+	uri := fmt.Sprintf("v2/payments/%s/refunds", paymentID)
 
 	if rs.client.HasAccessToken() && rs.client.config.testing {
 		re.TestMode = true
 	}
 
-	res, err = rs.client.post(ctx, u, re, options)
+	res, err = rs.client.post(ctx, uri, re, options)
 	if err != nil {
 		return
 	}

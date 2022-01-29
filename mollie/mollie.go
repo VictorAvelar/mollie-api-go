@@ -157,15 +157,15 @@ func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, b
 		return nil, errBadBaseURL
 	}
 
-	u, err := c.BaseURL.Parse(uri)
+	url, err := c.BaseURL.Parse(uri)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("url_parsing_error: %w", err)
 	}
 
 	if c.config.testing {
-		qp := u.Query()
+		qp := url.Query()
 		qp.Add("testmode", "true")
-		u.RawQuery = qp.Encode()
+		url.RawQuery = qp.Encode()
 	}
 
 	var buf io.ReadWriter
@@ -173,9 +173,10 @@ func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, b
 		buf = new(bytes.Buffer)
 		enc := json.NewEncoder(buf)
 		enc.SetEscapeHTML(false)
+
 		err := enc.Encode(body)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("encoding_error: %w", err)
 		}
 	}
 
@@ -183,7 +184,7 @@ func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, b
 		ctx = context.Background()
 	}
 
-	req, err = http.NewRequestWithContext(ctx, method, u.String(), buf)
+	req, err = http.NewRequestWithContext(ctx, method, url.String(), buf)
 	if err != nil {
 		return
 	}
@@ -201,10 +202,12 @@ func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, b
 func (c *Client) Do(req *http.Request) (*Response, error) {
 	resp, err := c.client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("httperror: %w", err)
 	}
+
 	defer resp.Body.Close()
 	response, _ := newResponse(resp)
+
 	err = CheckResponse(resp)
 	if err != nil {
 		return response, err
@@ -223,17 +226,17 @@ func (c *Client) Do(req *http.Request) (*Response, error) {
 //
 // You can also set the token values programmatically by using the Client
 // WithAPIKey and WithOrganizationKey functions.
-func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
+func NewClient(baseClient *http.Client, conf *Config) (mollie *Client, err error) {
 	if baseClient == nil {
 		baseClient = http.DefaultClient
 	}
 
-	u, _ := url.Parse(BaseURL)
+	uri, _ := url.Parse(BaseURL)
 
 	mollie = &Client{
-		BaseURL: u,
+		BaseURL: uri,
 		client:  baseClient,
-		config:  c,
+		config:  conf,
 	}
 
 	mollie.common.client = mollie
@@ -266,10 +269,11 @@ func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
 	}, ";")
 
 	// Parse authorization from specified environment variable
-	tkn, ok := os.LookupEnv(c.auth)
+	tkn, ok := os.LookupEnv(mollie.config.auth)
 	if ok {
 		mollie.authentication = tkn
 	}
+
 	return
 }
 
@@ -283,25 +287,28 @@ type Error struct {
 	Response *http.Response `json:"response"` // the full response that produced the error
 }
 
-// Error function complies with the error interface
+// Error function complies with the error interface.
 func (e *Error) Error() string {
 	return fmt.Sprintf("response failed with status %s\npayload: %v", e.Message, e.Content)
 }
 
 /*
-Constructor for Error
+Constructor for Error.
 */
-func newError(r *http.Response) *Error {
-	var e Error
-	e.Response = r
-	e.Code = r.StatusCode
-	e.Message = r.Status
-	c, err := ioutil.ReadAll(r.Body)
+func newError(rsp *http.Response) *Error {
+	var mErr Error
+	mErr.Response = rsp
+	mErr.Code = rsp.StatusCode
+	mErr.Message = rsp.Status
+
+	c, err := ioutil.ReadAll(rsp.Body)
 	if err == nil {
-		e.Content = string(c)
+		mErr.Content = string(c)
 	}
-	r.Body = ioutil.NopCloser(bytes.NewBuffer(c))
-	return &e
+
+	rsp.Body = ioutil.NopCloser(bytes.NewBuffer(c))
+
+	return &mErr
 }
 
 // Response is a Mollie API response. This wraps the standard http.Response
@@ -312,16 +319,19 @@ type Response struct {
 	content []byte
 }
 
-func newResponse(r *http.Response) (*Response, error) {
+func newResponse(rsp *http.Response) (*Response, error) {
 	var res Response
-	c, err := ioutil.ReadAll(r.Body)
+
+	data, err := ioutil.ReadAll(rsp.Body)
 	if err == nil {
-		res.content = c
+		res.content = data
 	}
-	err = json.NewDecoder(r.Body).Decode(&res)
-	r.Body = ioutil.NopCloser(bytes.NewBuffer(c))
-	res.Response = r
-	return &res, err
+
+	err = json.NewDecoder(rsp.Body).Decode(&res)
+	rsp.Body = ioutil.NopCloser(bytes.NewBuffer(data))
+	res.Response = rsp
+
+	return &res, fmt.Errorf("json_decode_error: %w", err)
 }
 
 // CheckResponse checks the API response for errors, and returns them if
@@ -333,5 +343,6 @@ func CheckResponse(r *http.Response) error {
 	if r.StatusCode >= http.StatusMultipleChoices {
 		return newError(r)
 	}
+
 	return nil
 }

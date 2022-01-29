@@ -56,7 +56,7 @@ func (ss *ShipmentsService) Get(ctx context.Context, oID string, sID string) (re
 	return
 }
 
-// CreateShipmentRequest defines information required to create a new shipment
+// CreateShipmentRequest defines information required to create a new shipment.
 type CreateShipmentRequest struct {
 	Lines    []OrderLine      `json:"lines,omitempty"`
 	Tracking ShipmentTracking `json:"tracking,omitempty"`
@@ -67,13 +67,13 @@ type CreateShipmentRequest struct {
 //
 // See: https://docs.mollie.com/reference/v2/shipments-api/create-shipment
 func (ss *ShipmentsService) Create(ctx context.Context, oID string, cs CreateShipmentRequest) (res *Response, s *Shipment, err error) {
-	u := fmt.Sprintf("v2/orders/%s/shipments", oID)
+	uri := fmt.Sprintf("v2/orders/%s/shipments", oID)
 
 	if ss.client.HasAccessToken() && ss.client.config.testing {
 		cs.TestMode = true
 	}
 
-	res, err = ss.client.post(ctx, u, cs, nil)
+	res, err = ss.client.post(ctx, uri, cs, nil)
 	if err != nil {
 		return
 	}

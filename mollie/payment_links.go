@@ -73,6 +73,7 @@ func (pls *PaymentLinksService) Get(ctx context.Context, id string) (res *Respon
 	if err = json.Unmarshal(res.content, &pl); err != nil {
 		return
 	}
+
 	return
 }
 
@@ -88,6 +89,7 @@ func (pls *PaymentLinksService) Create(ctx context.Context, p PaymentLink, opts 
 	if err = json.Unmarshal(res.content, &np); err != nil {
 		return
 	}
+
 	return
 }
 
@@ -104,5 +106,6 @@ func (pls *PaymentLinksService) List(ctx context.Context, opts *PaymentLinkOptio
 	if err = json.Unmarshal(res.content, &pl); err != nil {
 		return
 	}
+
 	return
 }

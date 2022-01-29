@@ -7,13 +7,13 @@ import (
 	"time"
 )
 
-// SubscriptionsService operates over subscriptions resource
+// SubscriptionsService operates over subscriptions resource.
 type SubscriptionsService service
 
-// SubscriptionStatus contains references to valid subscription statuses
+// SubscriptionStatus contains references to valid subscription statuses.
 type SubscriptionStatus string
 
-// Available subscription statuses
+// Available subscription statuses.
 const (
 	SubscriptionStatusPending   SubscriptionStatus = "pending"
 	SubscriptionStatusActive    SubscriptionStatus = "active"
@@ -22,7 +22,7 @@ const (
 	SubscriptionStatusCompleted SubscriptionStatus = "completed"
 )
 
-// SubscriptionLinks contains several URL objects relevant to the subscription
+// SubscriptionLinks contains several URL objects relevant to the subscription.
 type SubscriptionLinks struct {
 	Self          *URL `json:"self,omitempty"`
 	Customer      *URL `json:"customer,omitempty"`
@@ -30,7 +30,7 @@ type SubscriptionLinks struct {
 	Documentation *URL `json:"documentation,omitempty"`
 }
 
-// Subscription contains information about a customer subscription
+// Subscription contains information about a customer subscription.
 type Subscription struct {
 	Resource        string                 `json:"resource,omitempty"`
 	ID              string                 `json:"id,omitempty"`
@@ -54,7 +54,7 @@ type Subscription struct {
 	Links           SubscriptionLinks      `json:"_links,omitempty"`
 }
 
-// SubscriptionList describes the response for subscription list endpoints
+// SubscriptionList describes the response for subscription list endpoints.
 type SubscriptionList struct {
 	Count    int `json:"count,omitempty"`
 	Embedded struct {
@@ -63,7 +63,7 @@ type SubscriptionList struct {
 	Links PaginationLinks `json:"_links,omitempty"`
 }
 
-// SubscriptionListOptions holds query string parameters valid for subscription lists
+// SubscriptionListOptions holds query string parameters valid for subscription lists.
 type SubscriptionListOptions struct {
 	From      string `url:"from,omitempty"`
 	Limit     int    `url:"limit,omitempty"`
@@ -91,13 +91,13 @@ func (ss *SubscriptionsService) Get(ctx context.Context, cID, sID string) (res *
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/create-subscription
 func (ss *SubscriptionsService) Create(ctx context.Context, cID string, sc *Subscription) (res *Response, s *Subscription, err error) {
-	u := fmt.Sprintf("v2/customers/%s/subscriptions", cID)
+	uri := fmt.Sprintf("v2/customers/%s/subscriptions", cID)
 
 	if ss.client.HasAccessToken() && ss.client.config.testing {
 		sc.TestMode = true
 	}
 
-	res, err = ss.client.post(ctx, u, sc, nil)
+	res, err = ss.client.post(ctx, uri, sc, nil)
 	if err != nil {
 		return
 	}

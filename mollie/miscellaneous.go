@@ -6,10 +6,10 @@ import (
 )
 
 // MiscellaneousService operates over the resources described
-// in Mollie's miscellaneous API endpoints section
+// in Mollie's miscellaneous API endpoints section.
 type MiscellaneousService service
 
-// ApplePaymentSession contains information about an Apple pay session
+// ApplePaymentSession contains information about an Apple pay session.
 type ApplePaymentSession struct {
 	EpochTimestamp    int    `json:"epochTimestamp,omitempty"`
 	ExpiresAt         int    `json:"expiresAt,omitempty"`
@@ -42,5 +42,6 @@ func (ms *MiscellaneousService) ApplePaymentSession(ctx context.Context, asr *Ap
 	if err = json.Unmarshal(res.content, &aps); err != nil {
 		return
 	}
+
 	return
 }

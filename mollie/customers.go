@@ -7,10 +7,10 @@ import (
 	"time"
 )
 
-// CustomersService operates over the customer resource
+// CustomersService operates over the customer resource.
 type CustomersService service
 
-// CustomerLinks contains the HAL resources for a customer response
+// CustomerLinks contains the HAL resources for a customer response.
 type CustomerLinks struct {
 	Self          *URL `json:"self,omitempty"`
 	Mandates      *URL `json:"mandates,omitempty"`
@@ -20,7 +20,7 @@ type CustomerLinks struct {
 	Dashboard     *URL `json:"dashboard,omitempty"`
 }
 
-// Customer represents buyers
+// Customer represents buyers.
 type Customer struct {
 	Resource  string                 `json:"resource,omitempty"`
 	ID        string                 `json:"id,omitempty"`
@@ -66,6 +66,7 @@ func (cs *CustomersService) Get(ctx context.Context, id string) (res *Response, 
 	if err = json.Unmarshal(res.content, &c); err != nil {
 		return
 	}
+
 	return
 }
 
@@ -82,6 +83,7 @@ func (cs *CustomersService) Create(ctx context.Context, c Customer) (res *Respon
 	if err = json.Unmarshal(res.content, &cc); err != nil {
 		return
 	}
+
 	return
 }
 

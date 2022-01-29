@@ -68,6 +68,7 @@ func (ps *PartnerService) List(ctx context.Context, opts *ListPartnerClientsOpti
 	if err = json.Unmarshal(res.content, &pc); err != nil {
 		return
 	}
+
 	return
 }
 
@@ -83,5 +84,6 @@ func (ps *PartnerService) Get(ctx context.Context, id string, opts *GetPartnerCl
 	if err = json.Unmarshal(res.content, &pc); err != nil {
 		return
 	}
+
 	return
 }

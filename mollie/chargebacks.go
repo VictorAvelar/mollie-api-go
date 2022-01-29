@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-// Chargeback describes a forced transaction reversal initiated by the cardholder's bank
+// Chargeback describes a forced transaction reversal initiated by the cardholder's bank.
 type Chargeback struct {
 	Resource         string          `json:"resource,omitempty"`
 	ID               string          `json:"id,omitempty"`
@@ -57,9 +57,10 @@ type ChargebacksService service
 // Note the original payment’s ID is needed as well.
 //
 // See: https://docs.mollie.com/reference/v2/chargebacks-api/get-chargeback
-func (cs *ChargebacksService) Get(ctx context.Context, payment, chargeback string, options *ChargebackOptions) (res *Response, p *Chargeback, err error) {
+func (cs *ChargebacksService) Get(ctx context.Context, payment, chargeback string, opts *ChargebackOptions) (res *Response, p *Chargeback, err error) {
 	u := fmt.Sprintf("v2/payments/%s/chargebacks/%s", payment, chargeback)
-	res, err = cs.client.get(ctx, u, options)
+
+	res, err = cs.client.get(ctx, u, opts)
 	if err != nil {
 		return
 	}
@@ -85,7 +86,7 @@ func (cs *ChargebacksService) ListForPayment(ctx context.Context, payment string
 	return cs.list(ctx, fmt.Sprintf("v2/payments/%s/chargebacks", payment), options)
 }
 
-// encapsulates the shared list methods logic
+// encapsulates the shared list methods logic.
 func (cs *ChargebacksService) list(ctx context.Context, uri string, options interface{}) (res *Response, cl *ChargebacksList, err error) {
 	res, err = cs.client.get(ctx, uri, options)
 	if err != nil {
