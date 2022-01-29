@@ -26,8 +26,8 @@ For leveraging [Mollie Connect](https://docs.mollie.com/oauth/overview) (advance
 
 ## Install
 
-```sh
-go get -u github.com/VictorAvelar/mollie-api-go/v2
+```shell
+go get -u github.com/VictorAvelar/mollie-api-go/v3
 ```
 
 ## Usage
