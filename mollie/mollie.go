@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -206,9 +205,12 @@ func (c *Client) Do(req *http.Request) (*Response, error) {
 	}
 
 	defer resp.Body.Close()
-	response, _ := newResponse(resp)
+	response, err := newResponse(resp)
+	if err != nil {
+		return response, err
+	}
 
-	err = CheckResponse(resp)
+	err = CheckResponse(response)
 	if err != nil {
 		return response, err
 	}
@@ -278,37 +280,23 @@ func NewClient(baseClient *http.Client, conf *Config) (mollie *Client, err error
 }
 
 /*
-Error reports details on a failed API request.
-*/
-type Error struct {
-	Code     int            `json:"code"`
-	Message  string         `json:"message"`
-	Content  string         `json:"content,omitempty"`
-	Response *http.Response `json:"response"` // the full response that produced the error
-}
-
-// Error function complies with the error interface.
-func (e *Error) Error() string {
-	return fmt.Sprintf("response failed with status %s\npayload: %v", e.Message, e.Content)
-}
-
-/*
 Constructor for Error.
 */
-func newError(rsp *http.Response) *Error {
-	var mErr Error
-	mErr.Response = rsp
-	mErr.Code = rsp.StatusCode
-	mErr.Message = rsp.Status
+func newError(rsp *Response) error {
+	merr := &BaseError{}
 
-	c, err := ioutil.ReadAll(rsp.Body)
-	if err == nil {
-		mErr.Content = string(c)
+	if rsp.ContentLength > 0 {
+		err := json.Unmarshal(rsp.content, merr)
+		if err != nil {
+			return err
+		}
+	} else {
+		merr.Status = rsp.StatusCode
+		merr.Title = rsp.Status
+		merr.Detail = string(rsp.content)
 	}
 
-	rsp.Body = ioutil.NopCloser(bytes.NewBuffer(c))
-
-	return &mErr
+	return merr
 }
 
 // Response is a Mollie API response. This wraps the standard http.Response
@@ -320,18 +308,19 @@ type Response struct {
 }
 
 func newResponse(rsp *http.Response) (*Response, error) {
-	var res Response
+	res := Response{Response: rsp}
 
-	data, err := ioutil.ReadAll(rsp.Body)
-	if err == nil {
-		res.content = data
+	data, err := io.ReadAll(rsp.Body)
+	if err != nil {
+		return &res, err
 	}
 
-	err = json.NewDecoder(rsp.Body).Decode(&res)
-	rsp.Body = ioutil.NopCloser(bytes.NewBuffer(data))
+	res.content = data
+
+	rsp.Body = io.NopCloser(bytes.NewBuffer(data))
 	res.Response = rsp
 
-	return &res, fmt.Errorf("json_decode_error: %w", err)
+	return &res, nil
 }
 
 // CheckResponse checks the API response for errors, and returns them if
@@ -339,7 +328,7 @@ func newResponse(rsp *http.Response) (*Response, error) {
 // the 200 range.
 // API error responses are expected to have either no response
 // body, or a JSON response body.
-func CheckResponse(r *http.Response) error {
+func CheckResponse(r *Response) error {
 	if r.StatusCode >= http.StatusMultipleChoices {
 		return newError(r)
 	}
