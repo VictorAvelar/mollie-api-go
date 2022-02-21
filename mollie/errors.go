@@ -20,5 +20,11 @@ type BaseError struct {
 
 // Error interface compliance.
 func (be *BaseError) Error() string {
-	return fmt.Sprintf("%d %s: %s", be.Status, be.Title, be.Detail)
+	str := fmt.Sprintf("%d %s: %s", be.Status, be.Title, be.Detail)
+
+	if len(be.Field) > 0 {
+		str = fmt.Sprintf("%s, affected field: %s", str, be.Field)
+	}
+
+	return str
 }
