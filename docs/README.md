@@ -33,7 +33,7 @@ Constants holding values for client initialization and request instantiation.
 #### func  CheckResponse
 
 ```go
-func CheckResponse(r *http.Response) error
+func CheckResponse(r *Response) error
 ```
 CheckResponse checks the API response for errors, and returns them if present. A
 response is considered an error if it has a status code outside the 200 range.
@@ -114,6 +114,27 @@ type ApplicationFee struct {
 
 ApplicationFee allows you to split a payment between a platform and connected
 merchant accounts.
+
+#### type BaseError
+
+```go
+type BaseError struct {
+	Status int         `json:"status,omitempty"`
+	Title  string      `json:"title,omitempty"`
+	Detail string      `json:"detail,omitempty"`
+	Field  string      `json:"field,omitempty"`
+	Links  *ErrorLinks `json:"_links,omitempty"`
+}
+```
+
+BaseError contains the general error structure returned by mollie.
+
+#### func (*BaseError) Error
+
+```go
+func (be *BaseError) Error() string
+```
+Error interface compliance.
 
 #### type Capture
 
@@ -663,25 +684,15 @@ const (
 ```
 Valid Embed query string value.
 
-#### type Error
+#### type ErrorLinks
 
 ```go
-type Error struct {
-	Code     int            `json:"code"`
-	Message  string         `json:"message"`
-	Content  string         `json:"content,omitempty"`
-	Response *http.Response `json:"response"` // the full response that produced the error
+type ErrorLinks struct {
+	Documentation *URL `json:"documentation,omitempty"`
 }
 ```
 
-Error reports details on a failed API request.
-
-#### func (*Error) Error
-
-```go
-func (e *Error) Error() string
-```
-Error function complies with the error interface.
+ErrorLinks container references to common urls returned with errors.
 
 #### type FailureReason
 
