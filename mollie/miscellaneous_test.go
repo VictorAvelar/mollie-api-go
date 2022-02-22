@@ -59,7 +59,7 @@ func (ms *miscellaneousServiceSuite) TestMiscellaneousService_ApplePaymentSessio
 				nil,
 			},
 			true,
-			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
 			noPre,
 			errorHandler,
 		},

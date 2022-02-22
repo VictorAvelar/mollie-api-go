@@ -13,6 +13,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -390,22 +391,22 @@ func TestCheckResponse(t *testing.T) {
 	tests := []struct {
 		name string
 		code string
-		arg  *http.Response
+		arg  *Response
 	}{
 		{
 			"successful response",
 			"",
-			res2,
+			&Response{Response: res2},
 		},
 		{
 			"not found response",
 			"Not Found",
-			res1,
+			&Response{Response: res1},
 		},
 		{
 			"success with empty body",
 			"",
-			res3,
+			&Response{Response: res3},
 		},
 	}
 
@@ -485,6 +486,7 @@ func testQuery(t *testing.T, r *http.Request, want string) {
 
 func errorHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusInternalServerError)
+	w.Write([]byte(testdata.InternalServerErrorResponse))
 }
 
 func encodingHandler(w http.ResponseWriter, r *http.Request) {

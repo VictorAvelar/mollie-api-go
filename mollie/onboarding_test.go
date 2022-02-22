@@ -43,7 +43,7 @@ func (os *onboardingServiceSuite) TestOnboardingService_GetOnboardingStatus() {
 		{
 			"get onboarding status, an error is returned from the server",
 			true,
-			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
 			noPre,
 			errorHandler,
 		},
@@ -114,7 +114,7 @@ func (os *onboardingServiceSuite) TestOnboardingService_SubmitOnboardingData() {
 			"get onboarding status, an error is returned from the server",
 			&OnboardingData{},
 			true,
-			fmt.Errorf("response failed with status 500 Internal Server Error\npayload: "),
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
 			noPre,
 			errorHandler,
 		},
