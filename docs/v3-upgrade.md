@@ -15,7 +15,7 @@
   - For Options: {Value}Options | {Value}ListOptions
   - For Links: {Value}Links | {Value}ListLinks
 - Params now contain the full name of the value they contain. Ex. pID now is payment.
-- Methods and its references is not PaymentMethods to make its purpose clear.
+- Methods and its references is now PaymentMethods to make its purpose clear.
 - Services that now return the full response object as part of the returned values (the response is always the first value of `n` returned):
   - Captures
   - Chargebacks
@@ -41,8 +41,8 @@
 
 ## Other changes
 
-- All the tests are not using testify.Suite
-- Removed the examples tests as it was not accurate nor well implemented.
+- All the tests are now using testify.Suite
+- Removed the example tests as it was not accurate nor well implemented.
 - Remove CHANGELOG.md as the releases now provide a more accurate report of changes.
 - Some typos were fixed on several query serializable param tags
 - Client now contains helpers for the used http actions (get, post, patch & delete) to simplify the way the requests are dispatched.
