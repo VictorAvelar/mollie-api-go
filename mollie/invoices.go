@@ -1,24 +1,22 @@
 package mollie
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
-
-	"github.com/google/go-querystring/query"
 )
 
-// InvoiceStatus status of the invoice
+// InvoiceStatus status of the invoice.
 type InvoiceStatus string
 
-// Valid status of the invoice
+// Valid status of the invoice.
 const (
 	InvoiceStatusOpen    InvoiceStatus = "open"
 	InvoiceStatusPaid    InvoiceStatus = "paid"
 	InvoiceStatusOverdue InvoiceStatus = "overdue"
 )
 
-// Invoice describes an invoice details
+// Invoice describes an invoice details.
 type Invoice struct {
 	Resource    string        `json:"resource,omitempty"`
 	ID          string        `json:"id,omitempty"`
@@ -35,7 +33,7 @@ type Invoice struct {
 	Links       InvoiceLinks  `json:"_links,omitempty"`
 }
 
-// LineItem product details
+// LineItem product details.
 type LineItem struct {
 	Period        string  `json:"period,omitempty"`
 	Description   string  `json:"description,omitempty"`
@@ -52,16 +50,16 @@ type InvoiceLinks struct {
 	Documentation *URL `json:"documentation,omitempty"`
 }
 
-// ListInvoiceOptions describes list invoices endpoint valid query string parameters.
-type ListInvoiceOptions struct {
+// InvoicesListOptions describes list invoices endpoint valid query string parameters.
+type InvoicesListOptions struct {
 	Reference string `url:"reference,omitempty"`
 	Year      string `url:"year,omitempty"`
 	From      string `url:"from,omitempty"`
 	Limit     int64  `url:"limit,omitempty"`
 }
 
-// InvoiceList describes how a list of invoices will be retrieved by Mollie.
-type InvoiceList struct {
+// InvoicesList describes how a list of invoices will be retrieved by Mollie.
+type InvoicesList struct {
 	Count    int `json:"count,omitempty"`
 	Embedded struct {
 		Invoices []Invoice `json:"invoices"`
@@ -69,44 +67,35 @@ type InvoiceList struct {
 	Links PaginationLinks `json:"_links,omitempty"`
 }
 
-// InvoicesService instance operates over invoice resources
+// InvoicesService instance operates over invoice resources.
 type InvoicesService service
 
 // Get retrieve details of an invoice, using the invoice’s identifier.
-func (is *InvoicesService) Get(id string) (i Invoice, err error) {
-	getURL := fmt.Sprintf("v2/invoices/%s", id)
+func (is *InvoicesService) Get(ctx context.Context, id string) (res *Response, i *Invoice, err error) {
+	u := fmt.Sprintf("v2/invoices/%s", id)
 
-	req, err := is.client.NewAPIRequest(http.MethodGet, getURL, nil)
+	res, err = is.client.get(ctx, u, nil)
 	if err != nil {
 		return
 	}
-	res, err := is.client.Do(req)
-	if err != nil {
-		return
-	}
+
 	if err = json.Unmarshal(res.content, &i); err != nil {
 		return
 	}
+
 	return
 }
 
 // List retrieves a list of invoices associated with your account/organization.
-func (is *InvoicesService) List(options *ListInvoiceOptions) (il InvoiceList, err error) {
-	u := "v2/invoices"
-	if options != nil {
-		v, _ := query.Values(options)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-	req, err := is.client.NewAPIRequest(http.MethodGet, u, nil)
+func (is *InvoicesService) List(ctx context.Context, options *InvoicesListOptions) (res *Response, il *InvoicesList, err error) {
+	res, err = is.client.get(ctx, "v2/invoices", options)
 	if err != nil {
 		return
 	}
-	res, err := is.client.Do(req)
-	if err != nil {
-		return
-	}
+
 	if err = json.Unmarshal(res.content, &il); err != nil {
 		return
 	}
+
 	return
 }

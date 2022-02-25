@@ -1,485 +1,1071 @@
 package mollie
 
 import (
+	"context"
 	"fmt"
-	"log"
 	"net/http"
-	"net/url"
-	"strings"
 	"testing"
 
-	"github.com/VictorAvelar/mollie-api-go/v2/testdata"
+	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestProfilesService_Get(t *testing.T) {
-	setup()
-	defer teardown()
-	id := "pfl_v9hTwCvYqw"
+type profilesServiceSuite struct{ suite.Suite }
 
-	_ = tClient.WithAuthenticationValue("test_token")
+func (ps *profilesServiceSuite) SetupSuite() { setEnv() }
 
-	tMux.HandleFunc("/v2/profiles/"+id, func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
+func (ps *profilesServiceSuite) TearDownSuite() { unsetEnv() }
 
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetProfileResponse))
-	})
-
-	p, err := tClient.Profiles.Get(id)
-	if err != nil {
-		t.Error(err)
+func (ps *profilesServiceSuite) TestProfilesService_Get() {
+	type args struct {
+		ctx     context.Context
+		profile string
 	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"get profile works as expected.",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "GET")
+				testQuery(ps.T(), r, "testmode=true")
 
-	if p.ID != id {
-		t.Errorf("unexpected response, want: %v got: %v", p.ID, id)
-	}
-}
-
-func ExampleProfilesService_Get() {
-	setup()
-	defer teardown()
-	id := "pfl_v9hTwCvYqw"
-
-	_ = tClient.WithAuthenticationValue("test_token")
-
-	tMux.HandleFunc("/v2/profiles/"+id, func(w http.ResponseWriter, r *http.Request) {
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetProfileResponse))
-	})
-
-	p, err := tClient.Profiles.Get(id)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(p.ID)
-	//Output: pfl_v9hTwCvYqw
-}
-
-func TestProfilesService_Current(t *testing.T) {
-	setup()
-	defer teardown()
-	id := "pfl_v9hTwCvYqw"
-
-	_ = tClient.WithAuthenticationValue("test_token")
-
-	tMux.HandleFunc("/v2/profiles/me", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetProfileResponse))
-	})
-
-	p, err := tClient.Profiles.Current()
-	if err != nil {
-		t.Error(err)
-	}
-
-	if p.ID != id {
-		t.Errorf("unexpected response, want: %v got: %v", p.ID, id)
-	}
-}
-
-func TestProfilesService_List(t *testing.T) {
-	setup()
-	defer teardown()
-
-	_ = tClient.WithAuthenticationValue("test_token")
-
-	tMux.HandleFunc("/v2/profiles", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetProfilesListResponse))
-	})
-
-	opt := &ProfileListOptions{
-		Limit: 10,
-	}
-
-	pl, err := tClient.Profiles.List(opt)
-	if err != nil {
-		t.Error(err)
-	}
-
-	if len(pl.Embedded.Profiles) < 1 {
-		t.Errorf("returned empty list")
-	}
-}
-
-func TestProfilesService_Create(t *testing.T) {
-	setup()
-	defer teardown()
-	id := "pfl_v9hTwCvYqw"
-
-	_ = tClient.WithAuthenticationValue("test_token")
-
-	tMux.HandleFunc("/v2/profiles", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "POST")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusCreated)
-		_, _ = w.Write([]byte(testdata.CreateProfileResponse))
-	})
-	np := &Profile{
-		ID:           "pfl_v9hTwCvYqw",
-		CategoryCode: GeneralMerchandise,
-		Email:        "info@mywebsite.com",
-		Mode:         LiveMode,
-		Name:         "My website name",
-	}
-
-	p, err := tClient.Profiles.Create(np)
-	if err != nil {
-		t.Error(err)
-	}
-
-	if p.ID != np.ID {
-		t.Errorf("unexpected response, want: %v got: %v", p.ID, id)
-	}
-}
-
-func TestProfilesService_Update(t *testing.T) {
-	setup()
-	defer teardown()
-	id := "pfl_v9hTwCvYqw"
-
-	_ = tClient.WithAuthenticationValue("test_token")
-
-	tMux.HandleFunc("/v2/profiles/"+id, func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "PATCH")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetProfileResponse))
-	})
-
-	np := &Profile{
-		ID:           "pfl_v9hTwCvYqw",
-		CategoryCode: GeneralMerchandise,
-		Email:        "info@mywebsite.com",
-		Mode:         LiveMode,
-		Name:         "My website name",
-		Phone:        "",
-	}
-
-	p, err := tClient.Profiles.Update(id, np)
-	if err != nil {
-		t.Error(err)
-	}
-
-	if p.ID != id {
-		t.Errorf("unexpected response, want: %v got: %v", p.ID, id)
-	}
-}
-
-func TestProfilesService_Delete(t *testing.T) {
-	setup()
-	defer teardown()
-	id := "pfl_v9hTwCvYqw"
-
-	_ = tClient.WithAuthenticationValue("test_token")
-
-	tMux.HandleFunc("/v2/profiles/"+id, func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "DELETE")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	})
-
-	err := tClient.Profiles.Delete(id)
-	if err != nil {
-		t.Error(err)
-	}
-}
-
-func TestProfilesService_EnablePaymentMethod(t *testing.T) {
-	setup()
-	defer teardown()
-	id := "pfl_v9hTwCvYqw"
-
-	_ = tClient.WithAuthenticationValue("test_token")
-
-	tMux.HandleFunc("/v2/profiles/"+id+"/methods/bancontact", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "POST")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.EnablePaymentMethodResponse))
-	})
-
-	res, err := tClient.Profiles.EnablePaymentMethod(id, Bancontact)
-	if err != nil {
-		t.Error(err)
-	}
-
-	if res.ID != string(Bancontact) {
-		t.Errorf("unexpected response, want: %v got: %v", Bancontact, res.ID)
-	}
-}
-
-func TestProfilesService_DisablePaymentMethod(t *testing.T) {
-	setup()
-	defer teardown()
-	id := "pfl_v9hTwCvYqw"
-
-	_ = tClient.WithAuthenticationValue("test_token")
-
-	tMux.HandleFunc("/v2/profiles/"+id+"/methods/bancontact", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "DELETE")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	})
-
-	err := tClient.Profiles.DisablePaymentMethod(id, Bancontact)
-	if err != nil {
-		t.Error(err)
-	}
-}
-
-func TestProfilesService_EnableGiftCardIssuer(t *testing.T) {
-	setEnv()
-	setup()
-	defer func() {
-		teardown()
-		unsetEnv()
-	}()
-
-	id := "pfl_v9hTwCvYqw"
-
-	tMux.HandleFunc(
-		fmt.Sprintf("/v2/profiles/%s/methods/giftcard/issuers/%s", id, Festivalcadeau),
-		func(rw http.ResponseWriter, r *http.Request) {
-			testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
-			testMethod(t, r, "POST")
-			if _, ok := r.Header[AuthHeader]; !ok {
-				rw.WriteHeader(http.StatusUnauthorized)
-			}
-
-			rw.WriteHeader(http.StatusOK)
-			_, _ = rw.Write([]byte(testdata.EnableGiftCardIssuerResponse))
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetProfileResponse))
+			},
 		},
-	)
-
-	res, err := tClient.Profiles.EnableGiftCardIssuer(id, Festivalcadeau)
-
-	if err != nil {
-		t.Error(err)
-	}
-
-	if res.ID != Festivalcadeau {
-		t.Errorf("unexpected id received: want %v, got %v", Festivalcadeau, res.ID)
-	}
-}
-
-func TestProfilesService_DisableGiftCardIssuer(t *testing.T) {
-	setEnv()
-	setup()
-	defer func() {
-		teardown()
-		unsetEnv()
-	}()
-
-	id := "pfl_v9hTwCvYqw"
-
-	tMux.HandleFunc(
-		fmt.Sprintf("/v2/profiles/%s/methods/giftcard/issuers/%s", id, Festivalcadeau),
-		func(rw http.ResponseWriter, r *http.Request) {
-			testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
-			testMethod(t, r, "DELETE")
-			if _, ok := r.Header[AuthHeader]; !ok {
-				rw.WriteHeader(http.StatusUnauthorized)
-			}
-
-			rw.WriteHeader(http.StatusNoContent)
+		{
+			"get profile, an error is returned from the server",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
 		},
-	)
-
-	err := tClient.Profiles.DisableGiftCardIssuer(id, Festivalcadeau)
-
-	if err != nil {
-		t.Error(err)
-	}
-}
-
-func TestProfilesService_EnableGiftCardIssuerForCurrent(t *testing.T) {
-	setEnv()
-	setup()
-	defer func() {
-		teardown()
-		unsetEnv()
-	}()
-
-	id := "me"
-
-	tMux.HandleFunc(
-		fmt.Sprintf("/v2/profiles/%s/methods/giftcard/issuers/%s", id, Festivalcadeau),
-		func(rw http.ResponseWriter, r *http.Request) {
-			testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
-			testMethod(t, r, "POST")
-			if _, ok := r.Header[AuthHeader]; !ok {
-				rw.WriteHeader(http.StatusUnauthorized)
-			}
-
-			rw.WriteHeader(http.StatusOK)
-			_, _ = rw.Write([]byte(testdata.EnableGiftCardIssuerResponse))
+		{
+			"get profile, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
 		},
-	)
-
-	res, err := tClient.Profiles.EnableGiftCardIssuerForCurrent(Festivalcadeau)
-
-	if err != nil {
-		t.Error(err)
-	}
-
-	if res.ID != Festivalcadeau {
-		t.Errorf("unexpected id received: want %v, got %v", Festivalcadeau, res.ID)
-	}
-}
-
-func TestProfilesService_DisableGiftCardIssuerForCurrent(t *testing.T) {
-	setEnv()
-	setup()
-	defer func() {
-		teardown()
-		unsetEnv()
-	}()
-
-	id := "me"
-
-	tMux.HandleFunc(
-		fmt.Sprintf("/v2/profiles/%s/methods/giftcard/issuers/%s", id, Festivalcadeau),
-		func(rw http.ResponseWriter, r *http.Request) {
-			testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
-			testMethod(t, r, "DELETE")
-			if _, ok := r.Header[AuthHeader]; !ok {
-				rw.WriteHeader(http.StatusUnauthorized)
-			}
-
-			rw.WriteHeader(http.StatusNoContent)
+		{
+			"get profile, invalid url when building request",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
 		},
-	)
+	}
 
-	err := tClient.Profiles.DisableGiftCardIssuerForCurrent(Festivalcadeau)
+	for _, c := range cases {
+		setup()
+		defer teardown()
 
-	if err != nil {
-		t.Error(err)
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s", c.args.profile), c.handler)
+
+			res, m, err := tClient.Profiles.Get(c.args.ctx, c.args.profile)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&Profile{}, m)
+				ps.IsType(&http.Response{}, res.Response)
+			}
+		})
 	}
 }
 
-func TestProfilesService_HttpRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	tMux.HandleFunc("/v2/profiles/", errorHandler)
+func (ps *profilesServiceSuite) TestProfilesService_GetCurrent() {
+	cases := []struct {
+		name    string
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"get current profile works as expected.",
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "GET")
+				testQuery(ps.T(), r, "testmode=true")
 
-	p := Profile{}
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetProfileResponse))
+			},
+		},
+		{
+			"get current profile, an error is returned from the server",
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"get current profile, an error occurs when parsing json",
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"get current profile, invalid url when building request",
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
 
-	_, cerr := tClient.Profiles.Create(&p)
-	_, rerr := tClient.Profiles.List(nil)
-	_, uerr := tClient.Profiles.Update("1212", &p)
-	derr := tClient.Profiles.Delete("1212")
-	_, gerr := tClient.Profiles.Get("1212")
-	_, ccerr := tClient.Profiles.Current()
-	dderr := tClient.Profiles.DisablePaymentMethod("1212", PayPal)
-	_, eperr := tClient.Profiles.EnablePaymentMethod("1212", PayPal)
-	dgcerr := tClient.Profiles.DisableGiftCardIssuer("1212", Festivalcadeau)
-	_, egcerr := tClient.Profiles.EnableGiftCardIssuer("1212", Festivalcadeau)
-	dgccerr := tClient.Profiles.DisableGiftCardIssuerForCurrent(Festivalcadeau)
-	_, egccerr := tClient.Profiles.EnableGiftCardIssuerForCurrent(Festivalcadeau)
+	for _, c := range cases {
+		setup()
+		defer teardown()
 
-	tests := []error{cerr, rerr, uerr, derr, gerr, ccerr, eperr, dderr, dgcerr, egcerr, dgccerr, egccerr}
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s", "me"), c.handler)
 
-	for _, tt := range tests {
-		if tt == nil {
-			t.Fail()
-		}
+			res, m, err := tClient.Profiles.Current(context.Background())
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&Profile{}, m)
+				ps.IsType(&http.Response{}, res.Response)
+			}
+		})
 	}
 }
 
-func TestProfilesService_EncodingResponseErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	tMux.HandleFunc("/v2/profiles/", encodingHandler)
+func (ps *profilesServiceSuite) TestProfilesService_List() {
+	type args struct {
+		ctx     context.Context
+		options *ProfileListOptions
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"list profiles works as expected.",
+			args{
+				context.Background(),
+				&ProfileListOptions{},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "GET")
+				testQuery(ps.T(), r, "testmode=true")
 
-	p := Profile{}
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetProfilesListResponse))
+			},
+		},
+		{
+			"list profiles with options, works as expected.",
+			args{
+				context.Background(),
+				&ProfileListOptions{
+					Limit: 100,
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "GET")
+				testQuery(ps.T(), r, "limit=100&testmode=true")
 
-	_, cerr := tClient.Profiles.Create(&p)
-	_, rerr := tClient.Profiles.List(nil)
-	_, uerr := tClient.Profiles.Update("1212", &p)
-	_, gerr := tClient.Profiles.Get("1212")
-	_, ccerr := tClient.Profiles.Current()
-	_, eperr := tClient.Profiles.EnablePaymentMethod("1212", PayPal)
-	_, egcerr := tClient.Profiles.EnableGiftCardIssuer("1212", Festivalcadeau)
-	_, egccerr := tClient.Profiles.EnableGiftCardIssuerForCurrent(Festivalcadeau)
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetProfilesListResponse))
+			},
+		},
+		{
+			"list profiles, an error is returned from the server",
+			args{
+				context.Background(),
+				&ProfileListOptions{},
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"list profiles, an error occurs when parsing json",
+			args{
+				context.Background(),
+				&ProfileListOptions{},
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"list profiles, invalid url when building request",
+			args{
+				context.Background(),
+				&ProfileListOptions{},
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
 
-	tests := []error{cerr, rerr, uerr, gerr, ccerr, eperr, egcerr, egccerr}
+	for _, c := range cases {
+		setup()
+		defer teardown()
 
-	for _, tt := range tests {
-		if tt == nil {
-			t.Error(tt)
-		} else if !strings.Contains(tt.Error(), "invalid character") {
-			t.Errorf("unexpected error %v", tt)
-		}
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc("/v2/profiles", c.handler)
+
+			res, m, err := tClient.Profiles.List(c.args.ctx, c.args.options)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&ProfileList{}, m)
+				ps.IsType(&http.Response{}, res.Response)
+			}
+		})
 	}
 }
 
-func TestProfilesService_NewAPIRequestBaseError(t *testing.T) {
-	setup()
-	defer teardown()
-	u, _ := url.Parse(tServer.URL)
-	tClient.BaseURL = u
-	tMux.HandleFunc("/v2/profiles/", errorHandler)
-
-	p := Profile{}
-
-	_, cerr := tClient.Profiles.Create(&p)
-	_, rerr := tClient.Profiles.List(nil)
-	_, uerr := tClient.Profiles.Update("1212", &p)
-	_, gerr := tClient.Profiles.Get("1212")
-	_, ccerr := tClient.Profiles.Current()
-	ddcerr := tClient.Profiles.Delete("1212")
-	_, eperr := tClient.Profiles.EnablePaymentMethod("1212", PayPal)
-	deperr := tClient.Profiles.DisablePaymentMethod("1212", PayPal)
-	dgcerr := tClient.Profiles.DisableGiftCardIssuer("1212", Festivalcadeau)
-	_, egcerr := tClient.Profiles.EnableGiftCardIssuer("1212", Festivalcadeau)
-
-	tests := []error{cerr, rerr, uerr, gerr, ccerr, eperr, deperr, ddcerr, dgcerr, egcerr}
-
-	for _, tt := range tests {
-		if tt != errBadBaseURL {
-			t.Error(tt)
-		}
+func (ps *profilesServiceSuite) TestProfilesService_Create() {
+	type args struct {
+		ctx     context.Context
+		profile *Profile
 	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"create profile works as expected.",
+			args{
+				context.Background(),
+				&Profile{
+					Name: "testing name",
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "POST")
+				testQuery(ps.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetProfileResponse))
+			},
+		},
+		{
+			"create profile, an error is returned from the server",
+			args{
+				context.Background(),
+				&Profile{},
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"create profile, an error occurs when parsing json",
+			args{
+				context.Background(),
+				&Profile{},
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"create profile, invalid url when building request",
+			args{
+				context.Background(),
+				&Profile{},
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc("/v2/profiles", c.handler)
+
+			res, m, err := tClient.Profiles.Create(c.args.ctx, c.args.profile)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&Profile{}, m)
+				ps.IsType(&http.Response{}, res.Response)
+			}
+		})
+	}
+}
+
+func (ps *profilesServiceSuite) TestProfilesService_Update() {
+	type args struct {
+		ctx       context.Context
+		profileID string
+		profile   *Profile
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"update profile works as expected.",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				&Profile{
+					Name: "testing name",
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "PATCH")
+				testQuery(ps.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetProfileResponse))
+			},
+		},
+		{
+			"update profile, an error is returned from the server",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				&Profile{},
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"update profile, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				&Profile{},
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"update profile, invalid url when building request",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				&Profile{},
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s", c.args.profileID), c.handler)
+
+			res, m, err := tClient.Profiles.Update(c.args.ctx, c.args.profileID, c.args.profile)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&Profile{}, m)
+				ps.IsType(&http.Response{}, res.Response)
+			}
+		})
+	}
+}
+
+func (ps *profilesServiceSuite) TestProfilesService_Delete() {
+	type args struct {
+		ctx     context.Context
+		profile string
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"delete profile works as expected.",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "DELETE")
+				testQuery(ps.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetProfileResponse))
+			},
+		},
+		{
+			"delete profile, an error is returned from the server",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"delete profile, invalid url when building request",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s", c.args.profile), c.handler)
+
+			res, err := tClient.Profiles.Delete(c.args.ctx, c.args.profile)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&http.Response{}, res.Response)
+			}
+		})
+	}
+}
+
+func (ps *profilesServiceSuite) TestProfilesService_EnablePaymentMethod() {
+	type args struct {
+		ctx     context.Context
+		profile string
+		method  PaymentMethod
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"enable payment method for profile works as expected.",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				PayPal,
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "POST")
+				testQuery(ps.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.EnablePaymentMethodResponse))
+			},
+		},
+		{
+			"enable payment method for profile, an error is returned from the server",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				PayPal,
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"enable payment method for profile, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				PayPal,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"enable payment method for profile, invalid url when building request",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				PayPal,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s/methods/%s", c.args.profile, c.args.method), c.handler)
+
+			res, m, err := tClient.Profiles.EnablePaymentMethod(c.args.ctx, c.args.profile, c.args.method)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&PaymentMethodDetails{}, m)
+				ps.IsType(&http.Response{}, res.Response)
+			}
+		})
+	}
+}
+
+func (ps *profilesServiceSuite) TestProfilesService_DisablePaymentMethod() {
+	type args struct {
+		ctx     context.Context
+		profile string
+		method  PaymentMethod
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"disable payment method for profile works as expected.",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				PayPal,
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "DELETE")
+				testQuery(ps.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+
+				w.WriteHeader(http.StatusOK)
+			},
+		},
+		{
+			"disable payment method for profile, an error is returned from the server",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				PayPal,
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"disable payment method for profile, invalid url when building request",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				PayPal,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s/methods/%s", c.args.profile, c.args.method), c.handler)
+
+			res, err := tClient.Profiles.DisablePaymentMethod(c.args.ctx, c.args.profile, c.args.method)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&http.Response{}, res.Response)
+			}
+		})
+	}
+}
+
+func (ps *profilesServiceSuite) TestProfilesService_EnableGiftCardIssuer() {
+	type args struct {
+		ctx     context.Context
+		profile string
+		issuer  GiftCardIssuer
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"enable gifcard issuer for profile works as expected.",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				Good4fun,
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "POST")
+				testQuery(ps.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.EnablePaymentMethodResponse))
+			},
+		},
+		{
+			"enable gifcard issuer for profile, an error is returned from the server",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				Good4fun,
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"enable gifcard issuer for profile, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				Good4fun,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"enable gifcard issuer for profile, invalid url when building request",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				Good4fun,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s/methods/giftcard/issuers/%s", c.args.profile, c.args.issuer), c.handler)
+
+			res, m, err := tClient.Profiles.EnableGiftCardIssuer(c.args.ctx, c.args.profile, c.args.issuer)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&GiftCardEnabled{}, m)
+				ps.IsType(&http.Response{}, res.Response)
+			}
+		})
+	}
+}
+
+func (ps *profilesServiceSuite) TestProfilesService_DisableGiftCardIssuer() {
+	type args struct {
+		ctx     context.Context
+		profile string
+		issuer  GiftCardIssuer
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"disable giftcard issuer for profile works as expected.",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				Good4fun,
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "DELETE")
+				testQuery(ps.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+
+				w.WriteHeader(http.StatusOK)
+			},
+		},
+		{
+			"disable giftcard issuer for profile, an error is returned from the server",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				Good4fun,
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"disable giftcard issuer for profile, invalid url when building request",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				Good4fun,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s/methods/giftcard/issuers/%s", c.args.profile, c.args.issuer), c.handler)
+
+			res, err := tClient.Profiles.DisableGiftCardIssuer(c.args.ctx, c.args.profile, c.args.issuer)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&http.Response{}, res.Response)
+			}
+		})
+	}
+}
+
+func (ps *profilesServiceSuite) TestProfilesService_EnableGiftCardIssuerForCurrent() {
+	type args struct {
+		ctx    context.Context
+		issuer GiftCardIssuer
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"enable gifcard issuer for profile works as expected.",
+			args{
+				context.Background(),
+				Good4fun,
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "POST")
+				testQuery(ps.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.EnableGiftCardIssuerResponse))
+			},
+		},
+		{
+			"enable gifcard issuer for profile, an error is returned from the server",
+			args{
+				context.Background(),
+				Good4fun,
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"enable gifcard issuer for profile, an error occurs when parsing json",
+			args{
+				context.Background(),
+				Good4fun,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"enable gifcard issuer for profile, invalid url when building request",
+			args{
+				context.Background(),
+				Good4fun,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/me/methods/giftcard/issuers/%s", c.args.issuer), c.handler)
+
+			res, m, err := tClient.Profiles.EnableGiftCardIssuerForCurrent(c.args.ctx, c.args.issuer)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&GiftCardEnabled{}, m)
+				ps.IsType(&http.Response{}, res.Response)
+			}
+		})
+	}
+}
+
+func (ps *profilesServiceSuite) TestProfilesService_DisableGiftCardIssuerForCurrent() {
+	type args struct {
+		ctx    context.Context
+		issuer GiftCardIssuer
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"disable giftcard issuer for profile works as expected.",
+			args{
+				context.Background(),
+				Good4fun,
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "DELETE")
+				testQuery(ps.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+
+				w.WriteHeader(http.StatusOK)
+			},
+		},
+		{
+			"disable giftcard issuer for profile, an error is returned from the server",
+			args{
+				context.Background(),
+				Good4fun,
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"disable giftcard issuer for profile, invalid url when building request",
+			args{
+				context.Background(),
+				Good4fun,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/me/methods/giftcard/issuers/%s", c.args.issuer), c.handler)
+
+			res, err := tClient.Profiles.DisableGiftCardIssuerForCurrent(c.args.ctx, c.args.issuer)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&http.Response{}, res.Response)
+			}
+		})
+	}
+}
+func TestProfilesService(t *testing.T) {
+	suite.Run(t, new(profilesServiceSuite))
 }

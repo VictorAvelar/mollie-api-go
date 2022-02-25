@@ -1,4 +1,4 @@
-# Mollie API Golang client 
+# Mollie API Golang client
 
 #### Scrutinizer CI
 
@@ -7,24 +7,27 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/VictorAvelar/mollie-api-go/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/VictorAvelar/mollie-api-go/?branch=master)
 
 #### Go ecosystem
+
 [![PkgGoDev](https://pkg.go.dev/badge/VictorAvelar/mollie-api-go)](https://pkg.go.dev/github.com/VictorAvelar/mollie-api-go/v2/mollie)
 [![Go Report Card](https://goreportcard.com/badge/github.com/VictorAvelar/mollie-api-go)](https://goreportcard.com/report/github.com/VictorAvelar/mollie-api-go)
 
 Accepting [iDEAL](https://www.mollie.com/payments/ideal/), [Apple Pay](https://www.mollie.com/payments/apple-pay), [Bancontact](https://www.mollie.com/payments/bancontact/), [SOFORT Banking](https://www.mollie.com/payments/sofort/), [Creditcard](https://www.mollie.com/payments/credit-card/), [SEPA Bank transfer](https://www.mollie.com/payments/bank-transfer/), [SEPA Direct debit](https://www.mollie.com/payments/direct-debit/), [PayPal](https://www.mollie.com/payments/paypal/), [Belfius Direct Net](https://www.mollie.com/payments/belfius/), [KBC/CBC](https://www.mollie.com/payments/kbc-cbc/), [paysafecard](https://www.mollie.com/payments/paysafecard/), [Giftcards](https://www.mollie.com/payments/gift-cards/), [Giropay](https://www.mollie.com/payments/giropay/), [EPS](https://www.mollie.com/payments/eps/) and [Przelewy24](https://www.mollie.com/payments/przelewy24/) online payments without fixed monthly costs or any punishing registration procedures. Just use the Mollie API to receive payments directly on your website or easily refund transactions to your customers.
 
-## Requirements ##
+## Requirements
+
 To use the Mollie API client, the following things are required:
 
-+ Get yourself a free [Mollie account](https://www.mollie.com/signup). No sign up costs.
-+ Now you're ready to use the Mollie API client in test mode.
-+ Follow [a few steps](https://www.mollie.com/dashboard/?modal=onboarding) to enable payment methods in live mode, and let us handle the rest.
-+ Up-to-date OpenSSL (or other SSL/TLS toolkit)
+- Get yourself a free [Mollie account](https://www.mollie.com/signup). No sign up costs.
+- Now you're ready to use the Mollie API client in test mode.
+- Follow [a few steps](https://www.mollie.com/dashboard/?modal=onboarding) to enable payment methods in live mode, and let us handle the rest.
+- Up-to-date OpenSSL (or other SSL/TLS toolkit)
 
 For leveraging [Mollie Connect](https://docs.mollie.com/oauth/overview) (advanced use cases only), it is recommended to be familiar with the OAuth2 protocol.
 
 ## Install
-```sh
-go get -u github.com/VictorAvelar/mollie-api-go/v2
+
+```shell
+go get -u github.com/VictorAvelar/mollie-api-go/v3
 ```
 
 ## Usage
@@ -44,7 +47,9 @@ if err != nil {
 // do your operations with the authenticated client
 ```
 
-For more examples visit the [examples](https://github.com/VictorAvelar/mollie-api-go/tree/master/examples) directory.
+## Upgrage guide
+
+If you want to upgrade from v2 -> v3, the list of breaking and notable changes can be found in the [docs](docs/v3-upgrade.md).
 
 ## API parity
 

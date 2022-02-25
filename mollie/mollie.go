@@ -2,17 +2,19 @@ package mollie
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
 	"regexp"
 	"runtime"
 	"strings"
+
+	"github.com/google/go-querystring/query"
 )
 
 // Constants holding values for client initialization and request instantiation.
@@ -40,29 +42,85 @@ type Client struct {
 	common         service // Reuse a single struct instead of allocating one for each service on the heap.
 	config         *Config
 	// Services
-	Payments      *PaymentsService
-	Chargebacks   *ChargebacksService
-	Methods       *MethodsService
-	Invoices      *InvoicesService
-	Organizations *OrganizationsService
-	Profiles      *ProfilesService
-	Refunds       *RefundsService
-	Shipments     *ShipmentsService
-	Orders        *OrdersService
-	Settlements   *SettlementsService
-	Captures      *CapturesService
-	Subscriptions *SubscriptionsService
-	Customers     *CustomersService
-	Miscellaneous *MiscellaneousService
-	Mandates      *MandatesService
-	Permissions   *PermissionsService
-	Onboarding    *OnboardingService
-	PaymentLinks  *PaymentLinksService
-	Partners      *PartnerService
+	Payments       *PaymentsService
+	Chargebacks    *ChargebacksService
+	PaymentMethods *PaymentMethodsService
+	Invoices       *InvoicesService
+	Organizations  *OrganizationsService
+	Profiles       *ProfilesService
+	Refunds        *RefundsService
+	Shipments      *ShipmentsService
+	Orders         *OrdersService
+	Settlements    *SettlementsService
+	Captures       *CapturesService
+	Subscriptions  *SubscriptionsService
+	Customers      *CustomersService
+	Miscellaneous  *MiscellaneousService
+	Mandates       *MandatesService
+	Permissions    *PermissionsService
+	Onboarding     *OnboardingService
+	PaymentLinks   *PaymentLinksService
+	Partners       *PartnerService
 }
 
 type service struct {
 	client *Client
+}
+
+func (c *Client) get(ctx context.Context, uri string, options interface{}) (res *Response, err error) {
+	if options != nil {
+		v, _ := query.Values(options)
+		uri = fmt.Sprintf("%s?%s", uri, v.Encode())
+	}
+
+	req, err := c.NewAPIRequest(ctx, http.MethodGet, uri, nil)
+	if err != nil {
+		return
+	}
+
+	return c.Do(req)
+}
+
+func (c *Client) post(ctx context.Context, uri string, body interface{}, options interface{}) (res *Response, err error) {
+	if options != nil {
+		v, _ := query.Values(options)
+		uri = fmt.Sprintf("%s?%s", uri, v.Encode())
+	}
+
+	req, err := c.NewAPIRequest(ctx, http.MethodPost, uri, body)
+	if err != nil {
+		return
+	}
+
+	return c.Do(req)
+}
+
+func (c *Client) patch(ctx context.Context, uri string, body interface{}, options interface{}) (res *Response, err error) {
+	if options != nil {
+		v, _ := query.Values(options)
+		uri = fmt.Sprintf("%s?%s", uri, v.Encode())
+	}
+
+	req, err := c.NewAPIRequest(ctx, http.MethodPatch, uri, body)
+	if err != nil {
+		return
+	}
+
+	return c.Do(req)
+}
+
+func (c *Client) delete(ctx context.Context, uri string, options interface{}) (res *Response, err error) {
+	if options != nil {
+		v, _ := query.Values(options)
+		uri = fmt.Sprintf("%s?%s", uri, v.Encode())
+	}
+
+	req, err := c.NewAPIRequest(ctx, http.MethodDelete, uri, nil)
+	if err != nil {
+		return
+	}
+
+	return c.Do(req)
 }
 
 // WithAuthenticationValue offers a convenient setter for any of the valid authentication
@@ -93,18 +151,20 @@ func (c *Client) HasAccessToken() bool {
 // NewAPIRequest is a wrapper around the http.NewRequest function.
 //
 // It will setup the authentication headers/parameters according to the client config.
-func (c *Client) NewAPIRequest(method string, uri string, body interface{}) (req *http.Request, err error) {
+func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, body interface{}) (req *http.Request, err error) {
 	if !strings.HasSuffix(c.BaseURL.Path, "/") {
 		return nil, errBadBaseURL
 	}
 
-	u, err := c.BaseURL.Parse(uri)
+	url, err := c.BaseURL.Parse(uri)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("url_parsing_error: %w", err)
 	}
 
 	if c.config.testing {
-		u.Query().Add("testmode", "true")
+		qp := url.Query()
+		qp.Add("testmode", "true")
+		url.RawQuery = qp.Encode()
 	}
 
 	var buf io.ReadWriter
@@ -112,15 +172,20 @@ func (c *Client) NewAPIRequest(method string, uri string, body interface{}) (req
 		buf = new(bytes.Buffer)
 		enc := json.NewEncoder(buf)
 		enc.SetEscapeHTML(false)
+
 		err := enc.Encode(body)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("encoding_error: %w", err)
 		}
 	}
 
-	req, err = http.NewRequest(method, u.String(), buf)
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	req, err = http.NewRequestWithContext(ctx, method, url.String(), buf)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	req.Header.Add(AuthHeader, strings.Join([]string{TokenType, c.authentication}, " "))
@@ -136,11 +201,16 @@ func (c *Client) NewAPIRequest(method string, uri string, body interface{}) (req
 func (c *Client) Do(req *http.Request) (*Response, error) {
 	resp, err := c.client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("httperror: %w", err)
 	}
+
 	defer resp.Body.Close()
-	response, _ := newResponse(resp)
-	err = CheckResponse(resp)
+	response, err := newResponse(resp)
+	if err != nil {
+		return response, err
+	}
+
+	err = CheckResponse(response)
 	if err != nil {
 		return response, err
 	}
@@ -158,17 +228,17 @@ func (c *Client) Do(req *http.Request) (*Response, error) {
 //
 // You can also set the token values programmatically by using the Client
 // WithAPIKey and WithOrganizationKey functions.
-func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
+func NewClient(baseClient *http.Client, conf *Config) (mollie *Client, err error) {
 	if baseClient == nil {
 		baseClient = http.DefaultClient
 	}
 
-	u, _ := url.Parse(BaseURL)
+	uri, _ := url.Parse(BaseURL)
 
 	mollie = &Client{
-		BaseURL: u,
+		BaseURL: uri,
 		client:  baseClient,
-		config:  c,
+		config:  conf,
 	}
 
 	mollie.common.client = mollie
@@ -176,7 +246,7 @@ func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
 	// services for resources
 	mollie.Payments = (*PaymentsService)(&mollie.common)
 	mollie.Chargebacks = (*ChargebacksService)(&mollie.common)
-	mollie.Methods = (*MethodsService)(&mollie.common)
+	mollie.PaymentMethods = (*PaymentMethodsService)(&mollie.common)
 	mollie.Invoices = (*InvoicesService)(&mollie.common)
 	mollie.Organizations = (*OrganizationsService)(&mollie.common)
 	mollie.Profiles = (*ProfilesService)(&mollie.common)
@@ -201,42 +271,32 @@ func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error) {
 	}, ";")
 
 	// Parse authorization from specified environment variable
-	tkn, ok := os.LookupEnv(c.auth)
+	tkn, ok := os.LookupEnv(mollie.config.auth)
 	if ok {
 		mollie.authentication = tkn
 	}
+
 	return
 }
 
 /*
-Error reports details on a failed API request.
+Constructor for Error.
 */
-type Error struct {
-	Code     int            `json:"code"`
-	Message  string         `json:"message"`
-	Content  string         `json:"content,omitempty"`
-	Response *http.Response `json:"response"` // the full response that produced the error
-}
+func newError(rsp *Response) error {
+	merr := &BaseError{}
 
-// Error function complies with the error interface
-func (e *Error) Error() string {
-	return fmt.Sprintf("response failed with status %s\npayload: %v", e.Message, e.Content)
-}
-
-/*
-Constructor for Error
-*/
-func newError(r *http.Response) *Error {
-	var e Error
-	e.Response = r
-	e.Code = r.StatusCode
-	e.Message = r.Status
-	c, err := ioutil.ReadAll(r.Body)
-	if err == nil {
-		e.Content = string(c)
+	if rsp.ContentLength > 0 {
+		err := json.Unmarshal(rsp.content, merr)
+		if err != nil {
+			return err
+		}
+	} else {
+		merr.Status = rsp.StatusCode
+		merr.Title = rsp.Status
+		merr.Detail = string(rsp.content)
 	}
-	r.Body = ioutil.NopCloser(bytes.NewBuffer(c))
-	return &e
+
+	return merr
 }
 
 // Response is a Mollie API response. This wraps the standard http.Response
@@ -247,16 +307,20 @@ type Response struct {
 	content []byte
 }
 
-func newResponse(r *http.Response) (*Response, error) {
-	var res Response
-	c, err := ioutil.ReadAll(r.Body)
-	if err == nil {
-		res.content = c
+func newResponse(rsp *http.Response) (*Response, error) {
+	res := Response{Response: rsp}
+
+	data, err := io.ReadAll(rsp.Body)
+	if err != nil {
+		return &res, err
 	}
-	err = json.NewDecoder(r.Body).Decode(&res)
-	r.Body = ioutil.NopCloser(bytes.NewBuffer(c))
-	res.Response = r
-	return &res, err
+
+	res.content = data
+
+	rsp.Body = io.NopCloser(bytes.NewBuffer(data))
+	res.Response = rsp
+
+	return &res, nil
 }
 
 // CheckResponse checks the API response for errors, and returns them if
@@ -264,9 +328,10 @@ func newResponse(r *http.Response) (*Response, error) {
 // the 200 range.
 // API error responses are expected to have either no response
 // body, or a JSON response body.
-func CheckResponse(r *http.Response) error {
+func CheckResponse(r *Response) error {
 	if r.StatusCode >= http.StatusMultipleChoices {
 		return newError(r)
 	}
+
 	return nil
 }

@@ -1,21 +1,19 @@
 package mollie
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"time"
-
-	"github.com/google/go-querystring/query"
 )
 
-// SettlementsService operates over settlements resource
+// SettlementsService operates over settlements resource.
 type SettlementsService service
 
-// SettlementStatus describes the status of the settlement
+// SettlementStatus describes the status of the settlement.
 type SettlementStatus string
 
-// Available settlement statuses
+// Available settlement statuses.
 const (
 	SettlementStatusOpen    SettlementStatus = "open"
 	SettlementStatusPending SettlementStatus = "pending"
@@ -23,7 +21,7 @@ const (
 	SettlementStatusFailed  SettlementStatus = "failed"
 )
 
-// SettlementRevenue objects contain the total revenue for each payment method during this period
+// SettlementRevenue objects contain the total revenue for each payment method during this period.
 type SettlementRevenue struct {
 	Description string        `json:"description,omitempty"`
 	AmountNet   *Amount       `json:"amountNet,omitempty"`
@@ -33,7 +31,7 @@ type SettlementRevenue struct {
 	Method      PaymentMethod `json:"method,omitempty"`
 }
 
-// SettlementCosts contains information about costs related to a settlement
+// SettlementCosts contains information about costs related to a settlement.
 type SettlementCosts struct {
 	Description string        `json:"description,omitempty"`
 	AmountNet   *Amount       `json:"amountNet,omitempty"`
@@ -44,16 +42,16 @@ type SettlementCosts struct {
 	Method      PaymentMethod `json:"method,omitempty"`
 }
 
-// SettlementPeriod describe the settlement by month in full detail
+// SettlementPeriod describe the settlement by month in full detail.
 type SettlementPeriod struct {
 	Revenue []*SettlementRevenue `json:"revenue,omitempty"`
 	Costs   []*SettlementCosts   `json:"costs,omitempty"`
 }
 
-// SettlementObject nests as describes for settlement periods
+// SettlementObject nests as describes for settlement periods.
 type SettlementObject map[string]map[string]SettlementPeriod
 
-// SettlementLinks is an object with several URL objects relevant to the settlement
+// SettlementLinks is an object with several URL objects relevant to the settlement.
 type SettlementLinks struct {
 	Self          *URL `json:"self,omitempty"`
 	Payments      *URL `json:"payments,omitempty"`
@@ -65,7 +63,7 @@ type SettlementLinks struct {
 }
 
 // Settlement contains successful payments, together with refunds,
-// captures and chargebacks into settlements
+// captures and chargebacks into settlements.
 type Settlement struct {
 	ID        string           `json:"id,omitempty"`
 	Resource  string           `json:"resource,omitempty"`
@@ -98,30 +96,30 @@ type SettlementsList struct {
 // Get returns a settlement by its id or the bank reference id
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/get-settlement
-func (ss *SettlementsService) Get(id string) (s *Settlement, err error) {
-	return ss.get(id)
+func (ss *SettlementsService) Get(ctx context.Context, id string) (res *Response, s *Settlement, err error) {
+	return ss.get(ctx, id)
 }
 
 // Next retrieves the details of the current settlement that has not yet been paid out.
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/get-next-settlement
-func (ss *SettlementsService) Next() (s *Settlement, err error) {
-	return ss.get("next")
+func (ss *SettlementsService) Next(ctx context.Context) (res *Response, s *Settlement, err error) {
+	return ss.get(ctx, "next")
 }
 
 // Open retrieves the details of the open balance of the organization.
 // This will return a settlement object representing your organization’s balance.
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/get-open-settlement
-func (ss *SettlementsService) Open() (s *Settlement, err error) {
-	return ss.get("open")
+func (ss *SettlementsService) Open(ctx context.Context) (res *Response, s *Settlement, err error) {
+	return ss.get(ctx, "open")
 }
 
 // List retrieves all settlements, ordered from new to old
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/list-settlements
-func (ss *SettlementsService) List(slo *SettlementsListOptions) (sl *SettlementsList, err error) {
-	res, err := ss.list("", "", slo)
+func (ss *SettlementsService) List(ctx context.Context, slo *SettlementsListOptions) (res *Response, sl *SettlementsList, err error) {
+	res, err = ss.list(ctx, "", "", slo)
 	if err != nil {
 		return
 	}
@@ -135,8 +133,8 @@ func (ss *SettlementsService) List(slo *SettlementsListOptions) (sl *Settlements
 // GetPayments retrieves all payments included in a settlement.
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-payments
-func (ss *SettlementsService) GetPayments(id string, slo *SettlementsListOptions) (pl *PaymentList, err error) {
-	res, err := ss.list(id, "payments", slo)
+func (ss *SettlementsService) GetPayments(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, pl *PaymentList, err error) {
+	res, err = ss.list(ctx, id, "payments", slo)
 	if err != nil {
 		return
 	}
@@ -150,8 +148,8 @@ func (ss *SettlementsService) GetPayments(id string, slo *SettlementsListOptions
 // GetRefunds retrieves all refunds included in a settlement.
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-refunds
-func (ss *SettlementsService) GetRefunds(id string, slo *SettlementsListOptions) (rl *RefundList, err error) {
-	res, err := ss.list(id, "refunds", slo)
+func (ss *SettlementsService) GetRefunds(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, rl *RefundList, err error) {
+	res, err = ss.list(ctx, id, "refunds", slo)
 	if err != nil {
 		return
 	}
@@ -165,8 +163,8 @@ func (ss *SettlementsService) GetRefunds(id string, slo *SettlementsListOptions)
 // GetChargebacks retrieves all chargebacks included in a settlement.
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-chargebacks
-func (ss *SettlementsService) GetChargebacks(id string, slo *SettlementsListOptions) (cl *ChargebackList, err error) {
-	res, err := ss.list(id, "chargebacks", slo)
+func (ss *SettlementsService) GetChargebacks(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, cl *ChargebacksList, err error) {
+	res, err = ss.list(ctx, id, "chargebacks", slo)
 	if err != nil {
 		return
 	}
@@ -180,8 +178,8 @@ func (ss *SettlementsService) GetChargebacks(id string, slo *SettlementsListOpti
 // GetCaptures retrieves all captures included in a settlement.
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-captures
-func (ss *SettlementsService) GetCaptures(id string, slo *SettlementsListOptions) (cl *CapturesList, err error) {
-	res, err := ss.list(id, "captures", slo)
+func (ss *SettlementsService) GetCaptures(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, cl *CapturesList, err error) {
+	res, err = ss.list(ctx, id, "captures", slo)
 	if err != nil {
 		return
 	}
@@ -192,14 +190,8 @@ func (ss *SettlementsService) GetCaptures(id string, slo *SettlementsListOptions
 	return
 }
 
-func (ss *SettlementsService) get(element string) (s *Settlement, err error) {
-	u := fmt.Sprintf("v2/settlements/%s", element)
-	req, err := ss.client.NewAPIRequest(http.MethodGet, u, nil)
-	if err != nil {
-		return
-	}
-
-	res, err := ss.client.Do(req)
+func (ss *SettlementsService) get(ctx context.Context, element string) (res *Response, s *Settlement, err error) {
+	res, err = ss.client.get(ctx, fmt.Sprintf("v2/settlements/%s", element), nil)
 	if err != nil {
 		return
 	}
@@ -210,28 +202,18 @@ func (ss *SettlementsService) get(element string) (s *Settlement, err error) {
 	return
 }
 
-func (ss *SettlementsService) list(id string, category string, slo *SettlementsListOptions) (res *Response, err error) {
-	u := "v2/settlements"
+func (ss *SettlementsService) list(ctx context.Context, id string, category string, opts *SettlementsListOptions) (res *Response, err error) {
+	uri := "v2/settlements"
 
 	if id != "" {
-		u = fmt.Sprintf("%s/%s", u, id)
+		uri = fmt.Sprintf("%s/%s", uri, id)
 
 		if category != "" {
-			u = fmt.Sprintf("%s/%s", u, category)
+			uri = fmt.Sprintf("%s/%s", uri, category)
 		}
 	}
 
-	if slo != nil {
-		v, _ := query.Values(slo)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-
-	req, err := ss.client.NewAPIRequest(http.MethodGet, u, nil)
-	if err != nil {
-		return
-	}
-
-	res, err = ss.client.Do(req)
+	res, err = ss.client.get(ctx, uri, opts)
 	if err != nil {
 		return
 	}

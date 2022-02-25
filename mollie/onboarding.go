@@ -1,8 +1,8 @@
 package mollie
 
 import (
+	"context"
 	"encoding/json"
-	"net/http"
 	"time"
 )
 
@@ -43,13 +43,8 @@ type Onboarding struct {
 // GetOnboardingStatus gets the status of onboarding of the authenticated organization.
 //
 // See: https://docs.mollie.com/reference/v2/onboarding-api/get-onboarding-status
-func (os *OnboardingService) GetOnboardingStatus() (o *Onboarding, err error) {
-	req, err := os.client.NewAPIRequest(http.MethodGet, onboardingTarget, nil)
-	if err != nil {
-		return
-	}
-
-	res, err := os.client.Do(req)
+func (os *OnboardingService) GetOnboardingStatus(ctx context.Context) (res *Response, o *Onboarding, err error) {
+	res, err = os.client.get(ctx, onboardingTarget, nil)
 	if err != nil {
 		return
 	}
@@ -89,13 +84,8 @@ type OnboardingData struct {
 // Please note that the data you submit will only be processed when the onboarding status is needs-data.
 //
 // See: https://docs.mollie.com/reference/v2/onboarding-api/submit-onboarding-data
-func (os *OnboardingService) SubmitOnboardingData(d *OnboardingData) (err error) {
-	req, err := os.client.NewAPIRequest(http.MethodPost, onboardingTarget, d)
-	if err != nil {
-		return
-	}
-
-	_, err = os.client.Do(req)
+func (os *OnboardingService) SubmitOnboardingData(ctx context.Context, d *OnboardingData) (res *Response, err error) {
+	res, err = os.client.post(ctx, onboardingTarget, d, nil)
 	if err != nil {
 		return
 	}

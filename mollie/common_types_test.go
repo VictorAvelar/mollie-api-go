@@ -3,6 +3,8 @@ package mollie
 import (
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestShortDate_UnmarshalJSON(t *testing.T) {
@@ -28,8 +30,11 @@ func TestShortDate_UnmarshalJSON(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			d := &ShortDate{}
-			if err := d.UnmarshalJSON(tt.args.b); (err != nil) != tt.wantErr {
-				t.Errorf("UnmarshalJSON() error = %v, wantErr %v", err, tt.wantErr)
+			err := d.UnmarshalJSON(tt.args.b)
+			if tt.wantErr {
+				assert.NotNil(t, err)
+			} else {
+				assert.Nil(t, err)
 			}
 		})
 	}
@@ -40,8 +45,7 @@ func TestShortDate_MarshalJSON(t *testing.T) {
 		n := time.Now()
 		d := &ShortDate{}
 		d.Time = n
-		if _, err := d.MarshalJSON(); err != nil {
-			t.Errorf("MarshalJSON() error = %v", err)
-		}
+		_, err := d.MarshalJSON()
+		assert.Nil(t, err)
 	})
 }

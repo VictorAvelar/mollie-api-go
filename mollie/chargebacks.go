@@ -1,15 +1,13 @@
 package mollie
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"time"
-
-	"github.com/google/go-querystring/query"
 )
 
-// Chargeback describes a forced transaction reversal initiated by the cardholder's bank
+// Chargeback describes a forced transaction reversal initiated by the cardholder's bank.
 type Chargeback struct {
 	Resource         string          `json:"resource,omitempty"`
 	ID               string          `json:"id,omitempty"`
@@ -36,15 +34,15 @@ type ChargebackOptions struct {
 	Embed   string `url:"embed,omitempty"`
 }
 
-// ListChargebackOptions describes list chargebacks endpoint valid query string parameters.
-type ListChargebackOptions struct {
+// ChargebacksListOptions describes list chargebacks endpoint valid query string parameters.
+type ChargebacksListOptions struct {
 	Include   string `url:"include,omitempty"`
 	Embed     string `url:"embed,omitempty"`
 	ProfileID string `url:"profileId,omitempty"`
 }
 
-// ChargebackList describes how a list of chargebacks will be retrieved by Mollie.
-type ChargebackList struct {
+// ChargebacksList describes how a list of chargebacks will be retrieved by Mollie.
+type ChargebacksList struct {
 	Count    int `json:"count,omitempty"`
 	Embedded struct {
 		Chargebacks []Chargeback
@@ -52,69 +50,52 @@ type ChargebackList struct {
 	Links PaginationLinks `json:"_links,omitempty"`
 }
 
-// ChargebacksService instance operates over chargeback resources
+// ChargebacksService instance operates over chargeback resources.
 type ChargebacksService service
 
 // Get retrieves a single chargeback by its ID.
 // Note the original payment’s ID is needed as well.
 //
 // See: https://docs.mollie.com/reference/v2/chargebacks-api/get-chargeback
-func (cs *ChargebacksService) Get(paymentID, chargebackID string, options *ChargebackOptions) (p Chargeback, err error) {
-	u := fmt.Sprintf("v2/payments/%s/chargebacks/%s", paymentID, chargebackID)
-	if options != nil {
-		v, _ := query.Values(options)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-	req, err := cs.client.NewAPIRequest(http.MethodGet, u, nil)
+func (cs *ChargebacksService) Get(ctx context.Context, payment, chargeback string, opts *ChargebackOptions) (res *Response, p *Chargeback, err error) {
+	u := fmt.Sprintf("v2/payments/%s/chargebacks/%s", payment, chargeback)
+
+	res, err = cs.client.get(ctx, u, opts)
 	if err != nil {
 		return
 	}
-	res, err := cs.client.Do(req)
-	if err != nil {
-		return
-	}
+
 	if err = json.Unmarshal(res.content, &p); err != nil {
 		return
 	}
+
 	return
 }
 
 // List retrieves a list of chargebacks associated with your account/organization.
 //
 // See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
-func (cs *ChargebacksService) List(options *ListChargebackOptions) (cl *ChargebackList, err error) {
-	u := "v2/chargebacks"
-	if options != nil {
-		v, _ := query.Values(options)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-	return cs.list(u)
+func (cs *ChargebacksService) List(ctx context.Context, options *ChargebacksListOptions) (res *Response, cl *ChargebacksList, err error) {
+	return cs.list(ctx, "v2/chargebacks", options)
 }
 
 // ListForPayment retrieves a list of chargebacks associated with a single payment.
 //
 // See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
-func (cs *ChargebacksService) ListForPayment(paymentID string, options *ListChargebackOptions) (cl *ChargebackList, err error) {
-	u := fmt.Sprintf("v2/payments/%s/chargebacks", paymentID)
-	if options != nil {
-		v, _ := query.Values(options)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-	return cs.list(u)
+func (cs *ChargebacksService) ListForPayment(ctx context.Context, payment string, options *ChargebacksListOptions) (res *Response, cl *ChargebacksList, err error) {
+	return cs.list(ctx, fmt.Sprintf("v2/payments/%s/chargebacks", payment), options)
 }
 
-// encapsulates the shared list methods logic
-func (cs *ChargebacksService) list(uri string) (cl *ChargebackList, err error) {
-	req, err := cs.client.NewAPIRequest(http.MethodGet, uri, nil)
+// encapsulates the shared list methods logic.
+func (cs *ChargebacksService) list(ctx context.Context, uri string, options interface{}) (res *Response, cl *ChargebacksList, err error) {
+	res, err = cs.client.get(ctx, uri, options)
 	if err != nil {
 		return
 	}
-	res, err := cs.client.Do(req)
-	if err != nil {
-		return
-	}
+
 	if err = json.Unmarshal(res.content, &cl); err != nil {
 		return
 	}
+
 	return
 }

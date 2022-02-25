@@ -1,376 +1,543 @@
 package mollie
 
 import (
-	"encoding/json"
+	"context"
+	"fmt"
 	"net/http"
-	"net/url"
-	"strings"
 	"testing"
 
-	"github.com/VictorAvelar/mollie-api-go/v2/testdata"
+	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestPaymentsService_Get(t *testing.T) {
-	setup()
-	defer teardown()
-	id := "tr_WDqYK6vllg"
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/payments/"+id, func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
+type paymentsServiceSuite struct{ suite.Suite }
 
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetPaymentResponse))
-	})
+func (ps *paymentsServiceSuite) SetupSuite() { setEnv() }
 
-	opt := &PaymentOptions{
-		Include: "details.qrCode",
+func (ps *paymentsServiceSuite) TearDownSuite() { unsetEnv() }
+
+func (ps *paymentsServiceSuite) TestPaymentsService_Get() {
+	type args struct {
+		ctx     context.Context
+		payment string
+		options *PaymentOptions
 	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"get payments works as expected.",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				&PaymentOptions{
+					Include: "settlements",
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "GET")
+				testQuery(ps.T(), r, "include=settlements&testmode=true")
 
-	res, err := tClient.Payments.Get(id, opt)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if res.ID != id {
-		t.Errorf("mismatching info. want %v, got %v", id, res.ID)
-	}
-}
-
-func TestPaymentsService_Create(t *testing.T) {
-	setup()
-	defer teardown()
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/payments", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "POST")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusCreated)
-		_, _ = w.Write([]byte(testdata.GetPaymentResponse))
-	})
-
-	p := Payment{
-		Amount: &Amount{
-			Currency: "EUR",
-			Value:    "10.00",
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetPaymentResponse))
+			},
 		},
-		Description: "Order #12345",
-	}
-
-	res, err := tClient.Payments.Create(p, nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if res.Description != p.Description {
-		t.Errorf("mismatching info. want %v, got %v", p.Description, res.Description)
-	}
-}
-
-func TestPaymentsService_Create_AccessTokens(t *testing.T) {
-	setup()
-	defer teardown()
-	_ = tClient.WithAuthenticationValue("access_token")
-
-	tMux.HandleFunc("/v2/payments", func(rw http.ResponseWriter, r *http.Request) {
-		var pay Payment
-		defer r.Body.Close()
-		if err := json.NewDecoder(r.Body).Decode(&pay); err != nil {
-			rw.WriteHeader(http.StatusBadRequest)
-			return
-		}
-
-		rw.Header().Set("Content-Type", "application/json")
-		rw.WriteHeader(http.StatusCreated)
-		json.NewEncoder(rw).Encode(pay)
-	})
-
-	p := Payment{
-		Amount: &Amount{
-			Currency: "EUR",
-			Value:    "10.00",
+		{
+			"get payments, an error is returned from the server",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				nil,
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
 		},
-		Description: "Order #12345",
-	}
-
-	payment, err := tClient.Payments.Create(p, nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if payment.TestMode != true {
-		t.Error("testmode flag is not set for access tokens")
-	}
-}
-
-func TestPaymentsService_Create_PaymentMethodFields(t *testing.T) {
-	setup()
-	defer teardown()
-	_ = tClient.WithAuthenticationValue("access_token")
-
-	tMux.HandleFunc("/v2/payments", func(rw http.ResponseWriter, r *http.Request) {
-		var pay Payment
-		defer r.Body.Close()
-		if err := json.NewDecoder(r.Body).Decode(&pay); err != nil {
-			rw.WriteHeader(http.StatusBadRequest)
-			return
-		}
-
-		if pay.Method != "ideal" && pay.Issuer == "" {
-			t.Error("request payload is not properly encoded")
-		}
-
-		rw.Header().Set("Content-Type", "application/json")
-		rw.WriteHeader(http.StatusCreated)
-		json.NewEncoder(rw).Encode(pay)
-	})
-
-	p := Payment{
-		Amount: &Amount{
-			Currency: "EUR",
-			Value:    "10.00",
+		{
+			"get payments, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				nil,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
 		},
-		Description: "Order #12345",
-		Method:      IDeal,
-		Issuer:      "ideal_INGBNL2A",
-	}
-
-	payment, err := tClient.Payments.Create(p, nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if payment.TestMode != true {
-		t.Error("testmode flag is not set for access tokens")
-	}
-}
-
-func TestPaymentsService_Update(t *testing.T) {
-	setup()
-	defer teardown()
-	id := "tr_7UhSN1zuXS"
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/payments/"+id, func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "PATCH")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.UpdatePaymentResponse))
-	})
-
-	p := Payment{
-		Description: "alter description",
-	}
-
-	res, err := tClient.Payments.Update(id, p)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if res.ID != id {
-		t.Errorf("mismatching info. want %v, got %v", id, res.ID)
-	}
-}
-
-func TestPaymentsService_Cancel(t *testing.T) {
-	setup()
-	defer teardown()
-	id := "tr_WDqYK6vllg"
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/payments/"+id, func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "DELETE")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.CancelPaymentResponse))
-	})
-
-	res, err := tClient.Payments.Cancel(id)
-	if err != nil {
-		t.Fatalf("%+v", err)
-	}
-
-	if res.ID != id {
-		t.Errorf("mismatching info. want %v, got %v", id, res.ID)
-	}
-}
-
-func TestPaymentsService_List(t *testing.T) {
-	setup()
-	defer teardown()
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/payments", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.ListPaymentsResponse))
-	})
-
-	res, err := tClient.Payments.List(nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if res.Count == 0 {
-		t.Errorf("mismatching info. want %v, got %v", 0, res.Count)
-	}
-}
-
-func TestPaymentsService_ListWithOptions(t *testing.T) {
-	setup()
-	defer teardown()
-	_ = tClient.WithAuthenticationValue("test_token")
-	tMux.HandleFunc("/v2/payments", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer test_token")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.ListPaymentsResponse))
-	})
-
-	options := &ListPaymentOptions{
-		ProfileID: "pfl_QkEhN94Ba",
-	}
-
-	res, err := tClient.Payments.List(options)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if res.Count == 0 {
-		t.Errorf("mismatching info. want %v, got %v", 0, res.Count)
-	}
-}
-
-func TestPaymentsService_HttpRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	tMux.HandleFunc("/v2/payments/", errorHandler)
-
-	p := Payment{
-		Amount: &Amount{
-			Currency: "EUR",
-			Value:    "10.00",
+		{
+			"get payments, invalid url when building request",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				nil,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
 		},
-		Description: "Order #12345",
 	}
 
-	_, cerr := tClient.Payments.Create(p, nil)
-	_, rerr := tClient.Payments.List(nil)
-	_, uerr := tClient.Payments.Update("1212", p)
-	_, derr := tClient.Payments.Cancel("1212")
-	_, gerr := tClient.Payments.Get("1212", nil)
+	for _, c := range cases {
+		setup()
+		defer teardown()
 
-	tests := []error{cerr, rerr, uerr, derr, gerr}
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s", c.args.payment), c.handler)
 
-	for _, tt := range tests {
-		if tt == nil {
-			t.Fail()
-		}
+			res, m, err := tClient.Payments.Get(c.args.ctx, c.args.payment, c.args.options)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&Payment{}, m)
+				ps.IsType(&http.Response{}, res.Response)
+			}
+		})
 	}
 }
 
-func TestPaymentsService_NewAPIRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	u, _ := url.Parse(tServer.URL)
-	tClient.BaseURL = u
-	tMux.HandleFunc("/v2/payments/", errorHandler)
+func (ps *paymentsServiceSuite) TestPaymentsService_List() {
+	type args struct {
+		ctx     context.Context
+		options *ListPaymentOptions
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"get payments works as expected.",
+			args{
+				context.Background(),
+				&ListPaymentOptions{
+					From: "tr_12o93213",
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "GET")
+				testQuery(ps.T(), r, "from=tr_12o93213&testmode=true")
 
-	p := Payment{
-		Amount: &Amount{
-			Currency: "EUR",
-			Value:    "10.00",
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.ListPaymentsResponse))
+			},
 		},
-		Description: "Order #12345",
-	}
-
-	_, cerr := tClient.Payments.Create(p, nil)
-	_, rerr := tClient.Payments.List(nil)
-	_, uerr := tClient.Payments.Update("1212", p)
-	_, derr := tClient.Payments.Cancel("1212")
-	_, gerr := tClient.Payments.Get("1212", nil)
-
-	tests := []error{cerr, rerr, uerr, derr, gerr}
-
-	for _, tt := range tests {
-		if tt != errBadBaseURL {
-			t.Fail()
-		}
-	}
-}
-
-func TestPaymentsService_EncodingResponseErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	tMux.HandleFunc("/v2/payments/", encodingHandler)
-
-	p := Payment{
-		Amount: &Amount{
-			Currency: "EUR",
-			Value:    "10.00",
+		{
+			"get payments, an error is returned from the server",
+			args{
+				context.Background(),
+				nil,
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
 		},
-		Description: "Order #12345",
+		{
+			"get payments, an error occurs when parsing json",
+			args{
+				context.Background(),
+				nil,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"get payments, invalid url when building request",
+			args{
+				context.Background(),
+				nil,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
 	}
 
-	_, cerr := tClient.Payments.Create(p, nil)
-	_, rerr := tClient.Payments.List(nil)
-	_, uerr := tClient.Payments.Update("1212", p)
-	_, derr := tClient.Payments.Cancel("1212")
-	_, gerr := tClient.Payments.Get("1212", nil)
+	for _, c := range cases {
+		setup()
+		defer teardown()
 
-	tests := []error{cerr, rerr, uerr, derr, gerr}
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc("/v2/payments", c.handler)
 
-	for _, tt := range tests {
-		if tt == nil {
-			t.Fail()
-		} else if !strings.Contains(tt.Error(), "invalid character") {
-			t.Errorf("unexpected error %v", tt)
-		}
+			res, m, err := tClient.Payments.List(c.args.ctx, c.args.options)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&PaymentList{}, m)
+				ps.IsType(&http.Response{}, res.Response)
+			}
+		})
 	}
 }
 
-func TestPaymentFailedResponseAvailable(t *testing.T) {
-	setup()
-	defer teardown()
-	tMux.HandleFunc("/v2/payments/", unprocessableEntityHandler)
+func (ps *paymentsServiceSuite) TestPaymentsService_Create() {
+	type args struct {
+		ctx     context.Context
+		payment Payment
+		options *PaymentOptions
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"create payments works as expected.",
+			args{
+				context.Background(),
+				Payment{
+					BillingEmail: "test@example.com",
+				},
+				&PaymentOptions{
+					Include: "settlements",
+				},
+			},
+			false,
+			nil,
+			func() {
+				tClient.WithAuthenticationValue("access_example_token")
+			},
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer access_example_token")
+				testMethod(ps.T(), r, "POST")
+				testQuery(ps.T(), r, "include=settlements&testmode=true")
 
-	_, err := tClient.Payments.Create(Payment{}, nil)
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetPaymentResponse))
+			},
+		},
+		{
+			"create payments with access token works as expected.",
+			args{
+				context.Background(),
+				Payment{
+					BillingEmail: "test@example.com",
+				},
+				&PaymentOptions{
+					Include: "settlements",
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "POST")
+				testQuery(ps.T(), r, "include=settlements&testmode=true")
 
-	if err == nil {
-		t.Error("expected error and got nil")
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetPaymentResponse))
+			},
+		},
+		{
+			"create payments, an error is returned from the server",
+			args{
+				context.Background(),
+				Payment{},
+				nil,
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"create payments, an error occurs when parsing json",
+			args{
+				context.Background(),
+				Payment{},
+				nil,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"create payments, invalid url when building request",
+			args{
+				context.Background(),
+				Payment{},
+				nil,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc("/v2/payments", c.handler)
+
+			res, m, err := tClient.Payments.Create(c.args.ctx, c.args.payment, c.args.options)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&Payment{}, m)
+				ps.IsType(&http.Response{}, res.Response)
+			}
+		})
 	}
 }
 
-func errorHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusInternalServerError)
+func (ps *paymentsServiceSuite) TestPaymentsService_Update() {
+	type args struct {
+		ctx     context.Context
+		id      string
+		payment Payment
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"update payments works as expected.",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				Payment{
+					BillingEmail: "test@example.com",
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "PATCH")
+				testQuery(ps.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.UpdatePaymentResponse))
+			},
+		},
+		{
+			"update payments using access token works as expected.",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				Payment{
+					BillingEmail: "test@example.com",
+				},
+			},
+			false,
+			nil,
+			func() {
+				tClient.WithAuthenticationValue("access_example_token")
+			},
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer access_example_token")
+				testMethod(ps.T(), r, "PATCH")
+				testQuery(ps.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.UpdatePaymentResponse))
+			},
+		},
+		{
+			"update payments, an error is returned from the server",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				Payment{},
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"update payments, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				Payment{},
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"update payments, invalid url when building request",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+				Payment{},
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s", c.args.id), c.handler)
+
+			res, m, err := tClient.Payments.Update(c.args.ctx, c.args.id, c.args.payment)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&Payment{}, m)
+				ps.IsType(&http.Response{}, res.Response)
+			}
+		})
+	}
 }
 
-func encodingHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write([]byte(`{hello: [{},]}`))
+func (ps *paymentsServiceSuite) TestPaymentsService_Cancel() {
+	type args struct {
+		ctx context.Context
+		id  string
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"get payments works as expected.",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ps.T(), r, "DELETE")
+				testQuery(ps.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetPaymentResponse))
+			},
+		},
+		{
+			"get payments, an error is returned from the server",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"get payments, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"get payments, invalid url when building request",
+			args{
+				context.Background(),
+				"tr_WDqYK6vllg",
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		ps.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s", c.args.id), c.handler)
+
+			res, m, err := tClient.Payments.Cancel(c.args.ctx, c.args.id)
+			if c.wantErr {
+				ps.NotNil(err)
+				ps.EqualError(err, c.err.Error())
+			} else {
+				ps.Nil(err)
+				ps.IsType(&Payment{}, m)
+				ps.IsType(&http.Response{}, res.Response)
+			}
+		})
+	}
 }
 
-func unprocessableEntityHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusUnprocessableEntity)
-	_, _ = w.Write([]byte(testdata.CreateOrderPaymentResponseFailed))
+func TestPaymentsService(t *testing.T) {
+	suite.Run(t, new(paymentsServiceSuite))
 }

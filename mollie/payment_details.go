@@ -3,7 +3,7 @@ package mollie
 // FeeRegion contains the fee region for the payment.
 type FeeRegion string
 
-// Valid Fee regions
+// Valid Fee regions.
 const (
 	AmericanExpress FeeRegion = "american-express"
 	CarteBancaire   FeeRegion = "carte-bancaire"
@@ -12,10 +12,10 @@ const (
 	Other           FeeRegion = "other"
 )
 
-// FailureReason provides a description on a failed payment
+// FailureReason provides a description on a failed payment.
 type FailureReason string
 
-// Possible failure reasons
+// Possible failure reasons.
 const (
 	ReasonAuthenticationAbandoned      FailureReason = "authentication_abandoned"
 	ReasonAuthenticationUnavailableACS FailureReason = "authentication_unavailable_acs"
@@ -31,10 +31,10 @@ const (
 	ReasonPossibleFraud                FailureReason = "possible_fraud"
 )
 
-// EligibilityReasons for paypal seller protection
+// EligibilityReasons for paypal seller protection.
 type EligibilityReasons string
 
-// Available eligibility reasons for Paypal sellers protection
+// Available eligibility reasons for Paypal sellers protection.
 const (
 	Eligible                        EligibilityReasons = "Eligible"
 	Ineligible                      EligibilityReasons = "Ineligible"
@@ -52,7 +52,7 @@ type UsedGiftCard struct {
 	VoucherNumber string  `json:"voucherNumber,omitempty"`
 }
 
-// PaymentDetails contains details for the specified payment method
+// PaymentDetails contains details for the specified payment method.
 type PaymentDetails struct {
 	PaypalDigitalGoods bool                   `json:"digitalGoods,omitempty"`
 	BankAccount        string                 `json:"bankAccount,omitempty"`

@@ -7,7 +7,7 @@ type GiftCardIssuer string
 // sportenfitcadeau, sustainablefashion, travelcheq, vvvgiftcard, vvvdinercheque,
 // vvvlekkerweg, webshopgiftcard, yourgift
 
-// Supported gift card issuers
+// Supported gift card issuers.
 const (
 	BloemenCadeuKaart          GiftCardIssuer = "bloemencadeaukaart"
 	BloemPlantGiftCard         GiftCardIssuer = "bloemplantgiftcard"
@@ -45,7 +45,7 @@ const (
 // card issuer in your account.
 type GiftCardIssuerStatus string
 
-// Valid issuer statuses
+// Valid issuer statuses.
 const (
 	PendingIssuer GiftCardIssuerStatus = "pending-issuer"
 	EnabledIssuer GiftCardIssuerStatus = "enabled"

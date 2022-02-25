@@ -1,120 +1,152 @@
 package mollie
 
 import (
+	"context"
+	"fmt"
 	"net/http"
-	"net/url"
-	"strings"
 	"testing"
 
-	"github.com/VictorAvelar/mollie-api-go/v2/testdata"
+	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestOnboardingService_GetOnboardingStatus(t *testing.T) {
-	setEnv()
-	setup()
-	defer func() {
-		teardown()
-		unsetEnv()
-	}()
+type onboardingServiceSuite struct{ suite.Suite }
 
-	tMux.HandleFunc("/"+onboardingTarget, func(rw http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			rw.WriteHeader(http.StatusUnauthorized)
-		}
+func (os *onboardingServiceSuite) SetupSuite() { setEnv() }
 
-		rw.WriteHeader(http.StatusOK)
-		_, _ = rw.Write([]byte(testdata.GetOnboardingStatusResponse))
-	})
+func (os *onboardingServiceSuite) TearDownSuite() { unsetEnv() }
 
-	res, err := tClient.Onboarding.GetOnboardingStatus()
-	if err != nil {
-		t.Fatal(err)
+func (os *onboardingServiceSuite) TestOnboardingService_GetOnboardingStatus() {
+	cases := []struct {
+		name    string
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"get onboarding status works as expected.",
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(os.T(), r, "GET")
+				testQuery(os.T(), r, "testmode=true")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetOnboardingStatusResponse))
+			},
+		},
+		{
+			"get onboarding status, an error is returned from the server",
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"get onboarding status, an error occurs when parsing json",
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"get onboarding status, invalid url when building request",
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
 	}
 
-	if res.Status != CompletedOnboardingStatus {
-		t.Error("unexpected onboarding status")
-	}
-}
+	for _, c := range cases {
+		setup()
+		defer teardown()
 
-func TestOnboardingService_SubmitOnboardingData(t *testing.T) {
-	setEnv()
-	setup()
-	defer func() {
-		teardown()
-		unsetEnv()
-	}()
+		os.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc("/v2/onboarding/me", c.handler)
 
-	tMux.HandleFunc("/"+onboardingTarget, func(rw http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
-		testMethod(t, r, "POST")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			rw.WriteHeader(http.StatusUnauthorized)
-		}
-
-		rw.WriteHeader(http.StatusCreated)
-	})
-
-	od := OnboardingData{}
-	od.Organization.Name = "Testing Org. B.V."
-
-	err := tClient.Onboarding.SubmitOnboardingData(&od)
-	if err != nil {
-		t.Fatal(err)
-	}
-}
-
-func TestOnboardingService_NewAPIRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	u, _ := url.Parse(tServer.URL)
-	tClient.BaseURL = u
-	tMux.HandleFunc("/"+onboardingTarget, errorHandler)
-
-	_, gerr := tClient.Onboarding.GetOnboardingStatus()
-	gcerr := tClient.Onboarding.SubmitOnboardingData(&OnboardingData{})
-
-	tests := []error{gerr, gcerr}
-
-	for _, tt := range tests {
-		if tt != errBadBaseURL {
-			t.Fail()
-		}
-	}
-}
-
-func TestOnboardingService_HttpRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	tMux.HandleFunc("/"+onboardingTarget, errorHandler)
-
-	_, gerr := tClient.Onboarding.GetOnboardingStatus()
-	gcerr := tClient.Onboarding.SubmitOnboardingData(&OnboardingData{})
-
-	tests := []error{gerr, gcerr}
-
-	for _, tt := range tests {
-		if tt == nil {
-			t.Fail()
-		}
+			res, m, err := tClient.Onboarding.GetOnboardingStatus(context.Background())
+			if c.wantErr {
+				os.NotNil(err)
+				os.EqualError(err, c.err.Error())
+			} else {
+				os.Nil(err)
+				os.IsType(&Onboarding{}, m)
+				os.IsType(&http.Response{}, res.Response)
+			}
+		})
 	}
 }
 
-func TestOnboardingService_EncodingResponseErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	tMux.HandleFunc("/"+onboardingTarget, encodingHandler)
+func (os *onboardingServiceSuite) TestOnboardingService_SubmitOnboardingData() {
+	cases := []struct {
+		name    string
+		data    *OnboardingData
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"get onboarding status works as expected.",
+			&OnboardingData{},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(os.T(), r, "POST")
+				testQuery(os.T(), r, "testmode=true")
 
-	_, gerr := tClient.Onboarding.GetOnboardingStatus()
-
-	tests := []error{gerr}
-
-	for _, tt := range tests {
-		if tt == nil {
-			t.Fail()
-		} else if !strings.Contains(tt.Error(), "invalid character") {
-			t.Errorf("unexpected error %v", tt)
-		}
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetOnboardingStatusResponse))
+			},
+		},
+		{
+			"get onboarding status, an error is returned from the server",
+			&OnboardingData{},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"get onboarding status, invalid url when building request",
+			&OnboardingData{},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
 	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		os.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc("/v2/onboarding/me", c.handler)
+
+			res, err := tClient.Onboarding.SubmitOnboardingData(context.Background(), c.data)
+			if c.wantErr {
+				os.NotNil(err)
+				os.EqualError(err, c.err.Error())
+			} else {
+				os.Nil(err)
+				os.IsType(&http.Response{}, res.Response)
+			}
+		})
+	}
+}
+func TestOnboardingService(t *testing.T) {
+	suite.Run(t, new(onboardingServiceSuite))
 }

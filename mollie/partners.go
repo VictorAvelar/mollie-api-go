@@ -1,12 +1,10 @@
 package mollie
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"time"
-
-	"github.com/google/go-querystring/query"
 )
 
 // PartnerClient describes a partner client.
@@ -58,22 +56,11 @@ type ListPartnerClientsOptions struct {
 // PartnerService operates over the partners API.
 type PartnerService service
 
-// Get retrieves all clients.
+// List retrieves all clients.
 //
 // See: https://docs.mollie.com/reference/v2/partners-api/list-clients
-func (ps *PartnerService) List(opts *ListPartnerClientsOptions) (pc *PartnerClientList, err error) {
-	u := "v2/clients"
-	if opts != nil {
-		v, _ := query.Values(opts)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-
-	req, err := ps.client.NewAPIRequest(http.MethodGet, u, nil)
-	if err != nil {
-		return
-	}
-
-	res, err := ps.client.Do(req)
+func (ps *PartnerService) List(ctx context.Context, opts *ListPartnerClientsOptions) (res *Response, pc *PartnerClientList, err error) {
+	res, err = ps.client.get(ctx, "v2/clients", opts)
 	if err != nil {
 		return
 	}
@@ -81,25 +68,15 @@ func (ps *PartnerService) List(opts *ListPartnerClientsOptions) (pc *PartnerClie
 	if err = json.Unmarshal(res.content, &pc); err != nil {
 		return
 	}
+
 	return
 }
 
-// Get retrieves a single client by its ID.
+// Get retrieves a single client, linked to your partner account, by its ID.
 //
 // See: https://docs.mollie.com/reference/v2/partners-api/get-client
-func (ps *PartnerService) Get(id string, opts *GetPartnerClientOptions) (pc *PartnerClient, err error) {
-	u := fmt.Sprintf("v2/clients/%s", id)
-	if opts != nil {
-		v, _ := query.Values(opts)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
-
-	req, err := ps.client.NewAPIRequest(http.MethodGet, u, nil)
-	if err != nil {
-		return
-	}
-
-	res, err := ps.client.Do(req)
+func (ps *PartnerService) Get(ctx context.Context, id string, opts *GetPartnerClientOptions) (res *Response, pc *PartnerClient, err error) {
+	res, err = ps.client.get(ctx, fmt.Sprintf("v2/clients/%s", id), opts)
 	if err != nil {
 		return
 	}
@@ -107,5 +84,6 @@ func (ps *PartnerService) Get(id string, opts *GetPartnerClientOptions) (pc *Par
 	if err = json.Unmarshal(res.content, &pc); err != nil {
 		return
 	}
+
 	return
 }

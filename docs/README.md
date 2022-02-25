@@ -1,7 +1,6 @@
 # mollie
-
 --
-import "github.com/VictorAvelar/mollie-api-golang/v2/mollie"
+import "github.com/VictorAvelar/mollie-api-golang/v3/mollie"
 
 Package mollie is a wrapper around Mollie's REST API.
 
@@ -29,15 +28,13 @@ const (
 	RequestContentType string = "application/json"
 )
 ```
-
 Constants holding values for client initialization and request instantiation.
 
-#### func CheckResponse
+#### func  CheckResponse
 
 ```go
-func CheckResponse(r *http.Response) error
+func CheckResponse(r *Response) error
 ```
-
 CheckResponse checks the API response for errors, and returns them if present. A
 response is considered an error if it has a status code outside the 200 range.
 API error responses are expected to have either no response body, or a JSON
@@ -92,7 +89,7 @@ type ApplePaymentSession struct {
 }
 ```
 
-ApplePaymentSession contains information about an Apple pay session
+ApplePaymentSession contains information about an Apple pay session.
 
 #### type ApplePaymentSessionRequest
 
@@ -118,6 +115,27 @@ type ApplicationFee struct {
 ApplicationFee allows you to split a payment between a platform and connected
 merchant accounts.
 
+#### type BaseError
+
+```go
+type BaseError struct {
+	Status int         `json:"status,omitempty"`
+	Title  string      `json:"title,omitempty"`
+	Detail string      `json:"detail,omitempty"`
+	Field  string      `json:"field,omitempty"`
+	Links  *ErrorLinks `json:"_links,omitempty"`
+}
+```
+
+BaseError contains the general error structure returned by mollie.
+
+#### func (*BaseError) Error
+
+```go
+func (be *BaseError) Error() string
+```
+Error interface compliance.
+
 #### type Capture
 
 ```go
@@ -131,12 +149,12 @@ type Capture struct {
 	ShipmentID       string       `json:"shipmentId,omitempty"`
 	SettlementID     string       `json:"settlementId,omitempty"`
 	CreatedAt        *time.Time   `json:"createdAt,omitempty"`
-	Links            CaptureLinks `json:"links,omitempty"`
+	Links            CaptureLinks `json:"_links,omitempty"`
 }
 ```
 
-Capture describes a single capture Captures are used for payments that have the
-authorize-then-capture flow
+Capture describes a single capture. Captures are used for payments that have the
+authorize-then-capture flow.
 
 #### type CaptureLinks
 
@@ -150,7 +168,7 @@ type CaptureLinks struct {
 }
 ```
 
-CaptureLinks contains relevant links for a capture object
+CaptureLinks contains relevant links for a capture object.
 
 #### type CapturesList
 
@@ -164,7 +182,7 @@ type CapturesList struct {
 }
 ```
 
-CapturesList describes a list of captures
+CapturesList describes a list of captures.
 
 #### type CapturesService
 
@@ -172,26 +190,24 @@ CapturesList describes a list of captures
 type CapturesService service
 ```
 
-CapturesService operates over captures resource
+CapturesService operates over captures resource.
 
-#### func (\*CapturesService) Get
+#### func (*CapturesService) Get
 
 ```go
-func (cs *CapturesService) Get(pID, cID string) (c *Capture, err error)
+func (cs *CapturesService) Get(ctx context.Context, payment, capture string) (res *Response, c *Capture, err error)
 ```
-
 Get retrieves a single capture by its ID. Note the original payment’s ID is
 needed as well.
 
 See: https://docs.mollie.com/reference/v2/captures-api/get-capture
 
-#### func (\*CapturesService) List
+#### func (*CapturesService) List
 
 ```go
-func (cs *CapturesService) List(pID string) (cl *CapturesList, err error)
+func (cs *CapturesService) List(ctx context.Context, payment string) (res *Response, cl *CapturesList, err error)
 ```
-
-List retrieves all captures for a certain payment
+List retrieves all captures for a certain payment.
 
 See: https://docs.mollie.com/reference/v2/captures-api/list-captures
 
@@ -220,8 +236,7 @@ const (
 	Empty          CardLabel = "null"
 )
 ```
-
-Available card labels
+Available card labels.
 
 #### type CategoryCode
 
@@ -229,7 +244,7 @@ Available card labels
 type CategoryCode uint
 ```
 
-CategoryCode specifies an industry or category
+CategoryCode specifies an industry or category.
 
 ```go
 const (
@@ -256,8 +271,7 @@ const (
 	Others                              CategoryCode = 0
 )
 ```
-
-Available category codes
+Available category codes.
 
 #### type Chargeback
 
@@ -275,7 +289,7 @@ type Chargeback struct {
 ```
 
 Chargeback describes a forced transaction reversal initiated by the cardholder's
-bank
+bank.
 
 #### type ChargebackLinks
 
@@ -291,20 +305,6 @@ type ChargebackLinks struct {
 ChargebackLinks describes all the possible links to be returned with a
 chargeback object.
 
-#### type ChargebackList
-
-```go
-type ChargebackList struct {
-	Count    int `json:"count,omitempty"`
-	Embedded struct {
-		Chargebacks []Chargeback
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"_links,omitempty"`
-}
-```
-
-ChargebackList describes how a list of chargebacks will be retrieved by Mollie.
-
 #### type ChargebackOptions
 
 ```go
@@ -316,41 +316,65 @@ type ChargebackOptions struct {
 
 ChargebackOptions describes chargeback endpoint valid query string parameters.
 
+#### type ChargebacksList
+
+```go
+type ChargebacksList struct {
+	Count    int `json:"count,omitempty"`
+	Embedded struct {
+		Chargebacks []Chargeback
+	} `json:"_embedded,omitempty"`
+	Links PaginationLinks `json:"_links,omitempty"`
+}
+```
+
+ChargebacksList describes how a list of chargebacks will be retrieved by Mollie.
+
+#### type ChargebacksListOptions
+
+```go
+type ChargebacksListOptions struct {
+	Include   string `url:"include,omitempty"`
+	Embed     string `url:"embed,omitempty"`
+	ProfileID string `url:"profileId,omitempty"`
+}
+```
+
+ChargebacksListOptions describes list chargebacks endpoint valid query string
+parameters.
+
 #### type ChargebacksService
 
 ```go
 type ChargebacksService service
 ```
 
-ChargebacksService instance operates over chargeback resources
+ChargebacksService instance operates over chargeback resources.
 
-#### func (\*ChargebacksService) Get
+#### func (*ChargebacksService) Get
 
 ```go
-func (cs *ChargebacksService) Get(paymentID, chargebackID string, options *ChargebackOptions) (p Chargeback, err error)
+func (cs *ChargebacksService) Get(ctx context.Context, payment, chargeback string, opts *ChargebackOptions) (res *Response, p *Chargeback, err error)
 ```
-
 Get retrieves a single chargeback by its ID. Note the original payment’s ID is
 needed as well.
 
 See: https://docs.mollie.com/reference/v2/chargebacks-api/get-chargeback
 
-#### func (\*ChargebacksService) List
+#### func (*ChargebacksService) List
 
 ```go
-func (cs *ChargebacksService) List(options *ListChargebackOptions) (cl *ChargebackList, err error)
+func (cs *ChargebacksService) List(ctx context.Context, options *ChargebacksListOptions) (res *Response, cl *ChargebacksList, err error)
 ```
-
 List retrieves a list of chargebacks associated with your account/organization.
 
 See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
 
-#### func (\*ChargebacksService) ListForPayment
+#### func (*ChargebacksService) ListForPayment
 
 ```go
-func (cs *ChargebacksService) ListForPayment(paymentID string, options *ListChargebackOptions) (cl *ChargebackList, err error)
+func (cs *ChargebacksService) ListForPayment(ctx context.Context, payment string, options *ChargebacksListOptions) (res *Response, cl *ChargebacksList, err error)
 ```
-
 ListForPayment retrieves a list of chargebacks associated with a single payment.
 
 See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
@@ -362,36 +386,35 @@ type Client struct {
 	BaseURL *url.URL
 
 	// Services
-	Payments      *PaymentsService
-	Chargebacks   *ChargebacksService
-	Methods       *MethodsService
-	Invoices      *InvoicesService
-	Organizations *OrganizationsService
-	Profiles      *ProfilesService
-	Refunds       *RefundsService
-	Shipments     *ShipmentsService
-	Orders        *OrdersService
-	Settlements   *SettlementsService
-	Captures      *CapturesService
-	Subscriptions *SubscriptionsService
-	Customers     *CustomersService
-	Miscellaneous *MiscellaneousService
-	Mandates      *MandatesService
-	Permissions   *PermissionsService
-	Onboarding    *OnboardingService
-	PaymentLinks  *PaymentLinksService
-	Partners      *PartnerService
+	Payments       *PaymentsService
+	Chargebacks    *ChargebacksService
+	PaymentMethods *PaymentMethodsService
+	Invoices       *InvoicesService
+	Organizations  *OrganizationsService
+	Profiles       *ProfilesService
+	Refunds        *RefundsService
+	Shipments      *ShipmentsService
+	Orders         *OrdersService
+	Settlements    *SettlementsService
+	Captures       *CapturesService
+	Subscriptions  *SubscriptionsService
+	Customers      *CustomersService
+	Miscellaneous  *MiscellaneousService
+	Mandates       *MandatesService
+	Permissions    *PermissionsService
+	Onboarding     *OnboardingService
+	PaymentLinks   *PaymentLinksService
+	Partners       *PartnerService
 }
 ```
 
 Client manages communication with Mollie's API.
 
-#### func NewClient
+#### func  NewClient
 
 ```go
-func NewClient(baseClient *http.Client, c *Config) (mollie *Client, err error)
+func NewClient(baseClient *http.Client, conf *Config) (mollie *Client, err error)
 ```
-
 NewClient returns a new Mollie HTTP API client. You can pass a previously build
 http client, if none is provided then http.DefaultClient will be used.
 
@@ -402,44 +425,40 @@ to the provided Config object.
 You can also set the token values programmatically by using the Client
 WithAPIKey and WithOrganizationKey functions.
 
-#### func (\*Client) Do
+#### func (*Client) Do
 
 ```go
 func (c *Client) Do(req *http.Request) (*Response, error)
 ```
-
 Do sends an API request and returns the API response or returned as an error if
 an API error has occurred.
 
-#### func (\*Client) HasAccessToken
+#### func (*Client) HasAccessToken
 
 ```go
 func (c *Client) HasAccessToken() bool
 ```
-
 HasAccessToken will return true when the provided authentication token complies
 with the access token REGEXP match check. This will enable TestMode inside the
 request body.
 
 See: https://github.com/VictorAvelar/mollie-api-go/issues/123
 
-#### func (\*Client) NewAPIRequest
+#### func (*Client) NewAPIRequest
 
 ```go
-func (c *Client) NewAPIRequest(method string, uri string, body interface{}) (req *http.Request, err error)
+func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, body interface{}) (req *http.Request, err error)
 ```
-
 NewAPIRequest is a wrapper around the http.NewRequest function.
 
 It will setup the authentication headers/parameters according to the client
 config.
 
-#### func (\*Client) WithAuthenticationValue
+#### func (*Client) WithAuthenticationValue
 
 ```go
 func (c *Client) WithAuthenticationValue(k string) error
 ```
-
 WithAuthenticationValue offers a convenient setter for any of the valid
 authentication tokens provided by Mollie.
 
@@ -467,12 +486,11 @@ type Config struct {
 
 Config contains information that helps during the setup of a new Mollie client.
 
-#### func NewConfig
+#### func  NewConfig
 
 ```go
 func NewConfig(t bool, auth string) *Config
 ```
-
 NewConfig builds a Mollie configuration object, it takes t to indicate if our
 client is meant to create requests for testing and auth to indicate the
 authentication method we want to use.
@@ -487,7 +505,7 @@ type CreateShipmentRequest struct {
 }
 ```
 
-CreateShipmentRequest defines information required to create a new shipment
+CreateShipmentRequest defines information required to create a new shipment.
 
 #### type Customer
 
@@ -505,7 +523,7 @@ type Customer struct {
 }
 ```
 
-Customer represents buyers
+Customer represents buyers.
 
 #### type CustomerLinks
 
@@ -520,7 +538,7 @@ type CustomerLinks struct {
 }
 ```
 
-CustomerLinks contains the HAL resources for a customer response
+CustomerLinks contains the HAL resources for a customer response.
 
 #### type CustomersList
 
@@ -537,83 +555,93 @@ type CustomersList struct {
 CustomersList contains a embedded list of customers wrapped in a standard Mollie
 paginated response.
 
+#### type CustomersListOptions
+
+```go
+type CustomersListOptions struct {
+	From         string       `url:"from,omitempty"`
+	Limit        int          `url:"limit,omitempty"`
+	ProfileID    string       `url:"profileId,omitempty"`
+	SequenceType SequenceType `url:"sequenceType,omitempty"`
+	RedirectURL  string       `url:"redirectUrl,omitempty"`
+}
+```
+
+CustomersListOptions contains valid query parameters for the list customers
+endpoint.
+
 #### type CustomersService
 
 ```go
 type CustomersService service
 ```
 
-CustomersService operates over the customer resource
+CustomersService operates over the customer resource.
 
-#### func (\*CustomersService) Create
+#### func (*CustomersService) Create
 
 ```go
-func (cs *CustomersService) Create(c Customer) (cc *Customer, err error)
+func (cs *CustomersService) Create(ctx context.Context, c Customer) (res *Response, cc *Customer, err error)
 ```
-
 Create creates a simple minimal representation of a customer in the Mollie API
-to use for the Mollie Checkout and Recurring features
+to use for the Mollie Checkout and Recurring features.
 
 See: https://docs.mollie.com/reference/v2/customers-api/create-customer
 
-#### func (\*CustomersService) CreatePayment
+#### func (*CustomersService) CreatePayment
 
 ```go
-func (cs *CustomersService) CreatePayment(id string, p Payment) (pp *Payment, err error)
+func (cs *CustomersService) CreatePayment(ctx context.Context, id string, p Payment) (res *Response, pp *Payment, err error)
 ```
-
 CreatePayment creates a payment for the customer.
 
 See: https://docs.mollie.com/reference/v2/customers-api/create-customer-payment
 
-#### func (\*CustomersService) Delete
+#### func (*CustomersService) Delete
 
 ```go
-func (cs *CustomersService) Delete(id string) (err error)
+func (cs *CustomersService) Delete(ctx context.Context, id string) (res *Response, err error)
 ```
+Delete a customer.
 
-Delete a customer. All mandates and subscriptions created for this customer will
-be canceled as well.
+All mandates and subscriptions created for this customer will be canceled as
+well.
 
 See: https://docs.mollie.com/reference/v2/customers-api/delete-customer
 
-#### func (\*CustomersService) Get
+#### func (*CustomersService) Get
 
 ```go
-func (cs *CustomersService) Get(id string) (c *Customer, err error)
+func (cs *CustomersService) Get(ctx context.Context, id string) (res *Response, c *Customer, err error)
 ```
-
-Get finds a customer by its ID
+Get finds a customer by its ID.
 
 See: https://docs.mollie.com/reference/v2/customers-api/get-customer
 
-#### func (\*CustomersService) GetPayments
+#### func (*CustomersService) GetPayments
 
 ```go
-func (cs *CustomersService) GetPayments(id string, options *ListCustomersOptions) (pl *PaymentList, err error)
+func (cs *CustomersService) GetPayments(ctx context.Context, id string, options *CustomersListOptions) (res *Response, pl *PaymentList, err error)
 ```
-
 GetPayments retrieves all payments linked to the customer.
 
 See: https://docs.mollie.com/reference/v2/customers-api/list-customer-payments
 
-#### func (\*CustomersService) List
+#### func (*CustomersService) List
 
 ```go
-func (cs *CustomersService) List(options *ListCustomersOptions) (cl *CustomersList, err error)
+func (cs *CustomersService) List(ctx context.Context, options *CustomersListOptions) (res *Response, cl *CustomersList, err error)
 ```
-
 List retrieves all customers created.
 
 See: https://docs.mollie.com/reference/v2/customers-api/list-customers
 
-#### func (\*CustomersService) Update
+#### func (*CustomersService) Update
 
 ```go
-func (cs *CustomersService) Update(id string, c Customer) (cc *Customer, err error)
+func (cs *CustomersService) Update(ctx context.Context, id string, c Customer) (res *Response, cc *Customer, err error)
 ```
-
-Update mutates an existing customer
+Update an existing customer.
 
 See: https://docs.mollie.com/reference/v2/customers-api/update-customer
 
@@ -623,7 +651,7 @@ See: https://docs.mollie.com/reference/v2/customers-api/update-customer
 type EligibilityReasons string
 ```
 
-EligibilityReasons for paypal seller protection
+EligibilityReasons for paypal seller protection.
 
 ```go
 const (
@@ -636,8 +664,7 @@ const (
 	ActiveFraudControlUnAuthPremium EligibilityReasons = "Active Fraud Control - Unauth Premium Eligible"
 )
 ```
-
-Available eligibility reasons for Paypal sellers protection
+Available eligibility reasons for Paypal sellers protection.
 
 #### type EmbedValue
 
@@ -655,29 +682,17 @@ const (
 	EmbedChangebacks EmbedValue = "chanrgebacks"
 )
 ```
-
 Valid Embed query string value.
 
-#### type Error
+#### type ErrorLinks
 
 ```go
-type Error struct {
-	Code     int            `json:"code"`
-	Message  string         `json:"message"`
-	Content  string         `json:"content,omitempty"`
-	Response *http.Response `json:"response"` // the full response that produced the error
+type ErrorLinks struct {
+	Documentation *URL `json:"documentation,omitempty"`
 }
 ```
 
-Error reports details on a failed API request.
-
-#### func (\*Error) Error
-
-```go
-func (e *Error) Error() string
-```
-
-Error function complies with the error interface
+ErrorLinks container references to common urls returned with errors.
 
 #### type FailureReason
 
@@ -685,7 +700,7 @@ Error function complies with the error interface
 type FailureReason string
 ```
 
-FailureReason provides a description on a failed payment
+FailureReason provides a description on a failed payment.
 
 ```go
 const (
@@ -703,8 +718,7 @@ const (
 	ReasonPossibleFraud                FailureReason = "possible_fraud"
 )
 ```
-
-Possible failure reasons
+Possible failure reasons.
 
 #### type FeeRegion
 
@@ -723,8 +737,7 @@ const (
 	Other           FeeRegion = "other"
 )
 ```
-
-Valid Fee regions
+Valid Fee regions.
 
 #### type GetPartnerClientOptions
 
@@ -791,8 +804,7 @@ const (
 	Yourgift                   GiftCardIssuer = "yourgift"
 )
 ```
-
-Supported gift card issuers
+Supported gift card issuers.
 
 #### type GiftCardIssuerStatus
 
@@ -808,8 +820,7 @@ const (
 	EnabledIssuer GiftCardIssuerStatus = "enabled"
 )
 ```
-
-Valid issuer statuses
+Valid issuer statuses.
 
 #### type GiftCardLinks
 
@@ -854,7 +865,7 @@ type Invoice struct {
 }
 ```
 
-Invoice describes an invoice details
+Invoice describes an invoice details.
 
 #### type InvoiceLinks
 
@@ -869,27 +880,13 @@ type InvoiceLinks struct {
 InvoiceLinks describes all the possible links to be returned with a invoice
 object.
 
-#### type InvoiceList
-
-```go
-type InvoiceList struct {
-	Count    int `json:"count,omitempty"`
-	Embedded struct {
-		Invoices []Invoice `json:"invoices"`
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"_links,omitempty"`
-}
-```
-
-InvoiceList describes how a list of invoices will be retrieved by Mollie.
-
 #### type InvoiceStatus
 
 ```go
 type InvoiceStatus string
 ```
 
-InvoiceStatus status of the invoice
+InvoiceStatus status of the invoice.
 
 ```go
 const (
@@ -898,8 +895,35 @@ const (
 	InvoiceStatusOverdue InvoiceStatus = "overdue"
 )
 ```
+Valid status of the invoice.
 
-Valid status of the invoice
+#### type InvoicesList
+
+```go
+type InvoicesList struct {
+	Count    int `json:"count,omitempty"`
+	Embedded struct {
+		Invoices []Invoice `json:"invoices"`
+	} `json:"_embedded,omitempty"`
+	Links PaginationLinks `json:"_links,omitempty"`
+}
+```
+
+InvoicesList describes how a list of invoices will be retrieved by Mollie.
+
+#### type InvoicesListOptions
+
+```go
+type InvoicesListOptions struct {
+	Reference string `url:"reference,omitempty"`
+	Year      string `url:"year,omitempty"`
+	From      string `url:"from,omitempty"`
+	Limit     int64  `url:"limit,omitempty"`
+}
+```
+
+InvoicesListOptions describes list invoices endpoint valid query string
+parameters.
 
 #### type InvoicesService
 
@@ -907,22 +931,20 @@ Valid status of the invoice
 type InvoicesService service
 ```
 
-InvoicesService instance operates over invoice resources
+InvoicesService instance operates over invoice resources.
 
-#### func (\*InvoicesService) Get
+#### func (*InvoicesService) Get
 
 ```go
-func (is *InvoicesService) Get(id string) (i Invoice, err error)
+func (is *InvoicesService) Get(ctx context.Context, id string) (res *Response, i *Invoice, err error)
 ```
-
 Get retrieve details of an invoice, using the invoice’s identifier.
 
-#### func (\*InvoicesService) List
+#### func (*InvoicesService) List
 
 ```go
-func (is *InvoicesService) List(options *ListInvoiceOptions) (il InvoiceList, err error)
+func (is *InvoicesService) List(ctx context.Context, options *InvoicesListOptions) (res *Response, il *InvoicesList, err error)
 ```
-
 List retrieves a list of invoices associated with your account/organization.
 
 #### type LineItem
@@ -937,76 +959,7 @@ type LineItem struct {
 }
 ```
 
-LineItem product details
-
-#### type ListChargebackOptions
-
-```go
-type ListChargebackOptions struct {
-	Include   string `url:"include,omitempty"`
-	Embed     string `url:"embed,omitempty"`
-	ProfileID string `url:"profileId,omitempty"`
-}
-```
-
-ListChargebackOptions describes list chargebacks endpoint valid query string
-parameters.
-
-#### type ListCustomersOptions
-
-```go
-type ListCustomersOptions struct {
-	From         string       `url:"from,omitempty"`
-	Limit        int          `url:"limit,omitempty"`
-	ProfileID    string       `url:"profileId,omitempty"`
-	SequenceType SequenceType `url:"sequenceType,omitempty"`
-	RedirectURL  string       `url:"redirectUrl,omitempty"`
-}
-```
-
-ListCustomersOptions contains valid query parameters for the list customers
-endpoint.
-
-#### type ListInvoiceOptions
-
-```go
-type ListInvoiceOptions struct {
-	Reference string `url:"reference,omitempty"`
-	Year      string `url:"year,omitempty"`
-	From      string `url:"from,omitempty"`
-	Limit     int64  `url:"limit,omitempty"`
-}
-```
-
-ListInvoiceOptions describes list invoices endpoint valid query string
-parameters.
-
-#### type ListMandatesOptions
-
-```go
-type ListMandatesOptions struct {
-	From  string `url:"from,omitempty"`
-	Limit int    `url:"limit,omitempty"`
-}
-```
-
-ListMandatesOptions contains valid query parameters to filter the List mandates
-actions. From is a mandate id to offset from (inclusive) Limit is the max number
-of mandates to retrieve
-
-#### type ListMethods
-
-```go
-type ListMethods struct {
-	Count    int `json:"count,omitempty"`
-	Embedded struct {
-		Methods []*PaymentMethodInfo
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"_links,omitempty"`
-}
-```
-
-ListMethods describes a list of paginated payment methods.
+LineItem product details.
 
 #### type ListPartnerClientsOptions
 
@@ -1085,8 +1038,7 @@ const (
 	Lithuanian    Locale = "lt_LT"
 )
 ```
-
-Mollie supported locales
+Mollie supported locales.
 
 #### type Mandate
 
@@ -1126,7 +1078,7 @@ type MandateDetails struct {
 }
 ```
 
-MandateDetails are possible values inside the mandate.details field
+MandateDetails are possible values inside the mandate.details field.
 
 #### type MandateLinks
 
@@ -1138,21 +1090,7 @@ type MandateLinks struct {
 }
 ```
 
-MandateLinks response objects
-
-#### type MandateList
-
-```go
-type MandateList struct {
-	Count    int `json:"count,omitempty"`
-	Embedded struct {
-		Mandates []Mandate
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"_links,omitempty"`
-}
-```
-
-MandateList describes how a list of mandates will be retrieved by Mollie.
+MandateLinks response objects.
 
 #### type MandateStatus
 
@@ -1160,7 +1098,7 @@ MandateList describes how a list of mandates will be retrieved by Mollie.
 type MandateStatus string
 ```
 
-MandateStatus for the Mandate object
+MandateStatus for the Mandate object.
 
 ```go
 const (
@@ -1169,8 +1107,36 @@ const (
 	InvalidMandate MandateStatus = "invalid"
 )
 ```
+Valid mandate statuses.
 
-Valid mandate statuses
+#### type MandatesList
+
+```go
+type MandatesList struct {
+	Count    int `json:"count,omitempty"`
+	Embedded struct {
+		Mandates []Mandate
+	} `json:"_embedded,omitempty"`
+	Links PaginationLinks `json:"_links,omitempty"`
+}
+```
+
+MandatesList describes how a list of mandates will be retrieved by Mollie.
+
+#### type MandatesListOptions
+
+```go
+type MandatesListOptions struct {
+	From  string `url:"from,omitempty"`
+	Limit int    `url:"limit,omitempty"`
+}
+```
+
+MandatesListOptions contains valid query parameters to filter the List mandates
+actions.
+
+From is a mandate id to offset from (inclusive) Limit is the max number of
+mandates to retrieve.
 
 #### type MandatesService
 
@@ -1180,48 +1146,47 @@ type MandatesService service
 
 MandatesService operates over customer mandates endpoints.
 
-#### func (\*MandatesService) Create
+#### func (*MandatesService) Create
 
 ```go
-func (ms *MandatesService) Create(cID string, mandate Mandate) (mr *Mandate, err error)
+func (ms *MandatesService) Create(ctx context.Context, customer string, mandate Mandate) (res *Response, mr *Mandate, err error)
 ```
+Create a mandate for a specific customer.
 
-Create a mandate for a specific customer. Mandates allow you to charge a
-customer’s credit card or bank account recurrently.
+Mandates allow you to charge a customer’s credit card or bank account
+recurrently.
 
 See: https://docs.mollie.com/reference/v2/mandates-api/create-mandate
 
-#### func (\*MandatesService) Get
+#### func (*MandatesService) Get
 
 ```go
-func (ms *MandatesService) Get(cID, mID string) (mr *Mandate, err error)
+func (ms *MandatesService) Get(ctx context.Context, customer, mandate string) (res *Response, mr *Mandate, err error)
 ```
-
 Get retrieves a mandate by its ID and its customer’s ID. The mandate will either
 contain IBAN or credit card details, depending on the type of mandate.
 
 See: https://docs.mollie.com/reference/v2/mandates-api/get-mandate
 
-#### func (\*MandatesService) List
+#### func (*MandatesService) List
 
 ```go
-func (ms *MandatesService) List(cID string, opt *ListMandatesOptions) (ml MandateList, err error)
+func (ms *MandatesService) List(ctx context.Context, customer string, options *MandatesListOptions) (res *Response, ml *MandatesList, err error)
 ```
-
 List retrieves all mandates for the given customerId, ordered from newest to
 oldest.
 
 See: https://docs.mollie.com/reference/v2/mandates-api/list-mandates
 
-#### func (\*MandatesService) Revoke
+#### func (*MandatesService) Revoke
 
 ```go
-func (ms *MandatesService) Revoke(cID, mID string) (err error)
+func (ms *MandatesService) Revoke(ctx context.Context, customer, mandate string) (res *Response, err error)
 ```
+Revoke a customer’s mandate.
 
-Revoke a customer’s mandate. You will no longer be able to charge the consumer’s
-bank account or credit card with this mandate and all connected subscriptions
-will be canceled.
+You will no longer be able to charge the consumer’s bank account or credit card
+with this mandate and all connected subscriptions will be canceled.
 
 See: https://docs.mollie.com/reference/v2/mandates-api/revoke-mandate
 
@@ -1236,67 +1201,6 @@ type MethodsLinks struct {
 
 MethodsLinks describes links attached to methods service responses.
 
-#### type MethodsOptions
-
-```go
-type MethodsOptions struct {
-	Locale    Locale `url:"locale,omitempty"`
-	Currency  string `url:"currency,omitempty"`
-	ProfileID string `url:"profileId,omitempty"`
-	Include   string `url:"include,omitempty"`
-	// Use for List method only
-	SequenceType   SequenceType `url:"sequenceType,omitempty"`
-	AmountCurrency string       `url:"amount[currency],omitempty"`
-	AmountValue    string       `url:"amount[value],omitempty"`
-	Resource       string       `url:"resource,omitempty"`
-	BillingCountry string       `url:"billingCountry,omitempty"`
-	IncludeWallets string       `url:"includeWallets,omitempty"`
-}
-```
-
-MethodsOptions are applicable query string parameters to methods service
-endpoints.
-
-#### type MethodsService
-
-```go
-type MethodsService service
-```
-
-MethodsService operates on methods endpoints
-
-#### func (\*MethodsService) All
-
-```go
-func (ms *MethodsService) All(options *MethodsOptions) (pm *ListMethods, err error)
-```
-
-All retrieves all the payment methods enabled for your account/organization
-
-See: https://docs.mollie.com/reference/v2/methods-api/list-all-methods
-
-#### func (\*MethodsService) Get
-
-```go
-func (ms *MethodsService) Get(id string, options *MethodsOptions) (pmi *PaymentMethodInfo, err error)
-```
-
-Get returns information about the payment method specified by id, it also
-receives a pointer to the method options containing applicable query string
-parameters
-
-See: https://docs.mollie.com/reference/v2/methods-api/get-method
-
-#### func (\*MethodsService) List
-
-```go
-func (ms *MethodsService) List(options *MethodsOptions) (pm *ListMethods, err error)
-```
-
-List retrieves all enabled payment methods. The results are not paginated.
-
-See: https://docs.mollie.com/reference/v2/methods-api/list-methods
-
 #### type MiscellaneousService
 
 ```go
@@ -1304,14 +1208,13 @@ type MiscellaneousService service
 ```
 
 MiscellaneousService operates over the resources described in Mollie's
-miscellaneous API endpoints section
+miscellaneous API endpoints section.
 
-#### func (\*MiscellaneousService) ApplePaymentSession
+#### func (*MiscellaneousService) ApplePaymentSession
 
 ```go
-func (ms *MiscellaneousService) ApplePaymentSession(asr *ApplePaymentSessionRequest) (aps *ApplePaymentSession, err error)
+func (ms *MiscellaneousService) ApplePaymentSession(ctx context.Context, asr *ApplePaymentSessionRequest) (res *Response, aps *ApplePaymentSession, err error)
 ```
-
 ApplePaymentSession returns an Apple Payment Session object valid for one
 transaction.
 
@@ -1332,8 +1235,7 @@ const (
 	TestMode Mode = "test"
 )
 ```
-
-Valid modes
+Valid modes.
 
 #### type Onboarding
 
@@ -1402,23 +1304,21 @@ type OnboardingService service
 
 OnboardingService operates over the onboarding API.
 
-#### func (\*OnboardingService) GetOnboardingStatus
+#### func (*OnboardingService) GetOnboardingStatus
 
 ```go
-func (os *OnboardingService) GetOnboardingStatus() (o *Onboarding, err error)
+func (os *OnboardingService) GetOnboardingStatus(ctx context.Context) (res *Response, o *Onboarding, err error)
 ```
-
 GetOnboardingStatus gets the status of onboarding of the authenticated
 organization.
 
 See: https://docs.mollie.com/reference/v2/onboarding-api/get-onboarding-status
 
-#### func (\*OnboardingService) SubmitOnboardingData
+#### func (*OnboardingService) SubmitOnboardingData
 
 ```go
-func (os *OnboardingService) SubmitOnboardingData(d *OnboardingData) (err error)
+func (os *OnboardingService) SubmitOnboardingData(ctx context.Context, d *OnboardingData) (res *Response, err error)
 ```
-
 SubmitOnboardingData sends data that will be prefilled in the merchant’s
 onboarding. Please note that the data you submit will only be processed when the
 onboarding status is needs-data.
@@ -1440,33 +1340,35 @@ const (
 	CompletedOnboardingStatus OnboardingStatus = "completed"
 )
 ```
-
 Possible status values.
 
 #### type Order
 
 ```go
 type Order struct {
+	TestMode                                 bool          `json:"testmode,omitempty"`
+	IsCancelable                             bool          `json:"isCancelable,omitempty"`
+	ShopperCountryMustMatchTheBillingCountry bool          `json:"shopperCountryMustMatchTheBillingCountry,omitempty"`
 	Resource                                 string        `json:"resource,omitempty"`
 	ID                                       string        `json:"id,omitempty"`
 	ProfileID                                string        `json:"profileId,omitempty"`
-	TestMode                                 bool          `json:"testmode,omitempty"`
-	Method                                   PaymentMethod `json:"method,omitempty"`
+	OrderNumber                              string        `json:"orderNumber,omitempty"`
+	RedirectURL                              string        `json:"redirectUrl,omitempty"`
+	WebhookURL                               string        `json:"webhookUrl,omitempty"`
+	Description                              string        `json:"description,omitempty"`
+	Sku                                      string        `json:"sku,omitempty"`
+	Metadata                                 interface{}   `json:"metadata,omitempty"`
 	Mode                                     Mode          `json:"mode,omitempty"`
+	Method                                   PaymentMethod `json:"method,omitempty"`
+	Status                                   OrderStatus   `json:"status,omitempty"`
+	Locale                                   Locale        `json:"locale,omitempty"`
+	ShippingAddress                          OrderAddress  `json:"shippingAddress,omitempty"`
+	Links                                    OrderLinks    `json:"_links,omitempty"`
 	Amount                                   *Amount       `json:"amount,omitempty"`
 	AmountCaptured                           *Amount       `json:"amountCaptured,omitempty"`
 	AmountRefunded                           *Amount       `json:"amountRefunded,omitempty"`
-	Status                                   OrderStatus   `json:"status,omitempty"`
-	IsCancelable                             bool          `json:"isCancelable,omitempty"`
 	BillingAddress                           *OrderAddress `json:"billingAddress,omitempty"`
 	ConsumerDateOfBirth                      *ShortDate    `json:"consumerDateOfBirth,omitempty"`
-	OrderNumber                              string        `json:"orderNumber,omitempty"`
-	ShippingAddress                          OrderAddress  `json:"shippingAddress,omitempty"`
-	Locale                                   Locale        `json:"locale,omitempty"`
-	Metadata                                 interface{}   `json:"metadata,omitempty"`
-	RedirectURL                              string        `json:"redirectUrl,omitempty"`
-	Lines                                    []*OrderLine  `json:"lines,omitempty"`
-	WebhookURL                               string        `json:"webhookUrl,omitempty"`
 	CreatedAt                                *time.Time    `json:"createdAt,omitempty"`
 	ExpiresAt                                *time.Time    `json:"expiresAt,omitempty"`
 	ExpiredAt                                *time.Time    `json:"expiredAt,omitempty"`
@@ -1474,11 +1376,8 @@ type Order struct {
 	AuthorizedAt                             *time.Time    `json:"authorizedAt,omitempty"`
 	CanceledAt                               *time.Time    `json:"canceledAt,omitempty"`
 	CompletedAt                              *time.Time    `json:"completedAt,omitempty"`
-	Links                                    OrderLinks    `json:"_links,omitempty"`
 	OrderPayment                             *OrderPayment `json:"payment,omitempty"`
-	Description                              string        `json:"description,omitempty"`
-	ShopperCountryMustMatchTheBillingCountry bool          `json:"shopperCountryMustMatchTheBillingCountry,omitempty"`
-	Sku                                      string        `json:"sku,omitempty"`
+	Lines                                    []*OrderLine  `json:"lines,omitempty"`
 	Embedded                                 struct {
 		Payments []*Payment `json:"payments,omitempty"`
 		Refunds  []*Refund  `json:"refunds,omitempty"`
@@ -1542,6 +1441,7 @@ type OrderLine struct {
 	Links              OrderLineLinks  `json:"_links,omitempty"`
 	ImageURL           string          `json:"imageUrl,omitempty"`
 	ProductURL         string          `json:"productUrl,omitempty"`
+	Metadata           interface{}     `json:"metadata,omitempty"`
 }
 ```
 
@@ -1577,7 +1477,6 @@ const (
 	OrderLineCompleted  OrderLineStatus = "completed"
 )
 ```
-
 Valid order line status.
 
 #### type OrderLinks
@@ -1606,7 +1505,7 @@ type OrderList struct {
 }
 ```
 
-OrderList for containing the response of list orders
+OrderList for containing the response of list orders.
 
 #### type OrderListOptions
 
@@ -1632,7 +1531,7 @@ type OrderListRefund struct {
 }
 ```
 
-OrderListRefund for containing the response of list orders
+OrderListRefund for containing the response of list orders.
 
 #### type OrderListRefundOptions
 
@@ -1676,7 +1575,7 @@ type OrderPayment struct {
 ```
 
 OrderPayment describes payment specific parameters that can be passed during
-order creation
+order creation.
 
 #### type OrderStatus
 
@@ -1697,7 +1596,6 @@ const (
 	Expired    OrderStatus = "expired"
 )
 ```
-
 Valid order status.
 
 #### type OrdersService
@@ -1708,103 +1606,98 @@ type OrdersService service
 
 OrdersService instance operates over refund resources.
 
-#### func (\*OrdersService) Cancel
+#### func (*OrdersService) Cancel
 
 ```go
-func (ors *OrdersService) Cancel(orderID string) (order *Order, err error)
+func (ors *OrdersService) Cancel(ctx context.Context, orderID string) (res *Response, order *Order, err error)
 ```
-
 Cancel try to cancel the order that fulfill certain requirements.
 
 See https://docs.mollie.com/reference/v2/orders-api/cancel-order
 
-#### func (\*OrdersService) CancelOrderLines
+#### func (*OrdersService) CancelOrderLines
 
 ```go
-func (ors *OrdersService) CancelOrderLines(orderID string, orderLines []OrderLine) (err error)
+func (ors *OrdersService) CancelOrderLines(ctx context.Context, orderID string, orderLines []OrderLine) (res *Response, err error)
 ```
-
 CancelOrderLines can be used to cancel one or more order lines that were
 previously authorized using a pay after delivery payment method. Use the Cancel
 Order API if you want to cancel the entire order or the remainder of the order.
 
 See https://docs.mollie.com/reference/v2/orders-api/cancel-order-lines
 
-#### func (\*OrdersService) Create
+#### func (*OrdersService) Create
 
 ```go
-func (ors *OrdersService) Create(ord Order, opt *OrderOptions) (order *Order, err error)
+func (ors *OrdersService) Create(ctx context.Context, ord Order, opts *OrderOptions) (res *Response, order *Order, err error)
 ```
-
 Create an order will automatically create the required payment to allow your
 customer to pay for the order.
 
 See https://docs.mollie.com/reference/v2/orders-api/create-order
 
-#### func (\*OrdersService) CreateOrderPayment
+#### func (*OrdersService) CreateOrderPayment
 
 ```go
-func (ors *OrdersService) CreateOrderPayment(orderID string, ordPay *OrderPayment) (payment *Payment, err error)
+func (ors *OrdersService) CreateOrderPayment(ctx context.Context, orderID string, ordPay *OrderPayment) (res *Response, payment *Payment, err error)
 ```
-
 CreateOrderPayment can only be created while the status of the order is created,
 and when the status of the existing payment is either expired, canceled or
-failed. See https://docs.mollie.com/reference/v2/orders-api/create-order-payment
+failed.
 
-#### func (\*OrdersService) CreateOrderRefund
+See https://docs.mollie.com/reference/v2/orders-api/create-order-payment
+
+#### func (*OrdersService) CreateOrderRefund
 
 ```go
-func (ors *OrdersService) CreateOrderRefund(orderID string, order *Order) (refund Refund, err error)
+func (ors *OrdersService) CreateOrderRefund(ctx context.Context, orderID string, order *Order) (res *Response, refund *Refund, err error)
 ```
-
 CreateOrderRefund using the Orders API, refunds should be made against the
-order. See https://docs.mollie.com/reference/v2/orders-api/create-order-refund
+order.
 
-#### func (\*OrdersService) Get
+See https://docs.mollie.com/reference/v2/orders-api/create-order-refund
+
+#### func (*OrdersService) Get
 
 ```go
-func (ors *OrdersService) Get(orID string, opt *OrderOptions) (order *Order, err error)
+func (ors *OrdersService) Get(ctx context.Context, orID string, opts *OrderOptions) (res *Response, order *Order, err error)
 ```
-
 Get retrieve a single order by its ID.
 
 See https://docs.mollie.com/reference/v2/orders-api/get-order
 
-#### func (\*OrdersService) List
+#### func (*OrdersService) List
 
 ```go
-func (ors *OrdersService) List(opt *OrderListOptions) (ordList *OrderList, err error)
+func (ors *OrdersService) List(ctx context.Context, opts *OrderListOptions) (res *Response, ordList *OrderList, err error)
 ```
-
 List is to retrieve all orders.
 
 See https://docs.mollie.com/reference/v2/orders-api/list-orders
 
-#### func (\*OrdersService) ListOrderRefunds
+#### func (*OrdersService) ListOrderRefunds
 
 ```go
-func (ors *OrdersService) ListOrderRefunds(orderID string, opt *OrderListRefundOptions) (orderListRefund OrderListRefund, err error)
+func (ors *OrdersService) ListOrderRefunds(ctx context.Context, orderID string, opts *OrderListRefundOptions) (res *Response, orderListRefund *OrderListRefund, err error)
 ```
+ListOrderRefunds retrieve all order refunds.
 
-ListOrderRefunds retrieve all order refunds. See
-https://docs.mollie.com/reference/v2/orders-api/list-order-refunds
+See https://docs.mollie.com/reference/v2/orders-api/list-order-refunds
 
-#### func (\*OrdersService) Update
+#### func (*OrdersService) Update
 
 ```go
-func (ors *OrdersService) Update(orderID string, ord Order) (order *Order, err error)
+func (ors *OrdersService) Update(ctx context.Context, orderID string, ord Order) (res *Response, order *Order, err error)
 ```
-
 Update is used to update the billing and/or shipping address of an order.
 
 See https://docs.mollie.com/reference/v2/orders-api/update-order
 
-#### func (\*OrdersService) UpdateOrderLine
+#### func (*OrdersService) UpdateOrderLine
 
 ```go
-func (ors *OrdersService) UpdateOrderLine(orderID string, orderLineID string, orderLine OrderLine) (order *Order, err error)
+func (ors *OrdersService) UpdateOrderLine(ctx context.Context, orderID string, orderLineID string, orderLine OrderLine) (res *Response, order *Order, err error)
 ```
-
 UpdateOrderLine can be used to update an order line.
 
 See https://docs.mollie.com/reference/v2/orders-api/update-orderline
@@ -1826,7 +1719,7 @@ type Organization struct {
 }
 ```
 
-Organization describes an organization detail
+Organization describes an organization detail.
 
 #### type OrganizationLinks
 
@@ -1883,30 +1776,27 @@ OrganizationPartnerStatus response descriptor.
 type OrganizationsService service
 ```
 
-OrganizationsService instance operates over organization resources
+OrganizationsService instance operates over organization resources.
 
-#### func (\*OrganizationsService) Get
+#### func (*OrganizationsService) Get
 
 ```go
-func (os *OrganizationsService) Get(id string) (o *Organization, err error)
+func (os *OrganizationsService) Get(ctx context.Context, id string) (res *Response, o *Organization, err error)
 ```
-
 Get retrieve an organization by its id.
 
-#### func (\*OrganizationsService) GetCurrent
+#### func (*OrganizationsService) GetCurrent
 
 ```go
-func (os *OrganizationsService) GetCurrent() (o *Organization, err error)
+func (os *OrganizationsService) GetCurrent(ctx context.Context) (res *Response, o *Organization, err error)
 ```
+GetCurrent retrieve the currently authenticated organization.
 
-GetCurrent retrieve the currently authenticated organization
-
-#### func (\*OrganizationsService) GetPartnerStatus
+#### func (*OrganizationsService) GetPartnerStatus
 
 ```go
-func (os *OrganizationsService) GetPartnerStatus() (ops *OrganizationPartnerStatus, err error)
+func (os *OrganizationsService) GetPartnerStatus(ctx context.Context) (res *Response, ops *OrganizationPartnerStatus, err error)
 ```
-
 GetPartnerStatus retrieves details about the partner status of the currently
 authenticated organization.
 
@@ -1974,23 +1864,21 @@ type PartnerService service
 
 PartnerService operates over the partners API.
 
-#### func (\*PartnerService) Get
+#### func (*PartnerService) Get
 
 ```go
-func (ps *PartnerService) Get(id string, opts *GetPartnerClientOptions) (pc *PartnerClient, err error)
+func (ps *PartnerService) Get(ctx context.Context, id string, opts *GetPartnerClientOptions) (res *Response, pc *PartnerClient, err error)
 ```
-
-Get retrieves a single client by its ID.
+Get retrieves a single client, linked to your partner account, by its ID.
 
 See: https://docs.mollie.com/reference/v2/partners-api/get-client
 
-#### func (\*PartnerService) List
+#### func (*PartnerService) List
 
 ```go
-func (ps *PartnerService) List(opts *ListPartnerClientsOptions) (pc *PartnerClientList, err error)
+func (ps *PartnerService) List(ctx context.Context, opts *ListPartnerClientsOptions) (res *Response, pc *PartnerClientList, err error)
 ```
-
-Get retrieves all clients.
+List retrieves all clients.
 
 See: https://docs.mollie.com/reference/v2/partners-api/list-clients
 
@@ -2009,7 +1897,6 @@ const (
 	PartnerTypeUserAgent  PartnerType = "useragent"
 )
 ```
-
 Available partner types.
 
 #### type Payment
@@ -2121,7 +2008,7 @@ type PaymentDetails struct {
 }
 ```
 
-PaymentDetails contains details for the specified payment method
+PaymentDetails contains details for the specified payment method.
 
 #### type PaymentDetailsAddress
 
@@ -2192,7 +2079,7 @@ See: https://docs.mollie.com/reference/v2/payment-links-api/get-payment-link
 ```go
 type PaymentLinkOptions struct {
 	ProfileID string `url:"profileId,omitempty"`
-	From      string `url:"from,omitemtpy"`
+	From      string `url:"from,omitempty"`
 	Limit     int    `url:"limit,omitempty"`
 }
 ```
@@ -2235,6 +2122,9 @@ type PaymentLinksList struct {
 }
 ```
 
+PaymentLinksList retrieves a list of payment links for the active profile or
+account token owner.
+
 #### type PaymentLinksService
 
 ```go
@@ -2243,33 +2133,30 @@ type PaymentLinksService service
 
 PaymentLinksService operates over the payment link resource.
 
-#### func (\*PaymentLinksService) Create
+#### func (*PaymentLinksService) Create
 
 ```go
-func (pls *PaymentLinksService) Create(p PaymentLink, opts *PaymentLinkOptions) (np *PaymentLink, err error)
+func (pls *PaymentLinksService) Create(ctx context.Context, p PaymentLink, opts *PaymentLinkOptions) (res *Response, np *PaymentLink, err error)
 ```
-
 Create generates payment links that by default, unlike regular payments, do not
 expire.
 
 See: https://docs.mollie.com/reference/v2/payment-links-api/create-payment-link
 
-#### func (\*PaymentLinksService) Get
+#### func (*PaymentLinksService) Get
 
 ```go
-func (pls *PaymentLinksService) Get(id string) (pl *PaymentLink, err error)
+func (pls *PaymentLinksService) Get(ctx context.Context, id string) (res *Response, pl *PaymentLink, err error)
 ```
-
 Get retrieves a single payment link object by its id/token.
 
 See: https://docs.mollie.com/reference/v2/payment-links-api/get-payment-link
 
-#### func (\*PaymentLinksService) List
+#### func (*PaymentLinksService) List
 
 ```go
-func (pls *PaymentLinksService) List(opts *PaymentLinkOptions) (pl *PaymentLinksList, err error)
+func (pls *PaymentLinksService) List(ctx context.Context, opts *PaymentLinkOptions) (res *Response, pl *PaymentLinksList, err error)
 ```
-
 List retrieves all payments links created with the current website profile,
 ordered from newest to oldest.
 
@@ -2318,13 +2205,12 @@ const (
 	Sofort         PaymentMethod = "sofort"
 )
 ```
+Supported payment methods.
 
-Supported payment methods
-
-#### type PaymentMethodInfo
+#### type PaymentMethodDetails
 
 ```go
-type PaymentMethodInfo struct {
+type PaymentMethodDetails struct {
 	Resource      string                  `json:"resource,omitempty"`
 	ID            string                  `json:"id,omitempty"`
 	Description   string                  `json:"description,omitempty"`
@@ -2338,7 +2224,7 @@ type PaymentMethodInfo struct {
 }
 ```
 
-PaymentMethodInfo describes a single method with details.
+PaymentMethodDetails describes a single method with details.
 
 #### type PaymentMethodIssuer
 
@@ -2353,6 +2239,20 @@ type PaymentMethodIssuer struct {
 
 PaymentMethodIssuer available for the payment method (for iDEAL, KBC/CBC payment
 button, gift cards, or meal vouchers).
+
+#### type PaymentMethodOptions
+
+```go
+type PaymentMethodOptions struct {
+	Locale    Locale `url:"locale,omitempty"`
+	Currency  string `url:"currency,omitempty"`
+	ProfileID string `url:"profileId,omitempty"`
+	Include   string `url:"include,omitempty"`
+}
+```
+
+PaymentMethodOptions are applicable query string parameters to get methods from
+mollie's API.
 
 #### type PaymentMethodPricing
 
@@ -2386,8 +2286,79 @@ const (
 	PaymentMethodRejected        PaymentMethodStatus = "pending-rejected"
 )
 ```
+Available payment method statuses.
 
-Available payment method statuses
+#### type PaymentMethodsList
+
+```go
+type PaymentMethodsList struct {
+	Count    int `json:"count,omitempty"`
+	Embedded struct {
+		Methods []*PaymentMethodDetails
+	} `json:"_embedded,omitempty"`
+	Links PaginationLinks `json:"_links,omitempty"`
+}
+```
+
+PaymentMethodsList describes a list of paginated payment methods.
+
+#### type PaymentMethodsListOptions
+
+```go
+type PaymentMethodsListOptions struct {
+	PaymentMethodOptions
+	SequenceType   SequenceType `url:"sequenceType,omitempty"`
+	AmountCurrency string       `url:"amount[currency],omitempty"`
+	AmountValue    string       `url:"amount[value],omitempty"`
+	Resource       string       `url:"resource,omitempty"`
+	BillingCountry string       `url:"billingCountry,omitempty"`
+	IncludeWallets string       `url:"includeWallets,omitempty"`
+}
+```
+
+PaymentMethodsListOptions are applicable query string parameters to list methods
+from mollie's API.
+
+It contains list specific options and embeds GetMethodOptions.
+
+#### type PaymentMethodsService
+
+```go
+type PaymentMethodsService service
+```
+
+PaymentMethodsService operates on methods endpoints.
+
+#### func (*PaymentMethodsService) All
+
+```go
+func (ms *PaymentMethodsService) All(ctx context.Context, options *PaymentMethodsListOptions) (res *Response, pm *PaymentMethodsList, err error)
+```
+All retrieves all the payment methods enabled for your account/organization.
+
+See: https://docs.mollie.com/reference/v2/methods-api/list-all-methods
+
+#### func (*PaymentMethodsService) Get
+
+```go
+func (ms *PaymentMethodsService) Get(ctx context.Context, id PaymentMethod, options *PaymentMethodOptions) (res *Response, pmd *PaymentMethodDetails, err error)
+```
+Get returns information about the payment method specified by id, it also
+receives a pointer to the method options containing applicable query string
+parameters.
+
+See: https://docs.mollie.com/reference/v2/methods-api/get-method
+
+#### func (*PaymentMethodsService) List
+
+```go
+func (ms *PaymentMethodsService) List(ctx context.Context, options *PaymentMethodsListOptions) (res *Response, pm *PaymentMethodsList, err error)
+```
+List retrieves all enabled payment methods.
+
+The results are not paginated.
+
+See: https://docs.mollie.com/reference/v2/methods-api/list-methods
 
 #### type PaymentOptions
 
@@ -2408,52 +2379,47 @@ See: https://docs.mollie.com/reference/v2/payments-api/get-payment
 type PaymentsService service
 ```
 
-PaymentsService instance operates over payment resources
+PaymentsService instance operates over payment resources.
 
-#### func (\*PaymentsService) Cancel
+#### func (*PaymentsService) Cancel
 
 ```go
-func (ps *PaymentsService) Cancel(id string) (p Payment, err error)
+func (ps *PaymentsService) Cancel(ctx context.Context, id string) (res *Response, p *Payment, err error)
 ```
-
 Cancel removes a payment (if possible) from your Mollie account.
 
 See: https://docs.mollie.com/reference/v2/payments-api/cancel-payment
 
-#### func (\*PaymentsService) Create
+#### func (*PaymentsService) Create
 
 ```go
-func (ps *PaymentsService) Create(p Payment, options *PaymentOptions) (np Payment, err error)
+func (ps *PaymentsService) Create(ctx context.Context, p Payment, opts *PaymentOptions) (res *Response, np *Payment, err error)
 ```
-
 Create stores a new payment object attached to your Mollie account.
 
 See: https://docs.mollie.com/reference/v2/payments-api/create-payment#
 
-#### func (\*PaymentsService) Get
+#### func (*PaymentsService) Get
 
 ```go
-func (ps *PaymentsService) Get(id string, options *PaymentOptions) (p Payment, err error)
+func (ps *PaymentsService) Get(ctx context.Context, id string, opts *PaymentOptions) (res *Response, p *Payment, err error)
 ```
-
 Get retrieves a single payment object by its payment token.
 
-#### func (\*PaymentsService) List
+#### func (*PaymentsService) List
 
 ```go
-func (ps *PaymentsService) List(options *ListPaymentOptions) (pl PaymentList, err error)
+func (ps *PaymentsService) List(ctx context.Context, opts *ListPaymentOptions) (res *Response, pl *PaymentList, err error)
 ```
-
 List retrieves a list of payments associated with your account/organization.
 
 See: https://docs.mollie.com/reference/v2/payments-api/list-payments
 
-#### func (\*PaymentsService) Update
+#### func (*PaymentsService) Update
 
 ```go
-func (ps *PaymentsService) Update(id string, up Payment) (p Payment, err error)
+func (ps *PaymentsService) Update(ctx context.Context, id string, up Payment) (res *Response, p *Payment, err error)
 ```
-
 Update can be used to update some details of a created payment.
 
 See: https://docs.mollie.com/reference/v2/payments-api/update-payment#
@@ -2505,7 +2471,6 @@ const (
 	OnboardingWrite    PermissionGrant = "onbording.write"
 )
 ```
-
 Available permission grants.
 
 #### type PermissionLinks
@@ -2542,22 +2507,20 @@ type PermissionsService service
 
 PermissionsService operates over permission resources.
 
-#### func (\*PermissionsService) Get
+#### func (*PermissionsService) Get
 
 ```go
-func (ps *PermissionsService) Get(id string) (p *Permission, err error)
+func (ps *PermissionsService) Get(ctx context.Context, id PermissionGrant) (res *Response, p *Permission, err error)
 ```
-
 Get returns a permission by its id.
 
 See: https://docs.mollie.com/reference/v2/permissions-api/get-permission
 
-#### func (\*PermissionsService) List
+#### func (*PermissionsService) List
 
 ```go
-func (ps *PermissionsService) List() (pl *PermissionsList, err error)
+func (ps *PermissionsService) List(ctx context.Context) (res *Response, pl *PermissionsList, err error)
 ```
-
 List retrieves all permissions available with the current app access token. The
 list is not paginated.
 
@@ -2591,7 +2554,6 @@ const (
 	Surcharge       ProductType = "surcharge"
 )
 ```
-
 Valid product type.
 
 #### type Profile
@@ -2658,7 +2620,7 @@ type ProfileListOptions struct {
 ```
 
 ProfileListOptions are optional query string parameters for the list profiles
-request
+request.
 
 #### type ProfileStatus
 
@@ -2666,7 +2628,7 @@ request
 type ProfileStatus string
 ```
 
-ProfileStatus determines whether the profile is able to receive live payments
+ProfileStatus determines whether the profile is able to receive live payments.
 
 ```go
 const (
@@ -2675,8 +2637,7 @@ const (
 	StatusBlocked    ProfileStatus = "blocked"
 )
 ```
-
-Possible profile statuses
+Possible profile statuses.
 
 #### type ProfilesService
 
@@ -2684,119 +2645,107 @@ Possible profile statuses
 type ProfilesService service
 ```
 
-ProfilesService operates over profile resource
+ProfilesService operates over profile resource.
 
-#### func (\*ProfilesService) Create
+#### func (*ProfilesService) Create
 
 ```go
-func (ps *ProfilesService) Create(np *Profile) (p *Profile, err error)
+func (ps *ProfilesService) Create(ctx context.Context, np *Profile) (res *Response, p *Profile, err error)
 ```
-
 Create stores a new profile in your Mollie account.
 
-#### func (\*ProfilesService) Current
+#### func (*ProfilesService) Current
 
 ```go
-func (ps *ProfilesService) Current() (p *Profile, err error)
+func (ps *ProfilesService) Current(ctx context.Context) (res *Response, p *Profile, err error)
 ```
-
 Current returns the profile belonging to the API key. This method only works
 when using API keys.
 
-#### func (\*ProfilesService) Delete
+#### func (*ProfilesService) Delete
 
 ```go
-func (ps *ProfilesService) Delete(id string) (err error)
+func (ps *ProfilesService) Delete(ctx context.Context, id string) (res *Response, err error)
 ```
-
 Delete enables profile deletions, rendering the profile unavailable for further
 API calls and transactions.
 
-#### func (\*ProfilesService) DisableGiftCardIssuer
+#### func (*ProfilesService) DisableGiftCardIssuer
 
 ```go
-func (ps *ProfilesService) DisableGiftCardIssuer(profileID string, issuer GiftCardIssuer) (err error)
+func (ps *ProfilesService) DisableGiftCardIssuer(ctx context.Context, profileID string, issuer GiftCardIssuer) (res *Response, err error)
 ```
-
 DisableGiftCardIssuer deactivates the requested giftcard issuer for the provided
 profile id.
 
 See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
 
-#### func (\*ProfilesService) DisableGiftCardIssuerForCurrent
+#### func (*ProfilesService) DisableGiftCardIssuerForCurrent
 
 ```go
-func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(issuer GiftCardIssuer) (err error)
+func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(ctx context.Context, issuer GiftCardIssuer) (res *Response, err error)
 ```
-
-DisableGiftCardIssuerForCurrent deactivates the specified issuer for the curent
+DisableGiftCardIssuerForCurrent deactivates the specified issuer for the current
 profile (token owner).
 
 See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
 
-#### func (\*ProfilesService) DisablePaymentMethod
+#### func (*ProfilesService) DisablePaymentMethod
 
 ```go
-func (ps *ProfilesService) DisablePaymentMethod(id string, pm PaymentMethod) (err error)
+func (ps *ProfilesService) DisablePaymentMethod(ctx context.Context, id string, pm PaymentMethod) (res *Response, err error)
 ```
-
 DisablePaymentMethod disables a payment method on a specific or authenticated
 profile. If you're using API tokens for authentication, pass "me" as id.
 
-#### func (\*ProfilesService) EnableGiftCardIssuer
+#### func (*ProfilesService) EnableGiftCardIssuer
 
 ```go
-func (ps *ProfilesService) EnableGiftCardIssuer(profileID string, issuer GiftCardIssuer) (gc *GiftCardEnabled, err error)
+func (ps *ProfilesService) EnableGiftCardIssuer(ctx context.Context, profileID string, issuer GiftCardIssuer) (res *Response, gc *GiftCardEnabled, err error)
 ```
-
 EnableGiftCardIssuer activates the requested giftcard issuer for the provided
 profile id.
 
 See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
 
-#### func (\*ProfilesService) EnableGiftCardIssuerForCurrent
+#### func (*ProfilesService) EnableGiftCardIssuerForCurrent
 
 ```go
-func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(issuer GiftCardIssuer) (gc *GiftCardEnabled, err error)
+func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(ctx context.Context, issuer GiftCardIssuer) (res *Response, gc *GiftCardEnabled, err error)
 ```
-
-EnableGiftCardIssuerForCurrent activates the specified issuer for the curent
+EnableGiftCardIssuerForCurrent activates the specified issuer for the current
 profile (token owner).
 
 See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
 
-#### func (\*ProfilesService) EnablePaymentMethod
+#### func (*ProfilesService) EnablePaymentMethod
 
 ```go
-func (ps *ProfilesService) EnablePaymentMethod(id string, pm PaymentMethod) (pmi *PaymentMethodInfo, err error)
+func (ps *ProfilesService) EnablePaymentMethod(ctx context.Context, id string, pm PaymentMethod) (res *Response, pmi *PaymentMethodDetails, err error)
 ```
-
 EnablePaymentMethod enables a payment method on a specific or authenticated
 profile. If you're using API tokens for authentication, pass "me" as id.
 
-#### func (\*ProfilesService) Get
+#### func (*ProfilesService) Get
 
 ```go
-func (ps *ProfilesService) Get(id string) (p *Profile, err error)
+func (ps *ProfilesService) Get(ctx context.Context, id string) (res *Response, p *Profile, err error)
 ```
-
 Get retrieves the a profile by ID.
 
-#### func (\*ProfilesService) List
+#### func (*ProfilesService) List
 
 ```go
-func (ps *ProfilesService) List(options *ProfileListOptions) (pl *ProfileList, err error)
+func (ps *ProfilesService) List(ctx context.Context, opts *ProfileListOptions) (res *Response, pl *ProfileList, err error)
 ```
+List returns all the profiles for the authenticated account.
 
-List returns all the profiles for the authenticated account
-
-#### func (\*ProfilesService) Update
+#### func (*ProfilesService) Update
 
 ```go
-func (ps *ProfilesService) Update(id string, up *Profile) (p *Profile, err error)
+func (ps *ProfilesService) Update(ctx context.Context, id string, up *Profile) (res *Response, p *Profile, err error)
 ```
-
-Update allows you to perform mutations on a profile
+Update allows you to perform mutations on a profile.
 
 #### type QRCode
 
@@ -2902,7 +2851,6 @@ const (
 	Failed     RefundStatus = "failed"
 )
 ```
-
 Valid refund status.
 
 #### type RefundsService
@@ -2913,56 +2861,52 @@ type RefundsService service
 
 RefundsService instance operates over refund resources.
 
-#### func (\*RefundsService) Cancel
+#### func (*RefundsService) Cancel
 
 ```go
-func (rs *RefundsService) Cancel(paymentID, refundID string, options *RefundOptions) (err error)
+func (rs *RefundsService) Cancel(ctx context.Context, paymentID, refundID string) (res *Response, err error)
 ```
-
 Cancel try to cancel the refund request. The refund can only be canceled while
 the refund’s status is either queued or pending. See
 https://docs.mollie.com/reference/v2/refunds-api/cancel-refund
 
-#### func (\*RefundsService) Create
+#### func (*RefundsService) Create
 
 ```go
-func (rs *RefundsService) Create(paymentID string, re Refund, options *RefundOptions) (rf Refund, err error)
+func (rs *RefundsService) Create(ctx context.Context, paymentID string, re Refund, options *RefundOptions) (res *Response, rf *Refund, err error)
 ```
-
 Create a refund payment request.
 
 See https://docs.mollie.com/reference/v2/refunds-api/create-refund.
 
-#### func (\*RefundsService) Get
+#### func (*RefundsService) Get
 
 ```go
-func (rs *RefundsService) Get(paymentID, refundID string, options *RefundOptions) (refund Refund, err error)
+func (rs *RefundsService) Get(ctx context.Context, paymentID, refundID string, opts *RefundOptions) (res *Response, refund *Refund, err error)
 ```
-
 Get retrieve a single refund by its ID.
 
 If you do not know the original payment’s ID, you can use the List payment
 refunds endpoint.
 
-#### func (\*RefundsService) ListRefund
+#### func (*RefundsService) ListRefund
 
 ```go
-func (rs *RefundsService) ListRefund(options *ListRefundOptions) (rl *RefundList, err error)
+func (rs *RefundsService) ListRefund(ctx context.Context, opts *ListRefundOptions) (res *Response, rl *RefundList, err error)
 ```
-
 ListRefund calls the top level https://api.mollie.com/v2/refunds.
 
 See https://docs.mollie.com/reference/v2/refunds-api/list-refunds.
 
-#### func (\*RefundsService) ListRefundPayment
+#### func (*RefundsService) ListRefundPayment
 
 ```go
-func (rs *RefundsService) ListRefundPayment(paymentID string, options *ListRefundOptions) (rl *RefundList, err error)
+func (rs *RefundsService) ListRefundPayment(ctx context.Context, paymentID string, opts *ListRefundOptions) (res *Response, rl *RefundList, err error)
 ```
-
 ListRefundPayment calls the payment-specific
-https://api.mollie.com/v2/payments/*paymentId*/refunds. Only refunds for that
-specific payment are returned. See
+https://api.mollie.com/v2/payments/*paymentId*/refunds.
+
+Only refunds for that specific payment are returned. See:
 https://docs.mollie.com/reference/v2/refunds-api/list-refunds
 
 #### type Response
@@ -2992,8 +2936,7 @@ const (
 	RecurringSequence SequenceType = "recurring"
 )
 ```
-
-Valid sequence types
+Valid sequence types.
 
 #### type Settlement
 
@@ -3013,7 +2956,7 @@ type Settlement struct {
 ```
 
 Settlement contains successful payments, together with refunds, captures and
-chargebacks into settlements
+chargebacks into settlements.
 
 #### type SettlementCosts
 
@@ -3029,7 +2972,7 @@ type SettlementCosts struct {
 }
 ```
 
-SettlementCosts contains information about costs related to a settlement
+SettlementCosts contains information about costs related to a settlement.
 
 #### type SettlementLinks
 
@@ -3045,7 +2988,8 @@ type SettlementLinks struct {
 }
 ```
 
-SettlementLinks is an object with several URL objects relevant to the settlement
+SettlementLinks is an object with several URL objects relevant to the
+settlement.
 
 #### type SettlementObject
 
@@ -3053,7 +2997,7 @@ SettlementLinks is an object with several URL objects relevant to the settlement
 type SettlementObject map[string]map[string]SettlementPeriod
 ```
 
-SettlementObject nests as describes for settlement periods
+SettlementObject nests as describes for settlement periods.
 
 #### type SettlementPeriod
 
@@ -3064,7 +3008,7 @@ type SettlementPeriod struct {
 }
 ```
 
-SettlementPeriod describe the settlement by month in full detail
+SettlementPeriod describe the settlement by month in full detail.
 
 #### type SettlementRevenue
 
@@ -3080,7 +3024,7 @@ type SettlementRevenue struct {
 ```
 
 SettlementRevenue objects contain the total revenue for each payment method
-during this period
+during this period.
 
 #### type SettlementStatus
 
@@ -3088,7 +3032,7 @@ during this period
 type SettlementStatus string
 ```
 
-SettlementStatus describes the status of the settlement
+SettlementStatus describes the status of the settlement.
 
 ```go
 const (
@@ -3098,8 +3042,7 @@ const (
 	SettlementStatusFailed  SettlementStatus = "failed"
 )
 ```
-
-Available settlement statuses
+Available settlement statuses.
 
 #### type SettlementsList
 
@@ -3133,89 +3076,81 @@ SettlementsListOptions contains query parameters for settlement lists.
 type SettlementsService service
 ```
 
-SettlementsService operates over settlements resource
+SettlementsService operates over settlements resource.
 
-#### func (\*SettlementsService) Get
+#### func (*SettlementsService) Get
 
 ```go
-func (ss *SettlementsService) Get(id string) (s *Settlement, err error)
+func (ss *SettlementsService) Get(ctx context.Context, id string) (res *Response, s *Settlement, err error)
 ```
-
 Get returns a settlement by its id or the bank reference id
 
 See: https://docs.mollie.com/reference/v2/settlements-api/get-settlement
 
-#### func (\*SettlementsService) GetCaptures
+#### func (*SettlementsService) GetCaptures
 
 ```go
-func (ss *SettlementsService) GetCaptures(id string, slo *SettlementsListOptions) (cl *CapturesList, err error)
+func (ss *SettlementsService) GetCaptures(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, cl *CapturesList, err error)
 ```
-
 GetCaptures retrieves all captures included in a settlement.
 
 See:
 https://docs.mollie.com/reference/v2/settlements-api/list-settlement-captures
 
-#### func (\*SettlementsService) GetChargebacks
+#### func (*SettlementsService) GetChargebacks
 
 ```go
-func (ss *SettlementsService) GetChargebacks(id string, slo *SettlementsListOptions) (cl *ChargebackList, err error)
+func (ss *SettlementsService) GetChargebacks(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, cl *ChargebacksList, err error)
 ```
-
 GetChargebacks retrieves all chargebacks included in a settlement.
 
 See:
 https://docs.mollie.com/reference/v2/settlements-api/list-settlement-chargebacks
 
-#### func (\*SettlementsService) GetPayments
+#### func (*SettlementsService) GetPayments
 
 ```go
-func (ss *SettlementsService) GetPayments(id string, slo *SettlementsListOptions) (pl *PaymentList, err error)
+func (ss *SettlementsService) GetPayments(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, pl *PaymentList, err error)
 ```
-
 GetPayments retrieves all payments included in a settlement.
 
 See:
 https://docs.mollie.com/reference/v2/settlements-api/list-settlement-payments
 
-#### func (\*SettlementsService) GetRefunds
+#### func (*SettlementsService) GetRefunds
 
 ```go
-func (ss *SettlementsService) GetRefunds(id string, slo *SettlementsListOptions) (rl *RefundList, err error)
+func (ss *SettlementsService) GetRefunds(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, rl *RefundList, err error)
 ```
-
 GetRefunds retrieves all refunds included in a settlement.
 
 See:
 https://docs.mollie.com/reference/v2/settlements-api/list-settlement-refunds
 
-#### func (\*SettlementsService) List
+#### func (*SettlementsService) List
 
 ```go
-func (ss *SettlementsService) List(slo *SettlementsListOptions) (sl *SettlementsList, err error)
+func (ss *SettlementsService) List(ctx context.Context, slo *SettlementsListOptions) (res *Response, sl *SettlementsList, err error)
 ```
-
 List retrieves all settlements, ordered from new to old
 
 See: https://docs.mollie.com/reference/v2/settlements-api/list-settlements
 
-#### func (\*SettlementsService) Next
+#### func (*SettlementsService) Next
 
 ```go
-func (ss *SettlementsService) Next() (s *Settlement, err error)
+func (ss *SettlementsService) Next(ctx context.Context) (res *Response, s *Settlement, err error)
 ```
-
 Next retrieves the details of the current settlement that has not yet been paid
 out.
 
 See: https://docs.mollie.com/reference/v2/settlements-api/get-next-settlement
 
-#### func (\*SettlementsService) Open
+#### func (*SettlementsService) Open
 
 ```go
-func (ss *SettlementsService) Open() (s *Settlement, err error)
+func (ss *SettlementsService) Open(ctx context.Context) (res *Response, s *Settlement, err error)
 ```
-
 Open retrieves the details of the open balance of the organization. This will
 return a settlement object representing your organization’s balance.
 
@@ -3287,42 +3222,38 @@ type ShipmentsService service
 
 ShipmentsService operates on shipments endpoints.
 
-#### func (\*ShipmentsService) Create
+#### func (*ShipmentsService) Create
 
 ```go
-func (ss *ShipmentsService) Create(oID string, cs CreateShipmentRequest) (s *Shipment, err error)
+func (ss *ShipmentsService) Create(ctx context.Context, oID string, cs CreateShipmentRequest) (res *Response, s *Shipment, err error)
 ```
-
 Create can be used to ship order lines.
 
 See: https://docs.mollie.com/reference/v2/shipments-api/create-shipment
 
-#### func (\*ShipmentsService) Get
+#### func (*ShipmentsService) Get
 
 ```go
-func (ss *ShipmentsService) Get(oID string, sID string) (s *Shipment, err error)
+func (ss *ShipmentsService) Get(ctx context.Context, oID string, sID string) (res *Response, s *Shipment, err error)
 ```
-
 Get retrieves a single shipment and the order lines shipped by a shipment’s ID.
 
 See: https://docs.mollie.com/reference/v2/shipments-api/get-shipment#
 
-#### func (\*ShipmentsService) List
+#### func (*ShipmentsService) List
 
 ```go
-func (ss *ShipmentsService) List(oID string) (sl *ShipmentsList, err error)
+func (ss *ShipmentsService) List(ctx context.Context, oID string) (res *Response, sl *ShipmentsList, err error)
 ```
-
 List retrieves all shipments for an order.
 
 See: https://docs.mollie.com/reference/v2/shipments-api/list-shipments
 
-#### func (\*ShipmentsService) Update
+#### func (*ShipmentsService) Update
 
 ```go
-func (ss *ShipmentsService) Update(oID string, sID string, st ShipmentTracking) (s *Shipment, err error)
+func (ss *ShipmentsService) Update(ctx context.Context, oID string, sID string, st ShipmentTracking) (res *Response, s *Shipment, err error)
 ```
-
 Update can be used to update the tracking information of a shipment
 
 See: https://docs.mollie.com/reference/v2/shipments-api/update-shipment
@@ -3337,21 +3268,19 @@ type ShortDate struct {
 
 ShortDate is a string representing a date in YYYY-MM-DD format.
 
-#### func (\*ShortDate) MarshalJSON
+#### func (*ShortDate) MarshalJSON
 
 ```go
 func (d *ShortDate) MarshalJSON() ([]byte, error)
 ```
-
 MarshalJSON overrides the default marshal action for the Date struct. Returns
 date as YYYY-MM-DD formatted string.
 
-#### func (\*ShortDate) UnmarshalJSON
+#### func (*ShortDate) UnmarshalJSON
 
 ```go
 func (d *ShortDate) UnmarshalJSON(b []byte) error
 ```
-
 UnmarshalJSON overrides the default unmarshal action for the Date struct, as we
 need links to be pointers to the time.Time struct.
 
@@ -3382,7 +3311,7 @@ type Subscription struct {
 }
 ```
 
-Subscription contains information about a customer subscription
+Subscription contains information about a customer subscription.
 
 #### type SubscriptionLinks
 
@@ -3395,7 +3324,7 @@ type SubscriptionLinks struct {
 }
 ```
 
-SubscriptionLinks contains several URL objects relevant to the subscription
+SubscriptionLinks contains several URL objects relevant to the subscription.
 
 #### type SubscriptionList
 
@@ -3409,7 +3338,7 @@ type SubscriptionList struct {
 }
 ```
 
-SubscriptionList describes the response for subscription list endpoints
+SubscriptionList describes the response for subscription list endpoints.
 
 #### type SubscriptionListOptions
 
@@ -3422,7 +3351,7 @@ type SubscriptionListOptions struct {
 ```
 
 SubscriptionListOptions holds query string parameters valid for subscription
-lists
+lists.
 
 #### type SubscriptionStatus
 
@@ -3430,7 +3359,7 @@ lists
 type SubscriptionStatus string
 ```
 
-SubscriptionStatus contains references to valid subscription statuses
+SubscriptionStatus contains references to valid subscription statuses.
 
 ```go
 const (
@@ -3441,8 +3370,7 @@ const (
 	SubscriptionStatusCompleted SubscriptionStatus = "completed"
 )
 ```
-
-Available subscription statuses
+Available subscription statuses.
 
 #### type SubscriptionsService
 
@@ -3450,14 +3378,13 @@ Available subscription statuses
 type SubscriptionsService service
 ```
 
-SubscriptionsService operates over subscriptions resource
+SubscriptionsService operates over subscriptions resource.
 
-#### func (\*SubscriptionsService) All
+#### func (*SubscriptionsService) All
 
 ```go
-func (ss *SubscriptionsService) All(options *SubscriptionListOptions) (sl *SubscriptionList, err error)
+func (ss *SubscriptionsService) All(ctx context.Context, opts *SubscriptionListOptions) (res *Response, sl *SubscriptionList, err error)
 ```
-
 All retrieves all subscriptions, ordered from newest to oldest. By using an API
 key all the subscriptions created with the current website profile will be
 returned. In the case of an OAuth Access Token relies the website profile on the
@@ -3466,63 +3393,57 @@ profileId field
 See:
 https://docs.mollie.com/reference/v2/subscriptions-api/list-all-subscriptions
 
-#### func (\*SubscriptionsService) Create
+#### func (*SubscriptionsService) Create
 
 ```go
-func (ss *SubscriptionsService) Create(cID string, sc *Subscription) (s *Subscription, err error)
+func (ss *SubscriptionsService) Create(ctx context.Context, cID string, sc *Subscription) (res *Response, s *Subscription, err error)
 ```
-
 Create stores a new subscription for a given customer
 
 See: https://docs.mollie.com/reference/v2/subscriptions-api/create-subscription
 
-#### func (\*SubscriptionsService) Delete
+#### func (*SubscriptionsService) Delete
 
 ```go
-func (ss *SubscriptionsService) Delete(cID, sID string) (s *Subscription, err error)
+func (ss *SubscriptionsService) Delete(ctx context.Context, cID, sID string) (res *Response, s *Subscription, err error)
 ```
-
 Delete cancels a subscription
 
 See: https://docs.mollie.com/reference/v2/subscriptions-api/cancel-subscription
 
-#### func (\*SubscriptionsService) Get
+#### func (*SubscriptionsService) Get
 
 ```go
-func (ss *SubscriptionsService) Get(cID, sID string) (s *Subscription, err error)
+func (ss *SubscriptionsService) Get(ctx context.Context, cID, sID string) (res *Response, s *Subscription, err error)
 ```
-
 Get retrieves a customer's subscription
 
 See: https://docs.mollie.com/reference/v2/subscriptions-api/get-subscription
 
-#### func (\*SubscriptionsService) GetPayments
+#### func (*SubscriptionsService) GetPayments
 
 ```go
-func (ss *SubscriptionsService) GetPayments(cID, sID string, options *SubscriptionListOptions) (sl *PaymentList, err error)
+func (ss *SubscriptionsService) GetPayments(ctx context.Context, cID, sID string, opts *SubscriptionListOptions) (res *Response, sl *PaymentList, err error)
 ```
-
 GetPayments retrieves all payments of a specific subscriptions of a customer
 
 See:
 https://docs.mollie.com/reference/v2/subscriptions-api/list-subscriptions-payments
 
-#### func (\*SubscriptionsService) List
+#### func (*SubscriptionsService) List
 
 ```go
-func (ss *SubscriptionsService) List(cID string, options *SubscriptionListOptions) (sl *SubscriptionList, err error)
+func (ss *SubscriptionsService) List(ctx context.Context, cID string, opts *SubscriptionListOptions) (res *Response, sl *SubscriptionList, err error)
 ```
-
 List retrieves all subscriptions of a customer
 
 See: https://docs.mollie.com/reference/v2/subscriptions-api/list-subscriptions
 
-#### func (\*SubscriptionsService) Update
+#### func (*SubscriptionsService) Update
 
 ```go
-func (ss *SubscriptionsService) Update(cID, sID string, sc *Subscription) (s *Subscription, err error)
+func (ss *SubscriptionsService) Update(ctx context.Context, cID, sID string, sc *Subscription) (res *Response, s *Subscription, err error)
 ```
-
 Update changes fields on a subscription object
 
 See: https://docs.mollie.com/reference/v2/subscriptions-api/update-subscription

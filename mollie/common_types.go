@@ -2,6 +2,7 @@ package mollie
 
 import (
 	"encoding/json"
+	"fmt"
 	"strings"
 	"time"
 )
@@ -36,7 +37,12 @@ type ShortDate struct {
 // MarshalJSON overrides the default marshal action
 // for the Date struct. Returns date as YYYY-MM-DD formatted string.
 func (d *ShortDate) MarshalJSON() ([]byte, error) {
-	return json.Marshal(d.Time.Format("2006-01-02"))
+	bts, err := json.Marshal(d.Time.Format("2006-01-02"))
+	if err != nil {
+		return nil, fmt.Errorf("json_marshall_error: %w", err)
+	}
+
+	return bts, nil
 }
 
 // UnmarshalJSON overrides the default unmarshal action
@@ -44,18 +50,21 @@ func (d *ShortDate) MarshalJSON() ([]byte, error) {
 func (d *ShortDate) UnmarshalJSON(b []byte) error {
 	s := string(b)
 	s = strings.Trim(s, "\"")
-	t, err := time.Parse("2006-01-02", s)
+	date, err := time.Parse("2006-01-02", s)
+
 	if err != nil {
-		return err
+		return fmt.Errorf("time_parse_error: %w", err)
 	}
-	d.Time = t
+
+	d.Time = date
+
 	return nil
 }
 
 // Locale represents a country and language in ISO-15897 format.
 type Locale string
 
-// Mollie supported locales
+// Mollie supported locales.
 const (
 	English       Locale = "en_US"
 	Dutch         Locale = "nl_NL"
@@ -104,10 +113,10 @@ type PaginationLinks struct {
 	Documentation URL `json:"documentation,omitempty"`
 }
 
-// CategoryCode specifies an industry or category
+// CategoryCode specifies an industry or category.
 type CategoryCode uint
 
-// Available category codes
+// Available category codes.
 const (
 	BookMagazinesAndNewspapers          CategoryCode = 5192
 	GeneralMerchandise                  CategoryCode = 5399
@@ -135,7 +144,7 @@ const (
 // Mode contains information about the creation environment.
 type Mode string
 
-// Valid modes
+// Valid modes.
 const (
 	LiveMode Mode = "live"
 	TestMode Mode = "test"
@@ -156,4 +165,11 @@ const (
 type Rate struct {
 	Fixed    *Amount `json:"fixed,omitempty"`
 	Variable string  `json:"variable,omitempty"`
+}
+
+// Image describes a generic image resource retrieved by Mollie.
+type Image struct {
+	Size1x string `json:"size1X,omitempty"`
+	Size2X string `json:"size2X,omitempty"`
+	Svg    string `json:"svg,omitempty"`
 }

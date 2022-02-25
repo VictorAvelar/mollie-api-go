@@ -1,195 +1,441 @@
 package mollie
 
 import (
+	"context"
 	"fmt"
 	"net/http"
-	"net/url"
-	"strings"
 	"testing"
 
-	"github.com/VictorAvelar/mollie-api-go/v2/testdata"
+	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestMandatesService_Get(t *testing.T) {
-	setup()
-	defer teardown()
+type mandateServiceSuite struct{ suite.Suite }
 
-	mandateID := "mdt_h3gAaD5zP"
-	customerID := "cst_4qqhO89gsT"
-	tkn := "token_X12b31ggg23"
+func (ms *mandateServiceSuite) SetupSuite() { setEnv() }
 
-	_ = tClient.WithAuthenticationValue(tkn)
+func (ms *mandateServiceSuite) TearDownSuite() { unsetEnv() }
 
-	tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/mandates/%s", customerID, mandateID), func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer "+tkn)
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.GetMandateResponse))
-	})
-
-	res, err := tClient.Mandates.Get(customerID, mandateID)
-
-	if err != nil {
-		t.Fatal(err)
+func (ms *mandateServiceSuite) TestMandatesService_Get() {
+	type args struct {
+		ctx      context.Context
+		mandate  string
+		customer string
 	}
 
-	if res.ID != mandateID {
-		t.Errorf("mismatching mandate ID retrieved, want %s got %s", mandateID, res.ID)
-	}
-}
-
-func TestMandatesService_Create(t *testing.T) {
-	setup()
-	defer teardown()
-
-	customerID := "cst_4qqhO89gsT"
-	tkn := "token_X12b31ggg23"
-
-	_ = tClient.WithAuthenticationValue(tkn)
-	tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/mandates", customerID), func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer "+tkn)
-		testMethod(t, r, "POST")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusCreated)
-		_, _ = w.Write([]byte(testdata.CreateMandateResponse))
-	})
-
-	res, err := tClient.Mandates.Create(customerID, Mandate{})
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if res.ID != "mdt_h3gAaD5zP" {
-		t.Errorf("mismatching mandate ID, want %s got %s", "mdt_h3gAaD5zP", res.ID)
-	}
-}
-
-func TestMandatesService_Revoke(t *testing.T) {
-	setup()
-	defer teardown()
-
-	mandateID := "mdt_h3gAaD5zP"
-	customerID := "cst_4qqhO89gsT"
-	tkn := "token_X12b31ggg23"
-
-	_ = tClient.WithAuthenticationValue(tkn)
-	tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/mandates/%s", customerID, mandateID), func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer "+tkn)
-		testMethod(t, r, "DELETE")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	})
-
-	err := tClient.Mandates.Revoke(customerID, mandateID)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-}
-
-func TestMandatesService_List(t *testing.T) {
-	setup()
-	defer teardown()
-
-	customerID := "cst_4qqhO89gsT"
-	tkn := "token_X12b31ggg23"
-
-	_ = tClient.WithAuthenticationValue(tkn)
-	tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/mandates", customerID), func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, AuthHeader, "Bearer "+tkn)
-		testMethod(t, r, "GET")
-		if _, ok := r.Header[AuthHeader]; !ok {
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(testdata.ListMandatesResponse))
-	})
-
-	res, err := tClient.Mandates.List(customerID, &ListMandatesOptions{From: "mdt_h3gAaD5zP"})
-	if err != nil {
-		t.Fatal(err)
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"get mandates works as expected.",
+			args{
+				context.Background(),
+				"mdt_h3gAaD5zP",
+				"cst_4qqhO89gsT",
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ms.T(), r, "GET")
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetMandateResponse))
+			},
+		},
+		{
+			"get mandate, an error is returned from the server",
+			args{
+				context.Background(),
+				"mdt_h3gAaD5zP",
+				"cst_4qqhO89gsT",
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"get mandate, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"mdt_h3gAaD5zP",
+				"cst_4qqhO89gsT",
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"get mandate, invalid url when building request",
+			args{
+				context.Background(),
+				"mdt_h3gAaD5zP",
+				"cst_4qqhO89gsT",
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
 	}
 
-	if res.Count != 2 {
-		t.Errorf("unexpected response size, want 2 got %d", res.Count)
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		ms.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(
+				fmt.Sprintf(
+					"/v2/customers/%s/mandates/%s",
+					c.args.customer,
+					c.args.mandate,
+				),
+				c.handler,
+			)
+
+			res, m, err := tClient.Mandates.Get(c.args.ctx, c.args.customer, c.args.mandate)
+			if c.wantErr {
+				ms.NotNil(err)
+				ms.EqualError(err, c.err.Error())
+			} else {
+				ms.Nil(err)
+				ms.IsType(&Mandate{}, m)
+				ms.Same(c.args.ctx, res.Request.Context())
+				ms.IsType(&http.Response{}, res.Response)
+			}
+		})
 	}
 }
 
-func TestMandatesService_EncodingResponseErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	customerID := "cst_4qqhO89gsT"
-	tkn := "token_X12b31ggg23"
+func (ms *mandateServiceSuite) TestMandatesService_Create() {
+	type args struct {
+		ctx      context.Context
+		mandate  Mandate
+		customer string
+	}
 
-	_ = tClient.WithAuthenticationValue(tkn)
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"create mandates works as expected.",
+			args{
+				context.Background(),
+				Mandate{
+					Method: PayPal,
+				},
+				"cst_4qqhO89gsT",
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ms.T(), r, "POST")
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				w.WriteHeader(http.StatusCreated)
+				_, _ = w.Write([]byte(testdata.CreateMandateResponse))
+			},
+		},
+		{
+			"create mandate, an error is returned from the server",
+			args{
+				context.Background(),
+				Mandate{
+					Method: PayPal,
+				},
+				"cst_4qqhO89gsT",
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"create mandate, an error occurs when parsing json",
+			args{
+				context.Background(),
+				Mandate{
+					Method: PayPal,
+				},
+				"cst_4qqhO89gsT",
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"create mandate, invalid url when building request",
+			args{
+				context.Background(),
+				Mandate{
+					Method: PayPal,
+				},
+				"cst_4qqhO89gsT",
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
 
-	tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/mandates/", customerID), encodingHandler)
+	for _, c := range cases {
+		setup()
+		defer teardown()
 
-	tests := forceMandatesErrors(false)
+		ms.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(
+				fmt.Sprintf(
+					"/v2/customers/%s/mandates",
+					c.args.customer,
+				),
+				c.handler,
+			)
 
-	for _, tt := range tests {
-		if tt == nil {
-			t.Errorf("got nil when expecting an error: %e", tt)
-		}
+			res, m, err := tClient.Mandates.Create(c.args.ctx, c.args.customer, c.args.mandate)
+			if c.wantErr {
+				ms.NotNil(err)
+				ms.EqualError(err, c.err.Error())
+			} else {
+				ms.Nil(err)
+				ms.IsType(&Mandate{}, m)
+				ms.Same(c.args.ctx, res.Request.Context())
+				ms.IsType(&http.Response{}, res.Response)
+			}
+		})
 	}
 }
 
-func TestMandatesService_NewHttpRequestErrorHandler(t *testing.T) {
-	setup()
-	defer teardown()
+func (ms *mandateServiceSuite) TestMandatesService_Revoke() {
+	type args struct {
+		ctx      context.Context
+		mandate  string
+		customer string
+	}
 
-	tMux.HandleFunc("/v2/customers/cst_4qqhO89gsT/mandates/", errorHandler)
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"revoke mandates works as expected.",
+			args{
+				context.Background(),
+				"mdt_h3gAaD5zP",
+				"cst_4qqhO89gsT",
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ms.T(), r, "DELETE")
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
 
-	tests := forceMandatesErrors(true)
+				w.WriteHeader(http.StatusNoContent)
+			},
+		},
+		{
+			"revoke mandate, an error is returned from the server",
+			args{
+				context.Background(),
+				"mdt_h3gAaD5zP",
+				"cst_4qqhO89gsT",
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"revoke mandate, invalid url when building request",
+			args{
+				context.Background(),
+				"mdt_h3gAaD5zP",
+				"cst_4qqhO89gsT",
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
 
-	for _, tt := range tests {
-		if !strings.Contains(tt.Error(), "Internal Server Error") {
-			t.Error(tt)
-		}
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		ms.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(
+				fmt.Sprintf(
+					"/v2/customers/%s/mandates/%s",
+					c.args.customer,
+					c.args.mandate,
+				),
+				c.handler,
+			)
+
+			res, err := tClient.Mandates.Revoke(c.args.ctx, c.args.customer, c.args.mandate)
+			if c.wantErr {
+				ms.NotNil(err)
+				ms.EqualError(err, c.err.Error())
+			} else {
+				ms.Nil(err)
+				ms.Same(c.args.ctx, res.Request.Context())
+				ms.IsType(&http.Response{}, res.Response)
+			}
+		})
 	}
 }
 
-func TestMandatesService_NewHTTPApiRequestErrors(t *testing.T) {
-	setup()
-	defer teardown()
-	u, _ := url.Parse(tServer.URL)
-	tClient.BaseURL = u
+func (ms *mandateServiceSuite) TestMandatesService_List() {
+	type args struct {
+		ctx      context.Context
+		options  *MandatesListOptions
+		customer string
+	}
 
-	tMux.HandleFunc("/v2/customers/cst_4qqhO89gsT/mandates/", errorHandler)
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"list mandates works as expected.",
+			args{
+				context.Background(),
+				nil,
+				"cst_4qqhO89gsT",
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ms.T(), r, "GET")
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetMandateResponse))
+			},
+		},
+		{
+			"list mandates with options works as expected.",
+			args{
+				context.Background(),
+				&MandatesListOptions{
+					Limit: 10,
+				},
+				"cst_4qqhO89gsT",
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(ms.T(), r, "GET")
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.GetMandateResponse))
+			},
+		},
+		{
+			"list mandates, an error is returned from the server",
+			args{
+				context.Background(),
+				nil,
+				"cst_4qqhO89gsT",
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"list mandates, an error occurs when parsing json",
+			args{
+				context.Background(),
+				nil,
+				"cst_4qqhO89gsT",
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"list mandates, invalid url when building request",
+			args{
+				context.Background(),
+				nil,
+				"cst_4qqhO89gsT",
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
 
-	tests := forceMandatesErrors(true)
+	for _, c := range cases {
+		setup()
+		defer teardown()
 
-	for _, tt := range tests {
-		if tt != errBadBaseURL {
-			t.Error(tt)
-		}
+		ms.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(
+				fmt.Sprintf(
+					"/v2/customers/%s/mandates",
+					c.args.customer,
+				),
+				c.handler,
+			)
+
+			res, m, err := tClient.Mandates.List(c.args.ctx, c.args.customer, c.args.options)
+			if c.wantErr {
+				ms.NotNil(err)
+				ms.EqualError(err, c.err.Error())
+			} else {
+				ms.Nil(err)
+				ms.IsType(&MandatesList{}, m)
+				ms.Same(c.args.ctx, res.Request.Context())
+				ms.IsType(&http.Response{}, res.Response)
+			}
+		})
 	}
 }
 
-func forceMandatesErrors(del bool) []error {
-	mandateID := "mdt_h3gAaD5zP"
-	customerID := "cst_4qqhO89gsT"
-	_, gerr := tClient.Mandates.Get(customerID, mandateID)
-	_, cerr := tClient.Mandates.Create(customerID, Mandate{})
-	_, lerr := tClient.Mandates.List(customerID, nil)
-
-	tests := []error{gerr, cerr, lerr}
-
-	if del {
-		rerr := tClient.Mandates.Revoke(customerID, mandateID)
-		tests = append(tests, rerr)
-	}
-
-	return tests
+func TestMandatesService(t *testing.T) {
+	suite.Run(t, new(mandateServiceSuite))
 }

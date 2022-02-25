@@ -1,15 +1,15 @@
 package mollie
 
 import (
+	"context"
 	"encoding/json"
-	"net/http"
 )
 
 // MiscellaneousService operates over the resources described
-// in Mollie's miscellaneous API endpoints section
+// in Mollie's miscellaneous API endpoints section.
 type MiscellaneousService service
 
-// ApplePaymentSession contains information about an Apple pay session
+// ApplePaymentSession contains information about an Apple pay session.
 type ApplePaymentSession struct {
 	EpochTimestamp    int    `json:"epochTimestamp,omitempty"`
 	ExpiresAt         int    `json:"expiresAt,omitempty"`
@@ -31,14 +31,10 @@ type ApplePaymentSessionRequest struct {
 // ApplePaymentSession returns an Apple Payment Session object valid for one transaction.
 //
 // See: https://docs.mollie.com/reference/v2/wallets-api/request-apple-pay-payment-session
-func (ms *MiscellaneousService) ApplePaymentSession(asr *ApplePaymentSessionRequest) (aps *ApplePaymentSession, err error) {
+func (ms *MiscellaneousService) ApplePaymentSession(ctx context.Context, asr *ApplePaymentSessionRequest) (res *Response, aps *ApplePaymentSession, err error) {
 	u := "v2/wallets/applepay/sessions"
-	req, err := ms.client.NewAPIRequest(http.MethodPost, u, asr)
-	if err != nil {
-		return
-	}
 
-	res, err := ms.client.Do(req)
+	res, err = ms.client.post(ctx, u, asr, nil)
 	if err != nil {
 		return
 	}
@@ -46,5 +42,6 @@ func (ms *MiscellaneousService) ApplePaymentSession(asr *ApplePaymentSessionRequ
 	if err = json.Unmarshal(res.content, &aps); err != nil {
 		return
 	}
+
 	return
 }

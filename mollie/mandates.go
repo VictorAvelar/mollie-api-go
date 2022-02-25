@@ -1,12 +1,10 @@
 package mollie
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"time"
-
-	"github.com/google/go-querystring/query"
 )
 
 // Mandate allow you to charge a customer’s credit card or bank account recurrently.
@@ -26,7 +24,7 @@ type Mandate struct {
 	Links            MandateLinks   `json:"_links,omitempty"`
 }
 
-// MandateDetails are possible values inside the mandate.details field
+// MandateDetails are possible values inside the mandate.details field.
 type MandateDetails struct {
 	ConsumerName    string     `json:"consumerName,omitempty"`
 	ConsumerAccount string     `json:"consumerAccount,omitempty"`
@@ -38,10 +36,10 @@ type MandateDetails struct {
 	CardExpiryDate  *ShortDate `json:"cardExpiryDate,omitempty"`
 }
 
-// MandateStatus for the Mandate object
+// MandateStatus for the Mandate object.
 type MandateStatus string
 
-// Valid mandate statuses
+// Valid mandate statuses.
 const (
 	PendingMandate MandateStatus = "pending"
 	ValidMandate   MandateStatus = "valid"
@@ -51,7 +49,7 @@ const (
 // CardLabel Note that not all labels can be processed through Mollie.
 type CardLabel string
 
-// Available card labels
+// Available card labels.
 const (
 	AmericaExpress CardLabel = "American Express"
 	CartaSi        CardLabel = "Carta Si"
@@ -71,24 +69,25 @@ const (
 // MandatesService operates over customer mandates endpoints.
 type MandatesService service
 
-// MandateLinks response objects
+// MandateLinks response objects.
 type MandateLinks struct {
 	Self          *URL `json:"self,omitempty"`
 	Customer      *URL `json:"customer,omitempty"`
 	Documentation *URL `json:"documentation,omitempty"`
 }
 
-// ListMandatesOptions contains valid query parameters
+// MandatesListOptions contains valid query parameters
 // to filter the List mandates actions.
+//
 // From is a mandate id to offset from (inclusive)
-// Limit is the max number of mandates to retrieve
-type ListMandatesOptions struct {
+// Limit is the max number of mandates to retrieve.
+type MandatesListOptions struct {
 	From  string `url:"from,omitempty"`
 	Limit int    `url:"limit,omitempty"`
 }
 
-// MandateList describes how a list of mandates will be retrieved by Mollie.
-type MandateList struct {
+// MandatesList describes how a list of mandates will be retrieved by Mollie.
+type MandatesList struct {
 	Count    int `json:"count,omitempty"`
 	Embedded struct {
 		Mandates []Mandate
@@ -97,17 +96,14 @@ type MandateList struct {
 }
 
 // Create a mandate for a specific customer.
+//
 // Mandates allow you to charge a customer’s credit card or bank account recurrently.
 //
 // See: https://docs.mollie.com/reference/v2/mandates-api/create-mandate
-func (ms *MandatesService) Create(cID string, mandate Mandate) (mr *Mandate, err error) {
-	u := fmt.Sprintf("v2/customers/%s/mandates", cID)
-	req, err := ms.client.NewAPIRequest(http.MethodPost, u, mandate)
-	if err != nil {
-		return
-	}
+func (ms *MandatesService) Create(ctx context.Context, customer string, mandate Mandate) (res *Response, mr *Mandate, err error) {
+	u := fmt.Sprintf("v2/customers/%s/mandates", customer)
 
-	res, err := ms.client.Do(req)
+	res, err = ms.client.post(ctx, u, mandate, nil)
 	if err != nil {
 		return
 	}
@@ -124,14 +120,10 @@ func (ms *MandatesService) Create(cID string, mandate Mandate) (mr *Mandate, err
 // depending on the type of mandate.
 //
 // See: https://docs.mollie.com/reference/v2/mandates-api/get-mandate
-func (ms *MandatesService) Get(cID, mID string) (mr *Mandate, err error) {
-	u := fmt.Sprintf("v2/customers/%s/mandates/%s", cID, mID)
-	req, err := ms.client.NewAPIRequest(http.MethodGet, u, nil)
-	if err != nil {
-		return
-	}
+func (ms *MandatesService) Get(ctx context.Context, customer, mandate string) (res *Response, mr *Mandate, err error) {
+	u := fmt.Sprintf("v2/customers/%s/mandates/%s", customer, mandate)
 
-	res, err := ms.client.Do(req)
+	res, err = ms.client.get(ctx, u, nil)
 	if err != nil {
 		return
 	}
@@ -144,17 +136,15 @@ func (ms *MandatesService) Get(cID, mID string) (mr *Mandate, err error) {
 }
 
 // Revoke a customer’s mandate.
-// You will no longer be able to charge the consumer’s bank account or credit card with this mandate and all connected subscriptions will be canceled.
+//
+// You will no longer be able to charge the consumer’s bank account
+// or credit card with this mandate and all connected subscriptions will be canceled.
 //
 // See: https://docs.mollie.com/reference/v2/mandates-api/revoke-mandate
-func (ms *MandatesService) Revoke(cID, mID string) (err error) {
-	u := fmt.Sprintf("v2/customers/%s/mandates/%s", cID, mID)
-	req, err := ms.client.NewAPIRequest(http.MethodDelete, u, nil)
-	if err != nil {
-		return
-	}
+func (ms *MandatesService) Revoke(ctx context.Context, customer, mandate string) (res *Response, err error) {
+	u := fmt.Sprintf("v2/customers/%s/mandates/%s", customer, mandate)
 
-	_, err = ms.client.Do(req)
+	res, err = ms.client.delete(ctx, u, nil)
 	if err != nil {
 		return
 	}
@@ -166,19 +156,10 @@ func (ms *MandatesService) Revoke(cID, mID string) (err error) {
 // ordered from newest to oldest.
 //
 // See: https://docs.mollie.com/reference/v2/mandates-api/list-mandates
-func (ms *MandatesService) List(cID string, opt *ListMandatesOptions) (ml MandateList, err error) {
-	u := fmt.Sprintf("v2/customers/%s/mandates", cID)
-	if opt != nil {
-		v, _ := query.Values(opt)
-		u = fmt.Sprintf("%s?%s", u, v.Encode())
-	}
+func (ms *MandatesService) List(ctx context.Context, customer string, options *MandatesListOptions) (res *Response, ml *MandatesList, err error) {
+	u := fmt.Sprintf("v2/customers/%s/mandates", customer)
 
-	req, err := ms.client.NewAPIRequest(http.MethodGet, u, nil)
-	if err != nil {
-		return
-	}
-
-	res, err := ms.client.Do(req)
+	res, err = ms.client.get(ctx, u, options)
 	if err != nil {
 		return
 	}
