@@ -4,6 +4,7 @@ build:
   skip: true
 changelog:
   sort: desc
+  use: github
   filters:
     exclude:
     - '^docs:'
@@ -14,13 +15,3 @@ changelog:
     - Merge remote-tracking branch
     - Merge branch
     - go mod tidy
-  groups:
-    - title: 'New Features'
-      regexp: "^.*feat[(\\w)]*:+.*$"
-      order: 0
-    - title: 'Bug fixes'
-      regexp: "^.*fix[(\\w)]*:+.*$"
-      order: 10
-    - title: Other work
-      order: 999
-
