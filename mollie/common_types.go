@@ -58,6 +58,7 @@ type Locale string
 // Mollie supported locales
 const (
 	English       Locale = "en_US"
+	EnglishGB     Locale = "en_GB"
 	Dutch         Locale = "nl_NL"
 	DutchBelgium  Locale = "nl_BE"
 	French        Locale = "fr_FR"
