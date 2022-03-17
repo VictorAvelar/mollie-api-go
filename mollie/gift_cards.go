@@ -15,6 +15,7 @@ const (
 	DecaudeuKaart              GiftCardIssuer = "decadeaukaart"
 	DelokaleDecauKaart         GiftCardIssuer = "delokalecadeaukaart"
 	Dinercadeau                GiftCardIssuer = "dinercadeau"
+	Doenkadotickets            GiftCardIssuer = "doenkadotickets"
 	Fashioncheque              GiftCardIssuer = "fashioncheque"
 	Festivalcadeau             GiftCardIssuer = "festivalcadeau"
 	Good4fun                   GiftCardIssuer = "good4fun"
