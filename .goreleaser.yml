@@ -6,7 +6,21 @@ changelog:
   sort: desc
   filters:
     exclude:
-      - docs
-      - changelog
-      - readme
-      - ^Merge pull request
+    - '^docs:'
+    - '^test:'
+    - '^chore'
+    - 'changelog'
+    - Merge pull request
+    - Merge remote-tracking branch
+    - Merge branch
+    - go mod tidy
+  groups:
+    - title: 'New Features'
+      regexp: "^.*feat[(\\w)]*:+.*$"
+      order: 0
+    - title: 'Bug fixes'
+      regexp: "^.*fix[(\\w)]*:+.*$"
+      order: 10
+    - title: Other work
+      order: 999
+
