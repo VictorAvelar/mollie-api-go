@@ -4,6 +4,7 @@ build:
   skip: true
 changelog:
   sort: desc
+  use: github
   filters:
     exclude:
       - docs
