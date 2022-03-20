@@ -7,7 +7,11 @@ changelog:
   use: github
   filters:
     exclude:
-      - docs
-      - changelog
-      - readme
-      - ^Merge pull request
+    - '^docs:'
+    - '^test:'
+    - '^chore'
+    - 'changelog'
+    - Merge pull request
+    - Merge remote-tracking branch
+    - Merge branch
+    - go mod tidy
