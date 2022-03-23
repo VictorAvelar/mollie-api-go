@@ -780,10 +780,12 @@ const (
 	DecaudeuKaart              GiftCardIssuer = "decadeaukaart"
 	DelokaleDecauKaart         GiftCardIssuer = "delokalecadeaukaart"
 	Dinercadeau                GiftCardIssuer = "dinercadeau"
+	Doenkadotickets            GiftCardIssuer = "doenkadotickets"
 	Fashioncheque              GiftCardIssuer = "fashioncheque"
 	Festivalcadeau             GiftCardIssuer = "festivalcadeau"
 	Good4fun                   GiftCardIssuer = "good4fun"
 	HuistuinCadeauKaart        GiftCardIssuer = "huistuincadeaukaart"
+	JewelCard                  GiftCardIssuer = "jewelcard"
 	KlusCadeu                  GiftCardIssuer = "kluscadeau"
 	Kunstencultuurcadeaukaart  GiftCardIssuer = "kunstencultuurcadeaukaart"
 	Nationalebioscoopbon       GiftCardIssuer = "nationalebioscoopbon"
@@ -801,6 +803,7 @@ const (
 	Vvvdinercheque             GiftCardIssuer = "vvvdinercheque"
 	Vvvlekkerweg               GiftCardIssuer = "vvvlekkerweg"
 	Webshopgiftcard            GiftCardIssuer = "webshopgiftcard"
+	Wijncadeukaart             GiftCardIssuer = "wijncadeaukaart"
 	Yourgift                   GiftCardIssuer = "yourgift"
 )
 ```
@@ -1016,6 +1019,7 @@ Locale represents a country and language in ISO-15897 format.
 ```go
 const (
 	English       Locale = "en_US"
+	EnglishGB     Locale = "en_GB"
 	Dutch         Locale = "nl_NL"
 	DutchBelgium  Locale = "nl_BE"
 	French        Locale = "fr_FR"
@@ -1806,10 +1810,10 @@ See: https://docs.mollie.com/reference/v2/organizations-api/get-partner
 
 ```go
 type PaginationLinks struct {
-	Self          URL `json:"self,omitempty"`
-	Previous      URL `json:"previous,omitempty"`
-	Next          URL `json:"next,omitempty"`
-	Documentation URL `json:"documentation,omitempty"`
+	Self          *URL `json:"self,omitempty"`
+	Previous      *URL `json:"previous,omitempty"`
+	Next          *URL `json:"next,omitempty"`
+	Documentation *URL `json:"documentation,omitempty"`
 }
 ```
 
