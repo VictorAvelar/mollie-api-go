@@ -38,6 +38,7 @@
   - Subscriptions
 - Errors now use the `mollie.BaseError` type to provide better error reporting.
 - The type `mollie.Error` is removed from the codebase.
+- PaginationLinks changed to pointers.
 
 ## Other changes
 
