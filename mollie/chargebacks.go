@@ -36,6 +36,8 @@ type ChargebackOptions struct {
 
 // ChargebacksListOptions describes list chargebacks endpoint valid query string parameters.
 type ChargebacksListOptions struct {
+	From      string `url:"from,omitempty"`
+	Limit     int    `url:"limit,omitempty"`
 	Include   string `url:"include,omitempty"`
 	Embed     string `url:"embed,omitempty"`
 	ProfileID string `url:"profileId,omitempty"`
