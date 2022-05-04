@@ -22,15 +22,15 @@ type CustomerLinks struct {
 
 // Customer represents buyers.
 type Customer struct {
-	Resource  string                 `json:"resource,omitempty"`
-	ID        string                 `json:"id,omitempty"`
-	Mode      Mode                   `json:"mode,omitempty"`
-	Name      string                 `json:"name,omitempty"`
-	Email     string                 `json:"email,omitempty"`
-	Locale    Locale                 `json:"locale,omitempty"`
-	Metadata  map[string]interface{} `json:"metadata,omitempty"`
-	CreatedAt *time.Time             `json:"createdAt,omitempty"`
-	Links     CustomerLinks          `json:"_links,omitempty"`
+	Resource  string        `json:"resource,omitempty"`
+	ID        string        `json:"id,omitempty"`
+	Mode      Mode          `json:"mode,omitempty"`
+	Name      string        `json:"name,omitempty"`
+	Email     string        `json:"email,omitempty"`
+	Locale    Locale        `json:"locale,omitempty"`
+	Metadata  interface{}   `json:"metadata,omitempty"`
+	CreatedAt *time.Time    `json:"createdAt,omitempty"`
+	Links     CustomerLinks `json:"_links,omitempty"`
 }
 
 // CustomersListOptions contains valid query parameters for the list customers endpoint.
