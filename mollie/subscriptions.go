@@ -32,26 +32,26 @@ type SubscriptionLinks struct {
 
 // Subscription contains information about a customer subscription.
 type Subscription struct {
-	Resource        string                 `json:"resource,omitempty"`
-	ID              string                 `json:"id,omitempty"`
-	MandateID       string                 `json:"mandateId,omitempty"`
-	Mode            Mode                   `json:"mode,omitempty"`
-	CreatedAT       *time.Time             `json:"createdAt,omitempty"`
-	Status          SubscriptionStatus     `json:"status,omitempty"`
-	Amount          *Amount                `json:"amount,omitempty"`
-	Times           int                    `json:"times,omitempty"`
-	TimesRemaining  int                    `json:"timesRemaining,omitempty"`
-	Interval        string                 `json:"interval,omitempty"`
-	StartDate       *ShortDate             `json:"startDate,omitempty"`
-	NextPaymentDate *ShortDate             `json:"nextPaymentDate,omitempty"`
-	Description     string                 `json:"description,omitempty"`
-	Method          PaymentMethod          `json:"method,omitempty"`
-	CanceledAt      *time.Time             `json:"canceledAt,omitempty"`
-	WebhookURL      string                 `json:"webhookUrl,omitempty"`
-	Metadata        map[string]interface{} `json:"metadata,omitempty"`
-	ApplicationFee  *ApplicationFee        `json:"applicationFee,omitempty"`
-	TestMode        bool                   `json:"testmode,omitempty"`
-	Links           SubscriptionLinks      `json:"_links,omitempty"`
+	Resource        string             `json:"resource,omitempty"`
+	ID              string             `json:"id,omitempty"`
+	MandateID       string             `json:"mandateId,omitempty"`
+	Mode            Mode               `json:"mode,omitempty"`
+	CreatedAT       *time.Time         `json:"createdAt,omitempty"`
+	Status          SubscriptionStatus `json:"status,omitempty"`
+	Amount          *Amount            `json:"amount,omitempty"`
+	Times           int                `json:"times,omitempty"`
+	TimesRemaining  int                `json:"timesRemaining,omitempty"`
+	Interval        string             `json:"interval,omitempty"`
+	StartDate       *ShortDate         `json:"startDate,omitempty"`
+	NextPaymentDate *ShortDate         `json:"nextPaymentDate,omitempty"`
+	Description     string             `json:"description,omitempty"`
+	Method          PaymentMethod      `json:"method,omitempty"`
+	CanceledAt      *time.Time         `json:"canceledAt,omitempty"`
+	WebhookURL      string             `json:"webhookUrl,omitempty"`
+	Metadata        interface{}        `json:"metadata,omitempty"`
+	ApplicationFee  *ApplicationFee    `json:"applicationFee,omitempty"`
+	TestMode        bool               `json:"testmode,omitempty"`
+	Links           SubscriptionLinks  `json:"_links,omitempty"`
 }
 
 // SubscriptionList describes the response for subscription list endpoints.
