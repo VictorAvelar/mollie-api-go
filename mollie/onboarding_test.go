@@ -32,7 +32,6 @@ func (os *onboardingServiceSuite) TestOnboardingService_GetOnboardingStatus() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(os.T(), r, "GET")
-				testQuery(os.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -102,7 +101,6 @@ func (os *onboardingServiceSuite) TestOnboardingService_SubmitOnboardingData() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(os.T(), r, "POST")
-				testQuery(os.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)

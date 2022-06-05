@@ -50,7 +50,9 @@ func TestNewClient(t *testing.T) {
 
 func TestNewClientWithEnvVars(t *testing.T) {
 	setEnv()
+	setup()
 	defer unsetEnv()
+	defer teardown()
 
 	var c = http.DefaultClient
 	{
@@ -106,7 +108,7 @@ func TestClient_NewAPIRequest(t *testing.T) {
 				body:   []string{"hello", "world"},
 			},
 			`["hello","world"]` + "\n",
-			"/test?testmode=true",
+			"/test",
 			false,
 		},
 		{
@@ -118,7 +120,7 @@ func TestClient_NewAPIRequest(t *testing.T) {
 				body:   "some simple string",
 			},
 			"\"some simple string\"\n",
-			"/test?testmode=true",
+			"/test",
 			true,
 		},
 	}
@@ -458,7 +460,7 @@ func teardown() {
 
 func setEnv() {
 	_ = os.Setenv(APITokenEnv, "token_X12b31ggg23")
-	_ = os.Setenv(OrgTokenEnv, "ey1923n23123n1k3b123jv12g312h31v32g13")
+	_ = os.Setenv(OrgTokenEnv, "access_ey1923n23123n1k3b123jv12g312h31v32g13")
 }
 
 func unsetEnv() {

@@ -37,9 +37,11 @@ func (ps *profilesServiceSuite) TestProfilesService_Get() {
 			},
 			false,
 			nil,
-			noPre,
+			func() {
+				tClient.WithAuthenticationValue("access_X12b31ggg23")
+			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
 				testQuery(ps.T(), r, "testmode=true")
 
@@ -117,9 +119,11 @@ func (ps *profilesServiceSuite) TestProfilesService_GetCurrent() {
 			"get current profile works as expected.",
 			false,
 			nil,
-			noPre,
+			func() {
+				tClient.WithAuthenticationValue("access_X12b31ggg23")
+			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
 				testQuery(ps.T(), r, "testmode=true")
 
@@ -194,9 +198,11 @@ func (ps *profilesServiceSuite) TestProfilesService_List() {
 			},
 			false,
 			nil,
-			noPre,
+			func() {
+				tClient.WithAuthenticationValue("access_X12b31ggg23")
+			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
 				testQuery(ps.T(), r, "testmode=true")
 
@@ -216,9 +222,11 @@ func (ps *profilesServiceSuite) TestProfilesService_List() {
 			},
 			false,
 			nil,
-			noPre,
+			func() {
+				tClient.WithAuthenticationValue("access_X12b31ggg23")
+			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
 				testQuery(ps.T(), r, "limit=100&testmode=true")
 
@@ -307,9 +315,11 @@ func (ps *profilesServiceSuite) TestProfilesService_Create() {
 			},
 			false,
 			nil,
-			noPre,
+			func() {
+				tClient.WithAuthenticationValue("access_X12b31ggg23")
+			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
 				testMethod(ps.T(), r, "POST")
 				testQuery(ps.T(), r, "testmode=true")
 
@@ -400,9 +410,11 @@ func (ps *profilesServiceSuite) TestProfilesService_Update() {
 			},
 			false,
 			nil,
-			noPre,
+			func() {
+				tClient.WithAuthenticationValue("access_X12b31ggg23")
+			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
 				testMethod(ps.T(), r, "PATCH")
 				testQuery(ps.T(), r, "testmode=true")
 
@@ -492,9 +504,11 @@ func (ps *profilesServiceSuite) TestProfilesService_Delete() {
 			},
 			false,
 			nil,
-			noPre,
+			func() {
+				tClient.WithAuthenticationValue("access_X12b31ggg23")
+			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
 				testMethod(ps.T(), r, "DELETE")
 				testQuery(ps.T(), r, "testmode=true")
 
@@ -571,9 +585,11 @@ func (ps *profilesServiceSuite) TestProfilesService_EnablePaymentMethod() {
 			},
 			false,
 			nil,
-			noPre,
+			func() {
+				tClient.WithAuthenticationValue("access_X12b31ggg23")
+			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
 				testMethod(ps.T(), r, "POST")
 				testQuery(ps.T(), r, "testmode=true")
 
@@ -665,9 +681,11 @@ func (ps *profilesServiceSuite) TestProfilesService_DisablePaymentMethod() {
 			},
 			false,
 			nil,
-			noPre,
+			func() {
+				tClient.WithAuthenticationValue("access_X12b31ggg23")
+			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
 				testMethod(ps.T(), r, "DELETE")
 				testQuery(ps.T(), r, "testmode=true")
 
@@ -747,9 +765,11 @@ func (ps *profilesServiceSuite) TestProfilesService_EnableGiftCardIssuer() {
 			},
 			false,
 			nil,
-			noPre,
+			func() {
+				tClient.WithAuthenticationValue("access_X12b31ggg23")
+			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
 				testMethod(ps.T(), r, "POST")
 				testQuery(ps.T(), r, "testmode=true")
 
@@ -841,9 +861,11 @@ func (ps *profilesServiceSuite) TestProfilesService_DisableGiftCardIssuer() {
 			},
 			false,
 			nil,
-			noPre,
+			func() {
+				tClient.WithAuthenticationValue("access_X12b31ggg23")
+			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
 				testMethod(ps.T(), r, "DELETE")
 				testQuery(ps.T(), r, "testmode=true")
 
@@ -921,9 +943,11 @@ func (ps *profilesServiceSuite) TestProfilesService_EnableGiftCardIssuerForCurre
 			},
 			false,
 			nil,
-			noPre,
+			func() {
+				tClient.WithAuthenticationValue("access_X12b31ggg23")
+			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
 				testMethod(ps.T(), r, "POST")
 				testQuery(ps.T(), r, "testmode=true")
 
@@ -1010,9 +1034,11 @@ func (ps *profilesServiceSuite) TestProfilesService_DisableGiftCardIssuerForCurr
 			},
 			false,
 			nil,
-			noPre,
+			func() {
+				tClient.WithAuthenticationValue("access_X12b31ggg23")
+			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
 				testMethod(ps.T(), r, "DELETE")
 				testQuery(ps.T(), r, "testmode=true")
 

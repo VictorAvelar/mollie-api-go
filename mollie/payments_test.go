@@ -45,7 +45,7 @@ func (ps *paymentsServiceSuite) TestPaymentsService_Get() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "include=settlements&testmode=true")
+				testQuery(ps.T(), r, "include=settlements")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -139,7 +139,7 @@ func (ps *paymentsServiceSuite) TestPaymentsService_List() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "from=tr_12o93213&testmode=true")
+				testQuery(ps.T(), r, "from=tr_12o93213")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -230,13 +230,11 @@ func (ps *paymentsServiceSuite) TestPaymentsService_Create() {
 			},
 			false,
 			nil,
-			func() {
-				tClient.WithAuthenticationValue("access_example_token")
-			},
+			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer access_example_token")
+				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "POST")
-				testQuery(ps.T(), r, "include=settlements&testmode=true")
+				testQuery(ps.T(), r, "include=settlements")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -257,9 +255,9 @@ func (ps *paymentsServiceSuite) TestPaymentsService_Create() {
 			},
 			false,
 			nil,
-			noPre,
+			setAccesstoken,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testHeader(ps.T(), r, AuthHeader, "Bearer access_token_test")
 				testMethod(ps.T(), r, "POST")
 				testQuery(ps.T(), r, "include=settlements&testmode=true")
 
@@ -357,7 +355,6 @@ func (ps *paymentsServiceSuite) TestPaymentsService_Update() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "PATCH")
-				testQuery(ps.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -474,7 +471,6 @@ func (ps *paymentsServiceSuite) TestPaymentsService_Cancel() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "DELETE")
-				testQuery(ps.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)

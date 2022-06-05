@@ -42,7 +42,6 @@ func (os *organizationsServiceSuite) TestOrganizationsService_Get() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(os.T(), r, "GET")
-				testQuery(os.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -130,7 +129,6 @@ func (os *organizationsServiceSuite) TestOrganizationsService_GetCurrent() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(os.T(), r, "GET")
-				testQuery(os.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -215,7 +213,6 @@ func (os *organizationsServiceSuite) TestOrganizationsService_GetPartnerStatus()
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(os.T(), r, "GET")
-				testQuery(os.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)

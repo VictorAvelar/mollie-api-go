@@ -41,7 +41,6 @@ func (ps *settlementsServiceSuite) TestSettlementsService_Get() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -130,7 +129,6 @@ func (ps *settlementsServiceSuite) TestSettlementsService_Next() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -219,7 +217,6 @@ func (ps *settlementsServiceSuite) TestSettlementsService_Open() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -310,7 +307,7 @@ func (ps *settlementsServiceSuite) TestSettlementsService_List() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "limit=40&testmode=true")
+				testQuery(ps.T(), r, "limit=40")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -409,7 +406,7 @@ func (ps *settlementsServiceSuite) TestSettlementsService_GetPayments() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "limit=10&testmode=true")
+				testQuery(ps.T(), r, "limit=10")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -511,7 +508,7 @@ func (ps *settlementsServiceSuite) TestSettlementsService_GetCaptures() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "limit=10&testmode=true")
+				testQuery(ps.T(), r, "limit=10")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -613,7 +610,7 @@ func (ps *settlementsServiceSuite) TestSettlementsService_GetChargebacks() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "limit=10&testmode=true")
+				testQuery(ps.T(), r, "limit=10")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -715,7 +712,7 @@ func (ps *settlementsServiceSuite) TestSettlementsService_GetRefunds() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "limit=10&testmode=true")
+				testQuery(ps.T(), r, "limit=10")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)

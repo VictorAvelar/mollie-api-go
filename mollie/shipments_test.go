@@ -43,7 +43,6 @@ func (ps *shipmentsServiceSuite) TestShipmentsService_Get() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -137,7 +136,6 @@ func (ps *shipmentsServiceSuite) TestShipmentsService_List() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -233,7 +231,6 @@ func (ps *shipmentsServiceSuite) TestShipmentsService_Create() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "POST")
-				testQuery(ps.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -252,9 +249,7 @@ func (ps *shipmentsServiceSuite) TestShipmentsService_Create() {
 			},
 			false,
 			nil,
-			func() {
-				tClient.WithAuthenticationValue("access_token_test")
-			},
+			setAccesstoken,
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer access_token_test")
 				testMethod(ps.T(), r, "POST")
@@ -362,7 +357,6 @@ func (ps *shipmentsServiceSuite) TestShipmentsService_Update() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "PATCH")
-				testQuery(ps.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -382,9 +376,7 @@ func (ps *shipmentsServiceSuite) TestShipmentsService_Update() {
 			},
 			false,
 			nil,
-			func() {
-				tClient.WithAuthenticationValue("access_token_test")
-			},
+			setAccesstoken,
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer access_token_test")
 				testMethod(ps.T(), r, "PATCH")
