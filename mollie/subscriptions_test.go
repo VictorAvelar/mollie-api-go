@@ -43,7 +43,6 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Get() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -143,7 +142,6 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Create() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "POST")
-				testQuery(ps.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -290,7 +288,6 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Update() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "PATCH")
-				testQuery(ps.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -433,7 +430,6 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Delete() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "DELETE")
-				testQuery(ps.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -548,7 +544,6 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_List() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -571,7 +566,7 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_List() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "limit=10&testmode=true")
+				testQuery(ps.T(), r, "limit=10")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -663,7 +658,6 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_All() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -685,7 +679,7 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_All() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "limit=10&testmode=true")
+				testQuery(ps.T(), r, "limit=10")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -778,7 +772,6 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_GetPayments() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -802,7 +795,7 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_GetPayments() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "limit=10&testmode=true")
+				testQuery(ps.T(), r, "limit=10")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)

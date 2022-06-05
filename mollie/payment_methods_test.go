@@ -42,7 +42,6 @@ func (ms *paymentMethodsServiceSuite) TestMethodsService_List() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ms.T(), r, "GET")
-				testQuery(ms.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -65,7 +64,7 @@ func (ms *paymentMethodsServiceSuite) TestMethodsService_List() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ms.T(), r, "GET")
-				testQuery(ms.T(), r, "amount%5Bcurrency%5D=EUR&amount%5Bvalue%5D=100.00&testmode=true")
+				testQuery(ms.T(), r, "amount%5Bcurrency%5D=EUR&amount%5Bvalue%5D=100.00")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -155,7 +154,6 @@ func (ms *paymentMethodsServiceSuite) TestMethodsService_All() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ms.T(), r, "GET")
-				testQuery(ms.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -178,7 +176,7 @@ func (ms *paymentMethodsServiceSuite) TestMethodsService_All() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ms.T(), r, "GET")
-				testQuery(ms.T(), r, "amount%5Bcurrency%5D=EUR&amount%5Bvalue%5D=100.00&testmode=true")
+				testQuery(ms.T(), r, "amount%5Bcurrency%5D=EUR&amount%5Bvalue%5D=100.00")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -270,7 +268,6 @@ func (ms *paymentMethodsServiceSuite) TestMethodsService_Get() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ms.T(), r, "GET")
-				testQuery(ms.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -291,7 +288,7 @@ func (ms *paymentMethodsServiceSuite) TestMethodsService_Get() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ms.T(), r, "GET")
-				testQuery(ms.T(), r, "locale=ca_ES&testmode=true")
+				testQuery(ms.T(), r, "locale=ca_ES")
 
 				fmt.Println(r.Context())
 

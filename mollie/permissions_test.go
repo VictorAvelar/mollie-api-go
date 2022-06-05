@@ -16,9 +16,7 @@ func (os *permissionsServiceSuite) SetupSuite() { setEnv() }
 
 func (os *permissionsServiceSuite) TearDownSuite() { unsetEnv() }
 
-func (os *permissionsServiceSuite) TestPermissionsService_Get() { unsetEnv() }
-
-func (ps *profilesServiceSuite) TestPermissionsService_Get() {
+func (ps *permissionsServiceSuite) TestPermissionsService_Get() {
 	type args struct {
 		ctx        context.Context
 		permission PermissionGrant
@@ -39,9 +37,11 @@ func (ps *profilesServiceSuite) TestPermissionsService_Get() {
 			},
 			false,
 			nil,
-			noPre,
+			func() {
+				tClient.WithAuthenticationValue("access_X12b31ggg23")
+			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
 				testQuery(ps.T(), r, "testmode=true")
 
@@ -130,7 +130,6 @@ func (ps *permissionsServiceSuite) TestPermissionsService_List() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)

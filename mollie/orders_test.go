@@ -45,7 +45,7 @@ func (os *ordersServiceSuite) TestOrdersService_Get() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(os.T(), r, "GET")
-				testQuery(os.T(), r, "profileId=pfl_1236h213bv1&testmode=true")
+				testQuery(os.T(), r, "profileId=pfl_1236h213bv1")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -141,7 +141,7 @@ func (os *ordersServiceSuite) TestOrdersService_List() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(os.T(), r, "GET")
-				testQuery(os.T(), r, "profileId=pfl_1236h213bv1&testmode=true")
+				testQuery(os.T(), r, "profileId=pfl_1236h213bv1")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -237,7 +237,6 @@ func (os *ordersServiceSuite) TestOrdersService_Create() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(os.T(), r, "POST")
-				testQuery(os.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -262,7 +261,6 @@ func (os *ordersServiceSuite) TestOrdersService_Create() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
 				testMethod(os.T(), r, "POST")
-				testQuery(os.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -365,7 +363,6 @@ func (os *ordersServiceSuite) TestOrdersService_Update() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(os.T(), r, "PATCH")
-				testQuery(os.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -390,7 +387,6 @@ func (os *ordersServiceSuite) TestOrdersService_Update() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
 				testMethod(os.T(), r, "PATCH")
-				testQuery(os.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -493,7 +489,6 @@ func (os *ordersServiceSuite) TestOrdersService_Cancel() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(os.T(), r, "DELETE")
-				testQuery(os.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -518,7 +513,6 @@ func (os *ordersServiceSuite) TestOrdersService_Cancel() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
 				testMethod(os.T(), r, "DELETE")
-				testQuery(os.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -621,7 +615,6 @@ func (os *ordersServiceSuite) TestOrdersService_UpdateOrderLine() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(os.T(), r, "PATCH")
-				testQuery(os.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -647,7 +640,6 @@ func (os *ordersServiceSuite) TestOrdersService_UpdateOrderLine() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
 				testMethod(os.T(), r, "PATCH")
-				testQuery(os.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -753,7 +745,6 @@ func (os *ordersServiceSuite) TestOrdersService_CancelOrderLine() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(os.T(), r, "DELETE")
-				testQuery(os.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -779,7 +770,6 @@ func (os *ordersServiceSuite) TestOrdersService_CancelOrderLine() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
 				testMethod(os.T(), r, "DELETE")
-				testQuery(os.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -873,7 +863,6 @@ func (os *ordersServiceSuite) TestOrdersService_CreateOrderPayment() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(os.T(), r, "POST")
-				testQuery(os.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -899,7 +888,6 @@ func (os *ordersServiceSuite) TestOrdersService_CreateOrderPayment() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
 				testMethod(os.T(), r, "POST")
-				testQuery(os.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -991,7 +979,6 @@ func (os *ordersServiceSuite) TestOrdersService_CreateOrderRefund() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(os.T(), r, "POST")
-				testQuery(os.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -1013,7 +1000,6 @@ func (os *ordersServiceSuite) TestOrdersService_CreateOrderRefund() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
 				testMethod(os.T(), r, "POST")
-				testQuery(os.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -1104,7 +1090,7 @@ func (os *ordersServiceSuite) TestOrdersService_ListOrderRefund() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(os.T(), r, "GET")
-				testQuery(os.T(), r, "limit=100&testmode=true")
+				testQuery(os.T(), r, "limit=100")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -1127,7 +1113,6 @@ func (os *ordersServiceSuite) TestOrdersService_ListOrderRefund() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
 				testMethod(os.T(), r, "GET")
-				testQuery(os.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)

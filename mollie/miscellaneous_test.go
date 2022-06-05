@@ -44,7 +44,6 @@ func (ms *miscellaneousServiceSuite) TestMiscellaneousService_ApplePaymentSessio
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(ms.T(), r, "POST")
-				testQuery(ms.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)

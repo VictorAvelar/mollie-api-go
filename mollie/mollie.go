@@ -161,7 +161,7 @@ func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, b
 		return nil, fmt.Errorf("url_parsing_error: %w", err)
 	}
 
-	if c.config.testing {
+	if c.config.testing && c.HasAccessToken() {
 		qp := url.Query()
 		qp.Add("testmode", "true")
 		url.RawQuery = qp.Encode()

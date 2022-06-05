@@ -47,7 +47,7 @@ func (rs *refundsServiceTest) TestRefundsService_Get() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(rs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(rs.T(), r, "GET")
-				testQuery(rs.T(), r, "embed=profile&testmode=true")
+				testQuery(rs.T(), r, "embed=profile")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -153,7 +153,7 @@ func (rs *refundsServiceTest) TestRefundsService_Create() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(rs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(rs.T(), r, "POST")
-				testQuery(rs.T(), r, "embed=profile&testmode=true")
+				testQuery(rs.T(), r, "embed=profile")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -292,7 +292,6 @@ func (rs *refundsServiceTest) TestRefundsService_Cancel() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(rs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(rs.T(), r, "DELETE")
-				testQuery(rs.T(), r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -375,7 +374,7 @@ func (rs *refundsServiceTest) TestRefundsService_List() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(rs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(rs.T(), r, "GET")
-				testQuery(rs.T(), r, "limit=10&testmode=true")
+				testQuery(rs.T(), r, "limit=10")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -473,7 +472,7 @@ func (rs *refundsServiceTest) TestRefundsService_ListPaynents() {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(rs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(rs.T(), r, "GET")
-				testQuery(rs.T(), r, "limit=10&testmode=true")
+				testQuery(rs.T(), r, "limit=10")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
