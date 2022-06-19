@@ -1941,6 +1941,7 @@ type Payment struct {
 	AmountRefunded                  *Amount                `json:"amountRefunded,omitempty"`
 	AmountRemaining                 *Amount                `json:"amountRemaining,omitempty"`
 	AmountCaptured                  *Amount                `json:"amountCaptured,omitempty"`
+	AmountChargedBack               *Amount                `json:"amountChargedBack,omitempty"`
 	SettlementAmount                *Amount                `json:"settlementAmount,omitempty"`
 	ApplicationFee                  *ApplicationFee        `json:"applicationFee,omitempty"`
 	Details                         *PaymentDetails        `json:"details,omitempty"`
