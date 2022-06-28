@@ -1,74 +1,59 @@
 {
-    "name": "Mollie Golang API library devcontainer",
-    "build": {
-        "dockerfile": "Dockerfile",
-        "args": {
-            "GO_VERSION": "1.18-bullseye"
-        }
-    },
-    "runArgs": [
-        "--cap-add=SYS_PTRACE",
-        "--security-opt",
-        "seccomp=unconfined"
-    ],
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                "golang.Go",
-                "GitHub.vscode-pull-request-github"
-            ],
-            "settings": {
-                "go.toolsManagement.checkForUpdates": "local",
-                "go.gopath": "/go",
-                "go.goroot": "/usr/local/go",
-                "go.useLanguageServer": true,
-                "[go]": {
-                    "editor.codeActionsOnSave": {
-                        "source.organizeImports": true
-                    }
-                },
-                "[go.mod]": {
-                    "editor.codeActionsOnSave": {
-                        "source.organizeImports": true
-                    }
-                },
-                "gopls": {
-                    "build.buildFlags": [
-                        "-tags",
-                        ""
-                    ],
-                    "ui.completion.usePlaceholders": false,
-                    "ui.diagnostic.staticcheck": true
-                },
-                "go.lintTool": "golangci-lint",
-                "go.lintFlags": [
-                    "--fast"
-                ],
-                "go.lintOnSave": "package",
-                "editor.formatOnSave": true,
-                "editor.formatOnPaste": true,
-                "go.toolsEnvVars": {
-                    "CGO_ENABLED": 1
-                },
-                "go.testEnvVars": {
-                    "": ""
-                },
-                "go.testFlags": [
-                    "-v",
-                    "-race"
-                ],
-                "go.testTimeout": "30s",
-                "go.coverOnSingleTest": true,
-                "go.coverOnSingleTestFile": true,
-                "go.coverOnTestPackage": true
-            }
-        }
-    },
-    "portsAttributes": {
-        "9000": {
-            "label": "Hello Remote World",
-            "onAutoForward": "notify"
-        }
-    },
-    "postCreateCommand": "go mod download"
+  "name": "Mollie Golang API library devcontainer",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "GO_VERSION": "1.18-bullseye"
+    }
+  },
+  "runArgs": ["--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined"],
+  "customizations": {
+    "vscode": {
+      "extensions": ["golang.Go", "GitHub.vscode-pull-request-github"],
+      "settings": {
+        "go.toolsManagement.checkForUpdates": "local",
+        "go.gopath": "/go",
+        "go.goroot": "/usr/local/go",
+        "go.useLanguageServer": true,
+        "[go]": {
+          "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+          }
+        },
+        "[go.mod]": {
+          "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+          }
+        },
+        "gopls": {
+          "build.buildFlags": ["-tags", ""],
+          "ui.completion.usePlaceholders": false,
+          "ui.diagnostic.staticcheck": true
+        },
+        "go.lintTool": "golangci-lint",
+        "go.lintFlags": ["--fast"],
+        "go.lintOnSave": "package",
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": true,
+        "go.toolsEnvVars": {
+          "CGO_ENABLED": 1
+        },
+        "go.testEnvVars": {
+          "": ""
+        },
+        "go.testFlags": ["-v", "-race"],
+        "go.testTimeout": "30s",
+        "go.coverOnSingleTest": true,
+        "go.coverOnSingleTestFile": true,
+        "go.coverOnTestPackage": true
+      }
+    }
+  },
+  "portsAttributes": {
+    "9000": {
+      "label": "Hello Remote World",
+      "onAutoForward": "notify"
+    }
+  },
+  "postCreateCommand": "go mod download"
 }
