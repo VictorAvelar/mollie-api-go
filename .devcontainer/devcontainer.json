@@ -3,7 +3,7 @@
   "build": {
     "dockerfile": "Dockerfile",
     "args": {
-      "GO_VERSION": "1.18-bullseye"
+      "GO_VERSION": "1-bullseye"
     }
   },
   "runArgs": ["--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined"],
@@ -27,8 +27,10 @@
         },
         "gopls": {
           "build.buildFlags": ["-tags", ""],
+          "formatting.gofumpt": true,
           "ui.completion.usePlaceholders": false,
-          "ui.diagnostic.staticcheck": true
+          "ui.diagnostic.staticcheck": true,
+          "ui.semanticTokens": true
         },
         "go.lintTool": "golangci-lint",
         "go.lintFlags": ["--fast"],
