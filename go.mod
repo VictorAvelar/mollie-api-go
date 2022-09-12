@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/google/go-querystring v1.1.0
 	github.com/stretchr/testify v1.8.0
-	golang.org/x/oauth2 v0.0.0-20220822191816-0ebed06d0094
+	golang.org/x/oauth2 v0.0.0-20220909003341-f21342109be1
 )
 
 require (
