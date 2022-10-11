@@ -7,7 +7,8 @@ assignees: 'VictorAvelar'
 
 ---
 
-**List of changes**
+## List of changes
+
 - General change
 - Addition to x
 

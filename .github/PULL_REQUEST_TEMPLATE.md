@@ -1,6 +1,6 @@
 <!--- Provide a general summary of your changes in the Title above -->
 
-## Description
+# Description
 
 Describe your changes in detail.
 
@@ -18,16 +18,25 @@ Please describe in detail how you tested your changes.
 Include details of your testing environment, and the tests you ran to
 see how your change affects other areas of the code, etc.
 
-## Screenshots (if appropriate)
+- [ ] Unit tests added / updated
+- [ ] The tests run on docker (using `make test`)
+- [ ] The required `test data` has been added / updated
+
+If you are running the tests locally, please specify:
+
+- OS: [e.g. ubuntu/macos/windows]
+- Go version [e.g. 1.19.x]
 
 ## Types of changes
 
 What types of changes does your code introduce? Put an `x` in all the boxes that apply:
+
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
 - [ ] Breaking change (fix or feature that would cause existing functionality to change)
+- [ ] This change requires a documentation update
 
-## Checklist:
+## Checklist
 
 Go over all the following points, and put an `x` in all the boxes that apply.
 
@@ -37,7 +46,6 @@ Please, please, please, don't send your pull request until all of the boxes are 
 - [ ] My pull request addresses exactly one patch/feature.
 - [ ] I have created a branch for this patch/feature.
 - [ ] Each individual commit in the pull request is meaningful.
-- [ ] I have added tests to cover my changes.
 - [ ] If my change requires a change to the documentation, I have updated it accordingly.
 
-If you're unsure about any of these, don't hesitate to ask. We're here to help!
+<!-- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
