@@ -1,5 +1,5 @@
 {
-  "name": "Mollie Golang API library devcontainer",
+  "name": "Golang devcontainer",
   "build": {
     "dockerfile": "Dockerfile",
     "args": {
@@ -9,9 +9,21 @@
   "runArgs": ["--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined"],
   "customizations": {
     "vscode": {
-      "extensions": ["golang.Go", "GitHub.vscode-pull-request-github"],
+      "extensions": [
+        "golang.Go", 
+        "GitHub.vscode-pull-request-github",
+        "aaron-bond.better-comments",
+        "pnp.polacode",
+        "eamodio.gitlens",
+        "jasonlhy.hungry-delete",
+        "formulahendry.auto-rename-tag",
+        "DavidAnson.vscode-markdownlint",
+        "streetsidesoftware.code-spell-checker",
+        "PKief.material-icon-theme"
+      ],
       "settings": {
         "go.toolsManagement.checkForUpdates": "local",
+        "go.toolsManagement.autoUpdate": true,
         "go.gopath": "/go",
         "go.goroot": "/usr/local/go",
         "go.useLanguageServer": true,
@@ -28,15 +40,13 @@
         "gopls": {
           "build.buildFlags": ["-tags", ""],
           "formatting.gofumpt": true,
-          "ui.completion.usePlaceholders": false,
+          "ui.completion.usePlaceholders": true,
           "ui.diagnostic.staticcheck": true,
           "ui.semanticTokens": true
         },
         "go.lintTool": "golangci-lint",
         "go.lintFlags": ["--fast"],
         "go.lintOnSave": "package",
-        "editor.formatOnSave": true,
-        "editor.formatOnPaste": true,
         "go.toolsEnvVars": {
           "CGO_ENABLED": 1
         },
@@ -47,7 +57,11 @@
         "go.testTimeout": "30s",
         "go.coverOnSingleTest": true,
         "go.coverOnSingleTestFile": true,
-        "go.coverOnTestPackage": true
+        "go.coverOnTestPackage": true,
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": true,
+        "editor.bracketPairColorization.enabled": true,
+        "editor.guides.bracketPairs":"active"
       }
     }
   },
