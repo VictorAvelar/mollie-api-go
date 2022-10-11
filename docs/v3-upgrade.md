@@ -10,8 +10,8 @@
 - Payments service actions now return pointers instead of struct literals.
 - Get permissions now accepts a direct reference to a PermissionGrant struct instead of a string.
 - All services now return an instance of mollie.Response as first value changing the signature from (value, error) to (response, value, error).
-- All structs are changed to the following naming patterns
-  - For Lists: {Vaue}List
+- All data structures are changed to the following naming patterns
+  - For Lists: {Value}List
   - For Options: {Value}Options | {Value}ListOptions
   - For Links: {Value}Links | {Value}ListLinks
 - Params now contain the full name of the value they contain. Ex. pID now is payment.

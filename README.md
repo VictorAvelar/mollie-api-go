@@ -1,12 +1,18 @@
 # Mollie API Golang client
 
-#### Scrutinizer CI
+## Actions
+
+[![Testing](https://github.com/VictorAvelar/mollie-api-go/actions/workflows/main.yml/badge.svg)](https://github.com/VictorAvelar/mollie-api-go/actions/workflows/main.yml)
+[![Linter](https://github.com/VictorAvelar/mollie-api-go/actions/workflows/golangci-lint.yml/badge.svg)](https://github.com/VictorAvelar/mollie-api-go/actions/workflows/golangci-lint.yml)
+[![CodeQL](https://github.com/VictorAvelar/mollie-api-go/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/VictorAvelar/mollie-api-go/actions/workflows/codeql-analysis.yml)
+
+## Scrutinizer CI
 
 [![Build Status](https://scrutinizer-ci.com/g/VictorAvelar/mollie-api-go/badges/build.png?b=master)](https://scrutinizer-ci.com/g/VictorAvelar/mollie-api-go/build-status/master)
 [![Code Coverage](https://scrutinizer-ci.com/g/VictorAvelar/mollie-api-go/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/VictorAvelar/mollie-api-go/?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/VictorAvelar/mollie-api-go/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/VictorAvelar/mollie-api-go/?branch=master)
 
-#### Go ecosystem
+## Go ecosystem
 
 [![PkgGoDev](https://pkg.go.dev/badge/VictorAvelar/mollie-api-go)](https://pkg.go.dev/github.com/VictorAvelar/mollie-api-go/v2/mollie)
 [![Go Report Card](https://goreportcard.com/badge/github.com/VictorAvelar/mollie-api-go)](https://goreportcard.com/report/github.com/VictorAvelar/mollie-api-go)

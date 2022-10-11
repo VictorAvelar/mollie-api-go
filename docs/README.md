@@ -5,7 +5,7 @@ import "github.com/VictorAvelar/mollie-api-golang/v3/mollie"
 
 Package mollie is a wrapper around Mollie's REST API.
 
-See: https://www.mollie.com/en/developers
+See: <https://www.mollie.com/en/developers>
 
 The Mollie API implements a Representational state transfer (REST) architecture.
 
@@ -14,25 +14,25 @@ HTTP-methods GET, PATCH, POST and DELETE matching the operations to read,
 update, create and delete.
 
 REST also implies a nice and clean structure for URLs or endpoints. This means
-you can reach any part of the Mollie API on https://api.mollie.com/v2/ adding
+you can reach any part of the Mollie API on <https://api.mollie.com/v2/> adding
 the name of the resource you want to interact with.
 
 ## Usage
 
 ```go
 const (
-	BaseURL            string = "https://api.mollie.com/"
-	AuthHeader         string = "Authorization"
-	TokenType          string = "Bearer"
-	APITokenEnv        string = "MOLLIE_API_TOKEN"
-	OrgTokenEnv        string = "MOLLIE_ORG_TOKEN"
-	RequestContentType string = "application/json"
+ BaseURL            string = "https://api.mollie.com/"
+ AuthHeader         string = "Authorization"
+ TokenType          string = "Bearer"
+ APITokenEnv        string = "MOLLIE_API_TOKEN"
+ OrgTokenEnv        string = "MOLLIE_ORG_TOKEN"
+ RequestContentType string = "application/json"
 )
 ```
 
 Constants holding values for client initialization and request instantiation.
 
-#### func CheckResponse
+#### func  CheckResponse
 
 ```go
 func CheckResponse(r *Response) error
@@ -47,12 +47,12 @@ response body.
 
 ```go
 type Address struct {
-	StreetAndNumber  string `json:"streetAndNumber,omitempty"`
-	StreetAdditional string `json:"streetAdditional,omitempty"`
-	PostalCode       string `json:"postalCode,omitempty"`
-	City             string `json:"city,omitempty"`
-	Region           string `json:"region,omitempty"`
-	Country          string `json:"country,omitempty"`
+ StreetAndNumber  string `json:"streetAndNumber,omitempty"`
+ StreetAdditional string `json:"streetAdditional,omitempty"`
+ PostalCode       string `json:"postalCode,omitempty"`
+ City             string `json:"city,omitempty"`
+ Region           string `json:"region,omitempty"`
+ Country          string `json:"country,omitempty"`
 }
 ```
 
@@ -70,8 +70,8 @@ region field is required.
 
 ```go
 type Amount struct {
-	Currency string `json:"currency,omitempty"`
-	Value    string `json:"value,omitempty"`
+ Currency string `json:"currency,omitempty"`
+ Value    string `json:"value,omitempty"`
 }
 ```
 
@@ -81,14 +81,14 @@ Amount represents a currency and value pair.
 
 ```go
 type ApplePaymentSession struct {
-	EpochTimestamp    int    `json:"epochTimestamp,omitempty"`
-	ExpiresAt         int    `json:"expiresAt,omitempty"`
-	MerchantSessionID string `json:"merchantSessionIdentifier,omitempty"`
-	Nonce             string `json:"nonce,omitempty"`
-	MerchantID        string `json:"merchantIdentified,omitempty"`
-	DomainName        string `json:"domainName,omitempty"`
-	DisplayName       string `json:"displayName,omitempty"`
-	Signature         string `json:"signature,omitempty"`
+ EpochTimestamp    int    `json:"epochTimestamp,omitempty"`
+ ExpiresAt         int    `json:"expiresAt,omitempty"`
+ MerchantSessionID string `json:"merchantSessionIdentifier,omitempty"`
+ Nonce             string `json:"nonce,omitempty"`
+ MerchantID        string `json:"merchantIdentified,omitempty"`
+ DomainName        string `json:"domainName,omitempty"`
+ DisplayName       string `json:"displayName,omitempty"`
+ Signature         string `json:"signature,omitempty"`
 }
 ```
 
@@ -98,8 +98,8 @@ ApplePaymentSession contains information about an Apple pay session.
 
 ```go
 type ApplePaymentSessionRequest struct {
-	Domain        string `json:"domain,omitempty"`
-	ValidationURL string `json:"validationUrl,omitempty"`
+ Domain        string `json:"domain,omitempty"`
+ ValidationURL string `json:"validationUrl,omitempty"`
 }
 ```
 
@@ -110,8 +110,8 @@ PaymentSession from Apple.
 
 ```go
 type ApplicationFee struct {
-	Amount      *Amount `json:"amount,omitempty"`
-	Description string  `json:"description,omitempty"`
+ Amount      *Amount `json:"amount,omitempty"`
+ Description string  `json:"description,omitempty"`
 }
 ```
 
@@ -122,17 +122,17 @@ merchant accounts.
 
 ```go
 type BaseError struct {
-	Status int         `json:"status,omitempty"`
-	Title  string      `json:"title,omitempty"`
-	Detail string      `json:"detail,omitempty"`
-	Field  string      `json:"field,omitempty"`
-	Links  *ErrorLinks `json:"_links,omitempty"`
+ Status int         `json:"status,omitempty"`
+ Title  string      `json:"title,omitempty"`
+ Detail string      `json:"detail,omitempty"`
+ Field  string      `json:"field,omitempty"`
+ Links  *ErrorLinks `json:"_links,omitempty"`
 }
 ```
 
 BaseError contains the general error structure returned by mollie.
 
-#### func (\*BaseError) Error
+#### func (*BaseError) Error
 
 ```go
 func (be *BaseError) Error() string
@@ -144,16 +144,16 @@ Error interface compliance.
 
 ```go
 type Capture struct {
-	Resource         string       `json:"resource,omitempty"`
-	ID               string       `json:"id,omitempty"`
-	Mode             Mode         `json:"mode,omitempty"`
-	Amount           *Amount      `json:"amount,omitempty"`
-	SettlementAmount *Amount      `json:"settlementAmount,omitempty"`
-	PaymentID        string       `json:"paymentId,omitempty"`
-	ShipmentID       string       `json:"shipmentId,omitempty"`
-	SettlementID     string       `json:"settlementId,omitempty"`
-	CreatedAt        *time.Time   `json:"createdAt,omitempty"`
-	Links            CaptureLinks `json:"_links,omitempty"`
+ Resource         string       `json:"resource,omitempty"`
+ ID               string       `json:"id,omitempty"`
+ Mode             Mode         `json:"mode,omitempty"`
+ Amount           *Amount      `json:"amount,omitempty"`
+ SettlementAmount *Amount      `json:"settlementAmount,omitempty"`
+ PaymentID        string       `json:"paymentId,omitempty"`
+ ShipmentID       string       `json:"shipmentId,omitempty"`
+ SettlementID     string       `json:"settlementId,omitempty"`
+ CreatedAt        *time.Time   `json:"createdAt,omitempty"`
+ Links            CaptureLinks `json:"_links,omitempty"`
 }
 ```
 
@@ -164,11 +164,11 @@ authorize-then-capture flow.
 
 ```go
 type CaptureLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Payment       *URL `json:"payment,omitempty"`
-	Shipment      *URL `json:"shipment,omitempty"`
-	Settlement    *URL `json:"settlement,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+ Self          *URL `json:"self,omitempty"`
+ Payment       *URL `json:"payment,omitempty"`
+ Shipment      *URL `json:"shipment,omitempty"`
+ Settlement    *URL `json:"settlement,omitempty"`
+ Documentation *URL `json:"documentation,omitempty"`
 }
 ```
 
@@ -178,11 +178,11 @@ CaptureLinks contains relevant links for a capture object.
 
 ```go
 type CapturesList struct {
-	Count    int `json:"count,omitempty"`
-	Embedded struct {
-		Captures []*Capture
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"_links,omitempty"`
+ Count    int `json:"count,omitempty"`
+ Embedded struct {
+  Captures []*Capture
+ } `json:"_embedded,omitempty"`
+ Links PaginationLinks `json:"_links,omitempty"`
 }
 ```
 
@@ -196,7 +196,7 @@ type CapturesService service
 
 CapturesService operates over captures resource.
 
-#### func (\*CapturesService) Get
+#### func (*CapturesService) Get
 
 ```go
 func (cs *CapturesService) Get(ctx context.Context, payment, capture string) (res *Response, c *Capture, err error)
@@ -205,9 +205,9 @@ func (cs *CapturesService) Get(ctx context.Context, payment, capture string) (re
 Get retrieves a single capture by its ID. Note the original payment’s ID is
 needed as well.
 
-See: https://docs.mollie.com/reference/v2/captures-api/get-capture
+See: <https://docs.mollie.com/reference/v2/captures-api/get-capture>
 
-#### func (\*CapturesService) List
+#### func (*CapturesService) List
 
 ```go
 func (cs *CapturesService) List(ctx context.Context, payment string) (res *Response, cl *CapturesList, err error)
@@ -215,7 +215,7 @@ func (cs *CapturesService) List(ctx context.Context, payment string) (res *Respo
 
 List retrieves all captures for a certain payment.
 
-See: https://docs.mollie.com/reference/v2/captures-api/list-captures
+See: <https://docs.mollie.com/reference/v2/captures-api/list-captures>
 
 #### type CardLabel
 
@@ -227,19 +227,19 @@ CardLabel Note that not all labels can be processed through Mollie.
 
 ```go
 const (
-	AmericaExpress CardLabel = "American Express"
-	CartaSi        CardLabel = "Carta Si"
-	CarteBleue     CardLabel = "Carte Bleue"
-	Dankort        CardLabel = "Dankort"
-	DinersClub     CardLabel = "Diners Club"
-	Discover       CardLabel = "Discover"
-	JCB            CardLabel = "JCB"
-	Laser          CardLabel = "Laser"
-	Maestro        CardLabel = "Maestro"
-	Mastercard     CardLabel = "Mastercard"
-	Unionpay       CardLabel = "Unionpay"
-	Visa           CardLabel = "Visa"
-	Empty          CardLabel = "null"
+ AmericaExpress CardLabel = "American Express"
+ CartaSi        CardLabel = "Carta Si"
+ CarteBleue     CardLabel = "Carte Bleue"
+ Dankort        CardLabel = "Dankort"
+ DinersClub     CardLabel = "Diners Club"
+ Discover       CardLabel = "Discover"
+ JCB            CardLabel = "JCB"
+ Laser          CardLabel = "Laser"
+ Maestro        CardLabel = "Maestro"
+ Mastercard     CardLabel = "Mastercard"
+ Unionpay       CardLabel = "Unionpay"
+ Visa           CardLabel = "Visa"
+ Empty          CardLabel = "null"
 )
 ```
 
@@ -255,27 +255,27 @@ CategoryCode specifies an industry or category.
 
 ```go
 const (
-	BookMagazinesAndNewspapers          CategoryCode = 5192
-	GeneralMerchandise                  CategoryCode = 5399
-	FoodAndDrinks                       CategoryCode = 5499
-	AutomotiveProducts                  CategoryCode = 5533
-	ChildrenProducts                    CategoryCode = 5641
-	ClothingAndShoes                    CategoryCode = 5651
-	MarketplaceCrowdfundingAndDonations CategoryCode = 5262
-	ElectronicsComputersAndSoftware     CategoryCode = 5732
-	HostingOrVpnServices                CategoryCode = 5734
-	Entertainment                       CategoryCode = 5735
-	CreditsOrVouchersOrGiftCards        CategoryCode = 5815
-	Alcohol                             CategoryCode = 5921
-	JewelryAndAccessories               CategoryCode = 5944
-	HealthAndBeautyProducts             CategoryCode = 5977
-	FinancialServices                   CategoryCode = 6012
-	Consultancy                         CategoryCode = 7299
-	TravelRentalAndTransportation       CategoryCode = 7999
-	AdvisingOrCoachingOrTraining        CategoryCode = 8299
-	CharityAndDonations                 CategoryCode = 8398
-	PoliticalParties                    CategoryCode = 8699
-	Others                              CategoryCode = 0
+ BookMagazinesAndNewspapers          CategoryCode = 5192
+ GeneralMerchandise                  CategoryCode = 5399
+ FoodAndDrinks                       CategoryCode = 5499
+ AutomotiveProducts                  CategoryCode = 5533
+ ChildrenProducts                    CategoryCode = 5641
+ ClothingAndShoes                    CategoryCode = 5651
+ MarketplaceCrowdfundingAndDonations CategoryCode = 5262
+ ElectronicsComputersAndSoftware     CategoryCode = 5732
+ HostingOrVpnServices                CategoryCode = 5734
+ Entertainment                       CategoryCode = 5735
+ CreditsOrVouchersOrGiftCards        CategoryCode = 5815
+ Alcohol                             CategoryCode = 5921
+ JewelryAndAccessories               CategoryCode = 5944
+ HealthAndBeautyProducts             CategoryCode = 5977
+ FinancialServices                   CategoryCode = 6012
+ Consultancy                         CategoryCode = 7299
+ TravelRentalAndTransportation       CategoryCode = 7999
+ AdvisingOrCoachingOrTraining        CategoryCode = 8299
+ CharityAndDonations                 CategoryCode = 8398
+ PoliticalParties                    CategoryCode = 8699
+ Others                              CategoryCode = 0
 )
 ```
 
@@ -285,14 +285,14 @@ Available category codes.
 
 ```go
 type Chargeback struct {
-	Resource         string          `json:"resource,omitempty"`
-	ID               string          `json:"id,omitempty"`
-	Amount           *Amount         `json:"amount,omitempty"`
-	SettlementAmount *Amount         `json:"settlementAmount,omitempty"`
-	CreatedAt        *time.Time      `json:"createdAt,omitempty"`
-	ReversedAt       *time.Time      `json:"reversedAt,omitempty"`
-	PaymentID        string          `json:"paymentId,omitempty"`
-	Links            ChargebackLinks `json:"_links,omitempty"`
+ Resource         string          `json:"resource,omitempty"`
+ ID               string          `json:"id,omitempty"`
+ Amount           *Amount         `json:"amount,omitempty"`
+ SettlementAmount *Amount         `json:"settlementAmount,omitempty"`
+ CreatedAt        *time.Time      `json:"createdAt,omitempty"`
+ ReversedAt       *time.Time      `json:"reversedAt,omitempty"`
+ PaymentID        string          `json:"paymentId,omitempty"`
+ Links            ChargebackLinks `json:"_links,omitempty"`
 }
 ```
 
@@ -303,10 +303,10 @@ bank.
 
 ```go
 type ChargebackLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Payment       *URL `json:"payment,omitempty"`
-	Settlement    *URL `json:"settlement,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+ Self          *URL `json:"self,omitempty"`
+ Payment       *URL `json:"payment,omitempty"`
+ Settlement    *URL `json:"settlement,omitempty"`
+ Documentation *URL `json:"documentation,omitempty"`
 }
 ```
 
@@ -317,8 +317,8 @@ chargeback object.
 
 ```go
 type ChargebackOptions struct {
-	Include string `url:"include,omitempty"`
-	Embed   string `url:"embed,omitempty"`
+ Include string `url:"include,omitempty"`
+ Embed   string `url:"embed,omitempty"`
 }
 ```
 
@@ -328,11 +328,11 @@ ChargebackOptions describes chargeback endpoint valid query string parameters.
 
 ```go
 type ChargebacksList struct {
-	Count    int `json:"count,omitempty"`
-	Embedded struct {
-		Chargebacks []Chargeback
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"_links,omitempty"`
+ Count    int `json:"count,omitempty"`
+ Embedded struct {
+  Chargebacks []Chargeback
+ } `json:"_embedded,omitempty"`
+ Links PaginationLinks `json:"_links,omitempty"`
 }
 ```
 
@@ -342,11 +342,11 @@ ChargebacksList describes how a list of chargebacks will be retrieved by Mollie.
 
 ```go
 type ChargebacksListOptions struct {
-	From      string `url:"from,omitempty"`
-	Limit     int    `url:"limit,omitempty"`
-	Include   string `url:"include,omitempty"`
-	Embed     string `url:"embed,omitempty"`
-	ProfileID string `url:"profileId,omitempty"`
+ From      string `url:"from,omitempty"`
+ Limit     int    `url:"limit,omitempty"`
+ Include   string `url:"include,omitempty"`
+ Embed     string `url:"embed,omitempty"`
+ ProfileID string `url:"profileId,omitempty"`
 }
 ```
 
@@ -361,7 +361,7 @@ type ChargebacksService service
 
 ChargebacksService instance operates over chargeback resources.
 
-#### func (\*ChargebacksService) Get
+#### func (*ChargebacksService) Get
 
 ```go
 func (cs *ChargebacksService) Get(ctx context.Context, payment, chargeback string, opts *ChargebackOptions) (res *Response, p *Chargeback, err error)
@@ -370,9 +370,9 @@ func (cs *ChargebacksService) Get(ctx context.Context, payment, chargeback strin
 Get retrieves a single chargeback by its ID. Note the original payment’s ID is
 needed as well.
 
-See: https://docs.mollie.com/reference/v2/chargebacks-api/get-chargeback
+See: <https://docs.mollie.com/reference/v2/chargebacks-api/get-chargeback>
 
-#### func (\*ChargebacksService) List
+#### func (*ChargebacksService) List
 
 ```go
 func (cs *ChargebacksService) List(ctx context.Context, options *ChargebacksListOptions) (res *Response, cl *ChargebacksList, err error)
@@ -380,9 +380,9 @@ func (cs *ChargebacksService) List(ctx context.Context, options *ChargebacksList
 
 List retrieves a list of chargebacks associated with your account/organization.
 
-See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
+See: <https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks>
 
-#### func (\*ChargebacksService) ListForPayment
+#### func (*ChargebacksService) ListForPayment
 
 ```go
 func (cs *ChargebacksService) ListForPayment(ctx context.Context, payment string, options *ChargebacksListOptions) (res *Response, cl *ChargebacksList, err error)
@@ -390,40 +390,40 @@ func (cs *ChargebacksService) ListForPayment(ctx context.Context, payment string
 
 ListForPayment retrieves a list of chargebacks associated with a single payment.
 
-See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
+See: <https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks>
 
 #### type Client
 
 ```go
 type Client struct {
-	BaseURL *url.URL
+ BaseURL *url.URL
 
-	// Services
-	Payments       *PaymentsService
-	Chargebacks    *ChargebacksService
-	PaymentMethods *PaymentMethodsService
-	Invoices       *InvoicesService
-	Organizations  *OrganizationsService
-	Profiles       *ProfilesService
-	Refunds        *RefundsService
-	Shipments      *ShipmentsService
-	Orders         *OrdersService
-	Settlements    *SettlementsService
-	Captures       *CapturesService
-	Subscriptions  *SubscriptionsService
-	Customers      *CustomersService
-	Miscellaneous  *MiscellaneousService
-	Mandates       *MandatesService
-	Permissions    *PermissionsService
-	Onboarding     *OnboardingService
-	PaymentLinks   *PaymentLinksService
-	Partners       *PartnerService
+ // Services
+ Payments       *PaymentsService
+ Chargebacks    *ChargebacksService
+ PaymentMethods *PaymentMethodsService
+ Invoices       *InvoicesService
+ Organizations  *OrganizationsService
+ Profiles       *ProfilesService
+ Refunds        *RefundsService
+ Shipments      *ShipmentsService
+ Orders         *OrdersService
+ Settlements    *SettlementsService
+ Captures       *CapturesService
+ Subscriptions  *SubscriptionsService
+ Customers      *CustomersService
+ Miscellaneous  *MiscellaneousService
+ Mandates       *MandatesService
+ Permissions    *PermissionsService
+ Onboarding     *OnboardingService
+ PaymentLinks   *PaymentLinksService
+ Partners       *PartnerService
 }
 ```
 
 Client manages communication with Mollie's API.
 
-#### func NewClient
+#### func  NewClient
 
 ```go
 func NewClient(baseClient *http.Client, conf *Config) (mollie *Client, err error)
@@ -439,7 +439,7 @@ to the provided Config object.
 You can also set the token values programmatically by using the Client
 WithAPIKey and WithOrganizationKey functions.
 
-#### func (\*Client) Do
+#### func (*Client) Do
 
 ```go
 func (c *Client) Do(req *http.Request) (*Response, error)
@@ -448,7 +448,7 @@ func (c *Client) Do(req *http.Request) (*Response, error)
 Do sends an API request and returns the API response or returned as an error if
 an API error has occurred.
 
-#### func (\*Client) HasAccessToken
+#### func (*Client) HasAccessToken
 
 ```go
 func (c *Client) HasAccessToken() bool
@@ -458,9 +458,9 @@ HasAccessToken will return true when the provided authentication token complies
 with the access token REGEXP match check. This will enable TestMode inside the
 request body.
 
-See: https://github.com/VictorAvelar/mollie-api-go/issues/123
+See: <https://github.com/VictorAvelar/mollie-api-go/issues/123>
 
-#### func (\*Client) NewAPIRequest
+#### func (*Client) NewAPIRequest
 
 ```go
 func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, body interface{}) (req *http.Request, err error)
@@ -471,7 +471,7 @@ NewAPIRequest is a wrapper around the http.NewRequest function.
 It will setup the authentication headers/parameters according to the client
 config.
 
-#### func (\*Client) WithAuthenticationValue
+#### func (*Client) WithAuthenticationValue
 
 ```go
 func (c *Client) WithAuthenticationValue(k string) error
@@ -488,8 +488,8 @@ management engine. This should only be used when environment variables are
 
 ```go
 type Commission struct {
-	Count       int     `json:"count,omitempty"`
-	TotalAmount *Amount `json:"totalAmount,omitempty"`
+ Count       int     `json:"count,omitempty"`
+ TotalAmount *Amount `json:"totalAmount,omitempty"`
 }
 ```
 
@@ -504,7 +504,7 @@ type Config struct {
 
 Config contains information that helps during the setup of a new Mollie client.
 
-#### func NewConfig
+#### func  NewConfig
 
 ```go
 func NewConfig(t bool, auth string) *Config
@@ -518,9 +518,9 @@ authentication method we want to use.
 
 ```go
 type CreateShipmentRequest struct {
-	Lines    []OrderLine      `json:"lines,omitempty"`
-	Tracking ShipmentTracking `json:"tracking,omitempty"`
-	TestMode bool             `json:"testmode,omitempty"`
+ Lines    []OrderLine      `json:"lines,omitempty"`
+ Tracking ShipmentTracking `json:"tracking,omitempty"`
+ TestMode bool             `json:"testmode,omitempty"`
 }
 ```
 
@@ -530,15 +530,15 @@ CreateShipmentRequest defines information required to create a new shipment.
 
 ```go
 type Customer struct {
-	Resource  string        `json:"resource,omitempty"`
-	ID        string        `json:"id,omitempty"`
-	Mode      Mode          `json:"mode,omitempty"`
-	Name      string        `json:"name,omitempty"`
-	Email     string        `json:"email,omitempty"`
-	Locale    Locale        `json:"locale,omitempty"`
-	Metadata  interface{}   `json:"metadata,omitempty"`
-	CreatedAt *time.Time    `json:"createdAt,omitempty"`
-	Links     CustomerLinks `json:"_links,omitempty"`
+ Resource  string        `json:"resource,omitempty"`
+ ID        string        `json:"id,omitempty"`
+ Mode      Mode          `json:"mode,omitempty"`
+ Name      string        `json:"name,omitempty"`
+ Email     string        `json:"email,omitempty"`
+ Locale    Locale        `json:"locale,omitempty"`
+ Metadata  interface{}   `json:"metadata,omitempty"`
+ CreatedAt *time.Time    `json:"createdAt,omitempty"`
+ Links     CustomerLinks `json:"_links,omitempty"`
 }
 ```
 
@@ -548,12 +548,12 @@ Customer represents buyers.
 
 ```go
 type CustomerLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Mandates      *URL `json:"mandates,omitempty"`
-	Subscriptions *URL `json:"subscriptions,omitempty"`
-	Payments      *URL `json:"payments,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
-	Dashboard     *URL `json:"dashboard,omitempty"`
+ Self          *URL `json:"self,omitempty"`
+ Mandates      *URL `json:"mandates,omitempty"`
+ Subscriptions *URL `json:"subscriptions,omitempty"`
+ Payments      *URL `json:"payments,omitempty"`
+ Documentation *URL `json:"documentation,omitempty"`
+ Dashboard     *URL `json:"dashboard,omitempty"`
 }
 ```
 
@@ -563,11 +563,11 @@ CustomerLinks contains the HAL resources for a customer response.
 
 ```go
 type CustomersList struct {
-	Count    int `json:"count,omitempty"`
-	Embedded struct {
-		Customers []Customer `json:"customers,omitempty"`
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"links,omitempty"`
+ Count    int `json:"count,omitempty"`
+ Embedded struct {
+  Customers []Customer `json:"customers,omitempty"`
+ } `json:"_embedded,omitempty"`
+ Links PaginationLinks `json:"links,omitempty"`
 }
 ```
 
@@ -578,11 +578,11 @@ paginated response.
 
 ```go
 type CustomersListOptions struct {
-	From         string       `url:"from,omitempty"`
-	Limit        int          `url:"limit,omitempty"`
-	ProfileID    string       `url:"profileId,omitempty"`
-	SequenceType SequenceType `url:"sequenceType,omitempty"`
-	RedirectURL  string       `url:"redirectUrl,omitempty"`
+ From         string       `url:"from,omitempty"`
+ Limit        int          `url:"limit,omitempty"`
+ ProfileID    string       `url:"profileId,omitempty"`
+ SequenceType SequenceType `url:"sequenceType,omitempty"`
+ RedirectURL  string       `url:"redirectUrl,omitempty"`
 }
 ```
 
@@ -597,7 +597,7 @@ type CustomersService service
 
 CustomersService operates over the customer resource.
 
-#### func (\*CustomersService) Create
+#### func (*CustomersService) Create
 
 ```go
 func (cs *CustomersService) Create(ctx context.Context, c Customer) (res *Response, cc *Customer, err error)
@@ -606,9 +606,9 @@ func (cs *CustomersService) Create(ctx context.Context, c Customer) (res *Respon
 Create creates a simple minimal representation of a customer in the Mollie API
 to use for the Mollie Checkout and Recurring features.
 
-See: https://docs.mollie.com/reference/v2/customers-api/create-customer
+See: <https://docs.mollie.com/reference/v2/customers-api/create-customer>
 
-#### func (\*CustomersService) CreatePayment
+#### func (*CustomersService) CreatePayment
 
 ```go
 func (cs *CustomersService) CreatePayment(ctx context.Context, id string, p Payment) (res *Response, pp *Payment, err error)
@@ -616,9 +616,9 @@ func (cs *CustomersService) CreatePayment(ctx context.Context, id string, p Paym
 
 CreatePayment creates a payment for the customer.
 
-See: https://docs.mollie.com/reference/v2/customers-api/create-customer-payment
+See: <https://docs.mollie.com/reference/v2/customers-api/create-customer-payment>
 
-#### func (\*CustomersService) Delete
+#### func (*CustomersService) Delete
 
 ```go
 func (cs *CustomersService) Delete(ctx context.Context, id string) (res *Response, err error)
@@ -629,9 +629,9 @@ Delete a customer.
 All mandates and subscriptions created for this customer will be canceled as
 well.
 
-See: https://docs.mollie.com/reference/v2/customers-api/delete-customer
+See: <https://docs.mollie.com/reference/v2/customers-api/delete-customer>
 
-#### func (\*CustomersService) Get
+#### func (*CustomersService) Get
 
 ```go
 func (cs *CustomersService) Get(ctx context.Context, id string) (res *Response, c *Customer, err error)
@@ -639,9 +639,9 @@ func (cs *CustomersService) Get(ctx context.Context, id string) (res *Response, 
 
 Get finds a customer by its ID.
 
-See: https://docs.mollie.com/reference/v2/customers-api/get-customer
+See: <https://docs.mollie.com/reference/v2/customers-api/get-customer>
 
-#### func (\*CustomersService) GetPayments
+#### func (*CustomersService) GetPayments
 
 ```go
 func (cs *CustomersService) GetPayments(ctx context.Context, id string, options *CustomersListOptions) (res *Response, pl *PaymentList, err error)
@@ -649,9 +649,9 @@ func (cs *CustomersService) GetPayments(ctx context.Context, id string, options 
 
 GetPayments retrieves all payments linked to the customer.
 
-See: https://docs.mollie.com/reference/v2/customers-api/list-customer-payments
+See: <https://docs.mollie.com/reference/v2/customers-api/list-customer-payments>
 
-#### func (\*CustomersService) List
+#### func (*CustomersService) List
 
 ```go
 func (cs *CustomersService) List(ctx context.Context, options *CustomersListOptions) (res *Response, cl *CustomersList, err error)
@@ -659,9 +659,9 @@ func (cs *CustomersService) List(ctx context.Context, options *CustomersListOpti
 
 List retrieves all customers created.
 
-See: https://docs.mollie.com/reference/v2/customers-api/list-customers
+See: <https://docs.mollie.com/reference/v2/customers-api/list-customers>
 
-#### func (\*CustomersService) Update
+#### func (*CustomersService) Update
 
 ```go
 func (cs *CustomersService) Update(ctx context.Context, id string, c Customer) (res *Response, cc *Customer, err error)
@@ -669,7 +669,7 @@ func (cs *CustomersService) Update(ctx context.Context, id string, c Customer) (
 
 Update an existing customer.
 
-See: https://docs.mollie.com/reference/v2/customers-api/update-customer
+See: <https://docs.mollie.com/reference/v2/customers-api/update-customer>
 
 #### type EligibilityReasons
 
@@ -681,13 +681,13 @@ EligibilityReasons for paypal seller protection.
 
 ```go
 const (
-	Eligible                        EligibilityReasons = "Eligible"
-	Ineligible                      EligibilityReasons = "Ineligible"
-	INROnly                         EligibilityReasons = "Partially Eligible - INR Only"
-	AuthOnly                        EligibilityReasons = "Partially Eligible - Unauth Only"
-	PartiallyEligible               EligibilityReasons = "PartiallyEligible"
-	EligibilityNone                 EligibilityReasons = "None"
-	ActiveFraudControlUnAuthPremium EligibilityReasons = "Active Fraud Control - Unauth Premium Eligible"
+ Eligible                        EligibilityReasons = "Eligible"
+ Ineligible                      EligibilityReasons = "Ineligible"
+ INROnly                         EligibilityReasons = "Partially Eligible - INR Only"
+ AuthOnly                        EligibilityReasons = "Partially Eligible - Unauth Only"
+ PartiallyEligible               EligibilityReasons = "PartiallyEligible"
+ EligibilityNone                 EligibilityReasons = "None"
+ ActiveFraudControlUnAuthPremium EligibilityReasons = "Active Fraud Control - Unauth Premium Eligible"
 )
 ```
 
@@ -703,10 +703,10 @@ EmbedValue describes the valid value of embed query string.
 
 ```go
 const (
-	EmbedPayment     EmbedValue = "payment"
-	EmbedRefund      EmbedValue = "refund"
-	EmbedShipments   EmbedValue = "shipments"
-	EmbedChangebacks EmbedValue = "chanrgebacks"
+ EmbedPayment     EmbedValue = "payments"
+ EmbedRefund      EmbedValue = "refunds"
+ EmbedShipments   EmbedValue = "shipments"
+ EmbedChangebacks EmbedValue = "chanrgebacks"
 )
 ```
 
@@ -716,7 +716,7 @@ Valid Embed query string value.
 
 ```go
 type ErrorLinks struct {
-	Documentation *URL `json:"documentation,omitempty"`
+ Documentation *URL `json:"documentation,omitempty"`
 }
 ```
 
@@ -732,18 +732,18 @@ FailureReason provides a description on a failed payment.
 
 ```go
 const (
-	ReasonAuthenticationAbandoned      FailureReason = "authentication_abandoned"
-	ReasonAuthenticationUnavailableACS FailureReason = "authentication_unavailable_acs"
-	ReasonInvalidCardNumber            FailureReason = "invalid_card_number"
-	ReasonInvalidCCV                   FailureReason = "invalid_ccv"
-	ReasonInvalidCardHolderName        FailureReason = "invalid_card_holder_name"
-	ReasonCardExpired                  FailureReason = "card_expired"
-	ReasonInvalidCardType              FailureReason = "invalid_card_type"
-	ReasonRefusedByIssuer              FailureReason = "refused_by_issuer"
-	ReasonInsufficientFunds            FailureReason = "insufficient_funds"
-	ReasonInactiveCard                 FailureReason = "inactive_card"
-	ReasonUnknown                      FailureReason = "unknown_reason"
-	ReasonPossibleFraud                FailureReason = "possible_fraud"
+ ReasonAuthenticationAbandoned      FailureReason = "authentication_abandoned"
+ ReasonAuthenticationUnavailableACS FailureReason = "authentication_unavailable_acs"
+ ReasonInvalidCardNumber            FailureReason = "invalid_card_number"
+ ReasonInvalidCCV                   FailureReason = "invalid_ccv"
+ ReasonInvalidCardHolderName        FailureReason = "invalid_card_holder_name"
+ ReasonCardExpired                  FailureReason = "card_expired"
+ ReasonInvalidCardType              FailureReason = "invalid_card_type"
+ ReasonRefusedByIssuer              FailureReason = "refused_by_issuer"
+ ReasonInsufficientFunds            FailureReason = "insufficient_funds"
+ ReasonInactiveCard                 FailureReason = "inactive_card"
+ ReasonUnknown                      FailureReason = "unknown_reason"
+ ReasonPossibleFraud                FailureReason = "possible_fraud"
 )
 ```
 
@@ -759,11 +759,11 @@ FeeRegion contains the fee region for the payment.
 
 ```go
 const (
-	AmericanExpress FeeRegion = "american-express"
-	CarteBancaire   FeeRegion = "carte-bancaire"
-	IntraEU         FeeRegion = "intra-eu"
-	MaestroRegion   FeeRegion = "maestro"
-	Other           FeeRegion = "other"
+ AmericanExpress FeeRegion = "american-express"
+ CarteBancaire   FeeRegion = "carte-bancaire"
+ IntraEU         FeeRegion = "intra-eu"
+ MaestroRegion   FeeRegion = "maestro"
+ Other           FeeRegion = "other"
 )
 ```
 
@@ -773,7 +773,7 @@ Valid Fee regions.
 
 ```go
 type GetPartnerClientOptions struct {
-	Embed string `url:"embed,omitempty"`
+ Embed string `url:"embed,omitempty"`
 }
 ```
 
@@ -784,11 +784,11 @@ endpoint.
 
 ```go
 type GiftCardEnabled struct {
-	Resource    string               `json:"resource,omitempty"`
-	ID          GiftCardIssuer       `json:"id,omitempty"`
-	Description string               `json:"description,omitempty"`
-	Status      GiftCardIssuerStatus `json:"status,omitempty"`
-	Links       GiftCardLinks        `json:"_links,omitempty"`
+ Resource    string               `json:"resource,omitempty"`
+ ID          GiftCardIssuer       `json:"id,omitempty"`
+ Description string               `json:"description,omitempty"`
+ Status      GiftCardIssuerStatus `json:"status,omitempty"`
+ Links       GiftCardLinks        `json:"_links,omitempty"`
 }
 ```
 
@@ -804,37 +804,37 @@ GiftCardIssuer type describes issuers supported by mollie.
 
 ```go
 const (
-	BloemenCadeuKaart          GiftCardIssuer = "bloemencadeaukaart"
-	BloemPlantGiftCard         GiftCardIssuer = "bloemplantgiftcard"
-	Boekenbon                  GiftCardIssuer = "boekenbon"
-	DecaudeuKaart              GiftCardIssuer = "decadeaukaart"
-	DelokaleDecauKaart         GiftCardIssuer = "delokalecadeaukaart"
-	Dinercadeau                GiftCardIssuer = "dinercadeau"
-	Doenkadotickets            GiftCardIssuer = "doenkadotickets"
-	Fashioncheque              GiftCardIssuer = "fashioncheque"
-	Festivalcadeau             GiftCardIssuer = "festivalcadeau"
-	Good4fun                   GiftCardIssuer = "good4fun"
-	HuistuinCadeauKaart        GiftCardIssuer = "huistuincadeaukaart"
-	JewelCard                  GiftCardIssuer = "jewelcard"
-	KlusCadeu                  GiftCardIssuer = "kluscadeau"
-	Kunstencultuurcadeaukaart  GiftCardIssuer = "kunstencultuurcadeaukaart"
-	Nationalebioscoopbon       GiftCardIssuer = "nationalebioscoopbon"
-	Nationaleentertainmentcard GiftCardIssuer = "nationaleentertainmentcard"
-	Nationalegolfbon           GiftCardIssuer = "nationalegolfbon"
-	Ohmygood                   GiftCardIssuer = "ohmygood"
-	Podiumcadeaukaart          GiftCardIssuer = "podiumcadeaukaart"
-	Reiscadeau                 GiftCardIssuer = "reiscadeau"
-	Restaurantcadeau           GiftCardIssuer = "restaurantcadeau"
-	SodexoSportCulturePass     GiftCardIssuer = "sodexosportculturepass"
-	Sportenfitcadeau           GiftCardIssuer = "sportenfitcadeau"
-	Sustainablefashion         GiftCardIssuer = "sustainablefashion"
-	Travelcheq                 GiftCardIssuer = "travelcheq"
-	Vvvgiftcard                GiftCardIssuer = "vvvgiftcard"
-	Vvvdinercheque             GiftCardIssuer = "vvvdinercheque"
-	Vvvlekkerweg               GiftCardIssuer = "vvvlekkerweg"
-	Webshopgiftcard            GiftCardIssuer = "webshopgiftcard"
-	Wijncadeukaart             GiftCardIssuer = "wijncadeaukaart"
-	Yourgift                   GiftCardIssuer = "yourgift"
+ BloemenCadeuKaart          GiftCardIssuer = "bloemencadeaukaart"
+ BloemPlantGiftCard         GiftCardIssuer = "bloemplantgiftcard"
+ Boekenbon                  GiftCardIssuer = "boekenbon"
+ DecaudeuKaart              GiftCardIssuer = "decadeaukaart"
+ DelokaleDecauKaart         GiftCardIssuer = "delokalecadeaukaart"
+ Dinercadeau                GiftCardIssuer = "dinercadeau"
+ Doenkadotickets            GiftCardIssuer = "doenkadotickets"
+ Fashioncheque              GiftCardIssuer = "fashioncheque"
+ Festivalcadeau             GiftCardIssuer = "festivalcadeau"
+ Good4fun                   GiftCardIssuer = "good4fun"
+ HuistuinCadeauKaart        GiftCardIssuer = "huistuincadeaukaart"
+ JewelCard                  GiftCardIssuer = "jewelcard"
+ KlusCadeu                  GiftCardIssuer = "kluscadeau"
+ Kunstencultuurcadeaukaart  GiftCardIssuer = "kunstencultuurcadeaukaart"
+ Nationalebioscoopbon       GiftCardIssuer = "nationalebioscoopbon"
+ Nationaleentertainmentcard GiftCardIssuer = "nationaleentertainmentcard"
+ Nationalegolfbon           GiftCardIssuer = "nationalegolfbon"
+ Ohmygood                   GiftCardIssuer = "ohmygood"
+ Podiumcadeaukaart          GiftCardIssuer = "podiumcadeaukaart"
+ Reiscadeau                 GiftCardIssuer = "reiscadeau"
+ Restaurantcadeau           GiftCardIssuer = "restaurantcadeau"
+ SodexoSportCulturePass     GiftCardIssuer = "sodexosportculturepass"
+ Sportenfitcadeau           GiftCardIssuer = "sportenfitcadeau"
+ Sustainablefashion         GiftCardIssuer = "sustainablefashion"
+ Travelcheq                 GiftCardIssuer = "travelcheq"
+ Vvvgiftcard                GiftCardIssuer = "vvvgiftcard"
+ Vvvdinercheque             GiftCardIssuer = "vvvdinercheque"
+ Vvvlekkerweg               GiftCardIssuer = "vvvlekkerweg"
+ Webshopgiftcard            GiftCardIssuer = "webshopgiftcard"
+ Wijncadeukaart             GiftCardIssuer = "wijncadeaukaart"
+ Yourgift                   GiftCardIssuer = "yourgift"
 )
 ```
 
@@ -850,8 +850,8 @@ GiftCardIssuerStatus describes the status of a gift card issuer in your account.
 
 ```go
 const (
-	PendingIssuer GiftCardIssuerStatus = "pending-issuer"
-	EnabledIssuer GiftCardIssuerStatus = "enabled"
+ PendingIssuer GiftCardIssuerStatus = "pending-issuer"
+ EnabledIssuer GiftCardIssuerStatus = "enabled"
 )
 ```
 
@@ -861,8 +861,8 @@ Valid issuer statuses.
 
 ```go
 type GiftCardLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+ Self          *URL `json:"self,omitempty"`
+ Documentation *URL `json:"documentation,omitempty"`
 }
 ```
 
@@ -872,9 +872,9 @@ GiftCardLinks are links embedded when a gift card is enabled.
 
 ```go
 type Image struct {
-	Size1x string `json:"size1X,omitempty"`
-	Size2X string `json:"size2X,omitempty"`
-	Svg    string `json:"svg,omitempty"`
+ Size1x string `json:"size1X,omitempty"`
+ Size2X string `json:"size2X,omitempty"`
+ Svg    string `json:"svg,omitempty"`
 }
 ```
 
@@ -884,19 +884,19 @@ Image describes a generic image resource retrieved by Mollie.
 
 ```go
 type Invoice struct {
-	Resource    string        `json:"resource,omitempty"`
-	ID          string        `json:"id,omitempty"`
-	Reference   string        `json:"reference,omitempty"`
-	VatNumber   string        `json:"vatNumber,omitempty"`
-	Status      InvoiceStatus `json:"status,omitempty"`
-	IssuedAt    string        `json:"issuedAt,omitempty"`
-	PaidAt      string        `json:"paidAt,omitempty"`
-	DueAt       string        `json:"dueAt,omitempty"`
-	NetAmount   *Amount       `json:"netAmount,omitempty"`
-	VatAmount   *Amount       `json:"vatAmount,omitempty"`
-	GrossAmount *Amount       `json:"grossAmount,omitempty"`
-	Lines       []*LineItem   `json:"lines,omitempty"`
-	Links       InvoiceLinks  `json:"_links,omitempty"`
+ Resource    string        `json:"resource,omitempty"`
+ ID          string        `json:"id,omitempty"`
+ Reference   string        `json:"reference,omitempty"`
+ VatNumber   string        `json:"vatNumber,omitempty"`
+ Status      InvoiceStatus `json:"status,omitempty"`
+ IssuedAt    string        `json:"issuedAt,omitempty"`
+ PaidAt      string        `json:"paidAt,omitempty"`
+ DueAt       string        `json:"dueAt,omitempty"`
+ NetAmount   *Amount       `json:"netAmount,omitempty"`
+ VatAmount   *Amount       `json:"vatAmount,omitempty"`
+ GrossAmount *Amount       `json:"grossAmount,omitempty"`
+ Lines       []*LineItem   `json:"lines,omitempty"`
+ Links       InvoiceLinks  `json:"_links,omitempty"`
 }
 ```
 
@@ -906,9 +906,9 @@ Invoice describes an invoice details.
 
 ```go
 type InvoiceLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	PDF           *URL `json:"pdf,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+ Self          *URL `json:"self,omitempty"`
+ PDF           *URL `json:"pdf,omitempty"`
+ Documentation *URL `json:"documentation,omitempty"`
 }
 ```
 
@@ -925,9 +925,9 @@ InvoiceStatus status of the invoice.
 
 ```go
 const (
-	InvoiceStatusOpen    InvoiceStatus = "open"
-	InvoiceStatusPaid    InvoiceStatus = "paid"
-	InvoiceStatusOverdue InvoiceStatus = "overdue"
+ InvoiceStatusOpen    InvoiceStatus = "open"
+ InvoiceStatusPaid    InvoiceStatus = "paid"
+ InvoiceStatusOverdue InvoiceStatus = "overdue"
 )
 ```
 
@@ -937,11 +937,11 @@ Valid status of the invoice.
 
 ```go
 type InvoicesList struct {
-	Count    int `json:"count,omitempty"`
-	Embedded struct {
-		Invoices []Invoice `json:"invoices"`
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"_links,omitempty"`
+ Count    int `json:"count,omitempty"`
+ Embedded struct {
+  Invoices []Invoice `json:"invoices"`
+ } `json:"_embedded,omitempty"`
+ Links PaginationLinks `json:"_links,omitempty"`
 }
 ```
 
@@ -951,10 +951,10 @@ InvoicesList describes how a list of invoices will be retrieved by Mollie.
 
 ```go
 type InvoicesListOptions struct {
-	Reference string `url:"reference,omitempty"`
-	Year      string `url:"year,omitempty"`
-	From      string `url:"from,omitempty"`
-	Limit     int64  `url:"limit,omitempty"`
+ Reference string `url:"reference,omitempty"`
+ Year      string `url:"year,omitempty"`
+ From      string `url:"from,omitempty"`
+ Limit     int64  `url:"limit,omitempty"`
 }
 ```
 
@@ -969,7 +969,7 @@ type InvoicesService service
 
 InvoicesService instance operates over invoice resources.
 
-#### func (\*InvoicesService) Get
+#### func (*InvoicesService) Get
 
 ```go
 func (is *InvoicesService) Get(ctx context.Context, id string) (res *Response, i *Invoice, err error)
@@ -977,7 +977,7 @@ func (is *InvoicesService) Get(ctx context.Context, id string) (res *Response, i
 
 Get retrieve details of an invoice, using the invoice’s identifier.
 
-#### func (\*InvoicesService) List
+#### func (*InvoicesService) List
 
 ```go
 func (is *InvoicesService) List(ctx context.Context, options *InvoicesListOptions) (res *Response, il *InvoicesList, err error)
@@ -989,11 +989,11 @@ List retrieves a list of invoices associated with your account/organization.
 
 ```go
 type LineItem struct {
-	Period        string  `json:"period,omitempty"`
-	Description   string  `json:"description,omitempty"`
-	Count         int64   `json:"count,omitempty"`
-	VatPercentage float64 `json:"vatPercentage,omitempty"`
-	Amount        *Amount `json:"amount,omitempty"`
+ Period        string  `json:"period,omitempty"`
+ Description   string  `json:"description,omitempty"`
+ Count         int64   `json:"count,omitempty"`
+ VatPercentage float64 `json:"vatPercentage,omitempty"`
+ Amount        *Amount `json:"amount,omitempty"`
 }
 ```
 
@@ -1003,10 +1003,10 @@ LineItem product details.
 
 ```go
 type ListPartnerClientsOptions struct {
-	From  int `url:"from,omitempty"`
-	Limit int `url:"limit,omitempty"`
-	Year  int `url:"year,omitempty"`
-	Month int `url:"month,omitempty"`
+ From  int `url:"from,omitempty"`
+ Limit int `url:"limit,omitempty"`
+ Year  int `url:"year,omitempty"`
+ Month int `url:"month,omitempty"`
 }
 ```
 
@@ -1017,11 +1017,11 @@ endpoint.
 
 ```go
 type ListPaymentOptions struct {
-	Limit     int    `url:"limit,omitempty"`
-	Include   string `url:"include,omitempty"`
-	Embed     string `url:"embed,omitempty"`
-	ProfileID string `url:"profileId,omitempty"`
-	From      string `url:"from,omitempty"`
+ Limit     int    `url:"limit,omitempty"`
+ Include   string `url:"include,omitempty"`
+ Embed     string `url:"embed,omitempty"`
+ ProfileID string `url:"profileId,omitempty"`
+ From      string `url:"from,omitempty"`
 }
 ```
 
@@ -1032,16 +1032,16 @@ parameters.
 
 ```go
 type ListRefundOptions struct {
-	From      string     `url:"from,omitempty"`
-	Limit     int        `url:"limit,omitempty"`
-	ProfileID string     `url:"profileId,omitempty"`
-	Embed     EmbedValue `url:"embed,omitempty"`
+ From      string     `url:"from,omitempty"`
+ Limit     int        `url:"limit,omitempty"`
+ ProfileID string     `url:"profileId,omitempty"`
+ Embed     EmbedValue `url:"embed,omitempty"`
 }
 ```
 
 ListRefundOptions describes list refund endpoint valid query string parameters.
 
-See: https://docs.mollie.com/reference/v2/refunds-api/list-refunds.
+See: <https://docs.mollie.com/reference/v2/refunds-api/list-refunds>.
 
 #### type Locale
 
@@ -1053,28 +1053,28 @@ Locale represents a country and language in ISO-15897 format.
 
 ```go
 const (
-	English       Locale = "en_US"
-	EnglishGB     Locale = "en_GB"
-	Dutch         Locale = "nl_NL"
-	DutchBelgium  Locale = "nl_BE"
-	French        Locale = "fr_FR"
-	FrenchBelgium Locale = "fr_BE"
-	German        Locale = "de_DE"
-	GermanAustria Locale = "de_AT"
-	GermanSwiss   Locale = "de_CH"
-	Spanish       Locale = "es_ES"
-	Catalan       Locale = "ca_ES"
-	Portuguese    Locale = "pt_PT"
-	Italian       Locale = "it_IT"
-	Norwegian     Locale = "nb_NO"
-	Swedish       Locale = "sv_SE"
-	Finish        Locale = "fi_FI"
-	Danish        Locale = "da_DK"
-	Icelandic     Locale = "is_IS"
-	Hungarian     Locale = "hu_HU"
-	Polish        Locale = "pl_PL"
-	Latvian       Locale = "lv_LV"
-	Lithuanian    Locale = "lt_LT"
+ English       Locale = "en_US"
+ EnglishGB     Locale = "en_GB"
+ Dutch         Locale = "nl_NL"
+ DutchBelgium  Locale = "nl_BE"
+ French        Locale = "fr_FR"
+ FrenchBelgium Locale = "fr_BE"
+ German        Locale = "de_DE"
+ GermanAustria Locale = "de_AT"
+ GermanSwiss   Locale = "de_CH"
+ Spanish       Locale = "es_ES"
+ Catalan       Locale = "ca_ES"
+ Portuguese    Locale = "pt_PT"
+ Italian       Locale = "it_IT"
+ Norwegian     Locale = "nb_NO"
+ Swedish       Locale = "sv_SE"
+ Finish        Locale = "fi_FI"
+ Danish        Locale = "da_DK"
+ Icelandic     Locale = "is_IS"
+ Hungarian     Locale = "hu_HU"
+ Polish        Locale = "pl_PL"
+ Latvian       Locale = "lv_LV"
+ Lithuanian    Locale = "lt_LT"
 )
 ```
 
@@ -1084,19 +1084,19 @@ Mollie supported locales.
 
 ```go
 type Mandate struct {
-	ID               string         `json:"id,omitempty"`
-	Resource         string         `json:"resource,omitempty"`
-	Method           PaymentMethod  `json:"method,omitempty"`
-	ConsumerName     string         `json:"consumerName,omitempty"`
-	ConsumerAccount  string         `json:"consumerAccount,omitempty"`
-	ConsumerBic      string         `json:"consumerBic,omitempty"`
-	SignatureDate    *ShortDate     `json:"signatureDate,omitempty"`
-	MandateReference string         `json:"mandateReference,omitempty"`
-	Mode             Mode           `json:"mode,omitempty"`
-	Status           MandateStatus  `json:"status,omitempty"`
-	CreatedAt        *time.Time     `json:"createdAt,omitempty"`
-	Details          MandateDetails `json:"details,omitempty"`
-	Links            MandateLinks   `json:"_links,omitempty"`
+ ID               string         `json:"id,omitempty"`
+ Resource         string         `json:"resource,omitempty"`
+ Method           PaymentMethod  `json:"method,omitempty"`
+ ConsumerName     string         `json:"consumerName,omitempty"`
+ ConsumerAccount  string         `json:"consumerAccount,omitempty"`
+ ConsumerBic      string         `json:"consumerBic,omitempty"`
+ SignatureDate    *ShortDate     `json:"signatureDate,omitempty"`
+ MandateReference string         `json:"mandateReference,omitempty"`
+ Mode             Mode           `json:"mode,omitempty"`
+ Status           MandateStatus  `json:"status,omitempty"`
+ CreatedAt        *time.Time     `json:"createdAt,omitempty"`
+ Details          MandateDetails `json:"details,omitempty"`
+ Links            MandateLinks   `json:"_links,omitempty"`
 }
 ```
 
@@ -1107,14 +1107,14 @@ recurrently.
 
 ```go
 type MandateDetails struct {
-	ConsumerName    string     `json:"consumerName,omitempty"`
-	ConsumerAccount string     `json:"consumerAccount,omitempty"`
-	ConsumerBic     string     `json:"consumerBic,omitempty"`
-	CardHolder      string     `json:"cardHolder,omitempty"`
-	CardNumber      string     `json:"cardNumber,omitempty"`
-	CardLabel       CardLabel  `json:"cardLabel,omitempty"`
-	CardFingerprint string     `json:"cardFingerprint,omitempty"`
-	CardExpiryDate  *ShortDate `json:"cardExpiryDate,omitempty"`
+ ConsumerName    string     `json:"consumerName,omitempty"`
+ ConsumerAccount string     `json:"consumerAccount,omitempty"`
+ ConsumerBic     string     `json:"consumerBic,omitempty"`
+ CardHolder      string     `json:"cardHolder,omitempty"`
+ CardNumber      string     `json:"cardNumber,omitempty"`
+ CardLabel       CardLabel  `json:"cardLabel,omitempty"`
+ CardFingerprint string     `json:"cardFingerprint,omitempty"`
+ CardExpiryDate  *ShortDate `json:"cardExpiryDate,omitempty"`
 }
 ```
 
@@ -1124,9 +1124,9 @@ MandateDetails are possible values inside the mandate.details field.
 
 ```go
 type MandateLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Customer      *URL `json:"customer,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+ Self          *URL `json:"self,omitempty"`
+ Customer      *URL `json:"customer,omitempty"`
+ Documentation *URL `json:"documentation,omitempty"`
 }
 ```
 
@@ -1142,9 +1142,9 @@ MandateStatus for the Mandate object.
 
 ```go
 const (
-	PendingMandate MandateStatus = "pending"
-	ValidMandate   MandateStatus = "valid"
-	InvalidMandate MandateStatus = "invalid"
+ PendingMandate MandateStatus = "pending"
+ ValidMandate   MandateStatus = "valid"
+ InvalidMandate MandateStatus = "invalid"
 )
 ```
 
@@ -1154,11 +1154,11 @@ Valid mandate statuses.
 
 ```go
 type MandatesList struct {
-	Count    int `json:"count,omitempty"`
-	Embedded struct {
-		Mandates []Mandate
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"_links,omitempty"`
+ Count    int `json:"count,omitempty"`
+ Embedded struct {
+  Mandates []Mandate
+ } `json:"_embedded,omitempty"`
+ Links PaginationLinks `json:"_links,omitempty"`
 }
 ```
 
@@ -1168,8 +1168,8 @@ MandatesList describes how a list of mandates will be retrieved by Mollie.
 
 ```go
 type MandatesListOptions struct {
-	From  string `url:"from,omitempty"`
-	Limit int    `url:"limit,omitempty"`
+ From  string `url:"from,omitempty"`
+ Limit int    `url:"limit,omitempty"`
 }
 ```
 
@@ -1187,7 +1187,7 @@ type MandatesService service
 
 MandatesService operates over customer mandates endpoints.
 
-#### func (\*MandatesService) Create
+#### func (*MandatesService) Create
 
 ```go
 func (ms *MandatesService) Create(ctx context.Context, customer string, mandate Mandate) (res *Response, mr *Mandate, err error)
@@ -1198,9 +1198,9 @@ Create a mandate for a specific customer.
 Mandates allow you to charge a customer’s credit card or bank account
 recurrently.
 
-See: https://docs.mollie.com/reference/v2/mandates-api/create-mandate
+See: <https://docs.mollie.com/reference/v2/mandates-api/create-mandate>
 
-#### func (\*MandatesService) Get
+#### func (*MandatesService) Get
 
 ```go
 func (ms *MandatesService) Get(ctx context.Context, customer, mandate string) (res *Response, mr *Mandate, err error)
@@ -1209,9 +1209,9 @@ func (ms *MandatesService) Get(ctx context.Context, customer, mandate string) (r
 Get retrieves a mandate by its ID and its customer’s ID. The mandate will either
 contain IBAN or credit card details, depending on the type of mandate.
 
-See: https://docs.mollie.com/reference/v2/mandates-api/get-mandate
+See: <https://docs.mollie.com/reference/v2/mandates-api/get-mandate>
 
-#### func (\*MandatesService) List
+#### func (*MandatesService) List
 
 ```go
 func (ms *MandatesService) List(ctx context.Context, customer string, options *MandatesListOptions) (res *Response, ml *MandatesList, err error)
@@ -1220,9 +1220,9 @@ func (ms *MandatesService) List(ctx context.Context, customer string, options *M
 List retrieves all mandates for the given customerId, ordered from newest to
 oldest.
 
-See: https://docs.mollie.com/reference/v2/mandates-api/list-mandates
+See: <https://docs.mollie.com/reference/v2/mandates-api/list-mandates>
 
-#### func (\*MandatesService) Revoke
+#### func (*MandatesService) Revoke
 
 ```go
 func (ms *MandatesService) Revoke(ctx context.Context, customer, mandate string) (res *Response, err error)
@@ -1233,14 +1233,14 @@ Revoke a customer’s mandate.
 You will no longer be able to charge the consumer’s bank account or credit card
 with this mandate and all connected subscriptions will be canceled.
 
-See: https://docs.mollie.com/reference/v2/mandates-api/revoke-mandate
+See: <https://docs.mollie.com/reference/v2/mandates-api/revoke-mandate>
 
 #### type MethodsLinks
 
 ```go
 type MethodsLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+ Self          *URL `json:"self,omitempty"`
+ Documentation *URL `json:"documentation,omitempty"`
 }
 ```
 
@@ -1255,7 +1255,7 @@ type MiscellaneousService service
 MiscellaneousService operates over the resources described in Mollie's
 miscellaneous API endpoints section.
 
-#### func (\*MiscellaneousService) ApplePaymentSession
+#### func (*MiscellaneousService) ApplePaymentSession
 
 ```go
 func (ms *MiscellaneousService) ApplePaymentSession(ctx context.Context, asr *ApplePaymentSessionRequest) (res *Response, aps *ApplePaymentSession, err error)
@@ -1265,7 +1265,7 @@ ApplePaymentSession returns an Apple Payment Session object valid for one
 transaction.
 
 See:
-https://docs.mollie.com/reference/v2/wallets-api/request-apple-pay-payment-session
+<https://docs.mollie.com/reference/v2/wallets-api/request-apple-pay-payment-session>
 
 #### type Mode
 
@@ -1277,8 +1277,8 @@ Mode contains information about the creation environment.
 
 ```go
 const (
-	LiveMode Mode = "live"
-	TestMode Mode = "test"
+ LiveMode Mode = "live"
+ TestMode Mode = "test"
 )
 ```
 
@@ -1288,13 +1288,13 @@ Valid modes.
 
 ```go
 type Onboarding struct {
-	Resource              string           `json:"reference,omitempty"`
-	Name                  string           `json:"name,omitempty"`
-	SignedUpAt            *time.Time       `json:"signedUpAt,omitempty"`
-	Status                OnboardingStatus `json:"status,omitempty"`
-	CanReceivePayments    bool             `json:"canReceivePayments,omitempty"`
-	CanReveiceSettlements bool             `json:"canReceiveSettlements,omitempty"`
-	Links                 OnboardingLinks  `json:"_links,omitempty"`
+ Resource              string           `json:"reference,omitempty"`
+ Name                  string           `json:"name,omitempty"`
+ SignedUpAt            *time.Time       `json:"signedUpAt,omitempty"`
+ Status                OnboardingStatus `json:"status,omitempty"`
+ CanReceivePayments    bool             `json:"canReceivePayments,omitempty"`
+ CanReveiceSettlements bool             `json:"canReceiveSettlements,omitempty"`
+ Links                 OnboardingLinks  `json:"_links,omitempty"`
 }
 ```
 
@@ -1304,21 +1304,21 @@ Onboarding data for an organization.
 
 ```go
 type OnboardingData struct {
-	Organization struct {
-		Name               string   `json:"name,omitempty"`
-		Address            *Address `json:"address,omitempty"`
-		RegistrationNumber string   `json:"registrationNumber,omitempty"`
-		VatNumber          string   `json:"vatNumber,omitempty"`
-		VatRegulation      string   `json:"vatRegulation,omitempty"`
-	} `json:"organization,omitempty"`
-	Profile struct {
-		Name         string       `json:"name,omitempty"`
-		URL          string       `json:"url,omitempty"`
-		Email        string       `json:"email,omitempty"`
-		Description  string       `json:"description,omitempty"`
-		Phone        string       `json:"phone,omitempty"`
-		CategoryCode CategoryCode `json:"categoryCode,omitempty"`
-	} `json:"profile,omitempty"`
+ Organization struct {
+  Name               string   `json:"name,omitempty"`
+  Address            *Address `json:"address,omitempty"`
+  RegistrationNumber string   `json:"registrationNumber,omitempty"`
+  VatNumber          string   `json:"vatNumber,omitempty"`
+  VatRegulation      string   `json:"vatRegulation,omitempty"`
+ } `json:"organization,omitempty"`
+ Profile struct {
+  Name         string       `json:"name,omitempty"`
+  URL          string       `json:"url,omitempty"`
+  Email        string       `json:"email,omitempty"`
+  Description  string       `json:"description,omitempty"`
+  Phone        string       `json:"phone,omitempty"`
+  CategoryCode CategoryCode `json:"categoryCode,omitempty"`
+ } `json:"profile,omitempty"`
 }
 ```
 
@@ -1334,10 +1334,10 @@ overwritten.
 
 ```go
 type OnboardingLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Dashboard     *URL `json:"dashboard,omitempty"`
-	Organization  *URL `json:"organization,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+ Self          *URL `json:"self,omitempty"`
+ Dashboard     *URL `json:"dashboard,omitempty"`
+ Organization  *URL `json:"organization,omitempty"`
+ Documentation *URL `json:"documentation,omitempty"`
 }
 ```
 
@@ -1351,7 +1351,7 @@ type OnboardingService service
 
 OnboardingService operates over the onboarding API.
 
-#### func (\*OnboardingService) GetOnboardingStatus
+#### func (*OnboardingService) GetOnboardingStatus
 
 ```go
 func (os *OnboardingService) GetOnboardingStatus(ctx context.Context) (res *Response, o *Onboarding, err error)
@@ -1360,9 +1360,9 @@ func (os *OnboardingService) GetOnboardingStatus(ctx context.Context) (res *Resp
 GetOnboardingStatus gets the status of onboarding of the authenticated
 organization.
 
-See: https://docs.mollie.com/reference/v2/onboarding-api/get-onboarding-status
+See: <https://docs.mollie.com/reference/v2/onboarding-api/get-onboarding-status>
 
-#### func (\*OnboardingService) SubmitOnboardingData
+#### func (*OnboardingService) SubmitOnboardingData
 
 ```go
 func (os *OnboardingService) SubmitOnboardingData(ctx context.Context, d *OnboardingData) (res *Response, err error)
@@ -1372,7 +1372,7 @@ SubmitOnboardingData sends data that will be prefilled in the merchant’s
 onboarding. Please note that the data you submit will only be processed when the
 onboarding status is needs-data.
 
-See: https://docs.mollie.com/reference/v2/onboarding-api/submit-onboarding-data
+See: <https://docs.mollie.com/reference/v2/onboarding-api/submit-onboarding-data>
 
 #### type OnboardingStatus
 
@@ -1384,9 +1384,9 @@ OnboardingStatus describes status of the organization’s onboarding process.
 
 ```go
 const (
-	NeedsDataOnboardingStatus OnboardingStatus = "needs-data"
-	InReviewOnboardingStatus  OnboardingStatus = "in-review"
-	CompletedOnboardingStatus OnboardingStatus = "completed"
+ NeedsDataOnboardingStatus OnboardingStatus = "needs-data"
+ InReviewOnboardingStatus  OnboardingStatus = "in-review"
+ CompletedOnboardingStatus OnboardingStatus = "completed"
 )
 ```
 
@@ -1396,42 +1396,42 @@ Possible status values.
 
 ```go
 type Order struct {
-	TestMode                                 bool          `json:"testmode,omitempty"`
-	IsCancelable                             bool          `json:"isCancelable,omitempty"`
-	ShopperCountryMustMatchTheBillingCountry bool          `json:"shopperCountryMustMatchTheBillingCountry,omitempty"`
-	Resource                                 string        `json:"resource,omitempty"`
-	ID                                       string        `json:"id,omitempty"`
-	ProfileID                                string        `json:"profileId,omitempty"`
-	OrderNumber                              string        `json:"orderNumber,omitempty"`
-	RedirectURL                              string        `json:"redirectUrl,omitempty"`
-	WebhookURL                               string        `json:"webhookUrl,omitempty"`
-	Description                              string        `json:"description,omitempty"`
-	Sku                                      string        `json:"sku,omitempty"`
-	Metadata                                 interface{}   `json:"metadata,omitempty"`
-	Mode                                     Mode          `json:"mode,omitempty"`
-	Method                                   PaymentMethod `json:"method,omitempty"`
-	Status                                   OrderStatus   `json:"status,omitempty"`
-	Locale                                   Locale        `json:"locale,omitempty"`
-	ShippingAddress                          OrderAddress  `json:"shippingAddress,omitempty"`
-	Links                                    OrderLinks    `json:"_links,omitempty"`
-	Amount                                   *Amount       `json:"amount,omitempty"`
-	AmountCaptured                           *Amount       `json:"amountCaptured,omitempty"`
-	AmountRefunded                           *Amount       `json:"amountRefunded,omitempty"`
-	BillingAddress                           *OrderAddress `json:"billingAddress,omitempty"`
-	ConsumerDateOfBirth                      *ShortDate    `json:"consumerDateOfBirth,omitempty"`
-	CreatedAt                                *time.Time    `json:"createdAt,omitempty"`
-	ExpiresAt                                *time.Time    `json:"expiresAt,omitempty"`
-	ExpiredAt                                *time.Time    `json:"expiredAt,omitempty"`
-	PaidAt                                   *time.Time    `json:"paidAt,omitempty"`
-	AuthorizedAt                             *time.Time    `json:"authorizedAt,omitempty"`
-	CanceledAt                               *time.Time    `json:"canceledAt,omitempty"`
-	CompletedAt                              *time.Time    `json:"completedAt,omitempty"`
-	OrderPayment                             *OrderPayment `json:"payment,omitempty"`
-	Lines                                    []*OrderLine  `json:"lines,omitempty"`
-	Embedded                                 struct {
-		Payments []*Payment `json:"payments,omitempty"`
-		Refunds  []*Refund  `json:"refunds,omitempty"`
-	} `json:"_embedded,omitempty"`
+ TestMode                                 bool          `json:"testmode,omitempty"`
+ IsCancelable                             bool          `json:"isCancelable,omitempty"`
+ ShopperCountryMustMatchTheBillingCountry bool          `json:"shopperCountryMustMatchTheBillingCountry,omitempty"`
+ Resource                                 string        `json:"resource,omitempty"`
+ ID                                       string        `json:"id,omitempty"`
+ ProfileID                                string        `json:"profileId,omitempty"`
+ OrderNumber                              string        `json:"orderNumber,omitempty"`
+ RedirectURL                              string        `json:"redirectUrl,omitempty"`
+ WebhookURL                               string        `json:"webhookUrl,omitempty"`
+ Description                              string        `json:"description,omitempty"`
+ Sku                                      string        `json:"sku,omitempty"`
+ Metadata                                 interface{}   `json:"metadata,omitempty"`
+ Mode                                     Mode          `json:"mode,omitempty"`
+ Method                                   PaymentMethod `json:"method,omitempty"`
+ Status                                   OrderStatus   `json:"status,omitempty"`
+ Locale                                   Locale        `json:"locale,omitempty"`
+ ShippingAddress                          OrderAddress  `json:"shippingAddress,omitempty"`
+ Links                                    OrderLinks    `json:"_links,omitempty"`
+ Amount                                   *Amount       `json:"amount,omitempty"`
+ AmountCaptured                           *Amount       `json:"amountCaptured,omitempty"`
+ AmountRefunded                           *Amount       `json:"amountRefunded,omitempty"`
+ BillingAddress                           *OrderAddress `json:"billingAddress,omitempty"`
+ ConsumerDateOfBirth                      *ShortDate    `json:"consumerDateOfBirth,omitempty"`
+ CreatedAt                                *time.Time    `json:"createdAt,omitempty"`
+ ExpiresAt                                *time.Time    `json:"expiresAt,omitempty"`
+ ExpiredAt                                *time.Time    `json:"expiredAt,omitempty"`
+ PaidAt                                   *time.Time    `json:"paidAt,omitempty"`
+ AuthorizedAt                             *time.Time    `json:"authorizedAt,omitempty"`
+ CanceledAt                               *time.Time    `json:"canceledAt,omitempty"`
+ CompletedAt                              *time.Time    `json:"completedAt,omitempty"`
+ OrderPayment                             *OrderPayment `json:"payment,omitempty"`
+ Lines                                    []*OrderLine  `json:"lines,omitempty"`
+ Embedded                                 struct {
+  Payments []*Payment `json:"payments,omitempty"`
+  Refunds  []*Refund  `json:"refunds,omitempty"`
+ } `json:"_embedded,omitempty"`
 }
 ```
 
@@ -1441,18 +1441,18 @@ Order explain the items that customers need to pay for.
 
 ```go
 type OrderAddress struct {
-	OrganizationName string      `json:"organizationName,omitempty"`
-	Title            string      `json:"title,omitempty"`
-	GivenName        string      `json:"givenName,omitempty"`
-	FamilyName       string      `json:"familyName,omitempty"`
-	Email            string      `json:"email,omitempty"`
-	Phone            PhoneNumber `json:"phone,omitempty"`
-	StreetAndNumber  string      `json:"streetAndNumber,omitempty"`
-	StreetAdditional string      `json:"streetAdditional,omitempty"`
-	PostalCode       string      `json:"postalCode,omitempty"`
-	City             string      `json:"city,omitempty"`
-	Region           string      `json:"region,omitempty"`
-	Country          string      `json:"country,omitempty"`
+ OrganizationName string      `json:"organizationName,omitempty"`
+ Title            string      `json:"title,omitempty"`
+ GivenName        string      `json:"givenName,omitempty"`
+ FamilyName       string      `json:"familyName,omitempty"`
+ Email            string      `json:"email,omitempty"`
+ Phone            PhoneNumber `json:"phone,omitempty"`
+ StreetAndNumber  string      `json:"streetAndNumber,omitempty"`
+ StreetAdditional string      `json:"streetAdditional,omitempty"`
+ PostalCode       string      `json:"postalCode,omitempty"`
+ City             string      `json:"city,omitempty"`
+ Region           string      `json:"region,omitempty"`
+ Country          string      `json:"country,omitempty"`
 }
 ```
 
@@ -1463,35 +1463,35 @@ shipped to.
 
 ```go
 type OrderLine struct {
-	Resource           string          `json:"resource,omitempty"`
-	ID                 string          `json:"id,omitempty"`
-	OrderID            string          `json:"orderId,omitempty"`
-	ProductType        ProductType     `json:"type,omitempty"`
-	Name               string          `json:"name,omitempty"`
-	Amount             *Amount         `json:"amount,omitempty"`
-	Status             OrderLineStatus `json:"status,omitempty"`
-	IsCancelable       bool            `json:"isCancelable,omitempty"`
-	Quantity           int             `json:"quantity,omitempty"`
-	QuantityShipped    int             `json:"quantityShipped,omitempty"`
-	AmountShipped      *Amount         `json:"amountShipped,omitempty"`
-	QuantityRefunded   int             `json:"quantityRefunded,omitempty"`
-	AmountRefunded     *Amount         `json:"amountRefunded,omitempty"`
-	QuantityCanceled   int             `json:"quantityCanceled,omitempty"`
-	AmountCanceled     *Amount         `json:"amountCanceled,omitempty"`
-	ShippableQuantity  int             `json:"shippableQuantity,omitempty"`
-	RefundableQuantity int             `json:"refundableQuantity,omitempty"`
-	CancelableQuantity int             `json:"cancelableQuantity,omitempty"`
-	UnitPrice          *Amount         `json:"unitPrice,omitempty"`
-	DiscountAmount     *Amount         `json:"discountAmount,omitempty"`
-	TotalAmount        *Amount         `json:"totalAmount,omitempty"`
-	VatRate            string          `json:"vatRate,omitempty"`
-	VatAmount          *Amount         `json:"vatAmount,omitempty"`
-	SKU                string          `json:"sku,omitempty"`
-	CreatedAt          *time.Time      `json:"createdAt,omitempty"`
-	Links              OrderLineLinks  `json:"_links,omitempty"`
-	ImageURL           string          `json:"imageUrl,omitempty"`
-	ProductURL         string          `json:"productUrl,omitempty"`
-	Metadata           interface{}     `json:"metadata,omitempty"`
+ Resource           string          `json:"resource,omitempty"`
+ ID                 string          `json:"id,omitempty"`
+ OrderID            string          `json:"orderId,omitempty"`
+ ProductType        ProductType     `json:"type,omitempty"`
+ Name               string          `json:"name,omitempty"`
+ Amount             *Amount         `json:"amount,omitempty"`
+ Status             OrderLineStatus `json:"status,omitempty"`
+ IsCancelable       bool            `json:"isCancelable,omitempty"`
+ Quantity           int             `json:"quantity,omitempty"`
+ QuantityShipped    int             `json:"quantityShipped,omitempty"`
+ AmountShipped      *Amount         `json:"amountShipped,omitempty"`
+ QuantityRefunded   int             `json:"quantityRefunded,omitempty"`
+ AmountRefunded     *Amount         `json:"amountRefunded,omitempty"`
+ QuantityCanceled   int             `json:"quantityCanceled,omitempty"`
+ AmountCanceled     *Amount         `json:"amountCanceled,omitempty"`
+ ShippableQuantity  int             `json:"shippableQuantity,omitempty"`
+ RefundableQuantity int             `json:"refundableQuantity,omitempty"`
+ CancelableQuantity int             `json:"cancelableQuantity,omitempty"`
+ UnitPrice          *Amount         `json:"unitPrice,omitempty"`
+ DiscountAmount     *Amount         `json:"discountAmount,omitempty"`
+ TotalAmount        *Amount         `json:"totalAmount,omitempty"`
+ VatRate            string          `json:"vatRate,omitempty"`
+ VatAmount          *Amount         `json:"vatAmount,omitempty"`
+ SKU                string          `json:"sku,omitempty"`
+ CreatedAt          *time.Time      `json:"createdAt,omitempty"`
+ Links              OrderLineLinks  `json:"_links,omitempty"`
+ ImageURL           string          `json:"imageUrl,omitempty"`
+ ProductURL         string          `json:"productUrl,omitempty"`
+ Metadata           interface{}     `json:"metadata,omitempty"`
 }
 ```
 
@@ -1501,8 +1501,8 @@ OrderLine contain the actual things the customer bought.
 
 ```go
 type OrderLineLinks struct {
-	ProductURL *URL `json:"productUrl,omitempty"`
-	ImageURL   *URL `json:"imageUrl,omitempty"`
+ ProductURL *URL `json:"productUrl,omitempty"`
+ ImageURL   *URL `json:"imageUrl,omitempty"`
 }
 ```
 
@@ -1519,12 +1519,12 @@ OrderLineStatus describes status of the order line.
 
 ```go
 const (
-	OrderLineCreated    OrderLineStatus = "created"
-	OrderLineAuthorized OrderLineStatus = "authorized"
-	OrderLinePaid       OrderLineStatus = "paid"
-	OrderLineShipping   OrderLineStatus = "shipping"
-	OrderLineCanceled   OrderLineStatus = "canceled"
-	OrderLineCompleted  OrderLineStatus = "completed"
+ OrderLineCreated    OrderLineStatus = "created"
+ OrderLineAuthorized OrderLineStatus = "authorized"
+ OrderLinePaid       OrderLineStatus = "paid"
+ OrderLineShipping   OrderLineStatus = "shipping"
+ OrderLineCanceled   OrderLineStatus = "canceled"
+ OrderLineCompleted  OrderLineStatus = "completed"
 )
 ```
 
@@ -1534,10 +1534,10 @@ Valid order line status.
 
 ```go
 type OrderLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Checkout      *URL `json:"checkout,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
-	Dashboard     *URL `json:"dashboard,omitempty"`
+ Self          *URL `json:"self,omitempty"`
+ Checkout      *URL `json:"checkout,omitempty"`
+ Documentation *URL `json:"documentation,omitempty"`
+ Dashboard     *URL `json:"dashboard,omitempty"`
 }
 ```
 
@@ -1548,11 +1548,11 @@ Every URL object will contain an href and a type field.
 
 ```go
 type OrderList struct {
-	Count    int `json:"count,omitempty"`
-	Embedded struct {
-		Orders []*Order `json:"orders,omitempty"`
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"links,omitempty"`
+ Count    int `json:"count,omitempty"`
+ Embedded struct {
+  Orders []*Order `json:"orders,omitempty"`
+ } `json:"_embedded,omitempty"`
+ Links PaginationLinks `json:"links,omitempty"`
 }
 ```
 
@@ -1562,9 +1562,9 @@ OrderList for containing the response of list orders.
 
 ```go
 type OrderListOptions struct {
-	ProfileID string `url:"profileId,omitempty"`
-	From      string `url:"from,omitempty"`
-	Limit     int    `url:"limit,omitempty"`
+ ProfileID string `url:"profileId,omitempty"`
+ From      string `url:"from,omitempty"`
+ Limit     int    `url:"limit,omitempty"`
 }
 ```
 
@@ -1574,11 +1574,11 @@ OrderListOptions describes order endpoint valid query string parameters.
 
 ```go
 type OrderListRefund struct {
-	Count    int `json:"count,omitempty"`
-	Embedded struct {
-		Refunds []*Refund `json:"refund,omitempty"`
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"links,omitempty"`
+ Count    int `json:"count,omitempty"`
+ Embedded struct {
+  Refunds []*Refund `json:"refund,omitempty"`
+ } `json:"_embedded,omitempty"`
+ Links PaginationLinks `json:"links,omitempty"`
 }
 ```
 
@@ -1588,9 +1588,9 @@ OrderListRefund for containing the response of list orders.
 
 ```go
 type OrderListRefundOptions struct {
-	From  string     `url:"from,omitempty"`
-	Limit int        `url:"limit,omitempty"`
-	Embed EmbedValue `url:"embed,omitempty"`
+ From  string     `url:"from,omitempty"`
+ Limit int        `url:"limit,omitempty"`
+ Embed EmbedValue `url:"embed,omitempty"`
 }
 ```
 
@@ -1600,8 +1600,8 @@ OrderListRefundOptions describes order endpoint valid query string parameters.
 
 ```go
 type OrderOptions struct {
-	Embed     []EmbedValue `url:"embed,omitempty"`
-	ProfileID string       `url:"profileId,omitempty"`
+ Embed     []EmbedValue `url:"embed,omitempty"`
+ ProfileID string       `url:"profileId,omitempty"`
 }
 ```
 
@@ -1611,17 +1611,17 @@ OrderOptions describes order endpoint valid query string parameters.
 
 ```go
 type OrderPayment struct {
-	ConsumerAccount   string          `json:"consumerAccount,omitempty"`
-	CustomerID        string          `json:"customerId,omitempty"`
-	CustomerReference string          `json:"customerReference,omitempty"`
-	Issuer            string          `json:"issuer,omitempty"`
-	MandateID         string          `json:"mandateId,omitempty"`
-	SequenceType      SequenceType    `json:"sequenceType,omitempty"`
-	VoucherNumber     string          `json:"voucherNumber,omitempty"`
-	VoucherPin        string          `json:"voucherPin,omitempty"`
-	WebhookURL        string          `json:"webhookUrl,omitempty"`
-	ApplicationFee    *ApplicationFee `json:"applicationFee,omitempty"`
-	Method            PaymentMethod   `json:"method,omitempty"`
+ ConsumerAccount   string          `json:"consumerAccount,omitempty"`
+ CustomerID        string          `json:"customerId,omitempty"`
+ CustomerReference string          `json:"customerReference,omitempty"`
+ Issuer            string          `json:"issuer,omitempty"`
+ MandateID         string          `json:"mandateId,omitempty"`
+ SequenceType      SequenceType    `json:"sequenceType,omitempty"`
+ VoucherNumber     string          `json:"voucherNumber,omitempty"`
+ VoucherPin        string          `json:"voucherPin,omitempty"`
+ WebhookURL        string          `json:"webhookUrl,omitempty"`
+ ApplicationFee    *ApplicationFee `json:"applicationFee,omitempty"`
+ Method            PaymentMethod   `json:"method,omitempty"`
 }
 ```
 
@@ -1638,13 +1638,13 @@ OrderStatus describes the valid order status.
 
 ```go
 const (
-	Created    OrderStatus = "created"
-	Paid       OrderStatus = "paid"
-	Authorized OrderStatus = "authorized"
-	Canceled   OrderStatus = "canceled"
-	Shipping   OrderStatus = "shipping"
-	Completed  OrderStatus = "completed"
-	Expired    OrderStatus = "expired"
+ Created    OrderStatus = "created"
+ Paid       OrderStatus = "paid"
+ Authorized OrderStatus = "authorized"
+ Canceled   OrderStatus = "canceled"
+ Shipping   OrderStatus = "shipping"
+ Completed  OrderStatus = "completed"
+ Expired    OrderStatus = "expired"
 )
 ```
 
@@ -1658,7 +1658,7 @@ type OrdersService service
 
 OrdersService instance operates over refund resources.
 
-#### func (\*OrdersService) Cancel
+#### func (*OrdersService) Cancel
 
 ```go
 func (ors *OrdersService) Cancel(ctx context.Context, orderID string) (res *Response, order *Order, err error)
@@ -1666,9 +1666,9 @@ func (ors *OrdersService) Cancel(ctx context.Context, orderID string) (res *Resp
 
 Cancel try to cancel the order that fulfill certain requirements.
 
-See https://docs.mollie.com/reference/v2/orders-api/cancel-order
+See <https://docs.mollie.com/reference/v2/orders-api/cancel-order>
 
-#### func (\*OrdersService) CancelOrderLines
+#### func (*OrdersService) CancelOrderLines
 
 ```go
 func (ors *OrdersService) CancelOrderLines(ctx context.Context, orderID string, orderLines []OrderLine) (res *Response, err error)
@@ -1678,9 +1678,9 @@ CancelOrderLines can be used to cancel one or more order lines that were
 previously authorized using a pay after delivery payment method. Use the Cancel
 Order API if you want to cancel the entire order or the remainder of the order.
 
-See https://docs.mollie.com/reference/v2/orders-api/cancel-order-lines
+See <https://docs.mollie.com/reference/v2/orders-api/cancel-order-lines>
 
-#### func (\*OrdersService) Create
+#### func (*OrdersService) Create
 
 ```go
 func (ors *OrdersService) Create(ctx context.Context, ord Order, opts *OrderOptions) (res *Response, order *Order, err error)
@@ -1689,9 +1689,9 @@ func (ors *OrdersService) Create(ctx context.Context, ord Order, opts *OrderOpti
 Create an order will automatically create the required payment to allow your
 customer to pay for the order.
 
-See https://docs.mollie.com/reference/v2/orders-api/create-order
+See <https://docs.mollie.com/reference/v2/orders-api/create-order>
 
-#### func (\*OrdersService) CreateOrderPayment
+#### func (*OrdersService) CreateOrderPayment
 
 ```go
 func (ors *OrdersService) CreateOrderPayment(ctx context.Context, orderID string, ordPay *OrderPayment) (res *Response, payment *Payment, err error)
@@ -1701,9 +1701,9 @@ CreateOrderPayment can only be created while the status of the order is created,
 and when the status of the existing payment is either expired, canceled or
 failed.
 
-See https://docs.mollie.com/reference/v2/orders-api/create-order-payment
+See <https://docs.mollie.com/reference/v2/orders-api/create-order-payment>
 
-#### func (\*OrdersService) CreateOrderRefund
+#### func (*OrdersService) CreateOrderRefund
 
 ```go
 func (ors *OrdersService) CreateOrderRefund(ctx context.Context, orderID string, order *Order) (res *Response, refund *Refund, err error)
@@ -1712,9 +1712,9 @@ func (ors *OrdersService) CreateOrderRefund(ctx context.Context, orderID string,
 CreateOrderRefund using the Orders API, refunds should be made against the
 order.
 
-See https://docs.mollie.com/reference/v2/orders-api/create-order-refund
+See <https://docs.mollie.com/reference/v2/orders-api/create-order-refund>
 
-#### func (\*OrdersService) Get
+#### func (*OrdersService) Get
 
 ```go
 func (ors *OrdersService) Get(ctx context.Context, orID string, opts *OrderOptions) (res *Response, order *Order, err error)
@@ -1722,9 +1722,9 @@ func (ors *OrdersService) Get(ctx context.Context, orID string, opts *OrderOptio
 
 Get retrieve a single order by its ID.
 
-See https://docs.mollie.com/reference/v2/orders-api/get-order
+See <https://docs.mollie.com/reference/v2/orders-api/get-order>
 
-#### func (\*OrdersService) List
+#### func (*OrdersService) List
 
 ```go
 func (ors *OrdersService) List(ctx context.Context, opts *OrderListOptions) (res *Response, ordList *OrderList, err error)
@@ -1732,9 +1732,9 @@ func (ors *OrdersService) List(ctx context.Context, opts *OrderListOptions) (res
 
 List is to retrieve all orders.
 
-See https://docs.mollie.com/reference/v2/orders-api/list-orders
+See <https://docs.mollie.com/reference/v2/orders-api/list-orders>
 
-#### func (\*OrdersService) ListOrderRefunds
+#### func (*OrdersService) ListOrderRefunds
 
 ```go
 func (ors *OrdersService) ListOrderRefunds(ctx context.Context, orderID string, opts *OrderListRefundOptions) (res *Response, orderListRefund *OrderListRefund, err error)
@@ -1742,9 +1742,9 @@ func (ors *OrdersService) ListOrderRefunds(ctx context.Context, orderID string, 
 
 ListOrderRefunds retrieve all order refunds.
 
-See https://docs.mollie.com/reference/v2/orders-api/list-order-refunds
+See <https://docs.mollie.com/reference/v2/orders-api/list-order-refunds>
 
-#### func (\*OrdersService) Update
+#### func (*OrdersService) Update
 
 ```go
 func (ors *OrdersService) Update(ctx context.Context, orderID string, ord Order) (res *Response, order *Order, err error)
@@ -1752,9 +1752,9 @@ func (ors *OrdersService) Update(ctx context.Context, orderID string, ord Order)
 
 Update is used to update the billing and/or shipping address of an order.
 
-See https://docs.mollie.com/reference/v2/orders-api/update-order
+See <https://docs.mollie.com/reference/v2/orders-api/update-order>
 
-#### func (\*OrdersService) UpdateOrderLine
+#### func (*OrdersService) UpdateOrderLine
 
 ```go
 func (ors *OrdersService) UpdateOrderLine(ctx context.Context, orderID string, orderLineID string, orderLine OrderLine) (res *Response, order *Order, err error)
@@ -1762,22 +1762,22 @@ func (ors *OrdersService) UpdateOrderLine(ctx context.Context, orderID string, o
 
 UpdateOrderLine can be used to update an order line.
 
-See https://docs.mollie.com/reference/v2/orders-api/update-orderline
+See <https://docs.mollie.com/reference/v2/orders-api/update-orderline>
 
 #### type Organization
 
 ```go
 type Organization struct {
-	Resource           string            `json:"resource,omitempty"`
-	ID                 string            `json:"id,omitempty"`
-	Name               string            `json:"name,omitempty"`
-	Email              string            `json:"email,omitempty"`
-	Locale             string            `json:"locale,omitempty"`
-	Address            *Address          `json:"address,omitempty"`
-	RegistrationNumber string            `json:"registrationNumber,omitempty"`
-	VatNumber          string            `json:"vatNumber,omitempty"`
-	VatRegulation      string            `json:"vatRegulation,omitempty"`
-	Links              OrganizationLinks `json:"_links,omitempty"`
+ Resource           string            `json:"resource,omitempty"`
+ ID                 string            `json:"id,omitempty"`
+ Name               string            `json:"name,omitempty"`
+ Email              string            `json:"email,omitempty"`
+ Locale             string            `json:"locale,omitempty"`
+ Address            *Address          `json:"address,omitempty"`
+ RegistrationNumber string            `json:"registrationNumber,omitempty"`
+ VatNumber          string            `json:"vatNumber,omitempty"`
+ VatRegulation      string            `json:"vatRegulation,omitempty"`
+ Links              OrganizationLinks `json:"_links,omitempty"`
 }
 ```
 
@@ -1787,16 +1787,16 @@ Organization describes an organization detail.
 
 ```go
 type OrganizationLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Chargebacks   *URL `json:"chargebacks,omitempty"`
-	Customers     *URL `json:"customers,omitempty"`
-	Dashboard     *URL `json:"dashboard,omitempty"`
-	Invoices      *URL `json:"invoices,omitempty"`
-	Payments      *URL `json:"payments,omitempty"`
-	Profiles      *URL `json:"profiles,omitempty"`
-	Refunds       *URL `json:"refunds,omitempty"`
-	Settlements   *URL `json:"settlements,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+ Self          *URL `json:"self,omitempty"`
+ Chargebacks   *URL `json:"chargebacks,omitempty"`
+ Customers     *URL `json:"customers,omitempty"`
+ Dashboard     *URL `json:"dashboard,omitempty"`
+ Invoices      *URL `json:"invoices,omitempty"`
+ Payments      *URL `json:"payments,omitempty"`
+ Profiles      *URL `json:"profiles,omitempty"`
+ Refunds       *URL `json:"refunds,omitempty"`
+ Settlements   *URL `json:"settlements,omitempty"`
+ Documentation *URL `json:"documentation,omitempty"`
 }
 ```
 
@@ -1807,9 +1807,9 @@ organization object.
 
 ```go
 type OrganizationPartnerLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
-	SignUpLink    *URL `json:"signuplink,omitempty"`
+ Self          *URL `json:"self,omitempty"`
+ Documentation *URL `json:"documentation,omitempty"`
+ SignUpLink    *URL `json:"signuplink,omitempty"`
 }
 ```
 
@@ -1820,13 +1820,13 @@ partner resource.
 
 ```go
 type OrganizationPartnerStatus struct {
-	IsCommissionPartner            bool                     `json:"isCommissionPartner,omitempty"`
-	PartnerContractUpdateAvailable bool                     `json:"partnerContractUpdate_available,omitempty"`
-	Resource                       string                   `json:"resource,omitempty"`
-	PartnerType                    PartnerType              `json:"partnerType,omitempty"`
-	UserAgentTokens                []*UserAgentToken        `json:"userAgentTokens,omitempty"`
-	PartnerContractSignedAt        *time.Time               `json:"partnerContractSignedAt,omitempty"`
-	Links                          OrganizationPartnerLinks `json:"_links,omitempty"`
+ IsCommissionPartner            bool                     `json:"isCommissionPartner,omitempty"`
+ PartnerContractUpdateAvailable bool                     `json:"partnerContractUpdate_available,omitempty"`
+ Resource                       string                   `json:"resource,omitempty"`
+ PartnerType                    PartnerType              `json:"partnerType,omitempty"`
+ UserAgentTokens                []*UserAgentToken        `json:"userAgentTokens,omitempty"`
+ PartnerContractSignedAt        *time.Time               `json:"partnerContractSignedAt,omitempty"`
+ Links                          OrganizationPartnerLinks `json:"_links,omitempty"`
 }
 ```
 
@@ -1840,7 +1840,7 @@ type OrganizationsService service
 
 OrganizationsService instance operates over organization resources.
 
-#### func (\*OrganizationsService) Get
+#### func (*OrganizationsService) Get
 
 ```go
 func (os *OrganizationsService) Get(ctx context.Context, id string) (res *Response, o *Organization, err error)
@@ -1848,7 +1848,7 @@ func (os *OrganizationsService) Get(ctx context.Context, id string) (res *Respon
 
 Get retrieve an organization by its id.
 
-#### func (\*OrganizationsService) GetCurrent
+#### func (*OrganizationsService) GetCurrent
 
 ```go
 func (os *OrganizationsService) GetCurrent(ctx context.Context) (res *Response, o *Organization, err error)
@@ -1856,7 +1856,7 @@ func (os *OrganizationsService) GetCurrent(ctx context.Context) (res *Response, 
 
 GetCurrent retrieve the currently authenticated organization.
 
-#### func (\*OrganizationsService) GetPartnerStatus
+#### func (*OrganizationsService) GetPartnerStatus
 
 ```go
 func (os *OrganizationsService) GetPartnerStatus(ctx context.Context) (res *Response, ops *OrganizationPartnerStatus, err error)
@@ -1865,16 +1865,16 @@ func (os *OrganizationsService) GetPartnerStatus(ctx context.Context) (res *Resp
 GetPartnerStatus retrieves details about the partner status of the currently
 authenticated organization.
 
-See: https://docs.mollie.com/reference/v2/organizations-api/get-partner
+See: <https://docs.mollie.com/reference/v2/organizations-api/get-partner>
 
 #### type PaginationLinks
 
 ```go
 type PaginationLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Previous      *URL `json:"previous,omitempty"`
-	Next          *URL `json:"next,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+ Self          *URL `json:"self,omitempty"`
+ Previous      *URL `json:"previous,omitempty"`
+ Next          *URL `json:"next,omitempty"`
+ Documentation *URL `json:"documentation,omitempty"`
 }
 ```
 
@@ -1884,11 +1884,11 @@ PaginationLinks describes the hal component of paginated responses.
 
 ```go
 type PartnerClient struct {
-	Resource              string             `json:"resource,omitempty"`
-	ID                    string             `json:"id,omitempty"`
-	OrganizationCreatedAt *time.Time         `json:"organizationCreatedAt,omitempty"`
-	Commission            Commission         `json:"commission,omitempty"`
-	Links                 PartnerClientLinks `json:"_links,omitempty"`
+ Resource              string             `json:"resource,omitempty"`
+ ID                    string             `json:"id,omitempty"`
+ OrganizationCreatedAt *time.Time         `json:"organizationCreatedAt,omitempty"`
+ Commission            Commission         `json:"commission,omitempty"`
+ Links                 PartnerClientLinks `json:"_links,omitempty"`
 }
 ```
 
@@ -1898,10 +1898,10 @@ PartnerClient describes a partner client.
 
 ```go
 type PartnerClientLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Organization  *URL `json:"organization,omitempty"`
-	Onboarding    *URL `json:"onboarding,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+ Self          *URL `json:"self,omitempty"`
+ Organization  *URL `json:"organization,omitempty"`
+ Onboarding    *URL `json:"onboarding,omitempty"`
+ Documentation *URL `json:"documentation,omitempty"`
 }
 ```
 
@@ -1911,11 +1911,11 @@ PartnerClientLinks contains URL objects relevant to the client.
 
 ```go
 type PartnerClientList struct {
-	Count          int `json:"count,omitempty"`
-	PartnerClients struct {
-		Clients []*PartnerClient `json:"clients,omitempty"`
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"_links,omitempty"`
+ Count          int `json:"count,omitempty"`
+ PartnerClients struct {
+  Clients []*PartnerClient `json:"clients,omitempty"`
+ } `json:"_embedded,omitempty"`
+ Links PaginationLinks `json:"_links,omitempty"`
 }
 ```
 
@@ -1929,7 +1929,7 @@ type PartnerService service
 
 PartnerService operates over the partners API.
 
-#### func (\*PartnerService) Get
+#### func (*PartnerService) Get
 
 ```go
 func (ps *PartnerService) Get(ctx context.Context, id string, opts *GetPartnerClientOptions) (res *Response, pc *PartnerClient, err error)
@@ -1937,9 +1937,9 @@ func (ps *PartnerService) Get(ctx context.Context, id string, opts *GetPartnerCl
 
 Get retrieves a single client, linked to your partner account, by its ID.
 
-See: https://docs.mollie.com/reference/v2/partners-api/get-client
+See: <https://docs.mollie.com/reference/v2/partners-api/get-client>
 
-#### func (\*PartnerService) List
+#### func (*PartnerService) List
 
 ```go
 func (ps *PartnerService) List(ctx context.Context, opts *ListPartnerClientsOptions) (res *Response, pc *PartnerClientList, err error)
@@ -1947,7 +1947,7 @@ func (ps *PartnerService) List(ctx context.Context, opts *ListPartnerClientsOpti
 
 List retrieves all clients.
 
-See: https://docs.mollie.com/reference/v2/partners-api/list-clients
+See: <https://docs.mollie.com/reference/v2/partners-api/list-clients>
 
 #### type PartnerType
 
@@ -1959,9 +1959,9 @@ PartnerType alias for organization partner types.
 
 ```go
 const (
-	PartnerTypeOauth      PartnerType = "oauth"
-	PartnerTypeSignUpLink PartnerType = "signuplink"
-	PartnerTypeUserAgent  PartnerType = "useragent"
+ PartnerTypeOauth      PartnerType = "oauth"
+ PartnerTypeSignUpLink PartnerType = "signuplink"
+ PartnerTypeUserAgent  PartnerType = "useragent"
 )
 ```
 
@@ -1971,58 +1971,58 @@ Available partner types.
 
 ```go
 type Payment struct {
-	IsCancellable                   bool                   `json:"isCancellable,omitempty"`
-	TestMode                        bool                   `json:"testmode,omitempty"`
-	DigitalGoods                    bool                   `json:"digitalGoods,omitempty"`
-	ApplePayPaymentToken            string                 `json:"applePayPaymentToken,omitempty"`
-	BillingEmail                    string                 `json:"billingEmail,omitempty"`
-	CardToken                       string                 `json:"cardToken,omitempty"`
-	Issuer                          string                 `json:"issuer,omitempty"`
-	VoucherNumber                   string                 `json:"voucherNumber,omitempty"`
-	VoucherPin                      string                 `json:"voucherPin,omitempty"`
-	ExtraMerchantData               string                 `json:"extraMerchantData,omitempty"`
-	SessionID                       string                 `json:"sessionId,omitempty"`
-	CustomerReference               string                 `json:"customerReference,omitempty"`
-	ConsumerName                    string                 `json:"consumerName,omitempty"`
-	ConsumerAccount                 string                 `json:"consumerAccount,omitempty"`
-	WebhookURL                      string                 `json:"webhookUrl,omitempty"`
-	Resource                        string                 `json:"resource,omitempty"`
-	ID                              string                 `json:"id,omitempty"`
-	MandateID                       string                 `json:"mandateId,omitempty"`
-	OrderID                         string                 `json:"orderId,omitempty"`
-	ProfileID                       string                 `json:"profileId,omitempty"`
-	SettlementID                    string                 `json:"settlementId,omitempty"`
-	CustomerID                      string                 `json:"customerId,omitempty"`
-	Status                          string                 `json:"status,omitempty"`
-	Description                     string                 `json:"description,omitempty"`
-	RedirectURL                     string                 `json:"redirectUrl,omitempty"`
-	CountryCode                     string                 `json:"countryCode,omitempty"`
-	SubscriptionID                  string                 `json:"subscriptionId,omitempty"`
-	Metadata                        interface{}            `json:"metadata,omitempty"`
-	Amount                          *Amount                `json:"amount,omitempty"`
-	AmountRefunded                  *Amount                `json:"amountRefunded,omitempty"`
-	AmountRemaining                 *Amount                `json:"amountRemaining,omitempty"`
-	AmountCaptured                  *Amount                `json:"amountCaptured,omitempty"`
-	AmountChargedBack               *Amount                `json:"amountChargedBack,omitempty"`
-	SettlementAmount                *Amount                `json:"settlementAmount,omitempty"`
-	ApplicationFee                  *ApplicationFee        `json:"applicationFee,omitempty"`
-	Details                         *PaymentDetails        `json:"details,omitempty"`
-	CreatedAt                       *time.Time             `json:"createdAt,omitempty"`
-	AuthorizedAt                    *time.Time             `json:"authorizedAt,omitempty"`
-	PaidAt                          *time.Time             `json:"paidAt,omitempty"`
-	CanceledAt                      *time.Time             `json:"canceledAt,omitempty"`
-	ExpiresAt                       *time.Time             `json:"expiresAt,omitempty"`
-	ExpiredAt                       *time.Time             `json:"expiredAt,omitempty"`
-	FailedAt                        *time.Time             `json:"failedAt,omitempty"`
-	DueDate                         *ShortDate             `json:"dueDate,omitempty"`
-	BillingAddress                  *Address               `json:"billingAddress,omitempty"`
-	ShippingAddress                 *PaymentDetailsAddress `json:"shippingAddress,omitempty"`
-	Mode                            Mode                   `json:"mode,omitempty"`
-	Locale                          Locale                 `json:"locale,omitempty"`
-	RestrictPaymentMethodsToCountry Locale                 `json:"restrictPaymentMethodsToCountry,omitempty"`
-	Method                          PaymentMethod          `json:"method,omitempty"`
-	Links                           PaymentLinks           `json:"_links,omitempty"`
-	SequenceType                    SequenceType           `json:"sequenceType,omitempty"`
+ IsCancellable                   bool                   `json:"isCancellable,omitempty"`
+ TestMode                        bool                   `json:"testmode,omitempty"`
+ DigitalGoods                    bool                   `json:"digitalGoods,omitempty"`
+ ApplePayPaymentToken            string                 `json:"applePayPaymentToken,omitempty"`
+ BillingEmail                    string                 `json:"billingEmail,omitempty"`
+ CardToken                       string                 `json:"cardToken,omitempty"`
+ Issuer                          string                 `json:"issuer,omitempty"`
+ VoucherNumber                   string                 `json:"voucherNumber,omitempty"`
+ VoucherPin                      string                 `json:"voucherPin,omitempty"`
+ ExtraMerchantData               string                 `json:"extraMerchantData,omitempty"`
+ SessionID                       string                 `json:"sessionId,omitempty"`
+ CustomerReference               string                 `json:"customerReference,omitempty"`
+ ConsumerName                    string                 `json:"consumerName,omitempty"`
+ ConsumerAccount                 string                 `json:"consumerAccount,omitempty"`
+ WebhookURL                      string                 `json:"webhookUrl,omitempty"`
+ Resource                        string                 `json:"resource,omitempty"`
+ ID                              string                 `json:"id,omitempty"`
+ MandateID                       string                 `json:"mandateId,omitempty"`
+ OrderID                         string                 `json:"orderId,omitempty"`
+ ProfileID                       string                 `json:"profileId,omitempty"`
+ SettlementID                    string                 `json:"settlementId,omitempty"`
+ CustomerID                      string                 `json:"customerId,omitempty"`
+ Status                          string                 `json:"status,omitempty"`
+ Description                     string                 `json:"description,omitempty"`
+ RedirectURL                     string                 `json:"redirectUrl,omitempty"`
+ CountryCode                     string                 `json:"countryCode,omitempty"`
+ SubscriptionID                  string                 `json:"subscriptionId,omitempty"`
+ Metadata                        interface{}            `json:"metadata,omitempty"`
+ Amount                          *Amount                `json:"amount,omitempty"`
+ AmountRefunded                  *Amount                `json:"amountRefunded,omitempty"`
+ AmountRemaining                 *Amount                `json:"amountRemaining,omitempty"`
+ AmountCaptured                  *Amount                `json:"amountCaptured,omitempty"`
+ AmountChargedBack               *Amount                `json:"amountChargedBack,omitempty"`
+ SettlementAmount                *Amount                `json:"settlementAmount,omitempty"`
+ ApplicationFee                  *ApplicationFee        `json:"applicationFee,omitempty"`
+ Details                         *PaymentDetails        `json:"details,omitempty"`
+ CreatedAt                       *time.Time             `json:"createdAt,omitempty"`
+ AuthorizedAt                    *time.Time             `json:"authorizedAt,omitempty"`
+ PaidAt                          *time.Time             `json:"paidAt,omitempty"`
+ CanceledAt                      *time.Time             `json:"canceledAt,omitempty"`
+ ExpiresAt                       *time.Time             `json:"expiresAt,omitempty"`
+ ExpiredAt                       *time.Time             `json:"expiredAt,omitempty"`
+ FailedAt                        *time.Time             `json:"failedAt,omitempty"`
+ DueDate                         *ShortDate             `json:"dueDate,omitempty"`
+ BillingAddress                  *Address               `json:"billingAddress,omitempty"`
+ ShippingAddress                 *PaymentDetailsAddress `json:"shippingAddress,omitempty"`
+ Mode                            Mode                   `json:"mode,omitempty"`
+ Locale                          Locale                 `json:"locale,omitempty"`
+ RestrictPaymentMethodsToCountry Locale                 `json:"restrictPaymentMethodsToCountry,omitempty"`
+ Method                          PaymentMethod          `json:"method,omitempty"`
+ Links                           PaymentLinks           `json:"_links,omitempty"`
+ SequenceType                    SequenceType           `json:"sequenceType,omitempty"`
 }
 ```
 
@@ -2032,48 +2032,48 @@ Payment describes a transaction between a customer and a merchant.
 
 ```go
 type PaymentDetails struct {
-	PaypalDigitalGoods bool                   `json:"digitalGoods,omitempty"`
-	BankAccount        string                 `json:"bankAccount,omitempty"`
-	BankBIC            string                 `json:"bankBic,omitempty"`
-	BankName           string                 `json:"bankName,omitempty"`
-	BankReason         string                 `json:"bankReason,omitempty"`
-	BatchReference     string                 `json:"batchReference,omitempty"`
-	BillingEmail       string                 `json:"billingEmail,omitempty"`
-	CardAudience       string                 `json:"cardAudience,omitempty"`
-	CardCountryCode    string                 `json:"cardCountryCode,omitempty"`
-	CardFingerPrint    string                 `json:"cardFingerPrint,omitempty"`
-	CardHolder         string                 `json:"cardHolder,omitempty"`
-	CardLabel          string                 `json:"cardLabel,omitempty"`
-	CardNumber         string                 `json:"cardNumber,omitempty"`
-	CardSecurity       string                 `json:"cardSecurity,omitempty"`
-	ConsumerAccount    string                 `json:"consumerAccount,omitempty"`
-	ConsumerBIC        string                 `json:"consumerBic,omitempty"`
-	ConsumerName       string                 `json:"consumerName,omitempty"`
-	ConsumerReference  string                 `json:"consumerReference,omitempty"`
-	CreditorIdentifier string                 `json:"creditorIdentifier,omitempty"`
-	EndToEndIdentifier string                 `json:"endToEndIdentifier,omitempty"`
-	FileReference      string                 `json:"fileReference,omitempty"`
-	MandateReference   string                 `json:"mandateReference,omitempty"`
-	PaypalReference    string                 `json:"paypalReference,omitempty"`
-	PaypalPayerID      string                 `json:"paypalPayerId,omitempty"`
-	TransferReference  string                 `json:"transferReference,omitempty"`
-	VoucherNumber      string                 `json:"voucherNumber,omitempty"`
-	Wallet             string                 `json:"wallet,omitempty"`
-	PaypalFee          Amount                 `json:"paypalFee,omitempty"`
-	FailureReason      FailureReason          `json:"failureReason,omitempty"`
-	FeeRegion          FeeRegion              `json:"feeRegion,omitempty"`
-	RemainderMethod    PaymentMethod          `json:"remainderMethod,omitempty"`
-	SellerProtection   EligibilityReasons     `json:"sellerProtection,omitempty"`
-	DueDate            *ShortDate             `json:"dueDate,omitempty"`
-	GiftCards          []*UsedGiftCard        `json:"giftCards,omitempty"`
-	QRCode             *QRCode                `json:"qrCode,omitempty"`
-	RemainderAmount    *Amount                `json:"remainderAmount,omitempty"`
-	ShippingAddress    *PaymentDetailsAddress `json:"shippingAddress,omitempty"`
-	SignatureDate      *ShortDate             `json:"signatureDate,omitempty"`
-	Links              struct {
-		Status    *URL `json:"status,omitempty"`
-		PayOnline *URL `json:"payOnline,omitempty"`
-	} `json:"_links,omitempty"`
+ PaypalDigitalGoods bool                   `json:"digitalGoods,omitempty"`
+ BankAccount        string                 `json:"bankAccount,omitempty"`
+ BankBIC            string                 `json:"bankBic,omitempty"`
+ BankName           string                 `json:"bankName,omitempty"`
+ BankReason         string                 `json:"bankReason,omitempty"`
+ BatchReference     string                 `json:"batchReference,omitempty"`
+ BillingEmail       string                 `json:"billingEmail,omitempty"`
+ CardAudience       string                 `json:"cardAudience,omitempty"`
+ CardCountryCode    string                 `json:"cardCountryCode,omitempty"`
+ CardFingerPrint    string                 `json:"cardFingerPrint,omitempty"`
+ CardHolder         string                 `json:"cardHolder,omitempty"`
+ CardLabel          string                 `json:"cardLabel,omitempty"`
+ CardNumber         string                 `json:"cardNumber,omitempty"`
+ CardSecurity       string                 `json:"cardSecurity,omitempty"`
+ ConsumerAccount    string                 `json:"consumerAccount,omitempty"`
+ ConsumerBIC        string                 `json:"consumerBic,omitempty"`
+ ConsumerName       string                 `json:"consumerName,omitempty"`
+ ConsumerReference  string                 `json:"consumerReference,omitempty"`
+ CreditorIdentifier string                 `json:"creditorIdentifier,omitempty"`
+ EndToEndIdentifier string                 `json:"endToEndIdentifier,omitempty"`
+ FileReference      string                 `json:"fileReference,omitempty"`
+ MandateReference   string                 `json:"mandateReference,omitempty"`
+ PaypalReference    string                 `json:"paypalReference,omitempty"`
+ PaypalPayerID      string                 `json:"paypalPayerId,omitempty"`
+ TransferReference  string                 `json:"transferReference,omitempty"`
+ VoucherNumber      string                 `json:"voucherNumber,omitempty"`
+ Wallet             string                 `json:"wallet,omitempty"`
+ PaypalFee          Amount                 `json:"paypalFee,omitempty"`
+ FailureReason      FailureReason          `json:"failureReason,omitempty"`
+ FeeRegion          FeeRegion              `json:"feeRegion,omitempty"`
+ RemainderMethod    PaymentMethod          `json:"remainderMethod,omitempty"`
+ SellerProtection   EligibilityReasons     `json:"sellerProtection,omitempty"`
+ DueDate            *ShortDate             `json:"dueDate,omitempty"`
+ GiftCards          []*UsedGiftCard        `json:"giftCards,omitempty"`
+ QRCode             *QRCode                `json:"qrCode,omitempty"`
+ RemainderAmount    *Amount                `json:"remainderAmount,omitempty"`
+ ShippingAddress    *PaymentDetailsAddress `json:"shippingAddress,omitempty"`
+ SignatureDate      *ShortDate             `json:"signatureDate,omitempty"`
+ Links              struct {
+  Status    *URL `json:"status,omitempty"`
+  PayOnline *URL `json:"payOnline,omitempty"`
+ } `json:"_links,omitempty"`
 }
 ```
 
@@ -2083,18 +2083,18 @@ PaymentDetails contains details for the specified payment method.
 
 ```go
 type PaymentDetailsAddress struct {
-	OrganizationName string      `json:"organizationName,omitempty"`
-	Title            string      `json:"title,omitempty"`
-	GivenName        string      `json:"givenName,omitempty"`
-	FamilyName       string      `json:"familyName,omitempty"`
-	Email            string      `json:"email,omitempty"`
-	Phone            PhoneNumber `json:"phone,omitempty"`
-	StreetAndNumber  string      `json:"streetAndNumber,omitempty"`
-	StreetAdditional string      `json:"streetAdditional,omitempty"`
-	PostalCode       string      `json:"postalCode,omitempty"`
-	City             string      `json:"city,omitempty"`
-	Region           string      `json:"region,omitempty"`
-	Country          string      `json:"country,omitempty"`
+ OrganizationName string      `json:"organizationName,omitempty"`
+ Title            string      `json:"title,omitempty"`
+ GivenName        string      `json:"givenName,omitempty"`
+ FamilyName       string      `json:"familyName,omitempty"`
+ Email            string      `json:"email,omitempty"`
+ Phone            PhoneNumber `json:"phone,omitempty"`
+ StreetAndNumber  string      `json:"streetAndNumber,omitempty"`
+ StreetAdditional string      `json:"streetAdditional,omitempty"`
+ PostalCode       string      `json:"postalCode,omitempty"`
+ City             string      `json:"city,omitempty"`
+ Region           string      `json:"region,omitempty"`
+ Country          string      `json:"country,omitempty"`
 }
 ```
 
@@ -2105,51 +2105,51 @@ shipped to.
 
 ```go
 type PaymentLink struct {
-	ID          string           `json:"id,omitempty"`
-	Resource    string           `json:"resource,omitempty"`
-	Description string           `json:"description,omitempty"`
-	ProfileID   string           `json:"profileId,omitempty"`
-	RedirectURL string           `json:"redirectUrl,omitempty"`
-	WebhookURL  string           `json:"webhookUrl,omitempty"`
-	Mode        Mode             `json:"mode,omitempty"`
-	Amount      Amount           `json:"amount,omitempty"`
-	CreatedAt   *time.Time       `json:"createdAt,omitempty"`
-	PaidAt      *time.Time       `json:"paidAt,omitempty"`
-	UpdatedAt   *time.Time       `json:"updatedAt,omitempty"`
-	ExpiresAt   *time.Time       `json:"expiresAt,omitempty"`
-	Links       PaymentLinkLinks `json:"_links,omitempty"`
+ ID          string           `json:"id,omitempty"`
+ Resource    string           `json:"resource,omitempty"`
+ Description string           `json:"description,omitempty"`
+ ProfileID   string           `json:"profileId,omitempty"`
+ RedirectURL string           `json:"redirectUrl,omitempty"`
+ WebhookURL  string           `json:"webhookUrl,omitempty"`
+ Mode        Mode             `json:"mode,omitempty"`
+ Amount      Amount           `json:"amount,omitempty"`
+ CreatedAt   *time.Time       `json:"createdAt,omitempty"`
+ PaidAt      *time.Time       `json:"paidAt,omitempty"`
+ UpdatedAt   *time.Time       `json:"updatedAt,omitempty"`
+ ExpiresAt   *time.Time       `json:"expiresAt,omitempty"`
+ Links       PaymentLinkLinks `json:"_links,omitempty"`
 }
 ```
 
 PaymentLink is a resource that can be shared with your customers and will
 redirect them to them the payment page where they can complete the payment.
 
-See: https://docs.mollie.com/reference/v2/payment-links-api/get-payment-link
+See: <https://docs.mollie.com/reference/v2/payment-links-api/get-payment-link>
 
 #### type PaymentLinkLinks
 
 ```go
 type PaymentLinkLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
-	PaymentLink   *URL `json:"paymentLink,omitempty"`
-	Next          *URL `json:"next,omitempty"`
-	Previous      *URL `json:"previous,omitempty"`
+ Self          *URL `json:"self,omitempty"`
+ Documentation *URL `json:"documentation,omitempty"`
+ PaymentLink   *URL `json:"paymentLink,omitempty"`
+ Next          *URL `json:"next,omitempty"`
+ Previous      *URL `json:"previous,omitempty"`
 }
 ```
 
 PaymentLinkLinks describes all the possible links returned with a payment link
 struct.
 
-See: https://docs.mollie.com/reference/v2/payment-links-api/get-payment-link
+See: <https://docs.mollie.com/reference/v2/payment-links-api/get-payment-link>
 
 #### type PaymentLinkOptions
 
 ```go
 type PaymentLinkOptions struct {
-	ProfileID string `url:"profileId,omitempty"`
-	From      string `url:"from,omitempty"`
-	Limit     int    `url:"limit,omitempty"`
+ ProfileID string `url:"profileId,omitempty"`
+ From      string `url:"from,omitempty"`
+ Limit     int    `url:"limit,omitempty"`
 }
 ```
 
@@ -2160,19 +2160,19 @@ links requests.
 
 ```go
 type PaymentLinks struct {
-	Self               *URL `json:"self,omitempty"`
-	Checkout           *URL `json:"checkout,omitempty"`
-	ChangePaymentState *URL `json:"changePaymentState,omitempty"`
-	Refunds            *URL `json:"refunds,omitempty"`
-	ChargeBacks        *URL `json:"chargebacks,omitempty"`
-	Captures           *URL `json:"captures,omitempty"`
-	Settlement         *URL `json:"settlement,omitempty"`
-	Documentation      *URL `json:"documentation,omitempty"`
-	Mandate            *URL `json:"mandate,omitempty"`
-	Subscription       *URL `json:"subscription,omitempty"`
-	Customer           *URL `json:"customer,omitempty"`
-	Order              *URL `json:"order,omitempty"`
-	Dashboard          *URL `json:"dashboard,omitempty"`
+ Self               *URL `json:"self,omitempty"`
+ Checkout           *URL `json:"checkout,omitempty"`
+ ChangePaymentState *URL `json:"changePaymentState,omitempty"`
+ Refunds            *URL `json:"refunds,omitempty"`
+ ChargeBacks        *URL `json:"chargebacks,omitempty"`
+ Captures           *URL `json:"captures,omitempty"`
+ Settlement         *URL `json:"settlement,omitempty"`
+ Documentation      *URL `json:"documentation,omitempty"`
+ Mandate            *URL `json:"mandate,omitempty"`
+ Subscription       *URL `json:"subscription,omitempty"`
+ Customer           *URL `json:"customer,omitempty"`
+ Order              *URL `json:"order,omitempty"`
+ Dashboard          *URL `json:"dashboard,omitempty"`
 }
 ```
 
@@ -2183,11 +2183,11 @@ object.
 
 ```go
 type PaymentLinksList struct {
-	Count    int              `json:"count,omitempty"`
-	Links    PaymentLinkLinks `json:"_links,omitempty"`
-	Embedded struct {
-		PaymentLinks []*PaymentLink `json:"payment_links,omitempty"`
-	} `json:"_embedded,omitempty"`
+ Count    int              `json:"count,omitempty"`
+ Links    PaymentLinkLinks `json:"_links,omitempty"`
+ Embedded struct {
+  PaymentLinks []*PaymentLink `json:"payment_links,omitempty"`
+ } `json:"_embedded,omitempty"`
 }
 ```
 
@@ -2202,7 +2202,7 @@ type PaymentLinksService service
 
 PaymentLinksService operates over the payment link resource.
 
-#### func (\*PaymentLinksService) Create
+#### func (*PaymentLinksService) Create
 
 ```go
 func (pls *PaymentLinksService) Create(ctx context.Context, p PaymentLink, opts *PaymentLinkOptions) (res *Response, np *PaymentLink, err error)
@@ -2211,9 +2211,9 @@ func (pls *PaymentLinksService) Create(ctx context.Context, p PaymentLink, opts 
 Create generates payment links that by default, unlike regular payments, do not
 expire.
 
-See: https://docs.mollie.com/reference/v2/payment-links-api/create-payment-link
+See: <https://docs.mollie.com/reference/v2/payment-links-api/create-payment-link>
 
-#### func (\*PaymentLinksService) Get
+#### func (*PaymentLinksService) Get
 
 ```go
 func (pls *PaymentLinksService) Get(ctx context.Context, id string) (res *Response, pl *PaymentLink, err error)
@@ -2221,9 +2221,9 @@ func (pls *PaymentLinksService) Get(ctx context.Context, id string) (res *Respon
 
 Get retrieves a single payment link object by its id/token.
 
-See: https://docs.mollie.com/reference/v2/payment-links-api/get-payment-link
+See: <https://docs.mollie.com/reference/v2/payment-links-api/get-payment-link>
 
-#### func (\*PaymentLinksService) List
+#### func (*PaymentLinksService) List
 
 ```go
 func (pls *PaymentLinksService) List(ctx context.Context, opts *PaymentLinkOptions) (res *Response, pl *PaymentLinksList, err error)
@@ -2232,17 +2232,17 @@ func (pls *PaymentLinksService) List(ctx context.Context, opts *PaymentLinkOptio
 List retrieves all payments links created with the current website profile,
 ordered from newest to oldest.
 
-See: https://docs.mollie.com/reference/v2/payment-links-api/list-payment-links
+See: <https://docs.mollie.com/reference/v2/payment-links-api/list-payment-links>
 
 #### type PaymentList
 
 ```go
 type PaymentList struct {
-	Count    int `json:"count,omitempty"`
-	Embedded struct {
-		Payments []Payment
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"_links,omitempty"`
+ Count    int `json:"count,omitempty"`
+ Embedded struct {
+  Payments []Payment
+ } `json:"_embedded,omitempty"`
+ Links PaginationLinks `json:"_links,omitempty"`
 }
 ```
 
@@ -2258,23 +2258,23 @@ PaymentMethod is a payment method supported by Mollie.
 
 ```go
 const (
-	Bancontact     PaymentMethod = "bancontact"
-	BankTransfer   PaymentMethod = "banktransfer"
-	Belfius        PaymentMethod = "belfius"
-	CreditCard     PaymentMethod = "creditcard"
-	DirectDebit    PaymentMethod = "directdebit"
-	EPS            PaymentMethod = "eps"
-	GiftCard       PaymentMethod = "giftcard"
-	GiroPay        PaymentMethod = "giropay"
-	IDeal          PaymentMethod = "ideal"
-	KBC            PaymentMethod = "kbc"
-	KlarnaPayLater PaymentMethod = "klarnapaylater"
-	KlarnaLiceit   PaymentMethod = "klarnaliceit"
-	MyBank         PaymentMethod = "mybank"
-	PayPal         PaymentMethod = "paypal"
-	PaySafeCard    PaymentMethod = "paysafecard"
-	PRZelewy24     PaymentMethod = "przelewy24"
-	Sofort         PaymentMethod = "sofort"
+ Bancontact     PaymentMethod = "bancontact"
+ BankTransfer   PaymentMethod = "banktransfer"
+ Belfius        PaymentMethod = "belfius"
+ CreditCard     PaymentMethod = "creditcard"
+ DirectDebit    PaymentMethod = "directdebit"
+ EPS            PaymentMethod = "eps"
+ GiftCard       PaymentMethod = "giftcard"
+ GiroPay        PaymentMethod = "giropay"
+ IDeal          PaymentMethod = "ideal"
+ KBC            PaymentMethod = "kbc"
+ KlarnaPayLater PaymentMethod = "klarnapaylater"
+ KlarnaLiceit   PaymentMethod = "klarnaliceit"
+ MyBank         PaymentMethod = "mybank"
+ PayPal         PaymentMethod = "paypal"
+ PaySafeCard    PaymentMethod = "paysafecard"
+ PRZelewy24     PaymentMethod = "przelewy24"
+ Sofort         PaymentMethod = "sofort"
 )
 ```
 
@@ -2284,16 +2284,16 @@ Supported payment methods.
 
 ```go
 type PaymentMethodDetails struct {
-	Resource      string                  `json:"resource,omitempty"`
-	ID            string                  `json:"id,omitempty"`
-	Description   string                  `json:"description,omitempty"`
-	MinimumAmount *Amount                 `json:"minimumAmount,omitempty"`
-	MaximumAmount *Amount                 `json:"maximumAmount,omitempty"`
-	Image         *Image                  `json:"image,omitempty"`
-	Pricing       []*PaymentMethodPricing `json:"pricing,omitempty"`
-	Issuers       []*PaymentMethodIssuer  `json:"issuers,omitempty"`
-	Status        *PaymentMethodStatus    `json:"status,omitempty"`
-	Links         MethodsLinks            `json:"_links,omitempty"`
+ Resource      string                  `json:"resource,omitempty"`
+ ID            string                  `json:"id,omitempty"`
+ Description   string                  `json:"description,omitempty"`
+ MinimumAmount *Amount                 `json:"minimumAmount,omitempty"`
+ MaximumAmount *Amount                 `json:"maximumAmount,omitempty"`
+ Image         *Image                  `json:"image,omitempty"`
+ Pricing       []*PaymentMethodPricing `json:"pricing,omitempty"`
+ Issuers       []*PaymentMethodIssuer  `json:"issuers,omitempty"`
+ Status        *PaymentMethodStatus    `json:"status,omitempty"`
+ Links         MethodsLinks            `json:"_links,omitempty"`
 }
 ```
 
@@ -2303,10 +2303,10 @@ PaymentMethodDetails describes a single method with details.
 
 ```go
 type PaymentMethodIssuer struct {
-	Resource string `json:"resource,omitempty"`
-	ID       string `json:"id,omitempty"`
-	Name     string `json:"name,omitempty"`
-	Image    Image  `json:"image,omitempty"`
+ Resource string `json:"resource,omitempty"`
+ ID       string `json:"id,omitempty"`
+ Name     string `json:"name,omitempty"`
+ Image    Image  `json:"image,omitempty"`
 }
 ```
 
@@ -2317,10 +2317,10 @@ button, gift cards, or meal vouchers).
 
 ```go
 type PaymentMethodOptions struct {
-	Locale    Locale `url:"locale,omitempty"`
-	Currency  string `url:"currency,omitempty"`
-	ProfileID string `url:"profileId,omitempty"`
-	Include   string `url:"include,omitempty"`
+ Locale    Locale `url:"locale,omitempty"`
+ Currency  string `url:"currency,omitempty"`
+ ProfileID string `url:"profileId,omitempty"`
+ Include   string `url:"include,omitempty"`
 }
 ```
 
@@ -2331,10 +2331,10 @@ mollie's API.
 
 ```go
 type PaymentMethodPricing struct {
-	Description string    `json:"description,omitempty"`
-	Fixed       *Amount   `json:"fixed,omitempty"`
-	Variable    string    `json:"variable,omitempty"`
-	FeeRegion   FeeRegion `json:"feeRegion,omitempty"`
+ Description string    `json:"description,omitempty"`
+ Fixed       *Amount   `json:"fixed,omitempty"`
+ Variable    string    `json:"variable,omitempty"`
+ FeeRegion   FeeRegion `json:"feeRegion,omitempty"`
 }
 ```
 
@@ -2352,11 +2352,11 @@ activated pending-boarding pending-review pending-external rejected.
 
 ```go
 const (
-	PaymentMethodActivated       PaymentMethodStatus = "activated"
-	PaymentMethodPendingBoarding PaymentMethodStatus = "pending-boarding"
-	PaymentMethodPendingReview   PaymentMethodStatus = "pending-review"
-	PaymentMethodPendingExternal PaymentMethodStatus = "pending-external"
-	PaymentMethodRejected        PaymentMethodStatus = "pending-rejected"
+ PaymentMethodActivated       PaymentMethodStatus = "activated"
+ PaymentMethodPendingBoarding PaymentMethodStatus = "pending-boarding"
+ PaymentMethodPendingReview   PaymentMethodStatus = "pending-review"
+ PaymentMethodPendingExternal PaymentMethodStatus = "pending-external"
+ PaymentMethodRejected        PaymentMethodStatus = "pending-rejected"
 )
 ```
 
@@ -2366,11 +2366,11 @@ Available payment method statuses.
 
 ```go
 type PaymentMethodsList struct {
-	Count    int `json:"count,omitempty"`
-	Embedded struct {
-		Methods []*PaymentMethodDetails
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"_links,omitempty"`
+ Count    int `json:"count,omitempty"`
+ Embedded struct {
+  Methods []*PaymentMethodDetails
+ } `json:"_embedded,omitempty"`
+ Links PaginationLinks `json:"_links,omitempty"`
 }
 ```
 
@@ -2380,13 +2380,13 @@ PaymentMethodsList describes a list of paginated payment methods.
 
 ```go
 type PaymentMethodsListOptions struct {
-	PaymentMethodOptions
-	SequenceType   SequenceType `url:"sequenceType,omitempty"`
-	AmountCurrency string       `url:"amount[currency],omitempty"`
-	AmountValue    string       `url:"amount[value],omitempty"`
-	Resource       string       `url:"resource,omitempty"`
-	BillingCountry string       `url:"billingCountry,omitempty"`
-	IncludeWallets string       `url:"includeWallets,omitempty"`
+ PaymentMethodOptions
+ SequenceType   SequenceType `url:"sequenceType,omitempty"`
+ AmountCurrency string       `url:"amount[currency],omitempty"`
+ AmountValue    string       `url:"amount[value],omitempty"`
+ Resource       string       `url:"resource,omitempty"`
+ BillingCountry string       `url:"billingCountry,omitempty"`
+ IncludeWallets string       `url:"includeWallets,omitempty"`
 }
 ```
 
@@ -2403,7 +2403,7 @@ type PaymentMethodsService service
 
 PaymentMethodsService operates on methods endpoints.
 
-#### func (\*PaymentMethodsService) All
+#### func (*PaymentMethodsService) All
 
 ```go
 func (ms *PaymentMethodsService) All(ctx context.Context, options *PaymentMethodsListOptions) (res *Response, pm *PaymentMethodsList, err error)
@@ -2411,9 +2411,9 @@ func (ms *PaymentMethodsService) All(ctx context.Context, options *PaymentMethod
 
 All retrieves all the payment methods enabled for your account/organization.
 
-See: https://docs.mollie.com/reference/v2/methods-api/list-all-methods
+See: <https://docs.mollie.com/reference/v2/methods-api/list-all-methods>
 
-#### func (\*PaymentMethodsService) Get
+#### func (*PaymentMethodsService) Get
 
 ```go
 func (ms *PaymentMethodsService) Get(ctx context.Context, id PaymentMethod, options *PaymentMethodOptions) (res *Response, pmd *PaymentMethodDetails, err error)
@@ -2423,9 +2423,9 @@ Get returns information about the payment method specified by id, it also
 receives a pointer to the method options containing applicable query string
 parameters.
 
-See: https://docs.mollie.com/reference/v2/methods-api/get-method
+See: <https://docs.mollie.com/reference/v2/methods-api/get-method>
 
-#### func (\*PaymentMethodsService) List
+#### func (*PaymentMethodsService) List
 
 ```go
 func (ms *PaymentMethodsService) List(ctx context.Context, options *PaymentMethodsListOptions) (res *Response, pm *PaymentMethodsList, err error)
@@ -2435,20 +2435,20 @@ List retrieves all enabled payment methods.
 
 The results are not paginated.
 
-See: https://docs.mollie.com/reference/v2/methods-api/list-methods
+See: <https://docs.mollie.com/reference/v2/methods-api/list-methods>
 
 #### type PaymentOptions
 
 ```go
 type PaymentOptions struct {
-	Include string `url:"include,omitempty"`
-	Embed   string `url:"embed,omitempty"`
+ Include string `url:"include,omitempty"`
+ Embed   string `url:"embed,omitempty"`
 }
 ```
 
 PaymentOptions describes payments endpoint valid query string parameters.
 
-See: https://docs.mollie.com/reference/v2/payments-api/get-payment
+See: <https://docs.mollie.com/reference/v2/payments-api/get-payment>
 
 #### type PaymentsService
 
@@ -2458,7 +2458,7 @@ type PaymentsService service
 
 PaymentsService instance operates over payment resources.
 
-#### func (\*PaymentsService) Cancel
+#### func (*PaymentsService) Cancel
 
 ```go
 func (ps *PaymentsService) Cancel(ctx context.Context, id string) (res *Response, p *Payment, err error)
@@ -2466,9 +2466,9 @@ func (ps *PaymentsService) Cancel(ctx context.Context, id string) (res *Response
 
 Cancel removes a payment (if possible) from your Mollie account.
 
-See: https://docs.mollie.com/reference/v2/payments-api/cancel-payment
+See: <https://docs.mollie.com/reference/v2/payments-api/cancel-payment>
 
-#### func (\*PaymentsService) Create
+#### func (*PaymentsService) Create
 
 ```go
 func (ps *PaymentsService) Create(ctx context.Context, p Payment, opts *PaymentOptions) (res *Response, np *Payment, err error)
@@ -2476,9 +2476,9 @@ func (ps *PaymentsService) Create(ctx context.Context, p Payment, opts *PaymentO
 
 Create stores a new payment object attached to your Mollie account.
 
-See: https://docs.mollie.com/reference/v2/payments-api/create-payment#
+See: <https://docs.mollie.com/reference/v2/payments-api/create-payment>#
 
-#### func (\*PaymentsService) Get
+#### func (*PaymentsService) Get
 
 ```go
 func (ps *PaymentsService) Get(ctx context.Context, id string, opts *PaymentOptions) (res *Response, p *Payment, err error)
@@ -2486,7 +2486,7 @@ func (ps *PaymentsService) Get(ctx context.Context, id string, opts *PaymentOpti
 
 Get retrieves a single payment object by its payment token.
 
-#### func (\*PaymentsService) List
+#### func (*PaymentsService) List
 
 ```go
 func (ps *PaymentsService) List(ctx context.Context, opts *ListPaymentOptions) (res *Response, pl *PaymentList, err error)
@@ -2494,9 +2494,9 @@ func (ps *PaymentsService) List(ctx context.Context, opts *ListPaymentOptions) (
 
 List retrieves a list of payments associated with your account/organization.
 
-See: https://docs.mollie.com/reference/v2/payments-api/list-payments
+See: <https://docs.mollie.com/reference/v2/payments-api/list-payments>
 
-#### func (\*PaymentsService) Update
+#### func (*PaymentsService) Update
 
 ```go
 func (ps *PaymentsService) Update(ctx context.Context, id string, up Payment) (res *Response, p *Payment, err error)
@@ -2504,17 +2504,17 @@ func (ps *PaymentsService) Update(ctx context.Context, id string, up Payment) (r
 
 Update can be used to update some details of a created payment.
 
-See: https://docs.mollie.com/reference/v2/payments-api/update-payment#
+See: <https://docs.mollie.com/reference/v2/payments-api/update-payment>#
 
 #### type Permission
 
 ```go
 type Permission struct {
-	Resource    string          `json:"resource,omitempty"`
-	ID          PermissionGrant `json:"id,omitempty"`
-	Description string          `json:"description,omitempty"`
-	Granted     bool            `json:"granted,omitempty"`
-	Links       PermissionLinks `json:"_links,omitempty"`
+ Resource    string          `json:"resource,omitempty"`
+ ID          PermissionGrant `json:"id,omitempty"`
+ Description string          `json:"description,omitempty"`
+ Granted     bool            `json:"granted,omitempty"`
+ Links       PermissionLinks `json:"_links,omitempty"`
 }
 ```
 
@@ -2530,27 +2530,27 @@ PermissionGrant defines supported permissions.
 
 ```go
 const (
-	PaymentsRead       PermissionGrant = "payments.read"
-	PaymentsWrite      PermissionGrant = "payments.write"
-	RefundsRead        PermissionGrant = "refunds.read"
-	RefundsWrite       PermissionGrant = "refunds.write"
-	CustomersRead      PermissionGrant = "customers.read"
-	CustomersWrite     PermissionGrant = "customers.write"
-	MandatesRead       PermissionGrant = "mandates.read"
-	MandatesWrite      PermissionGrant = "mandates.write"
-	SubscriptionsRead  PermissionGrant = "subscriptions.read"
-	SubscriptionsWrite PermissionGrant = "subscriptions.write"
-	ProfilesRead       PermissionGrant = "profiles.read"
-	ProfilesWrite      PermissionGrant = "profiles.write"
-	InvoicesRead       PermissionGrant = "invoices.read"
-	OrdersRead         PermissionGrant = "orders.read"
-	OrdersWrite        PermissionGrant = "orders.write"
-	ShipmentsRead      PermissionGrant = "shipments.read"
-	ShipmentsWrite     PermissionGrant = "shipments.write"
-	OrganizationsRead  PermissionGrant = "organizations.read"
-	OrganizationsWrite PermissionGrant = "organizations.write"
-	OnboardingRead     PermissionGrant = "onbording.read"
-	OnboardingWrite    PermissionGrant = "onbording.write"
+ PaymentsRead       PermissionGrant = "payments.read"
+ PaymentsWrite      PermissionGrant = "payments.write"
+ RefundsRead        PermissionGrant = "refunds.read"
+ RefundsWrite       PermissionGrant = "refunds.write"
+ CustomersRead      PermissionGrant = "customers.read"
+ CustomersWrite     PermissionGrant = "customers.write"
+ MandatesRead       PermissionGrant = "mandates.read"
+ MandatesWrite      PermissionGrant = "mandates.write"
+ SubscriptionsRead  PermissionGrant = "subscriptions.read"
+ SubscriptionsWrite PermissionGrant = "subscriptions.write"
+ ProfilesRead       PermissionGrant = "profiles.read"
+ ProfilesWrite      PermissionGrant = "profiles.write"
+ InvoicesRead       PermissionGrant = "invoices.read"
+ OrdersRead         PermissionGrant = "orders.read"
+ OrdersWrite        PermissionGrant = "orders.write"
+ ShipmentsRead      PermissionGrant = "shipments.read"
+ ShipmentsWrite     PermissionGrant = "shipments.write"
+ OrganizationsRead  PermissionGrant = "organizations.read"
+ OrganizationsWrite PermissionGrant = "organizations.write"
+ OnboardingRead     PermissionGrant = "onbording.read"
+ OnboardingWrite    PermissionGrant = "onbording.write"
 )
 ```
 
@@ -2560,8 +2560,8 @@ Available permission grants.
 
 ```go
 type PermissionLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+ Self          *URL `json:"self,omitempty"`
+ Documentation *URL `json:"documentation,omitempty"`
 }
 ```
 
@@ -2572,11 +2572,11 @@ related to permissions.
 
 ```go
 type PermissionsList struct {
-	Count    int `json:"count,omitempty"`
-	Embedded struct {
-		Permissions []*Permission `json:"permissions,omitempty"`
-	} `json:"_embedded,omitempty"`
-	Links PermissionLinks `json:"_links,omitempty"`
+ Count    int `json:"count,omitempty"`
+ Embedded struct {
+  Permissions []*Permission `json:"permissions,omitempty"`
+ } `json:"_embedded,omitempty"`
+ Links PermissionLinks `json:"_links,omitempty"`
 }
 ```
 
@@ -2590,7 +2590,7 @@ type PermissionsService service
 
 PermissionsService operates over permission resources.
 
-#### func (\*PermissionsService) Get
+#### func (*PermissionsService) Get
 
 ```go
 func (ps *PermissionsService) Get(ctx context.Context, id PermissionGrant) (res *Response, p *Permission, err error)
@@ -2598,9 +2598,9 @@ func (ps *PermissionsService) Get(ctx context.Context, id PermissionGrant) (res 
 
 Get returns a permission by its id.
 
-See: https://docs.mollie.com/reference/v2/permissions-api/get-permission
+See: <https://docs.mollie.com/reference/v2/permissions-api/get-permission>
 
-#### func (\*PermissionsService) List
+#### func (*PermissionsService) List
 
 ```go
 func (ps *PermissionsService) List(ctx context.Context) (res *Response, pl *PermissionsList, err error)
@@ -2609,7 +2609,7 @@ func (ps *PermissionsService) List(ctx context.Context) (res *Response, pl *Perm
 List retrieves all permissions available with the current app access token. The
 list is not paginated.
 
-See: https://docs.mollie.com/reference/v2/permissions-api/list-permissions
+See: <https://docs.mollie.com/reference/v2/permissions-api/list-permissions>
 
 #### type PhoneNumber
 
@@ -2630,13 +2630,13 @@ digital product.
 
 ```go
 const (
-	Physical        ProductType = "physical"
-	Discount        ProductType = "discount"
-	Digital         ProductType = "digital"
-	ShippingFee     ProductType = "shipping_fee"
-	StoreCredit     ProductType = "store_credit"
-	GiftCardProduct ProductType = "gift_card"
-	Surcharge       ProductType = "surcharge"
+ Physical        ProductType = "physical"
+ Discount        ProductType = "discount"
+ Digital         ProductType = "digital"
+ ShippingFee     ProductType = "shipping_fee"
+ StoreCredit     ProductType = "store_credit"
+ GiftCardProduct ProductType = "gift_card"
+ Surcharge       ProductType = "surcharge"
 )
 ```
 
@@ -2646,20 +2646,20 @@ Valid product type.
 
 ```go
 type Profile struct {
-	ID           string       `json:"id,omitempty"`
-	CategoryCode CategoryCode `json:"categoryCode,omitempty"`
-	CreatedAt    *time.Time   `json:"createdAt,omitempty"`
-	Email        string       `json:"email,omitempty"`
-	Mode         Mode         `json:"mode,omitempty"`
-	Name         string       `json:"name,omitempty"`
-	Phone        PhoneNumber  `json:"phone,omitempty"`
-	Resource     string       `json:"resource,omitempty"`
-	Review       struct {
-		Status string `json:"status,omitempty"`
-	} `json:"review,omitempty"`
-	Status  ProfileStatus `json:"status,omitempty"`
-	Website string        `json:"website,omitempty"`
-	Links   ProfileLinks  `json:"_links,omitempty"`
+ ID           string       `json:"id,omitempty"`
+ CategoryCode CategoryCode `json:"categoryCode,omitempty"`
+ CreatedAt    *time.Time   `json:"createdAt,omitempty"`
+ Email        string       `json:"email,omitempty"`
+ Mode         Mode         `json:"mode,omitempty"`
+ Name         string       `json:"name,omitempty"`
+ Phone        PhoneNumber  `json:"phone,omitempty"`
+ Resource     string       `json:"resource,omitempty"`
+ Review       struct {
+  Status string `json:"status,omitempty"`
+ } `json:"review,omitempty"`
+ Status  ProfileStatus `json:"status,omitempty"`
+ Website string        `json:"website,omitempty"`
+ Links   ProfileLinks  `json:"_links,omitempty"`
 }
 ```
 
@@ -2670,13 +2670,13 @@ website or application.
 
 ```go
 type ProfileLinks struct {
-	Self               *URL `json:"self,omitempty"`
-	Chargebacks        *URL `json:"chargebacks,omitempty"`
-	Methods            *URL `json:"methods,omitempty"`
-	Refunds            *URL `json:"refunds,omitempty"`
-	CheckoutPreviewURL *URL `json:"checkoutPreviewUrl,omitempty"`
-	Documentation      *URL `json:"documentation,omitempty"`
-	Dashboard          *URL `json:"dashboard,omitempty"`
+ Self               *URL `json:"self,omitempty"`
+ Chargebacks        *URL `json:"chargebacks,omitempty"`
+ Methods            *URL `json:"methods,omitempty"`
+ Refunds            *URL `json:"refunds,omitempty"`
+ CheckoutPreviewURL *URL `json:"checkoutPreviewUrl,omitempty"`
+ Documentation      *URL `json:"documentation,omitempty"`
+ Dashboard          *URL `json:"dashboard,omitempty"`
 }
 ```
 
@@ -2686,11 +2686,11 @@ ProfileLinks contains URL's to relevant information related to a profile.
 
 ```go
 type ProfileList struct {
-	Count    int `json:"count,omitempty"`
-	Embedded struct {
-		Profiles []*Profile `json:"profiles,omitempty"`
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"_links,omitempty"`
+ Count    int `json:"count,omitempty"`
+ Embedded struct {
+  Profiles []*Profile `json:"profiles,omitempty"`
+ } `json:"_embedded,omitempty"`
+ Links PaginationLinks `json:"_links,omitempty"`
 }
 ```
 
@@ -2700,8 +2700,8 @@ ProfileList contains a list of profiles for your account.
 
 ```go
 type ProfileListOptions struct {
-	From  string `url:"from,omitempty"`
-	Limit uint   `url:"limit,omitempty"`
+ From  string `url:"from,omitempty"`
+ Limit uint   `url:"limit,omitempty"`
 }
 ```
 
@@ -2718,9 +2718,9 @@ ProfileStatus determines whether the profile is able to receive live payments.
 
 ```go
 const (
-	StatusUnverified ProfileStatus = "unverified"
-	StatusVerified   ProfileStatus = "verified"
-	StatusBlocked    ProfileStatus = "blocked"
+ StatusUnverified ProfileStatus = "unverified"
+ StatusVerified   ProfileStatus = "verified"
+ StatusBlocked    ProfileStatus = "blocked"
 )
 ```
 
@@ -2734,7 +2734,7 @@ type ProfilesService service
 
 ProfilesService operates over profile resource.
 
-#### func (\*ProfilesService) Create
+#### func (*ProfilesService) Create
 
 ```go
 func (ps *ProfilesService) Create(ctx context.Context, np *Profile) (res *Response, p *Profile, err error)
@@ -2742,7 +2742,7 @@ func (ps *ProfilesService) Create(ctx context.Context, np *Profile) (res *Respon
 
 Create stores a new profile in your Mollie account.
 
-#### func (\*ProfilesService) Current
+#### func (*ProfilesService) Current
 
 ```go
 func (ps *ProfilesService) Current(ctx context.Context) (res *Response, p *Profile, err error)
@@ -2751,7 +2751,7 @@ func (ps *ProfilesService) Current(ctx context.Context) (res *Response, p *Profi
 Current returns the profile belonging to the API key. This method only works
 when using API keys.
 
-#### func (\*ProfilesService) Delete
+#### func (*ProfilesService) Delete
 
 ```go
 func (ps *ProfilesService) Delete(ctx context.Context, id string) (res *Response, err error)
@@ -2760,7 +2760,7 @@ func (ps *ProfilesService) Delete(ctx context.Context, id string) (res *Response
 Delete enables profile deletions, rendering the profile unavailable for further
 API calls and transactions.
 
-#### func (\*ProfilesService) DisableGiftCardIssuer
+#### func (*ProfilesService) DisableGiftCardIssuer
 
 ```go
 func (ps *ProfilesService) DisableGiftCardIssuer(ctx context.Context, profileID string, issuer GiftCardIssuer) (res *Response, err error)
@@ -2769,9 +2769,9 @@ func (ps *ProfilesService) DisableGiftCardIssuer(ctx context.Context, profileID 
 DisableGiftCardIssuer deactivates the requested giftcard issuer for the provided
 profile id.
 
-See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
+See: <https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer>
 
-#### func (\*ProfilesService) DisableGiftCardIssuerForCurrent
+#### func (*ProfilesService) DisableGiftCardIssuerForCurrent
 
 ```go
 func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(ctx context.Context, issuer GiftCardIssuer) (res *Response, err error)
@@ -2780,9 +2780,9 @@ func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(ctx context.Context, 
 DisableGiftCardIssuerForCurrent deactivates the specified issuer for the current
 profile (token owner).
 
-See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
+See: <https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer>
 
-#### func (\*ProfilesService) DisablePaymentMethod
+#### func (*ProfilesService) DisablePaymentMethod
 
 ```go
 func (ps *ProfilesService) DisablePaymentMethod(ctx context.Context, id string, pm PaymentMethod) (res *Response, err error)
@@ -2791,7 +2791,7 @@ func (ps *ProfilesService) DisablePaymentMethod(ctx context.Context, id string, 
 DisablePaymentMethod disables a payment method on a specific or authenticated
 profile. If you're using API tokens for authentication, pass "me" as id.
 
-#### func (\*ProfilesService) EnableGiftCardIssuer
+#### func (*ProfilesService) EnableGiftCardIssuer
 
 ```go
 func (ps *ProfilesService) EnableGiftCardIssuer(ctx context.Context, profileID string, issuer GiftCardIssuer) (res *Response, gc *GiftCardEnabled, err error)
@@ -2800,9 +2800,9 @@ func (ps *ProfilesService) EnableGiftCardIssuer(ctx context.Context, profileID s
 EnableGiftCardIssuer activates the requested giftcard issuer for the provided
 profile id.
 
-See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
+See: <https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer>
 
-#### func (\*ProfilesService) EnableGiftCardIssuerForCurrent
+#### func (*ProfilesService) EnableGiftCardIssuerForCurrent
 
 ```go
 func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(ctx context.Context, issuer GiftCardIssuer) (res *Response, gc *GiftCardEnabled, err error)
@@ -2811,9 +2811,9 @@ func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(ctx context.Context, i
 EnableGiftCardIssuerForCurrent activates the specified issuer for the current
 profile (token owner).
 
-See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
+See: <https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer>
 
-#### func (\*ProfilesService) EnablePaymentMethod
+#### func (*ProfilesService) EnablePaymentMethod
 
 ```go
 func (ps *ProfilesService) EnablePaymentMethod(ctx context.Context, id string, pm PaymentMethod) (res *Response, pmi *PaymentMethodDetails, err error)
@@ -2822,7 +2822,7 @@ func (ps *ProfilesService) EnablePaymentMethod(ctx context.Context, id string, p
 EnablePaymentMethod enables a payment method on a specific or authenticated
 profile. If you're using API tokens for authentication, pass "me" as id.
 
-#### func (\*ProfilesService) Get
+#### func (*ProfilesService) Get
 
 ```go
 func (ps *ProfilesService) Get(ctx context.Context, id string) (res *Response, p *Profile, err error)
@@ -2830,7 +2830,7 @@ func (ps *ProfilesService) Get(ctx context.Context, id string) (res *Response, p
 
 Get retrieves the a profile by ID.
 
-#### func (\*ProfilesService) List
+#### func (*ProfilesService) List
 
 ```go
 func (ps *ProfilesService) List(ctx context.Context, opts *ProfileListOptions) (res *Response, pl *ProfileList, err error)
@@ -2838,7 +2838,7 @@ func (ps *ProfilesService) List(ctx context.Context, opts *ProfileListOptions) (
 
 List returns all the profiles for the authenticated account.
 
-#### func (\*ProfilesService) Update
+#### func (*ProfilesService) Update
 
 ```go
 func (ps *ProfilesService) Update(ctx context.Context, id string, up *Profile) (res *Response, p *Profile, err error)
@@ -2850,9 +2850,9 @@ Update allows you to perform mutations on a profile.
 
 ```go
 type QRCode struct {
-	Height int    `json:"height,omitempty"`
-	Width  int    `json:"width,omitempty"`
-	Src    string `json:"src,omitempty"`
+ Height int    `json:"height,omitempty"`
+ Width  int    `json:"width,omitempty"`
+ Src    string `json:"src,omitempty"`
 }
 ```
 
@@ -2862,8 +2862,8 @@ QRCode object represents an image of a QR code.
 
 ```go
 type Rate struct {
-	Fixed    *Amount `json:"fixed,omitempty"`
-	Variable string  `json:"variable,omitempty"`
+ Fixed    *Amount `json:"fixed,omitempty"`
+ Variable string  `json:"variable,omitempty"`
 }
 ```
 
@@ -2873,20 +2873,20 @@ Rate describes service rates, further divided into fixed and percentage costs.
 
 ```go
 type Refund struct {
-	Resource         string       `json:"resource,omitempty"`
-	ID               string       `json:"id,omitempty"`
-	Amount           *Amount      `json:"amount,omitempty"`
-	SettlementID     string       `json:"settlementId,omitempty"`
-	SettlementAmount *Amount      `json:"settlementAmount,omitempty"`
-	Description      string       `json:"description,omitempty"`
-	Metadata         interface{}  `json:"metadata,omitempty"`
-	Status           RefundStatus `json:"status,omitempty"`
-	Lines            []*OrderLine `json:"lines,omitempty"`
-	PaymentID        string       `json:"paymentId,omitempty"`
-	OrderID          string       `json:"orderId,omitempty"`
-	CreatedAt        *time.Time   `json:"createdAt,omitempty"`
-	TestMode         bool         `json:"testmode,omitempty"`
-	Links            RefundLinks  `json:"_links,omitempty"`
+ Resource         string       `json:"resource,omitempty"`
+ ID               string       `json:"id,omitempty"`
+ Amount           *Amount      `json:"amount,omitempty"`
+ SettlementID     string       `json:"settlementId,omitempty"`
+ SettlementAmount *Amount      `json:"settlementAmount,omitempty"`
+ Description      string       `json:"description,omitempty"`
+ Metadata         interface{}  `json:"metadata,omitempty"`
+ Status           RefundStatus `json:"status,omitempty"`
+ Lines            []*OrderLine `json:"lines,omitempty"`
+ PaymentID        string       `json:"paymentId,omitempty"`
+ OrderID          string       `json:"orderId,omitempty"`
+ CreatedAt        *time.Time   `json:"createdAt,omitempty"`
+ TestMode         bool         `json:"testmode,omitempty"`
+ Links            RefundLinks  `json:"_links,omitempty"`
 }
 ```
 
@@ -2896,11 +2896,11 @@ Refund describe a refund for a certain payment.
 
 ```go
 type RefundLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Payment       *URL `json:"payment,omitempty"`
-	Settlement    *URL `json:"settlement,omitempty"`
-	Order         *URL `json:"order,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+ Self          *URL `json:"self,omitempty"`
+ Payment       *URL `json:"payment,omitempty"`
+ Settlement    *URL `json:"settlement,omitempty"`
+ Order         *URL `json:"order,omitempty"`
+ Documentation *URL `json:"documentation,omitempty"`
 }
 ```
 
@@ -2911,11 +2911,11 @@ object.
 
 ```go
 type RefundList struct {
-	Count    int `json:"count,omitempty"`
-	Embedded struct {
-		Refunds []*Refund
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"_links,omitempty"`
+ Count    int `json:"count,omitempty"`
+ Embedded struct {
+  Refunds []*Refund
+ } `json:"_embedded,omitempty"`
+ Links PaginationLinks `json:"_links,omitempty"`
 }
 ```
 
@@ -2925,13 +2925,13 @@ RefundList describes how a list of refunds will be retrieved by Mollie.
 
 ```go
 type RefundOptions struct {
-	Embed EmbedValue `url:"embed,omitempty"`
+ Embed EmbedValue `url:"embed,omitempty"`
 }
 ```
 
 RefundOptions describes refund endpoint valid query string parameters.
 
-See: https://docs.mollie.com/reference/v2/refunds-api/get-refund.
+See: <https://docs.mollie.com/reference/v2/refunds-api/get-refund>.
 
 #### type RefundStatus
 
@@ -2943,11 +2943,11 @@ RefundStatus describes the status of the refund.
 
 ```go
 const (
-	Queued     RefundStatus = "queued"
-	Pending    RefundStatus = "pending"
-	Processing RefundStatus = "processing"
-	Refunded   RefundStatus = "refunded"
-	Failed     RefundStatus = "failed"
+ Queued     RefundStatus = "queued"
+ Pending    RefundStatus = "pending"
+ Processing RefundStatus = "processing"
+ Refunded   RefundStatus = "refunded"
+ Failed     RefundStatus = "failed"
 )
 ```
 
@@ -2961,7 +2961,7 @@ type RefundsService service
 
 RefundsService instance operates over refund resources.
 
-#### func (\*RefundsService) Cancel
+#### func (*RefundsService) Cancel
 
 ```go
 func (rs *RefundsService) Cancel(ctx context.Context, paymentID, refundID string) (res *Response, err error)
@@ -2969,9 +2969,9 @@ func (rs *RefundsService) Cancel(ctx context.Context, paymentID, refundID string
 
 Cancel try to cancel the refund request. The refund can only be canceled while
 the refund’s status is either queued or pending. See
-https://docs.mollie.com/reference/v2/refunds-api/cancel-refund
+<https://docs.mollie.com/reference/v2/refunds-api/cancel-refund>
 
-#### func (\*RefundsService) Create
+#### func (*RefundsService) Create
 
 ```go
 func (rs *RefundsService) Create(ctx context.Context, paymentID string, re Refund, options *RefundOptions) (res *Response, rf *Refund, err error)
@@ -2979,9 +2979,9 @@ func (rs *RefundsService) Create(ctx context.Context, paymentID string, re Refun
 
 Create a refund payment request.
 
-See https://docs.mollie.com/reference/v2/refunds-api/create-refund.
+See <https://docs.mollie.com/reference/v2/refunds-api/create-refund>.
 
-#### func (\*RefundsService) Get
+#### func (*RefundsService) Get
 
 ```go
 func (rs *RefundsService) Get(ctx context.Context, paymentID, refundID string, opts *RefundOptions) (res *Response, refund *Refund, err error)
@@ -2992,33 +2992,33 @@ Get retrieve a single refund by its ID.
 If you do not know the original payment’s ID, you can use the List payment
 refunds endpoint.
 
-#### func (\*RefundsService) ListRefund
+#### func (*RefundsService) ListRefund
 
 ```go
 func (rs *RefundsService) ListRefund(ctx context.Context, opts *ListRefundOptions) (res *Response, rl *RefundList, err error)
 ```
 
-ListRefund calls the top level https://api.mollie.com/v2/refunds.
+ListRefund calls the top level <https://api.mollie.com/v2/refunds>.
 
-See https://docs.mollie.com/reference/v2/refunds-api/list-refunds.
+See <https://docs.mollie.com/reference/v2/refunds-api/list-refunds>.
 
-#### func (\*RefundsService) ListRefundPayment
+#### func (*RefundsService) ListRefundPayment
 
 ```go
 func (rs *RefundsService) ListRefundPayment(ctx context.Context, paymentID string, opts *ListRefundOptions) (res *Response, rl *RefundList, err error)
 ```
 
 ListRefundPayment calls the payment-specific
-https://api.mollie.com/v2/payments/*paymentId*/refunds.
+<https://api.mollie.com/v2/payments/>*paymentId*/refunds.
 
 Only refunds for that specific payment are returned. See:
-https://docs.mollie.com/reference/v2/refunds-api/list-refunds
+<https://docs.mollie.com/reference/v2/refunds-api/list-refunds>
 
 #### type Response
 
 ```go
 type Response struct {
-	*http.Response
+ *http.Response
 }
 ```
 
@@ -3036,9 +3036,9 @@ SequenceType indicates which type of payment this is in a recurring sequence.
 
 ```go
 const (
-	OneOffSequence    SequenceType = "oneoff"
-	FirstSequence     SequenceType = "first"
-	RecurringSequence SequenceType = "recurring"
+ OneOffSequence    SequenceType = "oneoff"
+ FirstSequence     SequenceType = "first"
+ RecurringSequence SequenceType = "recurring"
 )
 ```
 
@@ -3048,16 +3048,16 @@ Valid sequence types.
 
 ```go
 type Settlement struct {
-	ID        string           `json:"id,omitempty"`
-	Resource  string           `json:"resource,omitempty"`
-	Reference string           `json:"reference,omitempty"`
-	CreatedAt *time.Time       `json:"createdAt,omitempty"`
-	SettledAt *time.Time       `json:"settledAt,omitempty"`
-	Status    SettlementStatus `json:"status,omitempty"`
-	Amount    *Amount          `json:"amount,omitempty"`
-	Periods   SettlementObject `json:"periods,omitempty"`
-	InvoiceID string           `json:"invoiceId,omitempty"`
-	Links     SettlementLinks  `json:"_links,omitempty"`
+ ID        string           `json:"id,omitempty"`
+ Resource  string           `json:"resource,omitempty"`
+ Reference string           `json:"reference,omitempty"`
+ CreatedAt *time.Time       `json:"createdAt,omitempty"`
+ SettledAt *time.Time       `json:"settledAt,omitempty"`
+ Status    SettlementStatus `json:"status,omitempty"`
+ Amount    *Amount          `json:"amount,omitempty"`
+ Periods   SettlementObject `json:"periods,omitempty"`
+ InvoiceID string           `json:"invoiceId,omitempty"`
+ Links     SettlementLinks  `json:"_links,omitempty"`
 }
 ```
 
@@ -3068,13 +3068,13 @@ chargebacks into settlements.
 
 ```go
 type SettlementCosts struct {
-	Description string        `json:"description,omitempty"`
-	AmountNet   *Amount       `json:"amountNet,omitempty"`
-	AmountVAT   *Amount       `json:"amountVat,omitempty"`
-	AmountGross *Amount       `json:"amountGross,omitempty"`
-	Count       int           `json:"count,omitempty"`
-	Rate        *Rate         `json:"rate,omitempty"`
-	Method      PaymentMethod `json:"method,omitempty"`
+ Description string        `json:"description,omitempty"`
+ AmountNet   *Amount       `json:"amountNet,omitempty"`
+ AmountVAT   *Amount       `json:"amountVat,omitempty"`
+ AmountGross *Amount       `json:"amountGross,omitempty"`
+ Count       int           `json:"count,omitempty"`
+ Rate        *Rate         `json:"rate,omitempty"`
+ Method      PaymentMethod `json:"method,omitempty"`
 }
 ```
 
@@ -3084,13 +3084,13 @@ SettlementCosts contains information about costs related to a settlement.
 
 ```go
 type SettlementLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Payments      *URL `json:"payments,omitempty"`
-	Refunds       *URL `json:"refunds,omitempty"`
-	Chargebacks   *URL `json:"chargebacks,omitempty"`
-	Captures      *URL `json:"captures,omitempty"`
-	Invoice       *URL `json:"invoice,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+ Self          *URL `json:"self,omitempty"`
+ Payments      *URL `json:"payments,omitempty"`
+ Refunds       *URL `json:"refunds,omitempty"`
+ Chargebacks   *URL `json:"chargebacks,omitempty"`
+ Captures      *URL `json:"captures,omitempty"`
+ Invoice       *URL `json:"invoice,omitempty"`
+ Documentation *URL `json:"documentation,omitempty"`
 }
 ```
 
@@ -3109,8 +3109,8 @@ SettlementObject nests as describes for settlement periods.
 
 ```go
 type SettlementPeriod struct {
-	Revenue []*SettlementRevenue `json:"revenue,omitempty"`
-	Costs   []*SettlementCosts   `json:"costs,omitempty"`
+ Revenue []*SettlementRevenue `json:"revenue,omitempty"`
+ Costs   []*SettlementCosts   `json:"costs,omitempty"`
 }
 ```
 
@@ -3120,12 +3120,12 @@ SettlementPeriod describe the settlement by month in full detail.
 
 ```go
 type SettlementRevenue struct {
-	Description string        `json:"description,omitempty"`
-	AmountNet   *Amount       `json:"amountNet,omitempty"`
-	AmountVAT   *Amount       `json:"amountVat,omitempty"`
-	AmountGross *Amount       `json:"amountGross,omitempty"`
-	Count       int           `json:"count,omitempty"`
-	Method      PaymentMethod `json:"method,omitempty"`
+ Description string        `json:"description,omitempty"`
+ AmountNet   *Amount       `json:"amountNet,omitempty"`
+ AmountVAT   *Amount       `json:"amountVat,omitempty"`
+ AmountGross *Amount       `json:"amountGross,omitempty"`
+ Count       int           `json:"count,omitempty"`
+ Method      PaymentMethod `json:"method,omitempty"`
 }
 ```
 
@@ -3142,10 +3142,10 @@ SettlementStatus describes the status of the settlement.
 
 ```go
 const (
-	SettlementStatusOpen    SettlementStatus = "open"
-	SettlementStatusPending SettlementStatus = "pending"
-	SettlementStatusPaidOut SettlementStatus = "paidout"
-	SettlementStatusFailed  SettlementStatus = "failed"
+ SettlementStatusOpen    SettlementStatus = "open"
+ SettlementStatusPending SettlementStatus = "pending"
+ SettlementStatusPaidOut SettlementStatus = "paidout"
+ SettlementStatusFailed  SettlementStatus = "failed"
 )
 ```
 
@@ -3155,11 +3155,11 @@ Available settlement statuses.
 
 ```go
 type SettlementsList struct {
-	Count    int `json:"count,omitempty"`
-	Embedded struct {
-		Settlements []*Settlement
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"_links,omitempty"`
+ Count    int `json:"count,omitempty"`
+ Embedded struct {
+  Settlements []*Settlement
+ } `json:"_embedded,omitempty"`
+ Links PaginationLinks `json:"_links,omitempty"`
 }
 ```
 
@@ -3169,9 +3169,9 @@ SettlementsList describes a list of settlements.
 
 ```go
 type SettlementsListOptions struct {
-	From  *ShortDate `url:"from,omitempty"`
-	Limit int        `url:"limit,omitempty"`
-	Embed EmbedValue `url:"embed,omitempty"`
+ From  *ShortDate `url:"from,omitempty"`
+ Limit int        `url:"limit,omitempty"`
+ Embed EmbedValue `url:"embed,omitempty"`
 }
 ```
 
@@ -3185,7 +3185,7 @@ type SettlementsService service
 
 SettlementsService operates over settlements resource.
 
-#### func (\*SettlementsService) Get
+#### func (*SettlementsService) Get
 
 ```go
 func (ss *SettlementsService) Get(ctx context.Context, id string) (res *Response, s *Settlement, err error)
@@ -3193,9 +3193,9 @@ func (ss *SettlementsService) Get(ctx context.Context, id string) (res *Response
 
 Get returns a settlement by its id or the bank reference id
 
-See: https://docs.mollie.com/reference/v2/settlements-api/get-settlement
+See: <https://docs.mollie.com/reference/v2/settlements-api/get-settlement>
 
-#### func (\*SettlementsService) GetCaptures
+#### func (*SettlementsService) GetCaptures
 
 ```go
 func (ss *SettlementsService) GetCaptures(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, cl *CapturesList, err error)
@@ -3204,9 +3204,9 @@ func (ss *SettlementsService) GetCaptures(ctx context.Context, id string, slo *S
 GetCaptures retrieves all captures included in a settlement.
 
 See:
-https://docs.mollie.com/reference/v2/settlements-api/list-settlement-captures
+<https://docs.mollie.com/reference/v2/settlements-api/list-settlement-captures>
 
-#### func (\*SettlementsService) GetChargebacks
+#### func (*SettlementsService) GetChargebacks
 
 ```go
 func (ss *SettlementsService) GetChargebacks(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, cl *ChargebacksList, err error)
@@ -3215,9 +3215,9 @@ func (ss *SettlementsService) GetChargebacks(ctx context.Context, id string, slo
 GetChargebacks retrieves all chargebacks included in a settlement.
 
 See:
-https://docs.mollie.com/reference/v2/settlements-api/list-settlement-chargebacks
+<https://docs.mollie.com/reference/v2/settlements-api/list-settlement-chargebacks>
 
-#### func (\*SettlementsService) GetPayments
+#### func (*SettlementsService) GetPayments
 
 ```go
 func (ss *SettlementsService) GetPayments(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, pl *PaymentList, err error)
@@ -3226,9 +3226,9 @@ func (ss *SettlementsService) GetPayments(ctx context.Context, id string, slo *S
 GetPayments retrieves all payments included in a settlement.
 
 See:
-https://docs.mollie.com/reference/v2/settlements-api/list-settlement-payments
+<https://docs.mollie.com/reference/v2/settlements-api/list-settlement-payments>
 
-#### func (\*SettlementsService) GetRefunds
+#### func (*SettlementsService) GetRefunds
 
 ```go
 func (ss *SettlementsService) GetRefunds(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, rl *RefundList, err error)
@@ -3237,9 +3237,9 @@ func (ss *SettlementsService) GetRefunds(ctx context.Context, id string, slo *Se
 GetRefunds retrieves all refunds included in a settlement.
 
 See:
-https://docs.mollie.com/reference/v2/settlements-api/list-settlement-refunds
+<https://docs.mollie.com/reference/v2/settlements-api/list-settlement-refunds>
 
-#### func (\*SettlementsService) List
+#### func (*SettlementsService) List
 
 ```go
 func (ss *SettlementsService) List(ctx context.Context, slo *SettlementsListOptions) (res *Response, sl *SettlementsList, err error)
@@ -3247,9 +3247,9 @@ func (ss *SettlementsService) List(ctx context.Context, slo *SettlementsListOpti
 
 List retrieves all settlements, ordered from new to old
 
-See: https://docs.mollie.com/reference/v2/settlements-api/list-settlements
+See: <https://docs.mollie.com/reference/v2/settlements-api/list-settlements>
 
-#### func (\*SettlementsService) Next
+#### func (*SettlementsService) Next
 
 ```go
 func (ss *SettlementsService) Next(ctx context.Context) (res *Response, s *Settlement, err error)
@@ -3258,9 +3258,9 @@ func (ss *SettlementsService) Next(ctx context.Context) (res *Response, s *Settl
 Next retrieves the details of the current settlement that has not yet been paid
 out.
 
-See: https://docs.mollie.com/reference/v2/settlements-api/get-next-settlement
+See: <https://docs.mollie.com/reference/v2/settlements-api/get-next-settlement>
 
-#### func (\*SettlementsService) Open
+#### func (*SettlementsService) Open
 
 ```go
 func (ss *SettlementsService) Open(ctx context.Context) (res *Response, s *Settlement, err error)
@@ -3269,20 +3269,20 @@ func (ss *SettlementsService) Open(ctx context.Context) (res *Response, s *Settl
 Open retrieves the details of the open balance of the organization. This will
 return a settlement object representing your organization’s balance.
 
-See: https://docs.mollie.com/reference/v2/settlements-api/get-open-settlement
+See: <https://docs.mollie.com/reference/v2/settlements-api/get-open-settlement>
 
 #### type Shipment
 
 ```go
 type Shipment struct {
-	Resource  string            `json:"resource,omitempty"`
-	ID        string            `json:"id,omitempty"`
-	OrderID   string            `json:"orderId,omitempty"`
-	TestMode  bool              `json:"testmode,omitempty"`
-	CreatedAt *time.Time        `json:"createdAt,omitempty"`
-	Tracking  *ShipmentTracking `json:"tracking,omitempty"`
-	Lines     []*OrderLine      `json:"lines,omitempty"`
-	Links     ShipmentLinks     `json:"_links,omitempty"`
+ Resource  string            `json:"resource,omitempty"`
+ ID        string            `json:"id,omitempty"`
+ OrderID   string            `json:"orderId,omitempty"`
+ TestMode  bool              `json:"testmode,omitempty"`
+ CreatedAt *time.Time        `json:"createdAt,omitempty"`
+ Tracking  *ShipmentTracking `json:"tracking,omitempty"`
+ Lines     []*OrderLine      `json:"lines,omitempty"`
+ Links     ShipmentLinks     `json:"_links,omitempty"`
 }
 ```
 
@@ -3294,9 +3294,9 @@ digital content was delivered.
 
 ```go
 type ShipmentLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Order         *URL `json:"order,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+ Self          *URL `json:"self,omitempty"`
+ Order         *URL `json:"order,omitempty"`
+ Documentation *URL `json:"documentation,omitempty"`
 }
 ```
 
@@ -3307,9 +3307,9 @@ user.
 
 ```go
 type ShipmentTracking struct {
-	Carrier string `json:"carrier,omitempty"`
-	Code    string `json:"code,omitempty"`
-	URL     string `json:"url,omitempty"`
+ Carrier string `json:"carrier,omitempty"`
+ Code    string `json:"code,omitempty"`
+ URL     string `json:"url,omitempty"`
 }
 ```
 
@@ -3319,11 +3319,11 @@ ShipmentTracking contains shipment tracking details.
 
 ```go
 type ShipmentsList struct {
-	Count    int `json:"count,omitempty"`
-	Embedded struct {
-		Shipments []Shipment
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"_links,omitempty"`
+ Count    int `json:"count,omitempty"`
+ Embedded struct {
+  Shipments []Shipment
+ } `json:"_embedded,omitempty"`
+ Links PaginationLinks `json:"_links,omitempty"`
 }
 ```
 
@@ -3337,7 +3337,7 @@ type ShipmentsService service
 
 ShipmentsService operates on shipments endpoints.
 
-#### func (\*ShipmentsService) Create
+#### func (*ShipmentsService) Create
 
 ```go
 func (ss *ShipmentsService) Create(ctx context.Context, oID string, cs CreateShipmentRequest) (res *Response, s *Shipment, err error)
@@ -3345,9 +3345,9 @@ func (ss *ShipmentsService) Create(ctx context.Context, oID string, cs CreateShi
 
 Create can be used to ship order lines.
 
-See: https://docs.mollie.com/reference/v2/shipments-api/create-shipment
+See: <https://docs.mollie.com/reference/v2/shipments-api/create-shipment>
 
-#### func (\*ShipmentsService) Get
+#### func (*ShipmentsService) Get
 
 ```go
 func (ss *ShipmentsService) Get(ctx context.Context, oID string, sID string) (res *Response, s *Shipment, err error)
@@ -3355,9 +3355,9 @@ func (ss *ShipmentsService) Get(ctx context.Context, oID string, sID string) (re
 
 Get retrieves a single shipment and the order lines shipped by a shipment’s ID.
 
-See: https://docs.mollie.com/reference/v2/shipments-api/get-shipment#
+See: <https://docs.mollie.com/reference/v2/shipments-api/get-shipment>#
 
-#### func (\*ShipmentsService) List
+#### func (*ShipmentsService) List
 
 ```go
 func (ss *ShipmentsService) List(ctx context.Context, oID string) (res *Response, sl *ShipmentsList, err error)
@@ -3365,9 +3365,9 @@ func (ss *ShipmentsService) List(ctx context.Context, oID string) (res *Response
 
 List retrieves all shipments for an order.
 
-See: https://docs.mollie.com/reference/v2/shipments-api/list-shipments
+See: <https://docs.mollie.com/reference/v2/shipments-api/list-shipments>
 
-#### func (\*ShipmentsService) Update
+#### func (*ShipmentsService) Update
 
 ```go
 func (ss *ShipmentsService) Update(ctx context.Context, oID string, sID string, st ShipmentTracking) (res *Response, s *Shipment, err error)
@@ -3375,19 +3375,19 @@ func (ss *ShipmentsService) Update(ctx context.Context, oID string, sID string, 
 
 Update can be used to update the tracking information of a shipment
 
-See: https://docs.mollie.com/reference/v2/shipments-api/update-shipment
+See: <https://docs.mollie.com/reference/v2/shipments-api/update-shipment>
 
 #### type ShortDate
 
 ```go
 type ShortDate struct {
-	time.Time
+ time.Time
 }
 ```
 
 ShortDate is a string representing a date in YYYY-MM-DD format.
 
-#### func (\*ShortDate) MarshalJSON
+#### func (*ShortDate) MarshalJSON
 
 ```go
 func (d *ShortDate) MarshalJSON() ([]byte, error)
@@ -3396,7 +3396,7 @@ func (d *ShortDate) MarshalJSON() ([]byte, error)
 MarshalJSON overrides the default marshal action for the Date struct. Returns
 date as YYYY-MM-DD formatted string.
 
-#### func (\*ShortDate) UnmarshalJSON
+#### func (*ShortDate) UnmarshalJSON
 
 ```go
 func (d *ShortDate) UnmarshalJSON(b []byte) error
@@ -3409,26 +3409,26 @@ need links to be pointers to the time.Time struct.
 
 ```go
 type Subscription struct {
-	Resource        string             `json:"resource,omitempty"`
-	ID              string             `json:"id,omitempty"`
-	MandateID       string             `json:"mandateId,omitempty"`
-	Mode            Mode               `json:"mode,omitempty"`
-	CreatedAT       *time.Time         `json:"createdAt,omitempty"`
-	Status          SubscriptionStatus `json:"status,omitempty"`
-	Amount          *Amount            `json:"amount,omitempty"`
-	Times           int                `json:"times,omitempty"`
-	TimesRemaining  int                `json:"timesRemaining,omitempty"`
-	Interval        string             `json:"interval,omitempty"`
-	StartDate       *ShortDate         `json:"startDate,omitempty"`
-	NextPaymentDate *ShortDate         `json:"nextPaymentDate,omitempty"`
-	Description     string             `json:"description,omitempty"`
-	Method          PaymentMethod      `json:"method,omitempty"`
-	CanceledAt      *time.Time         `json:"canceledAt,omitempty"`
-	WebhookURL      string             `json:"webhookUrl,omitempty"`
-	Metadata        interface{}        `json:"metadata,omitempty"`
-	ApplicationFee  *ApplicationFee    `json:"applicationFee,omitempty"`
-	TestMode        bool               `json:"testmode,omitempty"`
-	Links           SubscriptionLinks  `json:"_links,omitempty"`
+ Resource        string             `json:"resource,omitempty"`
+ ID              string             `json:"id,omitempty"`
+ MandateID       string             `json:"mandateId,omitempty"`
+ Mode            Mode               `json:"mode,omitempty"`
+ CreatedAT       *time.Time         `json:"createdAt,omitempty"`
+ Status          SubscriptionStatus `json:"status,omitempty"`
+ Amount          *Amount            `json:"amount,omitempty"`
+ Times           int                `json:"times,omitempty"`
+ TimesRemaining  int                `json:"timesRemaining,omitempty"`
+ Interval        string             `json:"interval,omitempty"`
+ StartDate       *ShortDate         `json:"startDate,omitempty"`
+ NextPaymentDate *ShortDate         `json:"nextPaymentDate,omitempty"`
+ Description     string             `json:"description,omitempty"`
+ Method          PaymentMethod      `json:"method,omitempty"`
+ CanceledAt      *time.Time         `json:"canceledAt,omitempty"`
+ WebhookURL      string             `json:"webhookUrl,omitempty"`
+ Metadata        interface{}        `json:"metadata,omitempty"`
+ ApplicationFee  *ApplicationFee    `json:"applicationFee,omitempty"`
+ TestMode        bool               `json:"testmode,omitempty"`
+ Links           SubscriptionLinks  `json:"_links,omitempty"`
 }
 ```
 
@@ -3438,10 +3438,10 @@ Subscription contains information about a customer subscription.
 
 ```go
 type SubscriptionLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Customer      *URL `json:"customer,omitempty"`
-	Payments      *URL `json:"payments,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
+ Self          *URL `json:"self,omitempty"`
+ Customer      *URL `json:"customer,omitempty"`
+ Payments      *URL `json:"payments,omitempty"`
+ Documentation *URL `json:"documentation,omitempty"`
 }
 ```
 
@@ -3451,11 +3451,11 @@ SubscriptionLinks contains several URL objects relevant to the subscription.
 
 ```go
 type SubscriptionList struct {
-	Count    int `json:"count,omitempty"`
-	Embedded struct {
-		Subscriptions []*Subscription
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"_links,omitempty"`
+ Count    int `json:"count,omitempty"`
+ Embedded struct {
+  Subscriptions []*Subscription
+ } `json:"_embedded,omitempty"`
+ Links PaginationLinks `json:"_links,omitempty"`
 }
 ```
 
@@ -3465,9 +3465,9 @@ SubscriptionList describes the response for subscription list endpoints.
 
 ```go
 type SubscriptionListOptions struct {
-	From      string `url:"from,omitempty"`
-	Limit     int    `url:"limit,omitempty"`
-	ProfileID string `url:"profileId,omitempty"`
+ From      string `url:"from,omitempty"`
+ Limit     int    `url:"limit,omitempty"`
+ ProfileID string `url:"profileId,omitempty"`
 }
 ```
 
@@ -3484,11 +3484,11 @@ SubscriptionStatus contains references to valid subscription statuses.
 
 ```go
 const (
-	SubscriptionStatusPending   SubscriptionStatus = "pending"
-	SubscriptionStatusActive    SubscriptionStatus = "active"
-	SubscriptionStatusCanceled  SubscriptionStatus = "canceled"
-	SubscriptionStatusSuspended SubscriptionStatus = "suspended"
-	SubscriptionStatusCompleted SubscriptionStatus = "completed"
+ SubscriptionStatusPending   SubscriptionStatus = "pending"
+ SubscriptionStatusActive    SubscriptionStatus = "active"
+ SubscriptionStatusCanceled  SubscriptionStatus = "canceled"
+ SubscriptionStatusSuspended SubscriptionStatus = "suspended"
+ SubscriptionStatusCompleted SubscriptionStatus = "completed"
 )
 ```
 
@@ -3502,7 +3502,7 @@ type SubscriptionsService service
 
 SubscriptionsService operates over subscriptions resource.
 
-#### func (\*SubscriptionsService) All
+#### func (*SubscriptionsService) All
 
 ```go
 func (ss *SubscriptionsService) All(ctx context.Context, opts *SubscriptionListOptions) (res *Response, sl *SubscriptionList, err error)
@@ -3514,9 +3514,9 @@ returned. In the case of an OAuth Access Token relies the website profile on the
 profileId field
 
 See:
-https://docs.mollie.com/reference/v2/subscriptions-api/list-all-subscriptions
+<https://docs.mollie.com/reference/v2/subscriptions-api/list-all-subscriptions>
 
-#### func (\*SubscriptionsService) Create
+#### func (*SubscriptionsService) Create
 
 ```go
 func (ss *SubscriptionsService) Create(ctx context.Context, cID string, sc *Subscription) (res *Response, s *Subscription, err error)
@@ -3524,9 +3524,9 @@ func (ss *SubscriptionsService) Create(ctx context.Context, cID string, sc *Subs
 
 Create stores a new subscription for a given customer
 
-See: https://docs.mollie.com/reference/v2/subscriptions-api/create-subscription
+See: <https://docs.mollie.com/reference/v2/subscriptions-api/create-subscription>
 
-#### func (\*SubscriptionsService) Delete
+#### func (*SubscriptionsService) Delete
 
 ```go
 func (ss *SubscriptionsService) Delete(ctx context.Context, cID, sID string) (res *Response, s *Subscription, err error)
@@ -3534,9 +3534,9 @@ func (ss *SubscriptionsService) Delete(ctx context.Context, cID, sID string) (re
 
 Delete cancels a subscription
 
-See: https://docs.mollie.com/reference/v2/subscriptions-api/cancel-subscription
+See: <https://docs.mollie.com/reference/v2/subscriptions-api/cancel-subscription>
 
-#### func (\*SubscriptionsService) Get
+#### func (*SubscriptionsService) Get
 
 ```go
 func (ss *SubscriptionsService) Get(ctx context.Context, cID, sID string) (res *Response, s *Subscription, err error)
@@ -3544,9 +3544,9 @@ func (ss *SubscriptionsService) Get(ctx context.Context, cID, sID string) (res *
 
 Get retrieves a customer's subscription
 
-See: https://docs.mollie.com/reference/v2/subscriptions-api/get-subscription
+See: <https://docs.mollie.com/reference/v2/subscriptions-api/get-subscription>
 
-#### func (\*SubscriptionsService) GetPayments
+#### func (*SubscriptionsService) GetPayments
 
 ```go
 func (ss *SubscriptionsService) GetPayments(ctx context.Context, cID, sID string, opts *SubscriptionListOptions) (res *Response, sl *PaymentList, err error)
@@ -3555,9 +3555,9 @@ func (ss *SubscriptionsService) GetPayments(ctx context.Context, cID, sID string
 GetPayments retrieves all payments of a specific subscriptions of a customer
 
 See:
-https://docs.mollie.com/reference/v2/subscriptions-api/list-subscriptions-payments
+<https://docs.mollie.com/reference/v2/subscriptions-api/list-subscriptions-payments>
 
-#### func (\*SubscriptionsService) List
+#### func (*SubscriptionsService) List
 
 ```go
 func (ss *SubscriptionsService) List(ctx context.Context, cID string, opts *SubscriptionListOptions) (res *Response, sl *SubscriptionList, err error)
@@ -3565,9 +3565,9 @@ func (ss *SubscriptionsService) List(ctx context.Context, cID string, opts *Subs
 
 List retrieves all subscriptions of a customer
 
-See: https://docs.mollie.com/reference/v2/subscriptions-api/list-subscriptions
+See: <https://docs.mollie.com/reference/v2/subscriptions-api/list-subscriptions>
 
-#### func (\*SubscriptionsService) Update
+#### func (*SubscriptionsService) Update
 
 ```go
 func (ss *SubscriptionsService) Update(ctx context.Context, cID, sID string, sc *Subscription) (res *Response, s *Subscription, err error)
@@ -3575,14 +3575,14 @@ func (ss *SubscriptionsService) Update(ctx context.Context, cID, sID string, sc 
 
 Update changes fields on a subscription object
 
-See: https://docs.mollie.com/reference/v2/subscriptions-api/update-subscription
+See: <https://docs.mollie.com/reference/v2/subscriptions-api/update-subscription>
 
 #### type URL
 
 ```go
 type URL struct {
-	Href string `json:"href,omitempty"`
-	Type string `json:"type,omitempty"`
+ Href string `json:"href,omitempty"`
+ Type string `json:"type,omitempty"`
 }
 ```
 
@@ -3592,9 +3592,9 @@ URL in Mollie are commonly represented as objects with an href and type field.
 
 ```go
 type UsedGiftCard struct {
-	Issuer        string  `json:"issuer,omitempty"`
-	Amount        *Amount `json:"amount,omitempty"`
-	VoucherNumber string  `json:"voucherNumber,omitempty"`
+ Issuer        string  `json:"issuer,omitempty"`
+ Amount        *Amount `json:"amount,omitempty"`
+ VoucherNumber string  `json:"voucherNumber,omitempty"`
 }
 ```
 
@@ -3604,9 +3604,9 @@ UsedGiftCard describes a used gift card.
 
 ```go
 type UserAgentToken struct {
-	Token    string
-	StartsAt *time.Time
-	EndsAt   *time.Time
+ Token    string
+ StartsAt *time.Time
+ EndsAt   *time.Time
 }
 ```
 
