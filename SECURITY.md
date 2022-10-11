@@ -12,6 +12,8 @@ declared inside the `.scrutinizer.yml` file.
 | 1.15.x  | :warning:          |
 | 1.16.x  | :warning:          |
 | 1.17.x  | :white_check_mark: |
+| 1.18.x  | :white_check_mark: |
+| 1.19.x  | :white_check_mark: |
 | master  | :x:                |
 
 ## Reporting a Vulnerability
