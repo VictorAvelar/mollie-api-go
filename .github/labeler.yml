@@ -1,0 +1,30 @@
+tests:
+  - any: ["mollie/*_tests.go", "mollie/connect/*_tests.go"]
+
+documentation:
+  - docs/*
+
+docker:
+  - any: ["Dockerfile", ".dockerignore"]
+
+gh-actions:
+  - .github/**/*.yml
+
+core:
+  - any: ["mollie/*.go", "!mollie/*_tests.go"]
+
+modules:
+  - go.*  
+
+testdata:
+  - testdata/*
+
+config:
+  - any: [".*.yml"]
+
+meta-files:
+  - any: ["Makefile", "README.md", "LICENSE", "SECURITY.md"]
+
+config:
+  - .mollie.yaml
+  - .goreleaser.yaml
