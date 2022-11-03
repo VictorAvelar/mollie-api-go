@@ -4,9 +4,6 @@ package mollie
 // by mollie.
 type GiftCardIssuer string
 
-// sportenfitcadeau, sustainablefashion, travelcheq, vvvgiftcard, vvvdinercheque,
-// vvvlekkerweg, webshopgiftcard, yourgift
-
 // Supported gift card issuers.
 const (
 	BloemenCadeuKaart          GiftCardIssuer = "bloemencadeaukaart"
@@ -19,6 +16,7 @@ const (
 	Fashioncheque              GiftCardIssuer = "fashioncheque"
 	Festivalcadeau             GiftCardIssuer = "festivalcadeau"
 	Good4fun                   GiftCardIssuer = "good4fun"
+	Horseandgifts              GiftCardIssuer = "horseandgifts"
 	HuistuinCadeauKaart        GiftCardIssuer = "huistuincadeaukaart"
 	JewelCard                  GiftCardIssuer = "jewelcard"
 	KlusCadeu                  GiftCardIssuer = "kluscadeau"
@@ -30,6 +28,7 @@ const (
 	Podiumcadeaukaart          GiftCardIssuer = "podiumcadeaukaart"
 	Reiscadeau                 GiftCardIssuer = "reiscadeau"
 	Restaurantcadeau           GiftCardIssuer = "restaurantcadeau"
+	Shoesandsneakerscadeu      GiftCardIssuer = "shoesandsneakerscadeau"
 	SodexoSportCulturePass     GiftCardIssuer = "sodexosportculturepass"
 	Sportenfitcadeau           GiftCardIssuer = "sportenfitcadeau"
 	Sustainablefashion         GiftCardIssuer = "sustainablefashion"
