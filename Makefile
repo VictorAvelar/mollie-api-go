@@ -46,7 +46,8 @@ cover-report: test-local
 
 clean:
 	@go mod verify
-	@go mod tidy
+	@go mod tidy -go=1.16 
+	@go mod tidy -go=1.17
 .PHONY: clean
 
 update-docs:

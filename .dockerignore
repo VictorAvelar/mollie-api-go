@@ -1,4 +1,5 @@
 ## Project files and directories
+
 .git
 .github
 docs
@@ -13,6 +14,7 @@ Makefile
 *.md
 
 # Binaries for programs and plugins
+
 *.exe
 *.exe~
 *.dll
@@ -20,10 +22,13 @@ Makefile
 *.dylib
 
 # Test binary, build with `go test -c`
+
 *.test
 
 # Output of the go coverage tool, specifically when used with LiteIDE
+
 *.out
 
 # Visual Studio Code
+
 .vscode
