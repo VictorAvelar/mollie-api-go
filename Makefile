@@ -51,4 +51,4 @@ clean:
 
 update-docs:
 	@godocdown ./mollie > docs/README.md 
-.PHONY: update-docs
+.PHONY: update-docs 
