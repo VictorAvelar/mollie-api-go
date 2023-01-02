@@ -32,13 +32,13 @@ For leveraging [Mollie Connect](https://docs.mollie.com/oauth/overview) (advance
 
 ## Install
 
-```shell
-go get -u github.com/VictorAvelar/mollie-api-go/v3
+```sh
+go get -u github.com/VictorAvelar/mollie-api-go/v3/mollie
 ```
 
 ## Usage
 
-#### Create a basic client
+### Create a basic client
 
 ```go
 // main.go
@@ -53,7 +53,7 @@ if err != nil {
 // do your operations with the authenticated client
 ```
 
-## Upgrage guide
+## Upgrade guide
 
 If you want to upgrade from v2 -> v3, the list of breaking and notable changes can be found in the [docs](docs/v3-upgrade.md).
 
