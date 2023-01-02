@@ -70,6 +70,7 @@ type Payment struct {
 	RedirectURL                     string                 `json:"redirectUrl,omitempty"`
 	CountryCode                     string                 `json:"countryCode,omitempty"`
 	SubscriptionID                  string                 `json:"subscriptionId,omitempty"`
+	CancelURL                       string                 `json:"cancelUrl,omitempty"`
 	Metadata                        interface{}            `json:"metadata,omitempty"`
 	Amount                          *Amount                `json:"amount,omitempty"`
 	AmountRefunded                  *Amount                `json:"amountRefunded,omitempty"`
