@@ -83,7 +83,9 @@
       "onAutoForward": "notify"
     }
   },
-  "postCreateCommand": "go mod download",
+  "postCreateCommand": {
+    "modules": "go mod download"
+  },
   "remoteUser": "root",
   "containerUser": "root",
   "containerEnv": {
