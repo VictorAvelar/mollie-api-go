@@ -814,6 +814,7 @@ const (
  Fashioncheque              GiftCardIssuer = "fashioncheque"
  Festivalcadeau             GiftCardIssuer = "festivalcadeau"
  Good4fun                   GiftCardIssuer = "good4fun"
+ Horseandgifts              GiftCardIssuer = "horseandgifts"
  HuistuinCadeauKaart        GiftCardIssuer = "huistuincadeaukaart"
  JewelCard                  GiftCardIssuer = "jewelcard"
  KlusCadeu                  GiftCardIssuer = "kluscadeau"
@@ -825,6 +826,7 @@ const (
  Podiumcadeaukaart          GiftCardIssuer = "podiumcadeaukaart"
  Reiscadeau                 GiftCardIssuer = "reiscadeau"
  Restaurantcadeau           GiftCardIssuer = "restaurantcadeau"
+ Shoesandsneakerscadeu      GiftCardIssuer = "shoesandsneakerscadeau"
  SodexoSportCulturePass     GiftCardIssuer = "sodexosportculturepass"
  Sportenfitcadeau           GiftCardIssuer = "sportenfitcadeau"
  Sustainablefashion         GiftCardIssuer = "sustainablefashion"
@@ -1407,6 +1409,7 @@ type Order struct {
  WebhookURL                               string        `json:"webhookUrl,omitempty"`
  Description                              string        `json:"description,omitempty"`
  Sku                                      string        `json:"sku,omitempty"`
+ CancelURL                                string        `json:"cancelUrl,omitempty"`
  Metadata                                 interface{}   `json:"metadata,omitempty"`
  Mode                                     Mode          `json:"mode,omitempty"`
  Method                                   PaymentMethod `json:"method,omitempty"`
@@ -1998,6 +2001,7 @@ type Payment struct {
  RedirectURL                     string                 `json:"redirectUrl,omitempty"`
  CountryCode                     string                 `json:"countryCode,omitempty"`
  SubscriptionID                  string                 `json:"subscriptionId,omitempty"`
+ CancelURL                       string                 `json:"cancelUrl,omitempty"`
  Metadata                        interface{}            `json:"metadata,omitempty"`
  Amount                          *Amount                `json:"amount,omitempty"`
  AmountRefunded                  *Amount                `json:"amountRefunded,omitempty"`

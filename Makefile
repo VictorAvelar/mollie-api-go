@@ -48,3 +48,7 @@ clean:
 	@go mod verify
 	@go mod tidy
 .PHONY: clean
+
+update-docs:
+	@godocdown ./mollie > docs/README.md 
+.PHONY: update-docs 
