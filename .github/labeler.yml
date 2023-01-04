@@ -1,5 +1,5 @@
 tests:
-  - any: ["mollie/*_tests.go", "mollie/connect/*_tests.go"]
+  - any: ["mollie/*_test.go", "mollie/connect/*_test.go", "mollie/tools/*_test.go"]
 
 documentation:
   - docs/*
@@ -11,7 +11,7 @@ gh-actions:
   - .github/**/*.yml
 
 core:
-  - any: ["mollie/*.go", "!mollie/*_tests.go"]
+  - any: ["mollie/*.go", "!mollie/*_tests.go", "!mollie/tools/*"]
 
 modules:
   - go.*  
@@ -24,3 +24,6 @@ config:
 
 meta-files:
   - any: ["Makefile", "README.md", "LICENSE", "SECURITY.md"]
+
+tools:
+  - any: ["mollie/tools/*.go"]

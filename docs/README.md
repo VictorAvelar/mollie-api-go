@@ -21,12 +21,13 @@ the name of the resource you want to interact with.
 
 ```go
 const (
- BaseURL            string = "https://api.mollie.com/"
- AuthHeader         string = "Authorization"
- TokenType          string = "Bearer"
- APITokenEnv        string = "MOLLIE_API_TOKEN"
- OrgTokenEnv        string = "MOLLIE_ORG_TOKEN"
- RequestContentType string = "application/json"
+ BaseURL              string = "https://api.mollie.com/"
+ AuthHeader           string = "Authorization"
+ TokenType            string = "Bearer"
+ APITokenEnv          string = "MOLLIE_API_TOKEN"
+ OrgTokenEnv          string = "MOLLIE_ORG_TOKEN"
+ RequestContentType   string = "application/json"
+ IdempotencyKeyHeader string = "Idempotency-Key"
 )
 ```
 
@@ -471,6 +472,15 @@ NewAPIRequest is a wrapper around the http.NewRequest function.
 It will setup the authentication headers/parameters according to the client
 config.
 
+#### func (*Client) SetIdempotencyKeyGenerator
+
+```go
+func (c *Client) SetIdempotencyKeyGenerator(kg idempotency.KeyGenerator)
+```
+
+SetIdempotencyKeyGenerator allows you to pass your own idempotency key
+generator.
+
 #### func (*Client) WithAuthenticationValue
 
 ```go
@@ -507,12 +517,13 @@ Config contains information that helps during the setup of a new Mollie client.
 #### func  NewConfig
 
 ```go
-func NewConfig(t bool, auth string) *Config
+func NewConfig(t, reqIdem bool, auth string) *Config
 ```
 
 NewConfig builds a Mollie configuration object, it takes t to indicate if our
-client is meant to create requests for testing and auth to indicate the
-authentication method we want to use.
+client is meant to create requests for testing, reqIdem to enable the request
+idempotency beta feature, and auth to indicate the authentication method we want
+to use.
 
 #### type CreateShipmentRequest
 

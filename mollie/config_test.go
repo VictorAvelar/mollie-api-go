@@ -1,6 +1,7 @@
 package mollie
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -9,6 +10,7 @@ import (
 func TestNewConfig(t *testing.T) {
 	type args struct {
 		t    bool
+		ikg  bool
 		auth string
 	}
 	tests := []struct {
@@ -63,8 +65,13 @@ func TestNewConfig(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := NewConfig(tt.args.t, tt.args.auth)
+			got := NewConfig(tt.args.t, tt.args.ikg, tt.args.auth)
 			assert.Equal(t, got, tt.want)
 		})
 	}
+}
+
+func ExampleNewConfig() {
+	fmt.Println(NewConfig(true, true, APITokenEnv))
+	// Output: &{true MOLLIE_API_TOKEN true}
 }
