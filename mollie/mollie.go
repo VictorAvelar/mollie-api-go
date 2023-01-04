@@ -20,12 +20,13 @@ import (
 
 // Constants holding values for client initialization and request instantiation.
 const (
-	BaseURL            string = "https://api.mollie.com/"
-	AuthHeader         string = "Authorization"
-	TokenType          string = "Bearer"
-	APITokenEnv        string = "MOLLIE_API_TOKEN"
-	OrgTokenEnv        string = "MOLLIE_ORG_TOKEN"
-	RequestContentType string = "application/json"
+	BaseURL              string = "https://api.mollie.com/"
+	AuthHeader           string = "Authorization"
+	TokenType            string = "Bearer"
+	APITokenEnv          string = "MOLLIE_API_TOKEN"
+	OrgTokenEnv          string = "MOLLIE_ORG_TOKEN"
+	RequestContentType   string = "application/json"
+	IdempotencyKeyHeader string = "Idempotency-Key"
 )
 
 var (
@@ -201,6 +202,10 @@ func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, b
 	req.Header.Set("Content-Type", RequestContentType)
 	req.Header.Set("Accept", RequestContentType)
 	req.Header.Set("User-Agent", c.userAgent)
+
+	if c.config.reqIdempotency && c.idempotencyKeyProvider != nil && req.Method == http.MethodPost {
+		req.Header.Set(IdempotencyKeyHeader, c.idempotencyKeyProvider.Generate())
+	}
 
 	return
 }

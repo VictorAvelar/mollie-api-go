@@ -13,6 +13,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/VictorAvelar/mollie-api-go/v3/mollie/tools/idempotency"
 	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -140,6 +141,89 @@ func TestClient_NewAPIRequest(t *testing.T) {
 			assert.Equal(t, tServer.URL+c.outURI, req.URL.String())
 			body, _ := io.ReadAll(req.Body)
 			assert.Equal(t, c.outBody, string(body))
+		})
+	}
+}
+
+func TestClient_NewApiRequest_IdempotencyKeys(t *testing.T) {
+	type args struct {
+		method string
+	}
+
+	tests := []struct {
+		name   string
+		args   args
+		expect string
+		dummy  bool
+	}{
+		{
+			"using the std key generator",
+			args{http.MethodPost},
+			"",
+			false,
+		},
+		{
+			"using a nop key generator with the default text",
+			args{http.MethodPost},
+			"",
+			true,
+		},
+		{
+			"using a nop key generator with custom text",
+			args{http.MethodPost},
+			"testing_mollie_idem_key",
+			true,
+		},
+		{
+			"using the std key generator with a non supported method (get)",
+			args{http.MethodGet},
+			"",
+			false,
+		},
+		{
+			"using the std key generator with a non supported method (put)",
+			args{http.MethodPut},
+			"",
+			false,
+		},
+		{
+			"using the std key generator with a non supported method (delete)",
+			args{http.MethodDelete},
+			"",
+			false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			setEnv()
+			setup()
+			defer teardown()
+			defer unsetEnv()
+
+			if tt.dummy {
+				g := idempotency.NewNopGenerator(tt.expect)
+				if tt.expect == "" {
+					tt.expect = idempotency.TestKeyExpected
+				}
+				tClient.SetIdempotencyKeyGenerator(g)
+			}
+
+			req, err := tClient.NewAPIRequest(context.Background(), tt.args.method, "/", nil)
+
+			assert.Nil(t, err)
+
+			if tt.args.method != http.MethodPost {
+				assert.Empty(t, req.Header.Get(IdempotencyKeyHeader))
+			} else {
+				assert.NotEmpty(t, req.Header.Get(IdempotencyKeyHeader))
+				if tt.dummy {
+					testHeader(t, req, IdempotencyKeyHeader, tt.expect)
+				} else {
+					assert.Len(t, req.Header.Get(IdempotencyKeyHeader), 36)
+					assert.Regexp(t, `(?m)^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$`, req.Header.Get(IdempotencyKeyHeader))
+				}
+			}
 		})
 	}
 }
@@ -448,7 +532,7 @@ var (
 func setup() {
 	tMux = http.NewServeMux()
 	tServer = httptest.NewServer(tMux)
-	tConf = NewConfig(true, false, APITokenEnv)
+	tConf = NewConfig(true, true, APITokenEnv)
 	tClient, _ = NewClient(nil, tConf)
 	u, _ := url.Parse(tServer.URL + "/")
 	tClient.BaseURL = u
