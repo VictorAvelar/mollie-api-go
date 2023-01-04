@@ -1,5 +1,5 @@
 tests:
-  - any: ["mollie/*_tests.go", "mollie/connect/*_tests.go", "mollie/tools/*_tests.go"]
+  - any: ["mollie/*_test.go", "mollie/connect/*_test.go", "mollie/tools/*_test.go"]
 
 documentation:
   - docs/*
