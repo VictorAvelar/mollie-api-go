@@ -47,7 +47,7 @@
             ""
           ],
           "formatting.gofumpt": true,
-          "ui.completion.usePlaceholders": true,
+          "ui.completion.usePlaceholders": false,
           "ui.diagnostic.staticcheck": true,
           "ui.semanticTokens": true
         },
