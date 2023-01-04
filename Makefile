@@ -53,3 +53,8 @@ clean:
 update-docs:
 	@godocdown ./mollie > docs/README.md 
 .PHONY: update-docs 
+
+sub-pkg-docs:
+	@godocdown ./mollie/connect > docs/connect/README.md
+	@godocdown ./mollie/tools > docs/tools/README.md
+.PHONY: sub-pkg-docs
