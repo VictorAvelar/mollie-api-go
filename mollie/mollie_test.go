@@ -19,7 +19,7 @@ import (
 )
 
 func TestNewClient(t *testing.T) {
-	var c = http.DefaultClient
+	c := http.DefaultClient
 	{
 		c.Timeout = 25 * time.Second
 	}
@@ -38,7 +38,7 @@ func TestNewClient(t *testing.T) {
 		},
 	}
 
-	conf := NewConfig(true, APITokenEnv)
+	conf := NewConfig(true, false, APITokenEnv)
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -54,7 +54,7 @@ func TestNewClientWithEnvVars(t *testing.T) {
 	defer unsetEnv()
 	defer teardown()
 
-	var c = http.DefaultClient
+	c := http.DefaultClient
 	{
 		c.Timeout = 25 * time.Second
 	}
@@ -448,7 +448,7 @@ var (
 func setup() {
 	tMux = http.NewServeMux()
 	tServer = httptest.NewServer(tMux)
-	tConf = NewConfig(true, APITokenEnv)
+	tConf = NewConfig(true, false, APITokenEnv)
 	tClient, _ = NewClient(nil, tConf)
 	u, _ := url.Parse(tServer.URL + "/")
 	tClient.BaseURL = u
