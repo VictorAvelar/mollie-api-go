@@ -46,5 +46,16 @@ cover-report: test-local
 
 clean:
 	@go mod verify
-	@go mod tidy
+	@go mod tidy -go=1.16 
+	@go mod tidy -go=1.17
 .PHONY: clean
+
+update-docs:
+	@godocdown ./mollie > docs/README.md 
+.PHONY: update-docs 
+
+sub-pkg-docs:
+	@godocdown ./mollie/connect > docs/connect/README.md
+	@godocdown ./mollie/tools > docs/tools/README.md
+	@godocdown ./mollie/tools/idempotency > docs/tools/idempotency/README.md
+.PHONY: sub-pkg-docs

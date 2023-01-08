@@ -14,17 +14,19 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/VictorAvelar/mollie-api-go/v3/mollie/tools/idempotency"
 	"github.com/google/go-querystring/query"
 )
 
 // Constants holding values for client initialization and request instantiation.
 const (
-	BaseURL            string = "https://api.mollie.com/"
-	AuthHeader         string = "Authorization"
-	TokenType          string = "Bearer"
-	APITokenEnv        string = "MOLLIE_API_TOKEN"
-	OrgTokenEnv        string = "MOLLIE_ORG_TOKEN"
-	RequestContentType string = "application/json"
+	BaseURL              string = "https://api.mollie.com/"
+	AuthHeader           string = "Authorization"
+	TokenType            string = "Bearer"
+	APITokenEnv          string = "MOLLIE_API_TOKEN"
+	OrgTokenEnv          string = "MOLLIE_ORG_TOKEN"
+	RequestContentType   string = "application/json"
+	IdempotencyKeyHeader string = "Idempotency-Key"
 )
 
 var (
@@ -41,6 +43,8 @@ type Client struct {
 	client         *http.Client
 	common         service // Reuse a single struct instead of allocating one for each service on the heap.
 	config         *Config
+	// Tools
+	idempotencyKeyProvider idempotency.KeyGenerator
 	// Services
 	Payments       *PaymentsService
 	Chargebacks    *ChargebacksService
@@ -149,6 +153,12 @@ func (c *Client) HasAccessToken() bool {
 	return accessTokenExpr.Match([]byte(c.authentication))
 }
 
+// SetIdempotencyKeyGenerator allows you to pass your own idempotency
+// key generator.
+func (c *Client) SetIdempotencyKeyGenerator(kg idempotency.KeyGenerator) {
+	c.idempotencyKeyProvider = kg
+}
+
 // NewAPIRequest is a wrapper around the http.NewRequest function.
 //
 // It will setup the authentication headers/parameters according to the client config.
@@ -194,6 +204,10 @@ func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, b
 	req.Header.Set("Accept", RequestContentType)
 	req.Header.Set("User-Agent", c.userAgent)
 
+	if c.config.reqIdempotency && c.idempotencyKeyProvider != nil && req.Method == http.MethodPost {
+		req.Header.Set(IdempotencyKeyHeader, c.idempotencyKeyProvider.Generate())
+	}
+
 	return
 }
 
@@ -237,12 +251,17 @@ func NewClient(baseClient *http.Client, conf *Config) (mollie *Client, err error
 	uri, _ := url.Parse(BaseURL)
 
 	mollie = &Client{
-		BaseURL: uri,
-		client:  baseClient,
-		config:  conf,
+		BaseURL:                uri,
+		client:                 baseClient,
+		config:                 conf,
+		idempotencyKeyProvider: nil,
 	}
 
 	mollie.common.client = mollie
+
+	if mollie.config.reqIdempotency {
+		mollie.common.client.idempotencyKeyProvider = idempotency.NewStdGenerator()
+	}
 
 	// services for resources
 	mollie.Payments = (*PaymentsService)(&mollie.common)

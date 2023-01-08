@@ -21,12 +21,13 @@ the name of the resource you want to interact with.
 
 ```go
 const (
- BaseURL            string = "https://api.mollie.com/"
- AuthHeader         string = "Authorization"
- TokenType          string = "Bearer"
- APITokenEnv        string = "MOLLIE_API_TOKEN"
- OrgTokenEnv        string = "MOLLIE_ORG_TOKEN"
- RequestContentType string = "application/json"
+ BaseURL              string = "https://api.mollie.com/"
+ AuthHeader           string = "Authorization"
+ TokenType            string = "Bearer"
+ APITokenEnv          string = "MOLLIE_API_TOKEN"
+ OrgTokenEnv          string = "MOLLIE_ORG_TOKEN"
+ RequestContentType   string = "application/json"
+ IdempotencyKeyHeader string = "Idempotency-Key"
 )
 ```
 
@@ -471,6 +472,15 @@ NewAPIRequest is a wrapper around the http.NewRequest function.
 It will setup the authentication headers/parameters according to the client
 config.
 
+#### func (*Client) SetIdempotencyKeyGenerator
+
+```go
+func (c *Client) SetIdempotencyKeyGenerator(kg idempotency.KeyGenerator)
+```
+
+SetIdempotencyKeyGenerator allows you to pass your own idempotency key
+generator.
+
 #### func (*Client) WithAuthenticationValue
 
 ```go
@@ -507,12 +517,13 @@ Config contains information that helps during the setup of a new Mollie client.
 #### func  NewConfig
 
 ```go
-func NewConfig(t bool, auth string) *Config
+func NewConfig(t, reqIdem bool, auth string) *Config
 ```
 
 NewConfig builds a Mollie configuration object, it takes t to indicate if our
-client is meant to create requests for testing and auth to indicate the
-authentication method we want to use.
+client is meant to create requests for testing, reqIdem to enable the request
+idempotency beta feature, and auth to indicate the authentication method we want
+to use.
 
 #### type CreateShipmentRequest
 
@@ -814,6 +825,7 @@ const (
  Fashioncheque              GiftCardIssuer = "fashioncheque"
  Festivalcadeau             GiftCardIssuer = "festivalcadeau"
  Good4fun                   GiftCardIssuer = "good4fun"
+ Horseandgifts              GiftCardIssuer = "horseandgifts"
  HuistuinCadeauKaart        GiftCardIssuer = "huistuincadeaukaart"
  JewelCard                  GiftCardIssuer = "jewelcard"
  KlusCadeu                  GiftCardIssuer = "kluscadeau"
@@ -825,6 +837,7 @@ const (
  Podiumcadeaukaart          GiftCardIssuer = "podiumcadeaukaart"
  Reiscadeau                 GiftCardIssuer = "reiscadeau"
  Restaurantcadeau           GiftCardIssuer = "restaurantcadeau"
+ Shoesandsneakerscadeu      GiftCardIssuer = "shoesandsneakerscadeau"
  SodexoSportCulturePass     GiftCardIssuer = "sodexosportculturepass"
  Sportenfitcadeau           GiftCardIssuer = "sportenfitcadeau"
  Sustainablefashion         GiftCardIssuer = "sustainablefashion"
@@ -1407,6 +1420,7 @@ type Order struct {
  WebhookURL                               string        `json:"webhookUrl,omitempty"`
  Description                              string        `json:"description,omitempty"`
  Sku                                      string        `json:"sku,omitempty"`
+ CancelURL                                string        `json:"cancelUrl,omitempty"`
  Metadata                                 interface{}   `json:"metadata,omitempty"`
  Mode                                     Mode          `json:"mode,omitempty"`
  Method                                   PaymentMethod `json:"method,omitempty"`
@@ -1998,6 +2012,7 @@ type Payment struct {
  RedirectURL                     string                 `json:"redirectUrl,omitempty"`
  CountryCode                     string                 `json:"countryCode,omitempty"`
  SubscriptionID                  string                 `json:"subscriptionId,omitempty"`
+ CancelURL                       string                 `json:"cancelUrl,omitempty"`
  Metadata                        interface{}            `json:"metadata,omitempty"`
  Amount                          *Amount                `json:"amount,omitempty"`
  AmountRefunded                  *Amount                `json:"amountRefunded,omitempty"`

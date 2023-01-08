@@ -3,7 +3,7 @@
 ## Supported Versions
 
 Even though go offers full backwards compatibility, this package will only be concerned about the versions tested and
-declared inside the `.scrutinizer.yml` file.
+declared inside the `.github/workflows/main.yml` file.
 
 | Version | Supported          |
 | ------- | ------------------ |

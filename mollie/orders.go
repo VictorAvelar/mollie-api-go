@@ -20,6 +20,7 @@ type Order struct {
 	WebhookURL                               string        `json:"webhookUrl,omitempty"`
 	Description                              string        `json:"description,omitempty"`
 	Sku                                      string        `json:"sku,omitempty"`
+	CancelURL                                string        `json:"cancelUrl,omitempty"`
 	Metadata                                 interface{}   `json:"metadata,omitempty"`
 	Mode                                     Mode          `json:"mode,omitempty"`
 	Method                                   PaymentMethod `json:"method,omitempty"`
