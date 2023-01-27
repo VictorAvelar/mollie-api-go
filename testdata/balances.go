@@ -130,3 +130,270 @@ const ListBalancesResponse = `{
     }
   }
 }`
+
+const GetBalanceReportResponse = `{
+    "resource": "balance-report",
+    "balanceId": "bal_gVMhHKqSSRYJyPsuoPNFH",
+    "timeZone": "Europe/Amsterdam",
+    "from": "2021-01-01",
+    "until": "2021-01-31",
+    "grouping": "transaction-categories",
+    "totals": {
+        "open": {
+            "available": {
+                "amount": {
+                    "currency": "EUR",
+                    "value": "0.00"
+                }
+            },
+            "pending": {
+                "amount": {
+                    "currency": "EUR",
+                    "value": "0.00"
+                }
+            }
+        },
+        "payments": {
+            "immediatelyAvailable": {
+                "amount": {
+                    "currency": "EUR",
+                    "value": "0.00"
+                }
+            },
+            "pending": {
+                "amount": {
+                    "currency": "EUR",
+                    "value": "4.98"
+                },
+                "subtotals": [
+                    {
+                        "transactionType": "payment",
+                        "count": 1,
+                        "amount": {
+                            "currency": "EUR",
+                            "value": "4.98"
+                        },
+                        "subtotals": [
+                            {
+                                "amount": {
+                                "currency": "EUR",
+                                    "value": "4.98"
+                                },
+                                "count": 1,
+                                "method": "ideal"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "movedToAvailable": {
+                "amount": {
+                    "currency": "EUR",
+                    "value": "0.00"
+                }
+            }
+        },
+        "refunds": {
+            "available": {
+                "amount": {
+                    "currency": "EUR",
+                    "value": "0.00"
+                }
+            },
+            "pending": {
+                "amount": {
+                    "currency": "EUR",
+                    "value": "4.32"
+                }
+            }
+        },
+        "chargebacks": {
+            "available": {
+                "amount": {
+                    "currency": "EUR",
+                    "value": "0.00"
+                }
+            },
+            "pending": {
+                "amount": {
+                    "currency": "EUR",
+                    "value": "4.32"
+                }
+            }
+        },
+        "capital": {
+            "available": {
+                "amount": {
+                    "currency": "EUR",
+                    "value": "0.00"
+                }
+            },
+            "pending": {
+                "amount": {
+                    "currency": "EUR",
+                    "value": "4.32"
+                }
+            }
+        },
+        "transfers": {
+            "available": {
+                "amount": {
+                    "currency": "EUR",
+                    "value": "0.00"
+                }
+            },
+            "pending": {
+                "amount": {
+                    "currency": "EUR",
+                    "value": "4.32"
+                }
+            }
+        },
+        "fee-prepayments": {
+            "immediatelyAvailable": {
+                "amount": {
+                    "currency": "EUR",
+                    "value": "0.00"
+                }
+            },
+            "movedToAvailable": {
+                "amount": {
+                    "currency": "EUR",
+                    "value": "-0.36"
+                },
+                "subtotals": [
+                    {
+                        "amount": {
+                            "currency": "EUR",
+                            "value": "-0.29"
+                        },
+                        "count": 1,
+                        "prepaymentPartType": "fee",
+                        "subtotals": [
+                            {
+                                "amount": {
+                                    "currency": "EUR",
+                                    "value": "-0.29"
+                                },
+                                "count": 1,
+                                "feeType": "payment-fee",
+                                "subtotals": [
+                                    {
+                                        "amount": {
+                                            "currency": "EUR",
+                                            "value": "-0.29"
+                                        },
+                                        "count": 1,
+                                        "method": "ideal"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "amount": {
+                            "currency": "EUR",
+                            "value": "-0.0609"
+                        },
+                        "prepaymentPartType": "fee-vat"
+                    },
+                    {
+                        "amount": {
+                            "currency": "EUR",
+                            "value": "-0.0091"
+                        },
+                        "prepaymentPartType": "fee-rounding-compensation"
+                    }
+                ]
+            },
+            "pending": {
+                "amount": {
+                    "currency": "EUR",
+                    "value": "-0.36"
+                },
+                "subtotals": [
+                    {
+                        "amount": {
+                            "currency": "EUR",
+                            "value": "-0.29"
+                        },
+                        "count": 1,
+                        "prepaymentPartType": "fee",
+                        "subtotals": [
+                            {
+                                "amount": {
+                                    "currency": "EUR",
+                                    "value": "-0.29"
+                                },
+                                "count": 1,
+                                "feeType": "payment-fee",
+                                "subtotals": [
+                                    {
+                                        "amount": {
+                                            "currency": "EUR",
+                                            "value": "-0.29"
+                                        },
+                                        "count": 1,
+                                        "method": "ideal"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "amount": {
+                            "currency": "EUR",
+                            "value": "-0.0609"
+                        },
+                        "prepaymentPartType": "fee-vat"
+                    },
+                    {
+                        "amount": {
+                            "currency": "EUR",
+                            "value": "-0.0091"
+                        },
+                        "prepaymentPartType": "fee-rounding-compensation"
+                    }
+                ]
+            }
+        },
+        "corrections": {
+            "available": {
+                "amount": {
+                    "currency": "EUR",
+                    "value": "0.00"
+                }
+            },
+            "pending": {
+                "amount": {
+                    "currency": "EUR",
+                    "value": "4.32"
+                }
+            }
+        },
+        "close": {
+            "available": {
+                "amount": {
+                    "currency": "EUR",
+                    "value": "0.00"
+                }
+            },
+            "pending": {
+                "amount": {
+                    "currency": "EUR",
+                    "value": "4.32"
+                }
+            }
+        }
+    },
+    "_links": {
+        "documentation": {
+            "href": "https://docs.mollie.com/reference/v2/balances-api/get-balance-report",
+            "type": "text/html"
+        },
+        "self": {
+            "href": "https://api.mollie.com/v2/balances/{balanceId}/report?from=2021-01-01&until=2021-02-01&grouping=transaction-categories",
+            "type": "application/hal+json"
+        }
+    }
+}`
