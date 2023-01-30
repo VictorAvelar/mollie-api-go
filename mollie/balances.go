@@ -215,7 +215,7 @@ type ContextValues map[TransactionType]ContextValue
 type BalanceTransactionsList struct {
 	Count    int `json:"count,omitempty"`
 	Embedded struct {
-		BalanceTransactions []BalanceTransaction `json:"balance_transactions,omitempty"`
+		BalanceTransactions []*BalanceTransaction `json:"balance_transactions,omitempty"`
 	} `json:"_embedded,omitempty"`
 	Links PaginationLinks `json:"_links,omitempty"`
 }
