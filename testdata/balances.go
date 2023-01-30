@@ -397,3 +397,330 @@ const GetBalanceReportResponse = `{
         }
     }
 }`
+
+const GetBalanceReportByStatus = `{
+    "resource": "balance-report",
+    "balanceId": "bal_foLhJ7DqZHRHjejD4JNFH",
+    "timeZone": "Europe/Amsterdam",
+    "from": "2021-01-01",
+    "until": "2021-06-30",
+    "grouping": "status-balances",
+    "totals": {
+        "pendingBalance": {
+            "open": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            },
+            "pending": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            },
+            "movedToAvailable": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            },
+            "close": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            }
+        },
+        "availableBalance": {
+            "open": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            },
+            "movedFromPending": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            },
+            "immediatelyAvailable": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            },
+            "close": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            }
+        }
+    },
+    "_links": {
+        "self": {
+            "href": "https://api.mollie.com/v2/balances/bal_foLhJ7DqZHRHjejD4JNFH/report",
+            "type": "application/hal+json"
+        },
+        "documentation": {
+            "href": "https://docs.mollie.com/reference/v2/balances-api/get-primary-balance-report",
+            "type": "text/html"
+        }
+    }
+}
+`
+
+const GetBalanceReportByCategory = `{
+    "resource": "balance-report",
+    "balanceId": "bal_foLhJ7DqZHRHjejD4JNFH",
+    "timeZone": "Europe/Amsterdam",
+    "from": "2021-01-01",
+    "until": "2021-06-30",
+    "grouping": "transaction-categories",
+    "totals": {
+        "open": {
+            "pending": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            },
+            "available": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            }
+        },
+        "payments": {
+            "pending": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            },
+            "movedToAvailable": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            },
+            "immediatelyAvailable": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            }
+        },
+        "refunds": {
+            "pending": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            },
+            "movedToAvailable": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            },
+            "immediatelyAvailable": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            }
+        },
+        "chargebacks": {
+            "pending": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            },
+            "movedToAvailable": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            },
+            "immediatelyAvailable": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            }
+        },
+        "capital": {
+            "pending": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            },
+            "movedToAvailable": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            },
+            "immediatelyAvailable": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            }
+        },
+        "transfers": {
+            "pending": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            },
+            "movedToAvailable": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            },
+            "immediatelyAvailable": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            }
+        },
+        "fee-prepayments": {
+            "pending": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            },
+            "movedToAvailable": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            },
+            "immediatelyAvailable": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            }
+        },
+        "corrections": {
+            "pending": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            },
+            "movedToAvailable": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            },
+            "immediatelyAvailable": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            }
+        },
+        "close": {
+            "pending": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            },
+            "available": {
+                "amount": {
+                    "value": "0.00",
+                    "currency": "EUR"
+                }
+            }
+        }
+    },
+    "_links": {
+        "self": {
+            "href": "https://api.mollie.com/v2/balances/bal_foLhJ7DqZHRHjejD4JNFH/report",
+            "type": "application/hal+json"
+        },
+        "documentation": {
+            "href": "https://docs.mollie.com/reference/v2/balances-api/get-primary-balance-report",
+            "type": "text/html"
+        }
+    }
+}
+`
+
+const ListBalanceTransactionsResponse = `{
+  "count": 2,
+  "_embedded": {
+    "balance_transactions": [
+       {
+         "resource": "balance_transaction",
+         "id": "baltr_QM24QwzUWR4ev4Xfgyt29A",
+         "type": "refund",
+         "resultAmount": {
+           "value": "-10.25",
+           "currency": "EUR"
+         },
+         "initialAmount": {
+           "value": "-10.00",
+           "currency": "EUR"
+         },
+         "deductions": {
+           "value": "-0.25",
+           "currency": "EUR"
+         },
+         "createdAt": "2021-01-10T12:06:28+00:00",
+         "context": {
+           "paymentId": "tr_7UhSN1zuXS",
+           "refundId": "re_4qqhO89gsT"
+         }
+       },
+       {
+         "resource": "balance_transaction",
+         "id": "baltr_QM24QwzUWR4ev4Xfgyt29B",
+         "type": "payment",
+         "resultAmount": {
+           "value": "9.71",
+           "currency": "EUR"
+         },
+         "initialAmount": {
+           "value": "10.00",
+           "currency": "EUR"
+         },
+         "deductions": {
+           "value": "-0.29",
+           "currency": "EUR"
+         },
+         "createdAt": "2021-01-10T12:06:28+00:00",
+         "context": {
+           "paymentId": "tr_7UhSN1zuXS"
+         }
+       }
+    ]
+  },
+  "_links": {
+    "documentation": {
+      "href": "https://docs.mollie.com/reference/v2/balances-api/list-balance-transactions",
+      "type": "text/html"
+    },
+    "self": {
+      "href": "https://api.mollie.com/v2/balances/bal_gVMhHKqSSRYJyPsuoPNFH/transactions?limit=5",
+      "type": "application/hal+json"
+    },
+    "previous": null,
+    "next": null
+  }
+}`

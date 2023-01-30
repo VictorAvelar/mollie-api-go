@@ -104,9 +104,9 @@ const (
 // BalanceReportOptions contains valid query parameters
 // for the list balances endpoint.
 type BalanceReportOptions struct {
-	Grouping string     `url:"grouping,omitempty"`
-	From     *ShortDate `url:"from,omitempty"`
-	Until    *ShortDate `url:"until,omitempty"`
+	Grouping BalanceGroupingFormat `url:"grouping,omitempty"`
+	From     *ShortDate            `url:"from,omitempty"`
+	Until    *ShortDate            `url:"until,omitempty"`
 }
 
 // Subtotal balance descriptor.
@@ -126,16 +126,17 @@ type BalanceReportLinks struct {
 // BalanceReport contains the common fields between
 // different balance grouping options.
 type BalanceReport struct {
-	Resource  string                `json:"resource,omitempty"`
-	BalanceID string                `json:"balanceId,omitempty"`
-	TimeZone  string                `json:"timeZone,omitempty"`
-	From      *ShortDate            `json:"from,omitempty"`
-	Until     *ShortDate            `json:"until,omitempty"`
-	Grouping  BalanceGroupingFormat `json:"grouping,omitempty"`
-	Links     BalanceReportLinks    `json:"_links,omitempty"`
+	Resource  string                       `json:"resource,omitempty"`
+	BalanceID string                       `json:"balanceId,omitempty"`
+	TimeZone  string                       `json:"timeZone,omitempty"`
+	From      *ShortDate                   `json:"from,omitempty"`
+	Until     *ShortDate                   `json:"until,omitempty"`
+	Totals    *BalanceReportTotalsGrouping `json:"totals,omitempty"`
+	Grouping  BalanceGroupingFormat        `json:"grouping,omitempty"`
+	Links     BalanceReportLinks           `json:"_links,omitempty"`
 }
 
-// BalanceAmount wraps the std amount type.
+// BalanceAmount wraps the std Amount type.
 type BalanceAmount struct {
 	Amount *Amount `json:"amount,omitempty"`
 }
@@ -150,33 +151,80 @@ type BalanceReportDetail struct {
 	Close                *BalanceAmount `json:"close,omitempty"`
 }
 
-// GroupingReportStatusBalances contains the per status
-// grouped balances.
-//
-// It embeds all the fields in BalanceReport.
-type GroupingReportStatusBalances struct {
-	BalanceReport
+// BalanceReportTotalsGrouping contains the per totals
+// grouped balances for the requested period.
+type BalanceReportTotalsGrouping struct {
 	PendingBalance   *BalanceReportDetail `json:"pendingBalance,omitempty"`
 	AvailableBalance *BalanceReportDetail `json:"availableBalance,omitempty"`
-	Links            PaginationLinks      `json:"_links,omitempty"`
+	Open             *BalanceReportDetail `json:"open,omitempty"`
+	Payments         *BalanceReportDetail `json:"payments,omitempty"`
+	Refunds          *BalanceReportDetail `json:"refunds,omitempty"`
+	Chargebacks      *BalanceReportDetail `json:"chargebacks,omitempty"`
+	Capital          *BalanceReportDetail `json:"capital,omitempty"`
+	Transfers        *BalanceReportDetail `json:"transfers,omitempty"`
+	FeePrePayments   *BalanceReportDetail `json:"fee-prepayments,omitempty"`
+	Corrections      *BalanceReportDetail `json:"corrections,omitempty"`
+	Close            *BalanceReportDetail `json:"close,omitempty"`
 }
 
-// GroupingReportCategoryBalances contains the per category
-// grouped balances.
-//
-// It embeds all the fields in BalanceReport.
-type GroupingReportCategoryBalances struct {
-	BalanceReport
-	Open           *BalanceReportDetail `json:"open,omitempty"`
-	Payments       *BalanceReportDetail `json:"payments,omitempty"`
-	Refunds        *BalanceReportDetail `json:"refunds,omitempty"`
-	Chargebacks    *BalanceReportDetail `json:"chargebacks,omitempty"`
-	Capital        *BalanceReportDetail `json:"capital,omitempty"`
-	Transfers      *BalanceReportDetail `json:"transfers,omitempty"`
-	FeePrePayments *BalanceReportDetail `json:"fee-prepayments,omitempty"`
-	Corrections    *BalanceReportDetail `json:"corrections,omitempty"`
-	Close          *BalanceReportDetail `json:"close,omitempty"`
-	Links          *PaginationLinks     `json:"_links,omitempty"`
+// BalanceTransaction represents a the movement on your balance.
+type BalanceTransaction struct {
+	Resource        string        `json:"resource,omitempty"`
+	ID              string        `json:"id,omitempty"`
+	TransactionType string        `json:"transactionType,omitempty"`
+	ResultAmount    *Amount       `json:"resultAmount,omitempty"`
+	InitialAmount   *Amount       `json:"initialAmount,omitempty"`
+	Deductions      *Amount       `json:"deductions,omitempty"`
+	CreatedAt       *time.Time    `json:"createdAt,omitempty"`
+	Context         ContextValues `json:"context,omitempty"`
+}
+
+type (
+	// TransactionType specifies the reason for the movement.
+	TransactionType string
+	// ContextValue represents a relevant value in the system
+	// associated with a BalanceTransaction.
+	ContextValue string
+)
+
+// Known and supported transaction types.
+const (
+	PaymentTransaction                     TransactionType = "payment"
+	CaptureTransaction                     TransactionType = "capture"
+	UnauthorizedDirectDebitTransaction     TransactionType = "unauthorized-direct-debit"
+	FailedPaymentTransaction               TransactionType = "failed-payment"
+	RefundTransaction                      TransactionType = "refund-transaction"
+	ReturnedRefundTransaction              TransactionType = "returned-refund"
+	ChargebackTransaction                  TransactionType = "chargeback"
+	ChargebackReversalTransaction          TransactionType = "chargeback-reversal"
+	OutgoingTransferTransaction            TransactionType = "outgoing-transfer"
+	CanceledOutgoingTransfer               TransactionType = "canceled-outgoing-transfer"
+	ReturnedTransferTransaction            TransactionType = "returned-transfer"
+	InvoiceCompensationTransferTransaction TransactionType = "invoice-compensation"
+	BalanceCorrectionTransaction           TransactionType = "balance-correction"
+	ApplicationFeeTransaction              TransactionType = "application-fee"
+	SplitPaymentTransaction                TransactionType = "split-payment"
+	PlatformPaymentRefundTransaction       TransactionType = "platform-payment-refund"
+	PlatformPaymentChargeback              TransactionType = "platform-payment-chargeback"
+)
+
+// ContextValues is a map of TransactionType to ContextValue.
+type ContextValues map[TransactionType]ContextValue
+
+// BalanceTransactionsList contains an array of embedded transactions.
+type BalanceTransactionsList struct {
+	Count    int `json:"count,omitempty"`
+	Embedded struct {
+		BalanceTransactions []BalanceTransaction `json:"balance_transactions,omitempty"`
+	} `json:"_embedded,omitempty"`
+	Links PaginationLinks `json:"_links,omitempty"`
+}
+
+// BalanceTransactionsListOptions are valid query parameters for list
+// balance transactions requests.
+type BalanceTransactionsListOptions struct {
+	From  string `url:"from,omitempty"`
+	Limit int    `url:"limit,omitempty"`
 }
 
 // GetBalance retrieves a balance by its id.
@@ -217,6 +265,22 @@ func (bs *BalancesService) GetPrimaryReport(ctx context.Context, options *Balanc
 	return bs.getReport(ctx, "primary", options)
 }
 
+// GetTransactionsList retrieves a list of movements (transactions) for the
+// specified balance.
+//
+// See: https://docs.mollie.com/reference/v2/balances-api/list-balance-transactions
+func (bs *BalancesService) GetTransactionsList(ctx context.Context, balance string, options *BalanceTransactionsListOptions) (res *Response, btl *BalanceTransactionsList, err error) {
+	return bs.listTransactions(ctx, balance, options)
+}
+
+// GetPrimaryTransactionsList retieves the list of movements (transactions) for the
+// primary balance of the account.
+//
+// See: https://docs.mollie.com/reference/v2/balances-api/list-primary-balance-transactions
+func (bs *BalancesService) GetPrimaryTransactionsList(ctx context.Context, options *BalanceTransactionsListOptions) (res *Response, btl *BalanceTransactionsList, err error) {
+	return bs.listTransactions(ctx, "primary", options)
+}
+
 func (bs *BalancesService) get(ctx context.Context, balance string) (res *Response, b *Balance, err error) {
 	u := fmt.Sprintf("v2/balances/%s", balance)
 
@@ -254,6 +318,21 @@ func (bs *BalancesService) getReport(ctx context.Context, balance string, option
 	}
 
 	if err = json.Unmarshal(res.content, &br); err != nil {
+		return
+	}
+
+	return
+}
+
+func (bs *BalancesService) listTransactions(ctx context.Context, balance string, options *BalanceTransactionsListOptions) (res *Response, btl *BalanceTransactionsList, err error) {
+	u := fmt.Sprintf("v2/balances/%s/transactions", balance)
+
+	res, err = bs.client.get(ctx, u, options)
+	if err != nil {
+		return
+	}
+
+	if err = json.Unmarshal(res.content, &btl); err != nil {
 		return
 	}
 
