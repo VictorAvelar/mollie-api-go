@@ -3,3 +3,9 @@ contact_links:
   - name: Victor H. Avelar
     url: https://victoravelar.com
     about: Maintainer
+  - name: Mollie's API Documentation
+    url: https://docs.mollie.com/index
+    about: Official API Documentation
+  - name: Mollie's Changelog
+    url: https://docs.mollie.com/changelog/v2/changelog
+    about: Changes announced in the API
