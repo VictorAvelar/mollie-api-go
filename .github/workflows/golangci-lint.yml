@@ -30,14 +30,13 @@ on:
       - ".github/workflows/release.yml"
 jobs:
   golangci:
-    name: Linter
+    name: linter
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: read
     steps:
-      - uses: actions/checkout@39d8d7e78f59cf6b40ac3b9fbebef0c753d7c9e5
-        name: golangci-lint
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
       - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568
         with:
           go-version: 1.20.X
