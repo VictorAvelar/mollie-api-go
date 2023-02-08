@@ -89,7 +89,11 @@ func (os *OrganizationsService) GetCurrent(ctx context.Context) (res *Response, 
 // of the currently authenticated organization.
 //
 // See: https://docs.mollie.com/reference/v2/organizations-api/get-partner
-func (os *OrganizationsService) GetPartnerStatus(ctx context.Context) (res *Response, ops *OrganizationPartnerStatus, err error) {
+func (os *OrganizationsService) GetPartnerStatus(ctx context.Context) (
+	res *Response,
+	ops *OrganizationPartnerStatus,
+	err error,
+) {
 	res, err = os.client.get(ctx, "v2/organizations/me/partner", nil)
 	if err != nil {
 		return
