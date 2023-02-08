@@ -90,7 +90,11 @@ func (cs *CustomersService) Create(ctx context.Context, c Customer) (res *Respon
 // Update an existing customer.
 //
 // See: https://docs.mollie.com/reference/v2/customers-api/update-customer
-func (cs *CustomersService) Update(ctx context.Context, id string, c Customer) (res *Response, cc *Customer, err error) {
+func (cs *CustomersService) Update(ctx context.Context, id string, c Customer) (
+	res *Response,
+	cc *Customer,
+	err error,
+) {
 	u := fmt.Sprintf("v2/customers/%s", id)
 
 	res, err = cs.client.patch(ctx, u, c, nil)
@@ -124,7 +128,11 @@ func (cs *CustomersService) Delete(ctx context.Context, id string) (res *Respons
 // List retrieves all customers created.
 //
 // See: https://docs.mollie.com/reference/v2/customers-api/list-customers
-func (cs *CustomersService) List(ctx context.Context, options *CustomersListOptions) (res *Response, cl *CustomersList, err error) {
+func (cs *CustomersService) List(ctx context.Context, options *CustomersListOptions) (
+	res *Response,
+	cl *CustomersList,
+	err error,
+) {
 	res, err = cs.list(ctx, "v2/customers", options)
 	if err != nil {
 		return
@@ -140,7 +148,11 @@ func (cs *CustomersService) List(ctx context.Context, options *CustomersListOpti
 // GetPayments retrieves all payments linked to the customer.
 //
 // See: https://docs.mollie.com/reference/v2/customers-api/list-customer-payments
-func (cs *CustomersService) GetPayments(ctx context.Context, id string, options *CustomersListOptions) (res *Response, pl *PaymentList, err error) {
+func (cs *CustomersService) GetPayments(ctx context.Context, id string, options *CustomersListOptions) (
+	res *Response,
+	pl *PaymentList,
+	err error,
+) {
 	u := fmt.Sprintf("v2/customers/%s/payments", id)
 
 	res, err = cs.list(ctx, u, options)
@@ -158,7 +170,11 @@ func (cs *CustomersService) GetPayments(ctx context.Context, id string, options 
 // CreatePayment creates a payment for the customer.
 //
 // See: https://docs.mollie.com/reference/v2/customers-api/create-customer-payment
-func (cs *CustomersService) CreatePayment(ctx context.Context, id string, p Payment) (res *Response, pp *Payment, err error) {
+func (cs *CustomersService) CreatePayment(ctx context.Context, id string, p Payment) (
+	res *Response,
+	pp *Payment,
+	err error,
+) {
 	u := fmt.Sprintf("v2/customers/%s/payments", id)
 
 	res, err = cs.client.post(ctx, u, p, nil)
