@@ -76,6 +76,7 @@ func (ps *PermissionsService) Get(ctx context.Context, id PermissionGrant) (res 
 	if err = json.Unmarshal(res.content, &p); err != nil {
 		return
 	}
+
 	return
 }
 
@@ -92,5 +93,6 @@ func (ps *PermissionsService) List(ctx context.Context) (res *Response, pl *Perm
 	if err = json.Unmarshal(res.content, &pl); err != nil {
 		return
 	}
+
 	return
 }

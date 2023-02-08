@@ -5,6 +5,7 @@ package mollie
 type GiftCardIssuer string
 
 // Supported gift card issuers.
+// #nosec G101 -- This are the brands issuing gift cards.
 const (
 	BloemenCadeuKaart          GiftCardIssuer = "bloemencadeaukaart"
 	BloemPlantGiftCard         GiftCardIssuer = "bloemplantgiftcard"

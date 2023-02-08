@@ -32,13 +32,15 @@ jobs:
   golangci:
     name: Linter
     runs-on: ubuntu-latest
+    permissions:
+      content: read
+      pull-requests: read
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@39d8d7e78f59cf6b40ac3b9fbebef0c753d7c9e5
         name: golangci-lint
-      - uses: actions/setup-go@v3
+      - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568
         with:
-          go-version: 1.19.X
-      - uses: golangci/golangci-lint-action@v3.4.0
+          go-version: 1.20.X
+      - uses: golangci/golangci-lint-action@08e2f20817b15149a52b5b3ebe7de50aff2ba8c5
         with:
           version: latest
-          args: --issues-exit-code=0 --new=true --sort-results --skip-dirs-use-default --tests=false

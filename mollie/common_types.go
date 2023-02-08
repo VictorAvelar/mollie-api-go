@@ -49,9 +49,10 @@ func (d *ShortDate) MarshalJSON() ([]byte, error) {
 // for the Date struct, as we need links to be pointers to the time.Time struct.
 func (d *ShortDate) UnmarshalJSON(b []byte) error {
 	s := string(b)
-	s = strings.Trim(s, "\"")
-	date, err := time.Parse("2006-01-02", s)
 
+	s = strings.Trim(s, "\"")
+
+	date, err := time.Parse("2006-01-02", s)
 	if err != nil {
 		return fmt.Errorf("time_parse_error: %w", err)
 	}
@@ -159,7 +160,7 @@ const (
 	EmbedPayment     EmbedValue = "payments"
 	EmbedRefund      EmbedValue = "refunds"
 	EmbedShipments   EmbedValue = "shipments"
-	EmbedChangebacks EmbedValue = "chanrgebacks"
+	EmbedChargebacks EmbedValue = "chargebacks"
 )
 
 // Rate describes service rates, further divided into fixed and percentage costs.

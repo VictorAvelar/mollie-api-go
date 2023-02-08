@@ -80,7 +80,11 @@ func (pls *PaymentLinksService) Get(ctx context.Context, id string) (res *Respon
 // Create generates payment links that by default, unlike regular payments, do not expire.
 //
 // See: https://docs.mollie.com/reference/v2/payment-links-api/create-payment-link
-func (pls *PaymentLinksService) Create(ctx context.Context, p PaymentLink, opts *PaymentLinkOptions) (res *Response, np *PaymentLink, err error) {
+func (pls *PaymentLinksService) Create(ctx context.Context, p PaymentLink, opts *PaymentLinkOptions) (
+	res *Response,
+	np *PaymentLink,
+	err error,
+) {
 	res, err = pls.client.post(ctx, "v2/payment-links", p, opts)
 	if err != nil {
 		return
@@ -97,7 +101,11 @@ func (pls *PaymentLinksService) Create(ctx context.Context, p PaymentLink, opts 
 // ordered from newest to oldest.
 //
 // See: https://docs.mollie.com/reference/v2/payment-links-api/list-payment-links
-func (pls *PaymentLinksService) List(ctx context.Context, opts *PaymentLinkOptions) (res *Response, pl *PaymentLinksList, err error) {
+func (pls *PaymentLinksService) List(ctx context.Context, opts *PaymentLinkOptions) (
+	res *Response,
+	pl *PaymentLinksList,
+	err error,
+) {
 	res, err = pls.client.get(ctx, "v2/payment-links", opts)
 	if err != nil {
 		return

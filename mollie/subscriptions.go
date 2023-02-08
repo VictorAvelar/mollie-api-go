@@ -84,13 +84,18 @@ func (ss *SubscriptionsService) Get(ctx context.Context, cID, sID string) (res *
 	if err = json.Unmarshal(res.content, &s); err != nil {
 		return
 	}
+
 	return
 }
 
 // Create stores a new subscription for a given customer
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/create-subscription
-func (ss *SubscriptionsService) Create(ctx context.Context, cID string, sc *Subscription) (res *Response, s *Subscription, err error) {
+func (ss *SubscriptionsService) Create(ctx context.Context, cID string, sc *Subscription) (
+	res *Response,
+	s *Subscription,
+	err error,
+) {
 	uri := fmt.Sprintf("v2/customers/%s/subscriptions", cID)
 
 	if ss.client.HasAccessToken() && ss.client.config.testing {
@@ -105,13 +110,18 @@ func (ss *SubscriptionsService) Create(ctx context.Context, cID string, sc *Subs
 	if err = json.Unmarshal(res.content, &s); err != nil {
 		return
 	}
+
 	return
 }
 
 // Update changes fields on a subscription object
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/update-subscription
-func (ss *SubscriptionsService) Update(ctx context.Context, cID, sID string, sc *Subscription) (res *Response, s *Subscription, err error) {
+func (ss *SubscriptionsService) Update(ctx context.Context, cID, sID string, sc *Subscription) (
+	res *Response,
+	s *Subscription,
+	err error,
+) {
 	u := fmt.Sprintf("v2/customers/%s/subscriptions/%s", cID, sID)
 
 	res, err = ss.client.patch(ctx, u, sc, nil)
@@ -122,13 +132,18 @@ func (ss *SubscriptionsService) Update(ctx context.Context, cID, sID string, sc 
 	if err = json.Unmarshal(res.content, &s); err != nil {
 		return
 	}
+
 	return
 }
 
 // Delete cancels a subscription
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/cancel-subscription
-func (ss *SubscriptionsService) Delete(ctx context.Context, cID, sID string) (res *Response, s *Subscription, err error) {
+func (ss *SubscriptionsService) Delete(ctx context.Context, cID, sID string) (
+	res *Response,
+	s *Subscription,
+	err error,
+) {
 	u := fmt.Sprintf("v2/customers/%s/subscriptions/%s", cID, sID)
 
 	res, err = ss.client.delete(ctx, u, nil)
@@ -139,6 +154,7 @@ func (ss *SubscriptionsService) Delete(ctx context.Context, cID, sID string) (re
 	if err = json.Unmarshal(res.content, &s); err != nil {
 		return
 	}
+
 	return
 }
 
@@ -147,7 +163,11 @@ func (ss *SubscriptionsService) Delete(ctx context.Context, cID, sID string) (re
 // In the case of an OAuth Access Token relies the website profile on the profileId field
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/list-all-subscriptions
-func (ss *SubscriptionsService) All(ctx context.Context, opts *SubscriptionListOptions) (res *Response, sl *SubscriptionList, err error) {
+func (ss *SubscriptionsService) All(ctx context.Context, opts *SubscriptionListOptions) (
+	res *Response,
+	sl *SubscriptionList,
+	err error,
+) {
 	u := "v2/subscriptions"
 
 	res, err = ss.list(ctx, u, opts)
@@ -158,13 +178,18 @@ func (ss *SubscriptionsService) All(ctx context.Context, opts *SubscriptionListO
 	if err = json.Unmarshal(res.content, &sl); err != nil {
 		return
 	}
+
 	return
 }
 
 // List retrieves all subscriptions of a customer
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/list-subscriptions
-func (ss *SubscriptionsService) List(ctx context.Context, cID string, opts *SubscriptionListOptions) (res *Response, sl *SubscriptionList, err error) {
+func (ss *SubscriptionsService) List(ctx context.Context, cID string, opts *SubscriptionListOptions) (
+	res *Response,
+	sl *SubscriptionList,
+	err error,
+) {
 	u := fmt.Sprintf("v2/customers/%s/subscriptions", cID)
 
 	res, err = ss.list(ctx, u, opts)
@@ -175,13 +200,18 @@ func (ss *SubscriptionsService) List(ctx context.Context, cID string, opts *Subs
 	if err = json.Unmarshal(res.content, &sl); err != nil {
 		return
 	}
+
 	return
 }
 
 // GetPayments retrieves all payments of a specific subscriptions of a customer
 //
 // See: https://docs.mollie.com/reference/v2/subscriptions-api/list-subscriptions-payments
-func (ss *SubscriptionsService) GetPayments(ctx context.Context, cID, sID string, opts *SubscriptionListOptions) (res *Response, sl *PaymentList, err error) {
+func (ss *SubscriptionsService) GetPayments(ctx context.Context, cID, sID string, opts *SubscriptionListOptions) (
+	res *Response,
+	sl *PaymentList,
+	err error,
+) {
 	u := fmt.Sprintf("v2/customers/%s/subscriptions/%s/payments", cID, sID)
 
 	res, err = ss.list(ctx, u, opts)
@@ -192,6 +222,7 @@ func (ss *SubscriptionsService) GetPayments(ctx context.Context, cID, sID string
 	if err = json.Unmarshal(res.content, &sl); err != nil {
 		return
 	}
+
 	return
 }
 

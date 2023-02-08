@@ -23,7 +23,7 @@ const (
 	IDeal          PaymentMethod = "ideal"
 	KBC            PaymentMethod = "kbc"
 	KlarnaPayLater PaymentMethod = "klarnapaylater"
-	KlarnaLiceit   PaymentMethod = "klarnaliceit"
+	KlarnaSliceIt  PaymentMethod = "klarnasliceit"
 	MyBank         PaymentMethod = "mybank"
 	PayPal         PaymentMethod = "paypal"
 	PaySafeCard    PaymentMethod = "paysafecard"
@@ -137,7 +137,11 @@ type ListPaymentOptions struct {
 type PaymentsService service
 
 // Get retrieves a single payment object by its payment token.
-func (ps *PaymentsService) Get(ctx context.Context, id string, opts *PaymentOptions) (res *Response, p *Payment, err error) {
+func (ps *PaymentsService) Get(ctx context.Context, id string, opts *PaymentOptions) (
+	res *Response,
+	p *Payment,
+	err error,
+) {
 	res, err = ps.client.get(ctx, fmt.Sprintf("v2/payments/%s", id), opts)
 	if err != nil {
 		return
@@ -153,7 +157,11 @@ func (ps *PaymentsService) Get(ctx context.Context, id string, opts *PaymentOpti
 // Create stores a new payment object attached to your Mollie account.
 //
 // See: https://docs.mollie.com/reference/v2/payments-api/create-payment#
-func (ps *PaymentsService) Create(ctx context.Context, p Payment, opts *PaymentOptions) (res *Response, np *Payment, err error) {
+func (ps *PaymentsService) Create(ctx context.Context, p Payment, opts *PaymentOptions) (
+	res *Response,
+	np *Payment,
+	err error,
+) {
 	if ps.client.HasAccessToken() && ps.client.config.testing {
 		p.TestMode = true
 	}
@@ -198,6 +206,7 @@ func (ps *PaymentsService) Update(ctx context.Context, id string, up Payment) (r
 	if err = json.Unmarshal(res.content, &p); err != nil {
 		return
 	}
+
 	return
 }
 
@@ -213,7 +222,11 @@ type PaymentList struct {
 // List retrieves a list of payments associated with your account/organization.
 //
 // See: https://docs.mollie.com/reference/v2/payments-api/list-payments
-func (ps *PaymentsService) List(ctx context.Context, opts *ListPaymentOptions) (res *Response, pl *PaymentList, err error) {
+func (ps *PaymentsService) List(ctx context.Context, opts *ListPaymentOptions) (
+	res *Response,
+	pl *PaymentList,
+	err error,
+) {
 	res, err = ps.client.get(ctx, "v2/payments", opts)
 	if err != nil {
 		return
@@ -222,5 +235,6 @@ func (ps *PaymentsService) List(ctx context.Context, opts *ListPaymentOptions) (
 	if err = json.Unmarshal(res.content, &pl); err != nil {
 		return
 	}
+
 	return
 }

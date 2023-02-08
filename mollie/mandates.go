@@ -100,7 +100,11 @@ type MandatesList struct {
 // Mandates allow you to charge a customer’s credit card or bank account recurrently.
 //
 // See: https://docs.mollie.com/reference/v2/mandates-api/create-mandate
-func (ms *MandatesService) Create(ctx context.Context, customer string, mandate Mandate) (res *Response, mr *Mandate, err error) {
+func (ms *MandatesService) Create(ctx context.Context, customer string, mandate Mandate) (
+	res *Response,
+	mr *Mandate,
+	err error,
+) {
 	u := fmt.Sprintf("v2/customers/%s/mandates", customer)
 
 	res, err = ms.client.post(ctx, u, mandate, nil)
@@ -156,7 +160,11 @@ func (ms *MandatesService) Revoke(ctx context.Context, customer, mandate string)
 // ordered from newest to oldest.
 //
 // See: https://docs.mollie.com/reference/v2/mandates-api/list-mandates
-func (ms *MandatesService) List(ctx context.Context, customer string, options *MandatesListOptions) (res *Response, ml *MandatesList, err error) {
+func (ms *MandatesService) List(ctx context.Context, customer string, options *MandatesListOptions) (
+	res *Response,
+	ml *MandatesList,
+	err error,
+) {
 	u := fmt.Sprintf("v2/customers/%s/mandates", customer)
 
 	res, err = ms.client.get(ctx, u, options)

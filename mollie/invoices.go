@@ -87,7 +87,11 @@ func (is *InvoicesService) Get(ctx context.Context, id string) (res *Response, i
 }
 
 // List retrieves a list of invoices associated with your account/organization.
-func (is *InvoicesService) List(ctx context.Context, options *InvoicesListOptions) (res *Response, il *InvoicesList, err error) {
+func (is *InvoicesService) List(ctx context.Context, options *InvoicesListOptions) (
+	res *Response,
+	il *InvoicesList,
+	err error,
+) {
 	res, err = is.client.get(ctx, "v2/invoices", options)
 	if err != nil {
 		return

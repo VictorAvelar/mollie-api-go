@@ -422,7 +422,7 @@ func TestClient_Do(t *testing.T) {
 				nil,
 			},
 			true,
-			fmt.Errorf("httperror: Get \"\": http: nil Request.URL"),
+			fmt.Errorf("http_error: Get \"\": http: nil Request.URL"),
 			http.StatusOK,
 			func(w http.ResponseWriter, r *http.Request) {
 				testMethod(t, r, "GET")

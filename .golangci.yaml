@@ -1,0 +1,32 @@
+# golangci-lint configuration
+
+run:
+  concurrency: 4
+  timeout: 20s
+  issues-exit-code: 2
+  tests: false
+  skip-dirs-use-default: true
+  modules-download-mode: readonly
+  go: '1.17'
+  
+output:
+  format: tab
+  sort-results: true
+
+linters:
+  disable:
+    - tagliatelle
+  presets:
+    - bugs
+    - comment
+    - complexity
+    - error
+    - format
+    - import
+    - metalinter
+    - module
+    - performance
+    - sql
+    - style
+    
+  fast: true

@@ -53,6 +53,7 @@ func (ss *ShipmentsService) Get(ctx context.Context, oID string, sID string) (re
 	if err = json.Unmarshal(res.content, &s); err != nil {
 		return
 	}
+
 	return
 }
 
@@ -66,7 +67,11 @@ type CreateShipmentRequest struct {
 // Create can be used to ship order lines.
 //
 // See: https://docs.mollie.com/reference/v2/shipments-api/create-shipment
-func (ss *ShipmentsService) Create(ctx context.Context, oID string, cs CreateShipmentRequest) (res *Response, s *Shipment, err error) {
+func (ss *ShipmentsService) Create(ctx context.Context, oID string, cs CreateShipmentRequest) (
+	res *Response,
+	s *Shipment,
+	err error,
+) {
 	uri := fmt.Sprintf("v2/orders/%s/shipments", oID)
 
 	if ss.client.HasAccessToken() && ss.client.config.testing {
@@ -81,6 +86,7 @@ func (ss *ShipmentsService) Create(ctx context.Context, oID string, cs CreateShi
 	if err = json.Unmarshal(res.content, &s); err != nil {
 		return
 	}
+
 	return
 }
 
@@ -107,13 +113,18 @@ func (ss *ShipmentsService) List(ctx context.Context, oID string) (res *Response
 	if err = json.Unmarshal(res.content, &sl); err != nil {
 		return
 	}
+
 	return
 }
 
 // Update can be used to update the tracking information of a shipment
 //
 // See: https://docs.mollie.com/reference/v2/shipments-api/update-shipment
-func (ss *ShipmentsService) Update(ctx context.Context, oID string, sID string, st ShipmentTracking) (res *Response, s *Shipment, err error) {
+func (ss *ShipmentsService) Update(ctx context.Context, oID string, sID string, st ShipmentTracking) (
+	res *Response,
+	s *Shipment,
+	err error,
+) {
 	u := fmt.Sprintf("v2/orders/%s/shipments/%s", oID, sID)
 
 	res, err = ss.client.patch(ctx, u, st, nil)
@@ -124,5 +135,6 @@ func (ss *ShipmentsService) Update(ctx context.Context, oID string, sID string, 
 	if err = json.Unmarshal(res.content, &s); err != nil {
 		return
 	}
+
 	return
 }

@@ -59,7 +59,11 @@ type ChargebacksService service
 // Note the original payment’s ID is needed as well.
 //
 // See: https://docs.mollie.com/reference/v2/chargebacks-api/get-chargeback
-func (cs *ChargebacksService) Get(ctx context.Context, payment, chargeback string, opts *ChargebackOptions) (res *Response, p *Chargeback, err error) {
+func (cs *ChargebacksService) Get(ctx context.Context, payment, chargeback string, opts *ChargebackOptions) (
+	res *Response,
+	p *Chargeback,
+	err error,
+) {
 	u := fmt.Sprintf("v2/payments/%s/chargebacks/%s", payment, chargeback)
 
 	res, err = cs.client.get(ctx, u, opts)
@@ -77,19 +81,31 @@ func (cs *ChargebacksService) Get(ctx context.Context, payment, chargeback strin
 // List retrieves a list of chargebacks associated with your account/organization.
 //
 // See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
-func (cs *ChargebacksService) List(ctx context.Context, options *ChargebacksListOptions) (res *Response, cl *ChargebacksList, err error) {
+func (cs *ChargebacksService) List(ctx context.Context, options *ChargebacksListOptions) (
+	res *Response,
+	cl *ChargebacksList,
+	err error,
+) {
 	return cs.list(ctx, "v2/chargebacks", options)
 }
 
 // ListForPayment retrieves a list of chargebacks associated with a single payment.
 //
 // See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
-func (cs *ChargebacksService) ListForPayment(ctx context.Context, payment string, options *ChargebacksListOptions) (res *Response, cl *ChargebacksList, err error) {
+func (cs *ChargebacksService) ListForPayment(ctx context.Context, payment string, options *ChargebacksListOptions) (
+	res *Response,
+	cl *ChargebacksList,
+	err error,
+) {
 	return cs.list(ctx, fmt.Sprintf("v2/payments/%s/chargebacks", payment), options)
 }
 
 // encapsulates the shared list methods logic.
-func (cs *ChargebacksService) list(ctx context.Context, uri string, options interface{}) (res *Response, cl *ChargebacksList, err error) {
+func (cs *ChargebacksService) list(ctx context.Context, uri string, options interface{}) (
+	res *Response,
+	cl *ChargebacksList,
+	err error,
+) {
 	res, err = cs.client.get(ctx, uri, options)
 	if err != nil {
 		return

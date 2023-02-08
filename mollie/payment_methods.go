@@ -98,7 +98,11 @@ type PaymentMethodsService service
 // query string parameters.
 //
 // See: https://docs.mollie.com/reference/v2/methods-api/get-method
-func (ms *PaymentMethodsService) Get(ctx context.Context, id PaymentMethod, options *PaymentMethodOptions) (res *Response, pmd *PaymentMethodDetails, err error) {
+func (ms *PaymentMethodsService) Get(ctx context.Context, id PaymentMethod, options *PaymentMethodOptions) (
+	res *Response,
+	pmd *PaymentMethodDetails,
+	err error,
+) {
 	u := fmt.Sprintf("v2/methods/%s", id)
 
 	res, err = ms.client.get(ctx, u, options)
@@ -116,7 +120,11 @@ func (ms *PaymentMethodsService) Get(ctx context.Context, id PaymentMethod, opti
 // All retrieves all the payment methods enabled for your account/organization.
 //
 // See: https://docs.mollie.com/reference/v2/methods-api/list-all-methods
-func (ms *PaymentMethodsService) All(ctx context.Context, options *PaymentMethodsListOptions) (res *Response, pm *PaymentMethodsList, err error) {
+func (ms *PaymentMethodsService) All(ctx context.Context, options *PaymentMethodsListOptions) (
+	res *Response,
+	pm *PaymentMethodsList,
+	err error,
+) {
 	return ms.list(ctx, "v2/methods/all", options)
 }
 
@@ -125,11 +133,19 @@ func (ms *PaymentMethodsService) All(ctx context.Context, options *PaymentMethod
 // The results are not paginated.
 //
 // See: https://docs.mollie.com/reference/v2/methods-api/list-methods
-func (ms *PaymentMethodsService) List(ctx context.Context, options *PaymentMethodsListOptions) (res *Response, pm *PaymentMethodsList, err error) {
+func (ms *PaymentMethodsService) List(ctx context.Context, options *PaymentMethodsListOptions) (
+	res *Response,
+	pm *PaymentMethodsList,
+	err error,
+) {
 	return ms.list(ctx, "v2/methods", options)
 }
 
-func (ms *PaymentMethodsService) list(ctx context.Context, uri string, options interface{}) (res *Response, pm *PaymentMethodsList, err error) {
+func (ms *PaymentMethodsService) list(ctx context.Context, uri string, options interface{}) (
+	res *Response,
+	pm *PaymentMethodsList,
+	err error,
+) {
 	res, err = ms.client.get(ctx, uri, options)
 	if err != nil {
 		return
