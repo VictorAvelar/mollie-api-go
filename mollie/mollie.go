@@ -200,6 +200,10 @@ func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, b
 		}
 	}
 
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
 	req, err = http.NewRequestWithContext(ctx, method, url.String(), buf)
 	if err != nil {
 		return
