@@ -86,7 +86,10 @@ func (c *Client) get(ctx context.Context, uri string, options interface{}) (res 
 	return c.Do(req)
 }
 
-func (c *Client) post(ctx context.Context, uri string, body interface{}, options interface{}) (res *Response, err error) {
+func (c *Client) post(ctx context.Context, uri string, body interface{}, options interface{}) (
+	res *Response,
+	err error,
+) {
 	if options != nil {
 		v, _ := query.Values(options)
 		uri = fmt.Sprintf("%s?%s", uri, v.Encode())
@@ -100,7 +103,10 @@ func (c *Client) post(ctx context.Context, uri string, body interface{}, options
 	return c.Do(req)
 }
 
-func (c *Client) patch(ctx context.Context, uri string, body interface{}, options interface{}) (res *Response, err error) {
+func (c *Client) patch(ctx context.Context, uri string, body interface{}, options interface{}) (
+	res *Response,
+	err error,
+) {
 	if options != nil {
 		v, _ := query.Values(options)
 		uri = fmt.Sprintf("%s?%s", uri, v.Encode())
@@ -162,8 +168,11 @@ func (c *Client) SetIdempotencyKeyGenerator(kg idempotency.KeyGenerator) {
 // NewAPIRequest is a wrapper around the http.NewRequest function.
 //
 // It will setup the authentication headers/parameters according to the client config.
-// nolint: contextcheck
-func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, body interface{}) (req *http.Request, err error) {
+func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, body interface{}) (
+	req *http.Request,
+	err error,
+) {
+	//nolint: contextcheck
 	if !strings.HasSuffix(c.BaseURL.Path, "/") {
 		return nil, errBadBaseURL
 	}
@@ -198,7 +207,7 @@ func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, b
 
 	c.addRequestHeaders(req)
 
-	return
+	return req, nil
 }
 
 func (c *Client) addRequestHeaders(req *http.Request) {
@@ -207,7 +216,9 @@ func (c *Client) addRequestHeaders(req *http.Request) {
 	req.Header.Set("Accept", RequestContentType)
 	req.Header.Set("User-Agent", c.userAgent)
 
-	if c.config.reqIdempotency && c.idempotencyKeyProvider != nil && req.Method == http.MethodPost {
+	if c.config.reqIdempotency &&
+		c.idempotencyKeyProvider != nil &&
+		req.Method == http.MethodPost {
 		req.Header.Set(IdempotencyKeyHeader, c.idempotencyKeyProvider.Generate())
 	}
 }
@@ -217,10 +228,10 @@ func (c *Client) addRequestHeaders(req *http.Request) {
 func (c *Client) Do(req *http.Request) (*Response, error) {
 	resp, err := c.client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("httperror: %w", err)
+		return nil, fmt.Errorf("http_error: %w", err)
 	}
-
 	defer resp.Body.Close()
+
 	response, err := newResponse(resp)
 	if err != nil {
 		return response, err
@@ -298,27 +309,27 @@ func NewClient(baseClient *http.Client, conf *Config) (mollie *Client, err error
 		mollie.authentication = tkn
 	}
 
-	return
+	return mollie, nil
 }
 
 /*
 Constructor for Error.
 */
 func newError(rsp *Response) error {
-	merr := &BaseError{}
+	baseErr := &BaseError{}
 
 	if rsp.ContentLength > 0 {
-		err := json.Unmarshal(rsp.content, merr)
+		err := json.Unmarshal(rsp.content, baseErr)
 		if err != nil {
 			return err
 		}
 	} else {
-		merr.Status = rsp.StatusCode
-		merr.Title = rsp.Status
-		merr.Detail = string(rsp.content)
+		baseErr.Status = rsp.StatusCode
+		baseErr.Title = rsp.Status
+		baseErr.Detail = string(rsp.content)
 	}
 
-	return merr
+	return baseErr
 }
 
 // Response is a Mollie API response. This wraps the standard http.Response
