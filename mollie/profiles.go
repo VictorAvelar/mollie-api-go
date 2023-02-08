@@ -68,7 +68,11 @@ type ProfileList struct {
 type ProfilesService service
 
 // List returns all the profiles for the authenticated account.
-func (ps *ProfilesService) List(ctx context.Context, opts *ProfileListOptions) (res *Response, pl *ProfileList, err error) {
+func (ps *ProfilesService) List(ctx context.Context, opts *ProfileListOptions) (
+	res *Response,
+	pl *ProfileList,
+	err error,
+) {
 	res, err = ps.client.get(ctx, "v2/profiles", opts)
 	if err != nil {
 		return
@@ -77,6 +81,7 @@ func (ps *ProfilesService) List(ctx context.Context, opts *ProfileListOptions) (
 	if err = json.Unmarshal(res.content, &pl); err != nil {
 		return
 	}
+
 	return
 }
 
@@ -100,6 +105,7 @@ func (ps *ProfilesService) get(ctx context.Context, id string) (res *Response, p
 	if err = json.Unmarshal(res.content, &p); err != nil {
 		return
 	}
+
 	return
 }
 
@@ -113,6 +119,7 @@ func (ps *ProfilesService) Create(ctx context.Context, np *Profile) (res *Respon
 	if err = json.Unmarshal(res.content, &p); err != nil {
 		return
 	}
+
 	return
 }
 
@@ -126,6 +133,7 @@ func (ps *ProfilesService) Update(ctx context.Context, id string, up *Profile) (
 	if err = json.Unmarshal(res.content, &p); err != nil {
 		return
 	}
+
 	return
 }
 
@@ -136,12 +144,17 @@ func (ps *ProfilesService) Delete(ctx context.Context, id string) (res *Response
 	if err != nil {
 		return
 	}
+
 	return
 }
 
 // EnablePaymentMethod enables a payment method on a specific or authenticated profile.
 // If you're using API tokens for authentication, pass "me" as id.
-func (ps *ProfilesService) EnablePaymentMethod(ctx context.Context, id string, pm PaymentMethod) (res *Response, pmi *PaymentMethodDetails, err error) {
+func (ps *ProfilesService) EnablePaymentMethod(ctx context.Context, id string, pm PaymentMethod) (
+	res *Response,
+	pmi *PaymentMethodDetails,
+	err error,
+) {
 	res, err = ps.client.post(ctx, fmt.Sprintf("v2/profiles/%s/methods/%s", id, pm), nil, nil)
 	if err != nil {
 		return
@@ -150,16 +163,21 @@ func (ps *ProfilesService) EnablePaymentMethod(ctx context.Context, id string, p
 	if err = json.Unmarshal(res.content, &pmi); err != nil {
 		return
 	}
+
 	return
 }
 
 // DisablePaymentMethod disables a payment method on a specific or authenticated profile.
 // If you're using API tokens for authentication, pass "me" as id.
-func (ps *ProfilesService) DisablePaymentMethod(ctx context.Context, id string, pm PaymentMethod) (res *Response, err error) {
+func (ps *ProfilesService) DisablePaymentMethod(ctx context.Context, id string, pm PaymentMethod) (
+	res *Response,
+	err error,
+) {
 	res, err = ps.client.delete(ctx, fmt.Sprintf("v2/profiles/%s/methods/%s", id, pm), nil)
 	if err != nil {
 		return
 	}
+
 	return
 }
 
@@ -167,7 +185,11 @@ func (ps *ProfilesService) DisablePaymentMethod(ctx context.Context, id string, 
 // profile id.
 //
 // See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
-func (ps *ProfilesService) EnableGiftCardIssuer(ctx context.Context, profileID string, issuer GiftCardIssuer) (res *Response, gc *GiftCardEnabled, err error) {
+func (ps *ProfilesService) EnableGiftCardIssuer(ctx context.Context, profileID string, issuer GiftCardIssuer) (
+	res *Response,
+	gc *GiftCardEnabled,
+	err error,
+) {
 	res, err = ps.toggleGiftCardIssuerStatus(ctx, profileID, http.MethodPost, issuer)
 	if err != nil {
 		return
@@ -176,6 +198,7 @@ func (ps *ProfilesService) EnableGiftCardIssuer(ctx context.Context, profileID s
 	if err = json.Unmarshal(res.content, &gc); err != nil {
 		return
 	}
+
 	return
 }
 
@@ -183,11 +206,15 @@ func (ps *ProfilesService) EnableGiftCardIssuer(ctx context.Context, profileID s
 // profile id.
 //
 // See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
-func (ps *ProfilesService) DisableGiftCardIssuer(ctx context.Context, profileID string, issuer GiftCardIssuer) (res *Response, err error) {
+func (ps *ProfilesService) DisableGiftCardIssuer(ctx context.Context, profileID string, issuer GiftCardIssuer) (
+	res *Response,
+	err error,
+) {
 	res, err = ps.toggleGiftCardIssuerStatus(ctx, profileID, http.MethodDelete, issuer)
 	if err != nil {
 		return
 	}
+
 	return
 }
 
@@ -195,7 +222,11 @@ func (ps *ProfilesService) DisableGiftCardIssuer(ctx context.Context, profileID 
 // current profile (token owner).
 //
 // See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
-func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(ctx context.Context, issuer GiftCardIssuer) (res *Response, gc *GiftCardEnabled, err error) {
+func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(ctx context.Context, issuer GiftCardIssuer) (
+	res *Response,
+	gc *GiftCardEnabled,
+	err error,
+) {
 	res, err = ps.toggleGiftCardIssuerStatus(ctx, "me", http.MethodPost, issuer)
 	if err != nil {
 		return
@@ -204,6 +235,7 @@ func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(ctx context.Context, i
 	if err = json.Unmarshal(res.content, &gc); err != nil {
 		return
 	}
+
 	return
 }
 
@@ -211,16 +243,27 @@ func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(ctx context.Context, i
 // current profile (token owner).
 //
 // See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
-func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(ctx context.Context, issuer GiftCardIssuer) (res *Response, err error) {
+func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(ctx context.Context, issuer GiftCardIssuer) (
+	res *Response,
+	err error,
+) {
 	res, err = ps.toggleGiftCardIssuerStatus(ctx, "me", http.MethodDelete, issuer)
 	if err != nil {
 		return
 	}
+
 	return
 }
 
-func (ps *ProfilesService) toggleGiftCardIssuerStatus(ctx context.Context, profileID string, method string, issuer GiftCardIssuer) (r *Response, err error) {
-	u := fmt.Sprintf("v2/profiles/%s/methods/giftcard/issuers/%s", profileID, issuer)
+func (ps *ProfilesService) toggleGiftCardIssuerStatus(
+	ctx context.Context,
+	profile string,
+	method string,
+	issuer GiftCardIssuer) (
+	r *Response,
+	err error,
+) {
+	u := fmt.Sprintf("v2/profiles/%s/methods/giftcard/issuers/%s", profile, issuer)
 
 	switch method {
 	case http.MethodDelete:
