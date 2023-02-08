@@ -33,7 +33,7 @@ jobs:
     name: Linter
     runs-on: ubuntu-latest
     permissions:
-      content: read
+      contents: read
       pull-requests: read
     steps:
       - uses: actions/checkout@39d8d7e78f59cf6b40ac3b9fbebef0c753d7c9e5
