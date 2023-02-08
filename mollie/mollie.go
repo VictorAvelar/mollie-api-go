@@ -191,15 +191,17 @@ func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, b
 		}
 	}
 
-	if ctx == nil {
-		ctx = context.Background()
-	}
-
 	req, err = http.NewRequestWithContext(ctx, method, url.String(), buf)
 	if err != nil {
 		return
 	}
 
+	c.addRequestHeaders(req)
+
+	return
+}
+
+func (c *Client) addRequestHeaders(req *http.Request) {
 	req.Header.Add(AuthHeader, strings.Join([]string{TokenType, c.authentication}, " "))
 	req.Header.Set("Content-Type", RequestContentType)
 	req.Header.Set("Accept", RequestContentType)
@@ -208,8 +210,6 @@ func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, b
 	if c.config.reqIdempotency && c.idempotencyKeyProvider != nil && req.Method == http.MethodPost {
 		req.Header.Set(IdempotencyKeyHeader, c.idempotencyKeyProvider.Generate())
 	}
-
-	return
 }
 
 // Do sends an API request and returns the API response or returned as an
