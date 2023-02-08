@@ -118,7 +118,11 @@ func (ss *SettlementsService) Open(ctx context.Context) (res *Response, s *Settl
 // List retrieves all settlements, ordered from new to old
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/list-settlements
-func (ss *SettlementsService) List(ctx context.Context, slo *SettlementsListOptions) (res *Response, sl *SettlementsList, err error) {
+func (ss *SettlementsService) List(ctx context.Context, slo *SettlementsListOptions) (
+	res *Response,
+	sl *SettlementsList,
+	err error,
+) {
 	res, err = ss.list(ctx, "", "", slo)
 	if err != nil {
 		return
@@ -127,13 +131,18 @@ func (ss *SettlementsService) List(ctx context.Context, slo *SettlementsListOpti
 	if err = json.Unmarshal(res.content, &sl); err != nil {
 		return
 	}
+
 	return
 }
 
 // GetPayments retrieves all payments included in a settlement.
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-payments
-func (ss *SettlementsService) GetPayments(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, pl *PaymentList, err error) {
+func (ss *SettlementsService) GetPayments(ctx context.Context, id string, slo *SettlementsListOptions) (
+	res *Response,
+	pl *PaymentList,
+	err error,
+) {
 	res, err = ss.list(ctx, id, "payments", slo)
 	if err != nil {
 		return
@@ -142,13 +151,18 @@ func (ss *SettlementsService) GetPayments(ctx context.Context, id string, slo *S
 	if err = json.Unmarshal(res.content, &pl); err != nil {
 		return
 	}
+
 	return
 }
 
 // GetRefunds retrieves all refunds included in a settlement.
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-refunds
-func (ss *SettlementsService) GetRefunds(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, rl *RefundList, err error) {
+func (ss *SettlementsService) GetRefunds(ctx context.Context, id string, slo *SettlementsListOptions) (
+	res *Response,
+	rl *RefundList,
+	err error,
+) {
 	res, err = ss.list(ctx, id, "refunds", slo)
 	if err != nil {
 		return
@@ -157,13 +171,18 @@ func (ss *SettlementsService) GetRefunds(ctx context.Context, id string, slo *Se
 	if err = json.Unmarshal(res.content, &rl); err != nil {
 		return
 	}
+
 	return
 }
 
 // GetChargebacks retrieves all chargebacks included in a settlement.
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-chargebacks
-func (ss *SettlementsService) GetChargebacks(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, cl *ChargebacksList, err error) {
+func (ss *SettlementsService) GetChargebacks(ctx context.Context, id string, slo *SettlementsListOptions) (
+	res *Response,
+	cl *ChargebacksList,
+	err error,
+) {
 	res, err = ss.list(ctx, id, "chargebacks", slo)
 	if err != nil {
 		return
@@ -172,13 +191,18 @@ func (ss *SettlementsService) GetChargebacks(ctx context.Context, id string, slo
 	if err = json.Unmarshal(res.content, &cl); err != nil {
 		return
 	}
+
 	return
 }
 
 // GetCaptures retrieves all captures included in a settlement.
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-captures
-func (ss *SettlementsService) GetCaptures(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, cl *CapturesList, err error) {
+func (ss *SettlementsService) GetCaptures(ctx context.Context, id string, slo *SettlementsListOptions) (
+	res *Response,
+	cl *CapturesList,
+	err error,
+) {
 	res, err = ss.list(ctx, id, "captures", slo)
 	if err != nil {
 		return
@@ -187,6 +211,7 @@ func (ss *SettlementsService) GetCaptures(ctx context.Context, id string, slo *S
 	if err = json.Unmarshal(res.content, &cl); err != nil {
 		return
 	}
+
 	return
 }
 
@@ -199,10 +224,14 @@ func (ss *SettlementsService) get(ctx context.Context, element string) (res *Res
 	if err = json.Unmarshal(res.content, &s); err != nil {
 		return
 	}
+
 	return
 }
 
-func (ss *SettlementsService) list(ctx context.Context, id string, category string, opts *SettlementsListOptions) (res *Response, err error) {
+func (ss *SettlementsService) list(ctx context.Context, id string, category string, opts *SettlementsListOptions) (
+	res *Response,
+	err error,
+) {
 	uri := "v2/settlements"
 
 	if id != "" {
@@ -217,5 +246,6 @@ func (ss *SettlementsService) list(ctx context.Context, id string, category stri
 	if err != nil {
 		return
 	}
+
 	return
 }
