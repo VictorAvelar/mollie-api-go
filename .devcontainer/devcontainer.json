@@ -6,6 +6,9 @@
       "GO_VERSION": "1-bullseye"
     }
   },
+  "features": {
+    "ghcr.io/devcontainers-contrib/features/act-asdf:2": {}
+  },
   "mounts": [
     "source=${localEnv:HOME}/.zshrc,target=/root/.zshrc,type=bind,consistency=cached"
   ],
