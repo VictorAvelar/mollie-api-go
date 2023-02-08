@@ -163,7 +163,7 @@ func (ps *ProfilesService) DisablePaymentMethod(ctx context.Context, id string, 
 	return
 }
 
-// EnableGiftCardIssuer activates the requested giftcard issuer for the provided
+// EnableGiftCardIssuer activates the requested gift card issuer for the provided
 // profile id.
 //
 // See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
@@ -179,7 +179,7 @@ func (ps *ProfilesService) EnableGiftCardIssuer(ctx context.Context, profileID s
 	return
 }
 
-// DisableGiftCardIssuer deactivates the requested giftcard issuer for the provided
+// DisableGiftCardIssuer deactivates the requested gift card issuer for the provided
 // profile id.
 //
 // See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
@@ -222,9 +222,10 @@ func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(ctx context.Context, 
 func (ps *ProfilesService) toggleGiftCardIssuerStatus(ctx context.Context, profileID string, method string, issuer GiftCardIssuer) (r *Response, err error) {
 	u := fmt.Sprintf("v2/profiles/%s/methods/giftcard/issuers/%s", profileID, issuer)
 
-	if method == http.MethodDelete {
+	switch method {
+	case http.MethodDelete:
 		r, err = ps.client.delete(ctx, u, nil)
-	} else if method == http.MethodPost {
+	case http.MethodPost:
 		r, err = ps.client.post(ctx, u, nil, nil)
 	}
 
