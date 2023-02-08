@@ -55,15 +55,9 @@
           "ui.semanticTokens": true
         },
         "go.lintTool": "golangci-lint",
-        "go.lintFlags": [
-          "--fast"
-        ],
         "go.lintOnSave": "package",
         "go.toolsEnvVars": {
           "CGO_ENABLED": 1
-        },
-        "go.testEnvVars": {
-          "": ""
         },
         "go.testFlags": [
           "-v",
