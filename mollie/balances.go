@@ -240,6 +240,7 @@ func (bs *BalancesService) Get(ctx context.Context, balance string) (res *Respon
 // See: https://docs.mollie.com/reference/v2/balances-api/get-primary-balance
 func (bs *BalancesService) Primary(ctx context.Context) (res *Response, b *Balance, err error) {
 	const id = "primary"
+
 	return bs.get(ctx, id)
 }
 
@@ -247,21 +248,33 @@ func (bs *BalancesService) Primary(ctx context.Context) (res *Response, b *Balan
 // balance, ordered from newest to oldest.
 //
 // See: https://docs.mollie.com/reference/v2/balances-api/list-balances
-func (bs *BalancesService) List(ctx context.Context, options *BalanceListOptions) (res *Response, bl *BalancesList, err error) {
+func (bs *BalancesService) List(ctx context.Context, options *BalanceListOptions) (
+	res *Response,
+	bl *BalancesList,
+	err error,
+) {
 	return bs.list(ctx, "v2/balances", options)
 }
 
 // GetReport returns the balance report for the specified balance id.
 //
 // See: https://docs.mollie.com/reference/v2/balances-api/get-balance-report
-func (bs *BalancesService) GetReport(ctx context.Context, balance string, options *BalanceReportOptions) (res *Response, br *BalanceReport, err error) {
+func (bs *BalancesService) GetReport(ctx context.Context, balance string, options *BalanceReportOptions) (
+	res *Response,
+	br *BalanceReport,
+	err error,
+) {
 	return bs.getReport(ctx, balance, options)
 }
 
 // GetPrimaryReport returns the report for the primary balance.
 //
 // See: https://docs.mollie.com/reference/v2/balances-api/get-primary-balance-report
-func (bs *BalancesService) GetPrimaryReport(ctx context.Context, options *BalanceReportOptions) (res *Response, br *BalanceReport, err error) {
+func (bs *BalancesService) GetPrimaryReport(ctx context.Context, options *BalanceReportOptions) (
+	res *Response,
+	br *BalanceReport,
+	err error,
+) {
 	return bs.getReport(ctx, "primary", options)
 }
 
@@ -269,15 +282,27 @@ func (bs *BalancesService) GetPrimaryReport(ctx context.Context, options *Balanc
 // specified balance.
 //
 // See: https://docs.mollie.com/reference/v2/balances-api/list-balance-transactions
-func (bs *BalancesService) GetTransactionsList(ctx context.Context, balance string, options *BalanceTransactionsListOptions) (res *Response, btl *BalanceTransactionsList, err error) {
+func (bs *BalancesService) GetTransactionsList(
+	ctx context.Context,
+	balance string,
+	options *BalanceTransactionsListOptions,
+) (
+	res *Response,
+	btl *BalanceTransactionsList,
+	err error,
+) {
 	return bs.listTransactions(ctx, balance, options)
 }
 
-// GetPrimaryTransactionsList retieves the list of movements (transactions) for the
+// GetPrimaryTransactionsList retrieves the list of movements (transactions) for the
 // primary balance of the account.
 //
 // See: https://docs.mollie.com/reference/v2/balances-api/list-primary-balance-transactions
-func (bs *BalancesService) GetPrimaryTransactionsList(ctx context.Context, options *BalanceTransactionsListOptions) (res *Response, btl *BalanceTransactionsList, err error) {
+func (bs *BalancesService) GetPrimaryTransactionsList(ctx context.Context, options *BalanceTransactionsListOptions) (
+	res *Response,
+	btl *BalanceTransactionsList,
+	err error,
+) {
 	return bs.listTransactions(ctx, "primary", options)
 }
 
@@ -296,7 +321,11 @@ func (bs *BalancesService) get(ctx context.Context, balance string) (res *Respon
 	return
 }
 
-func (bs *BalancesService) list(ctx context.Context, uri string, options interface{}) (res *Response, lb *BalancesList, err error) {
+func (bs *BalancesService) list(
+	ctx context.Context,
+	uri string,
+	options interface{},
+) (res *Response, lb *BalancesList, err error) {
 	res, err = bs.client.get(ctx, uri, options)
 	if err != nil {
 		return
@@ -309,7 +338,11 @@ func (bs *BalancesService) list(ctx context.Context, uri string, options interfa
 	return
 }
 
-func (bs *BalancesService) getReport(ctx context.Context, balance string, options *BalanceReportOptions) (res *Response, br *BalanceReport, err error) {
+func (bs *BalancesService) getReport(
+	ctx context.Context,
+	balance string,
+	options *BalanceReportOptions,
+) (res *Response, br *BalanceReport, err error) {
 	u := fmt.Sprintf("v2/balances/%s/report", balance)
 
 	res, err = bs.client.get(ctx, u, options)
@@ -324,7 +357,11 @@ func (bs *BalancesService) getReport(ctx context.Context, balance string, option
 	return
 }
 
-func (bs *BalancesService) listTransactions(ctx context.Context, balance string, options *BalanceTransactionsListOptions) (res *Response, btl *BalanceTransactionsList, err error) {
+func (bs *BalancesService) listTransactions(
+	ctx context.Context,
+	balance string,
+	options *BalanceTransactionsListOptions,
+) (res *Response, btl *BalanceTransactionsList, err error) {
 	u := fmt.Sprintf("v2/balances/%s/transactions", balance)
 
 	res, err = bs.client.get(ctx, u, options)
