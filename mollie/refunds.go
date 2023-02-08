@@ -79,7 +79,11 @@ type RefundsService service
 // Get retrieve a single refund by its ID.
 //
 // If you do not know the original payment’s ID, you can use the List payment refunds endpoint.
-func (rs *RefundsService) Get(ctx context.Context, paymentID, refundID string, opts *RefundOptions) (res *Response, refund *Refund, err error) {
+func (rs *RefundsService) Get(ctx context.Context, paymentID, refundID string, opts *RefundOptions) (
+	res *Response,
+	refund *Refund,
+	err error,
+) {
 	u := fmt.Sprintf("v2/payments/%s/refunds/%s", paymentID, refundID)
 
 	res, err = rs.client.get(ctx, u, opts)
@@ -97,7 +101,11 @@ func (rs *RefundsService) Get(ctx context.Context, paymentID, refundID string, o
 // Create a refund payment request.
 //
 // See https://docs.mollie.com/reference/v2/refunds-api/create-refund.
-func (rs *RefundsService) Create(ctx context.Context, paymentID string, re Refund, options *RefundOptions) (res *Response, rf *Refund, err error) {
+func (rs *RefundsService) Create(ctx context.Context, paymentID string, re Refund, options *RefundOptions) (
+	res *Response,
+	rf *Refund,
+	err error,
+) {
 	uri := fmt.Sprintf("v2/payments/%s/refunds", paymentID)
 
 	if rs.client.HasAccessToken() && rs.client.config.testing {
@@ -133,7 +141,11 @@ func (rs *RefundsService) Cancel(ctx context.Context, paymentID, refundID string
 // ListRefund calls the top level https://api.mollie.com/v2/refunds.
 //
 // See https://docs.mollie.com/reference/v2/refunds-api/list-refunds.
-func (rs *RefundsService) ListRefund(ctx context.Context, opts *ListRefundOptions) (res *Response, rl *RefundList, err error) {
+func (rs *RefundsService) ListRefund(ctx context.Context, opts *ListRefundOptions) (
+	res *Response,
+	rl *RefundList,
+	err error,
+) {
 	u := "v2/refunds"
 
 	return rs.list(ctx, u, opts)
@@ -144,13 +156,21 @@ func (rs *RefundsService) ListRefund(ctx context.Context, opts *ListRefundOption
 //
 // Only refunds for that specific payment are returned.
 // See: https://docs.mollie.com/reference/v2/refunds-api/list-refunds
-func (rs *RefundsService) ListRefundPayment(ctx context.Context, paymentID string, opts *ListRefundOptions) (res *Response, rl *RefundList, err error) {
+func (rs *RefundsService) ListRefundPayment(ctx context.Context, paymentID string, opts *ListRefundOptions) (
+	res *Response,
+	rl *RefundList,
+	err error,
+) {
 	u := fmt.Sprintf("v2/payments/%s/refunds", paymentID)
 
 	return rs.list(ctx, u, opts)
 }
 
-func (rs *RefundsService) list(ctx context.Context, uri string, opts interface{}) (res *Response, rl *RefundList, err error) {
+func (rs *RefundsService) list(ctx context.Context, uri string, opts interface{}) (
+	res *Response,
+	rl *RefundList,
+	err error,
+) {
 	res, err = rs.client.get(ctx, uri, opts)
 	if err != nil {
 		return
@@ -159,5 +179,6 @@ func (rs *RefundsService) list(ctx context.Context, uri string, opts interface{}
 	if err = json.Unmarshal(res.content, &rl); err != nil {
 		return
 	}
+
 	return
 }
