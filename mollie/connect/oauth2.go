@@ -7,7 +7,7 @@ import (
 // Mollie's Oauth2 server URLs.
 const (
 	authURL   = "https://www.mollie.com/oauth2/authorize"
-	tokensURL = "https://api.mollie.com/oauth2/tokens"
+	tokensURL = "https://api.mollie.com/oauth2/tokens" //#nosec G101 -- This is the url used to retrieve oauth2 tokens.
 )
 
 // OauthEndpoint is Mollies's OAuth 2.0 endpoint.

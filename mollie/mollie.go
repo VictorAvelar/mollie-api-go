@@ -162,6 +162,7 @@ func (c *Client) SetIdempotencyKeyGenerator(kg idempotency.KeyGenerator) {
 // NewAPIRequest is a wrapper around the http.NewRequest function.
 //
 // It will setup the authentication headers/parameters according to the client config.
+// nolint: contextcheck
 func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, body interface{}) (req *http.Request, err error) {
 	if !strings.HasSuffix(c.BaseURL.Path, "/") {
 		return nil, errBadBaseURL
