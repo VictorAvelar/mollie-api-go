@@ -31,7 +31,11 @@ type ApplePaymentSessionRequest struct {
 // ApplePaymentSession returns an Apple Payment Session object valid for one transaction.
 //
 // See: https://docs.mollie.com/reference/v2/wallets-api/request-apple-pay-payment-session
-func (ms *MiscellaneousService) ApplePaymentSession(ctx context.Context, asr *ApplePaymentSessionRequest) (res *Response, aps *ApplePaymentSession, err error) {
+func (ms *MiscellaneousService) ApplePaymentSession(ctx context.Context, asr *ApplePaymentSessionRequest) (
+	res *Response,
+	aps *ApplePaymentSession,
+	err error,
+) {
 	u := "v2/wallets/applepay/sessions"
 
 	res, err = ms.client.post(ctx, u, asr, nil)
