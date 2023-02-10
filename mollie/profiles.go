@@ -21,15 +21,15 @@ const (
 // Profile will usually reflect the trademark or brand name
 // of the profile’s website or application.
 type Profile struct {
-	ID           string       `json:"id,omitempty"`
-	CategoryCode CategoryCode `json:"categoryCode,omitempty"`
-	CreatedAt    *time.Time   `json:"createdAt,omitempty"`
-	Email        string       `json:"email,omitempty"`
-	Mode         Mode         `json:"mode,omitempty"`
-	Name         string       `json:"name,omitempty"`
-	Phone        PhoneNumber  `json:"phone,omitempty"`
-	Resource     string       `json:"resource,omitempty"`
-	Review       struct {
+	ID               string           `json:"id,omitempty"`
+	BusinessCategory BusinessCategory `json:"businessCategory,omitempty"`
+	CreatedAt        *time.Time       `json:"createdAt,omitempty"`
+	Email            string           `json:"email,omitempty"`
+	Mode             Mode             `json:"mode,omitempty"`
+	Name             string           `json:"name,omitempty"`
+	Phone            PhoneNumber      `json:"phone,omitempty"`
+	Resource         string           `json:"resource,omitempty"`
+	Review           struct {
 		Status string `json:"status,omitempty"`
 	} `json:"review,omitempty"`
 	Status  ProfileStatus `json:"status,omitempty"`

@@ -62,22 +62,24 @@ func (os *OnboardingService) GetOnboardingStatus(ctx context.Context) (res *Resp
 // at least one of them needs to be provided in the request.
 //
 // Information that the merchant has entered in their dashboard will not be overwritten.
+type OnboardingDataOrganization struct {
+	Name               string   `json:"name,omitempty"`
+	Address            *Address `json:"address,omitempty"`
+	RegistrationNumber string   `json:"registrationNumber,omitempty"`
+	VatNumber          string   `json:"vatNumber,omitempty"`
+	VatRegulation      string   `json:"vatRegulation,omitempty"`
+}
+type OnboardingDataProfile struct {
+	Name             string           `json:"name,omitempty"`
+	URL              string           `json:"url,omitempty"`
+	Email            string           `json:"email,omitempty"`
+	Description      string           `json:"description,omitempty"`
+	Phone            string           `json:"phone,omitempty"`
+	BusinessCategory BusinessCategory `json:"businessCategory,omitempty"`
+}
 type OnboardingData struct {
-	Organization struct {
-		Name               string   `json:"name,omitempty"`
-		Address            *Address `json:"address,omitempty"`
-		RegistrationNumber string   `json:"registrationNumber,omitempty"`
-		VatNumber          string   `json:"vatNumber,omitempty"`
-		VatRegulation      string   `json:"vatRegulation,omitempty"`
-	} `json:"organization,omitempty"`
-	Profile struct {
-		Name         string       `json:"name,omitempty"`
-		URL          string       `json:"url,omitempty"`
-		Email        string       `json:"email,omitempty"`
-		Description  string       `json:"description,omitempty"`
-		Phone        string       `json:"phone,omitempty"`
-		CategoryCode CategoryCode `json:"categoryCode,omitempty"`
-	} `json:"profile,omitempty"`
+	Organization OnboardingDataOrganization `json:"organization,omitempty"`
+	Profile      OnboardingDataProfile      `json:"profile,omitempty"`
 }
 
 // SubmitOnboardingData sends data that will be prefilled in the merchant’s onboarding.
