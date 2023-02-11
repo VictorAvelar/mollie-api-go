@@ -59,9 +59,7 @@
         },
         "go.lintTool": "golangci-lint",
         "go.lintOnSave": "package",
-        "go.toolsEnvVars": {
-          "CGO_ENABLED": 1
-        },
+        "go.toolsEnvVars": {},
         "go.testFlags": [
           "-v",
           "-race"
