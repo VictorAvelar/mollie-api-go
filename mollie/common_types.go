@@ -37,10 +37,7 @@ type ShortDate struct {
 // MarshalJSON overrides the default marshal action
 // for the Date struct. Returns date as YYYY-MM-DD formatted string.
 func (d *ShortDate) MarshalJSON() ([]byte, error) {
-	bts, err := json.Marshal(d.Time.Format("2006-01-02"))
-	if err != nil {
-		return nil, fmt.Errorf("json_marshall_error: %w", err)
-	}
+	bts, _ := json.Marshal(d.Time.Format("2006-01-02"))
 
 	return bts, nil
 }
