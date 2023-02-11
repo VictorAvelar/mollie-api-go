@@ -176,7 +176,7 @@ func (rs *refundsServiceTest) TestRefundsService_Create() {
 			},
 			false,
 			nil,
-			setAccesstoken,
+			setAccessToken,
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(rs.T(), r, AuthHeader, "Bearer access_token_test")
 				testMethod(rs.T(), r, "POST")
