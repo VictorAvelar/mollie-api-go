@@ -249,7 +249,7 @@ func (ps *shipmentsServiceSuite) TestShipmentsService_Create() {
 			},
 			false,
 			nil,
-			setAccesstoken,
+			setAccessToken,
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer access_token_test")
 				testMethod(ps.T(), r, "POST")
@@ -376,7 +376,7 @@ func (ps *shipmentsServiceSuite) TestShipmentsService_Update() {
 			},
 			false,
 			nil,
-			setAccesstoken,
+			setAccessToken,
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer access_token_test")
 				testMethod(ps.T(), r, "PATCH")

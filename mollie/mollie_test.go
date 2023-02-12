@@ -39,7 +39,7 @@ func TestNewClient(t *testing.T) {
 		},
 	}
 
-	conf := NewConfig(true, false, APITokenEnv)
+	conf := NewConfig(true, APITokenEnv)
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -321,23 +321,23 @@ func TestClient_IsAccessToken(t *testing.T) {
 		want  bool
 	}{
 		{
-			"Test dummytext",
-			"dummytext",
+			"Test dummy_text",
+			"dummy_text",
 			false,
 		},
 		{
 			"Test pattern is matched",
-			"access_testingtokenhere",
+			"access_testing_token_here",
 			true,
 		},
 		{
 			"Test patter is not matched if not in the right position",
-			"testing_tokent_access_here",
+			"testing_token_access_here",
 			false,
 		},
 		{
 			"Test other tokens are not matched",
-			"test_yourtokenhere",
+			"test_your_token_here",
 			false,
 		},
 		{
@@ -522,7 +522,7 @@ var (
 		u, _ := url.Parse(tServer.URL)
 		tClient.BaseURL = u
 	}
-	setAccesstoken = func() {
+	setAccessToken = func() {
 		tClient.WithAuthenticationValue("access_token_test")
 	}
 )
@@ -532,7 +532,7 @@ var (
 func setup() {
 	tMux = http.NewServeMux()
 	tServer = httptest.NewServer(tMux)
-	tConf = NewConfig(true, true, APITokenEnv)
+	tConf = NewAPITestingConfig(true)
 	tClient, _ = NewClient(nil, tConf)
 	u, _ := url.Parse(tServer.URL + "/")
 	tClient.BaseURL = u
@@ -566,7 +566,7 @@ func testHeader(t *testing.T, r *http.Request, header string, want string) {
 
 func testQuery(t *testing.T, r *http.Request, want string) {
 	if r.URL.Query().Encode() != want {
-		t.Errorf("Query().Encode() retuned unexpected values, want: %q, got %q", want, r.URL.Query().Encode())
+		t.Errorf("Query().Encode() returned unexpected values, want: %q, got %q", want, r.URL.Query().Encode())
 	}
 }
 
