@@ -115,10 +115,40 @@ type PaginationLinks struct {
 	Documentation *URL `json:"documentation,omitempty"`
 }
 
+// Deprecated: CategoryCode specifies an industry or category.
+// Use BusinessCategory instead.
+type CategoryCode uint
+
+// Deprecated: Available category codes.
+// Use BusinessCategory instead.
+const (
+	BookMagazinesAndNewspapers          CategoryCode = 5192
+	GeneralMerchandise                  CategoryCode = 5399
+	FoodAndDrinks                       CategoryCode = 5499
+	AutomotiveProducts                  CategoryCode = 5533
+	ChildrenProducts                    CategoryCode = 5641
+	ClothingAndShoes                    CategoryCode = 5651
+	MarketplaceCrowdfundingAndDonations CategoryCode = 5262
+	ElectronicsComputersAndSoftware     CategoryCode = 5732
+	HostingOrVpnServices                CategoryCode = 5734
+	Entertainment                       CategoryCode = 5735
+	CreditsOrVouchersOrGiftCards        CategoryCode = 5815
+	Alcohol                             CategoryCode = 5921
+	JewelryAndAccessories               CategoryCode = 5944
+	HealthAndBeautyProducts             CategoryCode = 5977
+	FinancialServices                   CategoryCode = 6012
+	Consultancy                         CategoryCode = 7299
+	TravelRentalAndTransportation       CategoryCode = 7999
+	AdvisingOrCoachingOrTraining        CategoryCode = 8299
+	CharityAndDonations                 CategoryCode = 8398
+	PoliticalParties                    CategoryCode = 8699
+	Others                              CategoryCode = 0
+)
+
 // BusinessCategory specifies an industry or category.
 type BusinessCategory string
 
-// Available business categoreis.
+// Available business categories.
 const (
 	PetShopsPetFoodAndSupplies                              BusinessCategory = "PET_SHOPS"
 	VeterinaryServices                                      BusinessCategory = "VETERINARY_SERVICES"
@@ -128,7 +158,7 @@ const (
 	EquipmentToolsOrFurnitureRentalOrLeasing                BusinessCategory = "EQUIPMENT_TOOLS_FURNITURE_RENTAL_LEASING"
 	GeneralContractors                                      BusinessCategory = "GENERAL_CONTRACTORS"
 	SpecialTradeContractors                                 BusinessCategory = "SPECIAL_TRADE_CONTRACTORS"
-	CharityAndDonations                                     BusinessCategory = "CHARITY_AND_DONATIONS"
+	CharityAndDonationsCategory                             BusinessCategory = "CHARITY_AND_DONATIONS"
 	FundraisingCrowdfundingAndSocialServiceOrganizations    BusinessCategory = "FUNDRAISING_CROWDFUNDING_SOCIAL_SERVICE"
 	Apps                                                    BusinessCategory = "APPS"
 	BooksMediaMoviesMusic                                   BusinessCategory = "BOOKS_MEDIA_MOVIES_MUSIC"
@@ -187,12 +217,12 @@ const (
 	OtherPersonalServices                                   BusinessCategory = "OTHER_PERSONAL_SERVICES"
 	PhotographyStudios                                      BusinessCategory = "PHOTOGRAPHY_STUDIOS"
 	SalonsOrBarbers                                         BusinessCategory = "SALONS_BARBERS"
-	PoliticalParties                                        BusinessCategory = "POLITICAL_PARTIES"
+	PoliticalPartiesCategory                                BusinessCategory = "POLITICAL_PARTIES"
 	AccountingAuditingBookkeepingAndTaxPreparationServices  BusinessCategory = "ACCOUNTING_AUDITING_BOOKKEEPING_TAX_PREPARATION_SERVICES"
 	AdvertisingServices                                     BusinessCategory = "ADVERTISING_SERVICES"
 	CleaningAndMaintenanceJanitorialServices                BusinessCategory = "CLEANING_MAINTENANCE_JANITORIAL_SERVICES"
 	ComputerRepair                                          BusinessCategory = "COMPUTER_REPAIR"
-	Consultancy                                             BusinessCategory = "CONSULTANCY"
+	ConsultancyCategory                                     BusinessCategory = "CONSULTANCY"
 	DetectiveOrProtectiveAgenciesSecurityServices           BusinessCategory = "SECURITY_SERVICES"
 	DirectMarketing                                         BusinessCategory = "DIRECT_MARKETING"
 	FuneralServicesAndCrematories                           BusinessCategory = "FUNERAL_SERVICES"
