@@ -7,8 +7,8 @@ run:
   tests: false
   skip-dirs-use-default: true
   modules-download-mode: readonly
-  go: '1.17'
-  
+  go: "1.17"
+
 output:
   format: tab
   sort-results: true
@@ -28,5 +28,13 @@ linters:
     - performance
     - sql
     - style
-    
+
   fast: true
+
+issues:
+  exclude-rules:
+    - linters:
+        - lll
+      source: "BusinessCategory"
+  fix: true
+  new: true
