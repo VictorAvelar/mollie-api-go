@@ -985,16 +985,88 @@ type Config struct {
 
 Config contains information that helps during the setup of a new Mollie client.
 
+#### func  NewAPIConfig
+
+```go
+func NewAPIConfig(reqIdem bool) *Config
+```
+
+NewAPIConfig builds a configuration object with the following settings: tests
+mode: disabled api token source: MOLLIE_API_TOKEN
+
+it receives `reqIdem (boolean)` to enable the request idempotency feature.
+
+#### func  NewAPITestingConfig
+
+```go
+func NewAPITestingConfig(reqIdem bool) *Config
+```
+
+NewAPITestingConfig builds a configuration object with the following settings:
+tests mode: enabled api token source: MOLLIE_API_TOKEN
+
+it receives `reqIdem (boolean)` to enable the request idempotency feature.
+
 #### func  NewConfig
 
 ```go
-func NewConfig(t, reqIdem bool, auth string) *Config
+func NewConfig(t bool, auth string) *Config
 ```
 
 NewConfig builds a Mollie configuration object, it takes t to indicate if our
-client is meant to create requests for testing, reqIdem to enable the request
-idempotency beta feature, and auth to indicate the authentication method we want
-to use.
+client is meant to create requests for testing, and auth to indicate the
+authentication method we want to use.
+
+#### func  NewOrgConfig
+
+```go
+func NewOrgConfig(reqIdem bool) *Config
+```
+
+NewOrgConfig builds a configuration object with the following settings: tests
+mode: disabled Org token source: MOLLIE_ORG_TOKEN
+
+it receives `reqIdem (boolean)` to enable the request idempotency feature.
+
+#### func  NewOrgTestingConfig
+
+```go
+func NewOrgTestingConfig(reqIdem bool) *Config
+```
+
+NewOrgTestingConfig builds a configuration object with the following settings:
+tests mode: enabled api token source: MOLLIE_ORG_TOKEN
+
+it receives `reqIdem (boolean)` to enable the request idempotency feature.
+
+#### func (*Config) SwitchAuthStrategy
+
+```go
+func (c *Config) SwitchAuthStrategy(auth string) string
+```
+
+SwitchAuthStrategy changes the environment variable used to fetch the auth
+tokens.
+
+Known values are: [MOLLIE_API_TOKEN,MOLLIE_ORG_TOKEN], if you use a custom
+environment variable pass it as argument.
+
+#### func (*Config) ToggleIdempotency
+
+```go
+func (c *Config) ToggleIdempotency() bool
+```
+
+ToggleIdempotency enables/disables the request idempotency feature in the
+current Config.
+
+#### func (*Config) ToggleTesting
+
+```go
+func (c *Config) ToggleTesting() bool
+```
+
+ToggleTesting enables/disables the test-mode in the current Config.
 
 #### type ContextValue
 

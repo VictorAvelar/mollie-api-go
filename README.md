@@ -39,24 +39,64 @@ go get -u github.com/VictorAvelar/mollie-api-go/v3/mollie
 
 ## Usage
 
-### Create a basic client
+### Testing using API tokens
+
+#### Using the config helper
 
 ```go
-// main.go
-/*
-Parse authentication key from MOLLIE_API_TOKEN
-*/
-config := mollie.NewConfig(true, mollie.APITokenEnv)
-client, err := mollie.NewClient(nil, config)
+// Create a configuration object with idempotency enabled.
+config := mollie.NewAPITestingConfig(true)
+```
+
+#### Using the NewConfig method
+
+```go
+// Create a configuration object with idempotency enabled.
+config := mollie.NewConfig(true, mollie.ApiTokenEnv)
+
+_ := config.ToggleIdempotency()
+```
+
+### Testing using Organization access tokens
+
+#### Using the config helper for org tokens
+
+```go
+// Create a configuration object with idempotency enabled.
+config := mollie.NewOrgTestingConfig(true)
+```
+
+#### Using the NewConfig method for org tokens
+
+```go
+// Create a configuration object with idempotency enabled.
+config := mollie.NewConfig(true, mollie.OrgTokenEnv)
+
+_ := config.ToggleIdempotency()
+```
+
+### Create an API client
+
+```go
+// build your desired config
+client, err := mollie.NewClient(config)
 if err != nil {
     log.Fatal(err)
 }
-// do your operations with the authenticated client
+// perform operations with the API.
 ```
 
 ## Upgrade guide
 
 If you want to upgrade from v2 -> v3, the list of breaking and notable changes can be found in the [docs](docs/v3-upgrade.md).
+
+## :warning: Notice for v3.4 & v3.5
+
+These versions contain breaking changes in the `mollie.NewConfig` method, the  number of parameters
+increased thus breaking any previous implementation and requiring manual changes when updating.
+
+The issue is patched for v3.6 which also includes a bunch of helper methods in the `mollie.Config` struct
+to make the usage and changes in the values more manageable.
 
 ## API parity
 

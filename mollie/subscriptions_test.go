@@ -164,7 +164,7 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Create() {
 			},
 			false,
 			nil,
-			setAccesstoken,
+			setAccessToken,
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer access_token_test")
 				testMethod(ps.T(), r, "POST")
@@ -311,7 +311,7 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Update() {
 			},
 			false,
 			nil,
-			setAccesstoken,
+			setAccessToken,
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer access_token_test")
 				testMethod(ps.T(), r, "PATCH")
@@ -446,7 +446,7 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Delete() {
 			},
 			false,
 			nil,
-			setAccesstoken,
+			setAccessToken,
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(ps.T(), r, AuthHeader, "Bearer access_token_test")
 				testMethod(ps.T(), r, "DELETE")
