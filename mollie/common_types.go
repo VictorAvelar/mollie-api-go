@@ -112,12 +112,12 @@ type PaginationLinks struct {
 	Documentation *URL `json:"documentation,omitempty"`
 }
 
-// Deprecated: CategoryCode specifies an industry or category.
-// Use BusinessCategory instead.
+// CategoryCode is DEPRECATED!
+// It is replaced by BusinessCategory type.
 type CategoryCode uint
 
-// Deprecated: Available category codes.
-// Use BusinessCategory instead.
+// DEPRECATED category codes.
+// Replaced by BusinessCategory values.
 const (
 	BookMagazinesAndNewspapers          CategoryCode = 5192
 	GeneralMerchandise                  CategoryCode = 5399
@@ -143,6 +143,7 @@ const (
 )
 
 // BusinessCategory specifies an industry or category.
+// It replaces the DEPRECATED CategoryCode type.
 type BusinessCategory string
 
 // Available business categories.
@@ -209,7 +210,7 @@ const (
 	DatingServices                                          BusinessCategory = "DATING_SERVICES"
 	HealthAndBeautySpas                                     BusinessCategory = "HEALTH_BEAUTY_SPAS"
 	LandscapingServices                                     BusinessCategory = "LANDSCAPING_SERVICES"
-	LaundryOrDrycleaningServices                            BusinessCategory = "LAUNDRY_DRYCLEANING_SERVICES"
+	LaundryOrDryCleaningServices                            BusinessCategory = "LAUNDRY_DRYCLEANING_SERVICES"
 	MassageParlours                                         BusinessCategory = "MASSAGE_PARLOURS"
 	OtherPersonalServices                                   BusinessCategory = "OTHER_PERSONAL_SERVICES"
 	PhotographyStudios                                      BusinessCategory = "PHOTOGRAPHY_STUDIOS"
@@ -274,8 +275,8 @@ const (
 	CommuterTransportation                                  BusinessCategory = "COMMUTER_TRANSPORTATION"
 	CourierServicesAndFreightForwarders                     BusinessCategory = "COURIER_SERVICES"
 	OtherTransportationServices                             BusinessCategory = "OTHER_TRANSPORTATION_SERVICES"
-	TaxisLimosAndRidesharing                                BusinessCategory = "RIDESHARING"
-	TravelAgenciesTourOperatorsAndOtherTravalServices       BusinessCategory = "TRAVEL_SERVICES"
+	TaxisLimosAndRideSharing                                BusinessCategory = "RIDESHARING"
+	TravelAgenciesTourOperatorsAndOtherTravelServices       BusinessCategory = "TRAVEL_SERVICES"
 	AutomotivePartsAndAccessories                           BusinessCategory = "AUTOMOTIVE_PARTS_ACCESSORIES"
 	AutoAndTruckSalesAndServiceDealersAndLeasingCompanies   BusinessCategory = "CAR_TRUCK_COMPANIES"
 	AutomotiveServices                                      BusinessCategory = "AUTOMOTIVE_SERVICES"
