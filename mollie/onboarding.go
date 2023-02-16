@@ -63,7 +63,7 @@ func (os *OnboardingService) GetOnboardingStatus(ctx context.Context) (res *Resp
 //
 // Information that the merchant has entered in their dashboard will not be overwritten.
 
-// Data of the organization to be submitted.
+// OnboardingDataOrganization contains data of the organization you want to provide.
 type OnboardingDataOrganization struct {
 	Name               string   `json:"name,omitempty"`
 	Address            *Address `json:"address,omitempty"`
@@ -72,7 +72,7 @@ type OnboardingDataOrganization struct {
 	VatRegulation      string   `json:"vatRegulation,omitempty"`
 }
 
-// Data of the payment profile to be submitted.
+// OnboardingDataProfile contains data of the payment profile you want to provide.
 type OnboardingDataProfile struct {
 	Name             string           `json:"name,omitempty"`
 	URL              string           `json:"url,omitempty"`
