@@ -9,7 +9,7 @@ const GetProfileResponse = `{
     "website": "https://www.mywebsite.com",
     "email": "info@mywebsite.com",
     "phone": "+31208202070",
-    "categoryCode": 5399,
+    "businessCategory": "MARKETPLACES",
     "status": "verified",
     "review": {
         "status": "pending"
@@ -63,7 +63,7 @@ const GetProfilesListResponse = `{
                 "website": "https://www.mywebsite.com",
                 "email": "info@mywebsite.com",
                 "phone": "+31208202070",
-                "categoryCode": 5399,
+                "businessCategory": "MARKETPLACES",
                 "status": "verified",
                 "review": {
                     "status": "pending"
@@ -130,7 +130,7 @@ const CreateProfileResponse = `
     "website": "https://www.mywebsite.com",
     "email": "info@mywebsite.com",
     "phone": "+31208202070",
-    "categoryCode": 5399,
+    "businessCategory": "MARKETPLACES",
     "status": "unverified",
     "createdAt": "2018-03-20T09:28:37+00:00",
     "_links": {
@@ -173,7 +173,7 @@ const UpdateProfileResponse = `{
     "website": "https://www.mywebsite2.com",
     "email": "info@mywebsite2.com",
     "phone": "+31208202070",
-    "categoryCode": 5399,
+    "businessCategory": "MARKETPLACES",
     "status": "verified",
     "review": {
         "status": "pending"
