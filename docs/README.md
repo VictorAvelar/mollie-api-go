@@ -1,8 +1,7 @@
 # mollie
 
 --
-
-  import "github.com/VictorAvelar/mollie-api-golang/v3/mollie"
+    import "github.com/VictorAvelar/mollie-api-go/v3/mollie"
 
 Package mollie is a wrapper around Mollie's REST API.
 
@@ -2153,6 +2152,18 @@ type OrderLine struct {
 
 OrderLine contain the actual things the customer bought.
 
+#### type OrderLineChangeInstruction
+
+```go
+type OrderLineChangeInstruction struct {
+ Operation OrderLineOperation      `json:"operation,omitempty"`
+ Data      *OrderLineOperationData `json:"data,omitempty"`
+}
+```
+
+OrderLineChangeInstruction contains details on what needs to be changed when
+managing order lines.
+
 #### type OrderLineLinks
 
 ```go
@@ -2164,6 +2175,78 @@ type OrderLineLinks struct {
 
 OrderLineLinks describes object with several URL objects relevant to the order
 line.
+
+#### type OrderLineOperation
+
+```go
+type OrderLineOperation string
+```
+
+OrderLineOperation describes supported operations when managing order lines.
+
+```go
+const (
+ AddOrderLine    OrderLineOperation = "add"
+ UpdateOrderLine OrderLineOperation = "update"
+ CancelOrderLine OrderLineOperation = "cancel"
+)
+```
+
+Supported order lines operation types.
+
+#### type OrderLineOperationData
+
+```go
+type OrderLineOperationData struct {
+ Quantity       int                               `json:"quantity,omitempty"`
+ ID             string                            `json:"id,omitempty"`
+ Name           string                            `json:"name,omitempty"`
+ SKU            string                            `json:"sku,omitempty"`
+ ImageURL       string                            `json:"imageUrl,omitempty"`
+ ProductURL     string                            `json:"productUrl,omitempty"`
+ VATRate        string                            `json:"vatRate,omitempty"`
+ Type           string                            `json:"type,omitempty"`
+ Category       OrderLineOperationProductCategory `json:"category,omitempty"`
+ Amount         *Amount                           `json:"amount,omitempty"`
+ UnitPrice      *Amount                           `json:"unitPrice,omitempty"`
+ DiscountAmount *Amount                           `json:"discountAmount,omitempty"`
+ VATAmount      *Amount                           `json:"vatAmount,omitempty"`
+ TotalAmount    *Amount                           `json:"totalAmount,omitempty"`
+ Metadata       interface{}                       `json:"metadata,omitempty"`
+}
+```
+
+OrderLineOperationData contains the order line’s details for an update
+operation.
+
+#### type OrderLineOperationProductCategory
+
+```go
+type OrderLineOperationProductCategory string
+```
+
+OrderLineOperationProductCategory contains the product category.
+
+```go
+const (
+ MealProductCategory OrderLineOperationProductCategory = "meal"
+ EcoProductCategory  OrderLineOperationProductCategory = "eco"
+ GiftProductCategory OrderLineOperationProductCategory = "gift"
+)
+```
+
+Product category possible values.
+
+#### type OrderLineOperations
+
+```go
+type OrderLineOperations struct {
+ Operations []*OrderLineChangeInstruction `json:"operations,omitempty"`
+}
+```
+
+OrderLineOperations contains the operations to be performed when managing order
+lines.
 
 #### type OrderLineStatus
 
@@ -2426,6 +2509,20 @@ func (ors *OrdersService) ListOrderRefunds(ctx context.Context, orderID string, 
 ListOrderRefunds retrieve all order refunds.
 
 See <https://docs.mollie.com/reference/v2/orders-api/list-order-refunds>
+
+#### func (*OrdersService) ManageOrderLines
+
+```go
+func (ors *OrdersService) ManageOrderLines(ctx context.Context, orderID string, operations *OrderLineOperations) (
+ res *Response,
+ order *Order,
+ err error,
+)
+```
+
+ManageOrderLines allows to update, cancel, or add one or more order lines.
+
+See: <https://docs.mollie.com/reference/v2/orders-api/manage-order-lines>
 
 #### func (*OrdersService) Update
 

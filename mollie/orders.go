@@ -136,6 +136,56 @@ type OrderLine struct {
 	Metadata           interface{}     `json:"metadata,omitempty"`
 }
 
+// OrderLineOperation describes supported operations when managing order lines.
+type OrderLineOperation string
+
+// Supported order lines operation types.
+const (
+	AddOrderLine    OrderLineOperation = "add"
+	UpdateOrderLine OrderLineOperation = "update"
+	CancelOrderLine OrderLineOperation = "cancel"
+)
+
+// OrderLineOperationProductCategory contains the product category.
+type OrderLineOperationProductCategory string
+
+// Product category possible values.
+const (
+	MealProductCategory OrderLineOperationProductCategory = "meal"
+	EcoProductCategory  OrderLineOperationProductCategory = "eco"
+	GiftProductCategory OrderLineOperationProductCategory = "gift"
+)
+
+// OrderLineOperationData contains the order line’s details for an update operation.
+type OrderLineOperationData struct {
+	Quantity       int                               `json:"quantity,omitempty"`
+	ID             string                            `json:"id,omitempty"`
+	Name           string                            `json:"name,omitempty"`
+	SKU            string                            `json:"sku,omitempty"`
+	ImageURL       string                            `json:"imageUrl,omitempty"`
+	ProductURL     string                            `json:"productUrl,omitempty"`
+	VATRate        string                            `json:"vatRate,omitempty"`
+	Type           string                            `json:"type,omitempty"`
+	Category       OrderLineOperationProductCategory `json:"category,omitempty"`
+	Amount         *Amount                           `json:"amount,omitempty"`
+	UnitPrice      *Amount                           `json:"unitPrice,omitempty"`
+	DiscountAmount *Amount                           `json:"discountAmount,omitempty"`
+	VATAmount      *Amount                           `json:"vatAmount,omitempty"`
+	TotalAmount    *Amount                           `json:"totalAmount,omitempty"`
+	Metadata       interface{}                       `json:"metadata,omitempty"`
+}
+
+// OrderLineChangeInstruction contains details on what needs to be changed when managing order lines.
+type OrderLineChangeInstruction struct {
+	Operation OrderLineOperation      `json:"operation,omitempty"`
+	Data      *OrderLineOperationData `json:"data,omitempty"`
+}
+
+// OrderLineOperations contains the operations to be performed when managing order lines.
+type OrderLineOperations struct {
+	Operations []*OrderLineChangeInstruction `json:"operations,omitempty"`
+}
+
 // OrderList for containing the response of list orders.
 type OrderList struct {
 	Count    int `json:"count,omitempty"`
@@ -416,6 +466,28 @@ func (ors *OrdersService) ListOrderRefunds(ctx context.Context, orderID string, 
 	}
 
 	if err = json.Unmarshal(res.content, &orderListRefund); err != nil {
+		return
+	}
+
+	return
+}
+
+// ManageOrderLines allows to update, cancel, or add one or more order lines.
+//
+// See: https://docs.mollie.com/reference/v2/orders-api/manage-order-lines
+func (ors *OrdersService) ManageOrderLines(ctx context.Context, orderID string, operations *OrderLineOperations) (
+	res *Response,
+	order *Order,
+	err error,
+) {
+	u := fmt.Sprintf("v2/orders/%s/lines", orderID)
+
+	res, err = ors.client.patch(ctx, u, operations, nil)
+	if err != nil {
+		return
+	}
+
+	if err = json.Unmarshal(res.content, &order); err != nil {
 		return
 	}
 

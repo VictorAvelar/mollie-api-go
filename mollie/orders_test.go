@@ -1178,6 +1178,172 @@ func (os *ordersServiceSuite) TestOrdersService_ListOrderRefund() {
 		})
 	}
 }
+
+func (os *ordersServiceSuite) TestOrdersService_ManageOrderLines() {
+	type args struct {
+		ctx        context.Context
+		order      string
+		operations *OrderLineOperations
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"manage order line works as expected.",
+			args{
+				context.Background(),
+				"ord_pbjz8x",
+				&OrderLineOperations{
+					Operations: []*OrderLineChangeInstruction{
+						{
+							Operation: AddOrderLine,
+							Data: &OrderLineOperationData{
+								ID:   "odl_1.1l9vx0",
+								Name: "new order line",
+							},
+						},
+					},
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(os.T(), r, "PATCH")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.ManageOrderLinesResponse))
+			},
+		},
+		{
+			"update order lines works as expected.",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				&OrderLineOperations{
+					Operations: []*OrderLineChangeInstruction{
+						{
+							Operation: AddOrderLine,
+							Data: &OrderLineOperationData{
+								ID:   "odl_1.1l9vx0",
+								Name: "new order line",
+							},
+						},
+					},
+				},
+			},
+			false,
+			nil,
+			func() {
+				tClient.WithAuthenticationValue("access_token_test")
+			},
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
+				testMethod(os.T(), r, "PATCH")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.UpdateOrderlineResponse))
+			},
+		},
+		{
+			"update order lines, an error is returned from the server",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				&OrderLineOperations{
+					Operations: []*OrderLineChangeInstruction{
+						{
+							Operation: AddOrderLine,
+							Data: &OrderLineOperationData{
+								ID:   "odl_1.1l9vx0",
+								Name: "new order line",
+							},
+						},
+					},
+				},
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"update order lines, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				&OrderLineOperations{
+					Operations: []*OrderLineChangeInstruction{
+						{
+							Operation: AddOrderLine,
+							Data: &OrderLineOperationData{
+								ID:   "odl_1.1l9vx0",
+								Name: "new order line",
+							},
+						},
+					},
+				},
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"update order lines, invalid url when building request",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				&OrderLineOperations{
+					Operations: []*OrderLineChangeInstruction{
+						{
+							Operation: AddOrderLine,
+							Data: &OrderLineOperationData{
+								ID:   "odl_1.1l9vx0",
+								Name: "new order line",
+							},
+						},
+					},
+				},
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		os.T().Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/lines", c.args.order), c.handler)
+
+			res, m, err := tClient.Orders.ManageOrderLines(c.args.ctx, c.args.order, c.args.operations)
+			if c.wantErr {
+				os.NotNil(err)
+				os.EqualError(err, c.err.Error())
+			} else {
+				os.Nil(err)
+				os.IsType(&Order{}, m)
+				os.IsType(&http.Response{}, res.Response)
+			}
+		})
+	}
+}
+
 func TestOrdersService(t *testing.T) {
 	suite.Run(t, new(ordersServiceSuite))
 }
