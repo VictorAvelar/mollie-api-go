@@ -10,6 +10,7 @@ const (
 	BloemenCadeuKaart          GiftCardIssuer = "bloemencadeaukaart"
 	BloemPlantGiftCard         GiftCardIssuer = "bloemplantgiftcard"
 	Boekenbon                  GiftCardIssuer = "boekenbon"
+	DaGiftCard                 GiftCardIssuer = "dagiftcard"
 	DecaudeuKaart              GiftCardIssuer = "decadeaukaart"
 	DelokaleDecauKaart         GiftCardIssuer = "delokalecadeaukaart"
 	Dinercadeau                GiftCardIssuer = "dinercadeau"
