@@ -79,7 +79,7 @@ type Settlement struct {
 
 // SettlementsListOptions contains query parameters for settlement lists.
 type SettlementsListOptions struct {
-	From  *ShortDate `url:"from,omitempty"`
+	From  string     `url:"from,omitempty"`
 	Limit int        `url:"limit,omitempty"`
 	Embed EmbedValue `url:"embed,omitempty"`
 }
