@@ -211,6 +211,25 @@ const (
 // ContextValues is a map of TransactionType to ContextValue.
 type ContextValues map[TransactionType]ContextValue
 
+// This is a custom unmarshal function for ContextValues.
+// Needed for fault tolerance as json might contain "[]" for an empty map.
+func (cv *ContextValues) UnmarshalJSON(data []byte) error {
+	// Check if the "context" field is an empty array and create empty map in this case
+	if string(data) == "[]" {
+		*cv = make(ContextValues)
+		return nil
+	}
+
+	// If it is not an array, unmarshal it as a map
+	var m map[TransactionType]ContextValue
+	if err := json.Unmarshal(data, &m); err != nil {
+		return err
+	}
+
+	*cv = ContextValues(m)
+	return nil
+}
+
 // BalanceTransactionsList contains an array of embedded transactions.
 type BalanceTransactionsList struct {
 	Count    int `json:"count,omitempty"`
