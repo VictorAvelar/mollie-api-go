@@ -1431,6 +1431,7 @@ const (
  BloemenCadeuKaart          GiftCardIssuer = "bloemencadeaukaart"
  BloemPlantGiftCard         GiftCardIssuer = "bloemplantgiftcard"
  Boekenbon                  GiftCardIssuer = "boekenbon"
+ DaGiftCard                 GiftCardIssuer = "dagiftcard"
  DecaudeuKaart              GiftCardIssuer = "decadeaukaart"
  DelokaleDecauKaart         GiftCardIssuer = "delokalecadeaukaart"
  Dinercadeau                GiftCardIssuer = "dinercadeau"
@@ -3987,8 +3988,10 @@ SettlementObject nests as describes for settlement periods.
 
 ```go
 type SettlementPeriod struct {
- Revenue []*SettlementRevenue `json:"revenue,omitempty"`
- Costs   []*SettlementCosts   `json:"costs,omitempty"`
+ Revenue          []*SettlementRevenue `json:"revenue,omitempty"`
+ Costs            []*SettlementCosts   `json:"costs,omitempty"`
+ InvoiceID        string               `json:"invoiceId,omitempty"`
+ InvoiceReference string               `json:"invoiceReference,omitempty"`
 }
 ```
 
@@ -4047,7 +4050,7 @@ SettlementsList describes a list of settlements.
 
 ```go
 type SettlementsListOptions struct {
- From  *ShortDate `url:"from,omitempty"`
+ From  string     `url:"from,omitempty"`
  Limit int        `url:"limit,omitempty"`
  Embed EmbedValue `url:"embed,omitempty"`
 }
