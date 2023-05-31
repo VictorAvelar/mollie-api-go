@@ -44,8 +44,10 @@ type SettlementCosts struct {
 
 // SettlementPeriod describe the settlement by month in full detail.
 type SettlementPeriod struct {
-	Revenue []*SettlementRevenue `json:"revenue,omitempty"`
-	Costs   []*SettlementCosts   `json:"costs,omitempty"`
+	Revenue          []*SettlementRevenue `json:"revenue,omitempty"`
+	Costs            []*SettlementCosts   `json:"costs,omitempty"`
+	InvoiceID        string               `json:"invoiceId,omitempty"`
+	InvoiceReference string               `json:"invoiceReference,omitempty"`
 }
 
 // SettlementObject nests as describes for settlement periods.
@@ -79,7 +81,7 @@ type Settlement struct {
 
 // SettlementsListOptions contains query parameters for settlement lists.
 type SettlementsListOptions struct {
-	From  *ShortDate `url:"from,omitempty"`
+	From  string     `url:"from,omitempty"`
 	Limit int        `url:"limit,omitempty"`
 	Embed EmbedValue `url:"embed,omitempty"`
 }
