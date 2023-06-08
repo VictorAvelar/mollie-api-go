@@ -206,7 +206,7 @@ func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, b
 
 	req, err = http.NewRequestWithContext(ctx, method, url.String(), buf)
 	if err != nil {
-		return
+		return nil, fmt.Errorf("new_request: %w", err)
 	}
 
 	c.addRequestHeaders(req)
