@@ -37,20 +37,21 @@ issues:
         - lll
       source: "BusinessCategory"
   fix: true
-  new: true
+  # new: true
 
 linters-settings:
   depguard:
     rules:
       main:
         files:
-          - $all
+          - "$all"
         allow:
-          - $gostd
-          - github.com/google/*
-          - golang.org/x/oauth2
+          - "$gostd"
+          - "github.com/google"
+          - "golang.org/x/oauth2"
+          - "github.com/VictorAvelar/mollie-api-go/v3/"
       tests:
         files:
-          - $test
+          - "$test"
         allow:
-          - github.com/stretchr/testify
+          - "github.com/stretchr/testify"
