@@ -37,7 +37,7 @@ issues:
         - lll
       source: "BusinessCategory"
   fix: true
-  # new: true
+  new: true
 
 linters-settings:
   depguard:
