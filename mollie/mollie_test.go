@@ -274,7 +274,7 @@ func TestClient_NewAPIRequest_ForceErrors(t *testing.T) {
 				"test",
 				nil,
 			},
-			fmt.Errorf("net/http: invalid method \"\\\\\\\\\\\\\""),
+			fmt.Errorf("new_request: net/http: invalid method \"\\\\\\\\\\\\\""),
 			noPre,
 		},
 		{
