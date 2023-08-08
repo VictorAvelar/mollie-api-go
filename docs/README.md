@@ -48,6 +48,8 @@ response body.
 
 ```go
 type Address struct {
+ GivenName        string `json:"givenName,omitempty"`
+ FamilyName       string `json:"familyName,omitempty"`
  StreetAndNumber  string `json:"streetAndNumber,omitempty"`
  StreetAdditional string `json:"streetAdditional,omitempty"`
  PostalCode       string `json:"postalCode,omitempty"`
@@ -1013,6 +1015,19 @@ type Commission struct {
 
 Commission describes a partner take from any operation on Mollie's API.
 
+#### type Company
+
+```go
+type Company struct {
+ RegistrationNumber string     `json:"registrationNumber,omitempty"`
+ VATNumber          string     `json:"vatNumber,omitempty"`
+ EntityType         EntityType `json:"entityType,omitempty"`
+}
+```
+
+Company information that allows to identify the business that is interacting
+with Mollie.
+
 #### type Config
 
 ```go
@@ -1335,6 +1350,31 @@ const (
 ```
 
 Valid Embed query string value.
+
+#### type EntityType
+
+```go
+type EntityType string
+```
+
+EntityType for an organization.
+
+```go
+const (
+ LimitedCompany                   EntityType = "limited-company"
+ PublicLimitedCompany             EntityType = "public-limited-company"
+ EntrepreneurialCompany           EntityType = "entrepreneurial-company"
+ LimitedPartnershipLimitedCompany EntityType = "limited-partnership-limited-company"
+ LimitedPartnership               EntityType = "limited-partnership"
+ GeneralPartnership               EntityType = "general-partnership"
+ RegisteredSoleTrader             EntityType = "registered-sole-trader"
+ SoleTrader                       EntityType = "sole-trader"
+ CivilLawPartnership              EntityType = "civil-law-partnership"
+ PublicInstitution                EntityType = "public-institution"
+)
+```
+
+Supported entity types.
 
 #### type ErrorLinks
 
@@ -2026,6 +2066,10 @@ func (os *OnboardingService) SubmitOnboardingData(ctx context.Context, d *Onboar
 SubmitOnboardingData sends data that will be prefilled in the merchant’s
 onboarding. Please note that the data you submit will only be processed when the
 onboarding status is needs-data.
+
+This endpoint has been deprecated. It will be supported for the foreseeable
+future, but new implementations should use the Create client link endpoint to
+create new clients and submit their organization’s details in one go.
 
 See: <https://docs.mollie.com/reference/v2/onboarding-api/submit-onboarding-data>
 
@@ -2829,6 +2873,7 @@ type Payment struct {
  Method                          PaymentMethod          `json:"method,omitempty"`
  Links                           PaymentLinks           `json:"_links,omitempty"`
  SequenceType                    SequenceType           `json:"sequenceType,omitempty"`
+ Company                         Company                `json:"company,omitempty"`
 }
 ```
 
