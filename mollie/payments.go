@@ -96,6 +96,7 @@ type Payment struct {
 	Method                          PaymentMethod          `json:"method,omitempty"`
 	Links                           PaymentLinks           `json:"_links,omitempty"`
 	SequenceType                    SequenceType           `json:"sequenceType,omitempty"`
+	Company                         Company                `json:"company,omitempty"`
 }
 
 // PaymentLinks describes all the possible links to be returned with
