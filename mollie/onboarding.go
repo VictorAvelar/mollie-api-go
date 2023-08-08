@@ -91,6 +91,9 @@ type OnboardingData struct {
 // SubmitOnboardingData sends data that will be prefilled in the merchant’s onboarding.
 // Please note that the data you submit will only be processed when the onboarding status is needs-data.
 //
+// This endpoint has been deprecated. It will be supported for the foreseeable future, but new implementations should
+// use the Create client link endpoint to create new clients and submit their organization’s details in one go.
+//
 // See: https://docs.mollie.com/reference/v2/onboarding-api/submit-onboarding-data
 func (os *OnboardingService) SubmitOnboardingData(ctx context.Context, d *OnboardingData) (res *Response, err error) {
 	res, err = os.client.post(ctx, onboardingTarget, d, nil)
