@@ -21,12 +21,38 @@ type Amount struct {
 // If only the region field is given, one should provide all the other fields as per the previous condition.
 // For certain PayPal payments the region field is required.
 type Address struct {
+	GivenName        string `json:"givenName,omitempty"`
+	FamilyName       string `json:"familyName,omitempty"`
 	StreetAndNumber  string `json:"streetAndNumber,omitempty"`
 	StreetAdditional string `json:"streetAdditional,omitempty"`
 	PostalCode       string `json:"postalCode,omitempty"`
 	City             string `json:"city,omitempty"`
 	Region           string `json:"region,omitempty"`
 	Country          string `json:"country,omitempty"`
+}
+
+// EntityType for an organization.
+type EntityType string
+
+// Supported entity types.
+const (
+	LimitedCompany                   EntityType = "limited-company"
+	PublicLimitedCompany             EntityType = "public-limited-company"
+	EntrepreneurialCompany           EntityType = "entrepreneurial-company"
+	LimitedPartnershipLimitedCompany EntityType = "limited-partnership-limited-company"
+	LimitedPartnership               EntityType = "limited-partnership"
+	GeneralPartnership               EntityType = "general-partnership"
+	RegisteredSoleTrader             EntityType = "registered-sole-trader"
+	SoleTrader                       EntityType = "sole-trader"
+	CivilLawPartnership              EntityType = "civil-law-partnership"
+	PublicInstitution                EntityType = "public-institution"
+)
+
+// Company information that allows to identify the business that is interacting with Mollie.
+type Company struct {
+	RegistrationNumber string     `json:"registrationNumber,omitempty"`
+	VATNumber          string     `json:"vatNumber,omitempty"`
+	EntityType         EntityType `json:"entityType,omitempty"`
 }
 
 // ShortDate is a string representing a date in YYYY-MM-DD format.
