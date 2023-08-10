@@ -344,3 +344,11 @@ type Image struct {
 	Size2X string `json:"size2X,omitempty"`
 	Svg    string `json:"svg,omitempty"`
 }
+
+// Personal data of your customer.
+type Owner struct {
+	Email      string `json:"email,omitempty"`
+	GivenName  string `json:"givenName,omitempty"`
+	FamilyName string `json:"familyName,omitempty"`
+	Locale     Locale `json:"locale,omitempty"`
+}

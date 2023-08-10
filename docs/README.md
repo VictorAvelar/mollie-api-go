@@ -121,6 +121,24 @@ type ApplicationFee struct {
 ApplicationFee allows you to split a payment between a platform and connected
 merchant accounts.
 
+#### type ApprovalPromptAction
+
+```go
+type ApprovalPromptAction string
+```
+
+ApprovalPromptAction represents possible actions to be performed once the client
+link is created and redirected to the dashboard.
+
+```go
+const (
+ ForceApproval ApprovalPromptAction = "force"
+ AutoApproval  ApprovalPromptAction = "auto"
+)
+```
+
+Possible approval prompt actions.
+
 #### type Balance
 
 ```go
@@ -926,6 +944,7 @@ type Client struct {
  PaymentLinks   *PaymentLinksService
  Partners       *PartnerService
  Balances       *BalancesService
+ ClientLinks    *ClientLinksService
 }
 ```
 
@@ -1003,6 +1022,94 @@ authentication tokens provided by Mollie.
 Ideally your API key will be provided from and environment variable or a secret
 management engine. This should only be used when environment variables are
 "impossible" to be used.
+
+#### type ClientDetails
+
+```go
+type ClientDetails struct {
+ Owner              Owner    `json:"owner,omitempty"`
+ Name               string   `json:"name,omitempty"`
+ Address            *Address `json:"address,omitempty"`
+ RegistrationNumber string   `json:"registrationNumber,omitempty"`
+ VATNumber          string   `json:"vatNumber,omitempty"`
+}
+```
+
+ClientDetails contains information to link a new organization to an OAuth
+application.
+
+#### type ClientLink
+
+```go
+type ClientLink struct {
+ ID       string          `json:"id,omitempty"`
+ Resource string          `json:"resource,omitempty"`
+ Links    ClientLinkLinks `json:"_links,omitempty"`
+}
+```
+
+ClientLink object with redirect target.
+
+#### type ClientLinkFinalizeOptions
+
+```go
+type ClientLinkFinalizeOptions struct {
+ ClientID       string `url:"clientID,omitempty"`
+ State          string `url:"state,omitempty"`
+ Scope          string `url:"scope,omitempty"`
+ ApprovalPrompt string `url:"approvalPrompt,omitempty"`
+}
+```
+
+ClientLinkFinalizeOptions subset of the parameters allowed for the Authorize
+endpoint.
+
+#### type ClientLinkLinks
+
+```go
+type ClientLinkLinks struct {
+ ClientLink    *URL `json:"clientLink,omitempty"`
+ Documentation *URL `json:"documentation,omitempty"`
+}
+```
+
+ClientLinkLinks describes all the possible links to be returned with a client
+links response object.
+
+#### type ClientLinksService
+
+```go
+type ClientLinksService service
+```
+
+ClientLinksService interacts with the Client Links API to create new
+organizations for your customers.
+
+#### func (*ClientLinksService) CreateClientLink
+
+```go
+func (cls *ClientLinksService) CreateClientLink(ctx context.Context, cd *ClientDetails) (
+ res *Response,
+ cl *ClientLink,
+ err error,
+)
+```
+
+CreateClientLink based on the provided ClientDetails.
+
+See: <https://docs.mollie.com/reference/v2/client-links-api/create-client-link>
+
+#### func (*ClientLinksService) CreateFinalizeClientLink
+
+```go
+func (cls *ClientLinksService) CreateFinalizeClientLink(
+ ctx context.Context,
+ clientLink string,
+ options *ClientLinkFinalizeOptions,
+) (
+ clientLinkURI string,
+)
+```
 
 #### type Commission
 
@@ -2707,6 +2814,19 @@ GetPartnerStatus retrieves details about the partner status of the currently
 authenticated organization.
 
 See: <https://docs.mollie.com/reference/v2/organizations-api/get-partner>
+
+#### type Owner
+
+```go
+type Owner struct {
+ Email      string `json:"email,omitempty"`
+ GivenName  string `json:"givenName,omitempty"`
+ FamilyName string `json:"familyName,omitempty"`
+ Locale     Locale `json:"locale,omitempty"`
+}
+```
+
+Personal data of your customer.
 
 #### type PaginationLinks
 
