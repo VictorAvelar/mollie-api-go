@@ -945,6 +945,7 @@ type Client struct {
  Partners       *PartnerService
  Balances       *BalancesService
  ClientLinks    *ClientLinksService
+ Terminals      *TerminalsService
 }
 ```
 
@@ -4687,6 +4688,104 @@ type Subtotal struct {
 ```
 
 Subtotal balance descriptor.
+
+#### type Terminal
+
+```go
+type Terminal struct {
+ ID           string          `json:"id,omitempty"`
+ Resource     string          `json:"resource,omitempty"`
+ ProfileID    string          `json:"profileID,omitempty"`
+ Status       TerminalStatus  `json:"status,omitempty"`
+ Brand        string          `json:"brand,omitempty"`
+ Model        string          `json:"model,omitempty"`
+ SerialNumber string          `json:"serialNumber,omitempty"`
+ Currency     string          `json:"currency,omitempty"`
+ Description  string          `json:"description,omitempty"`
+ CreatedAt    *time.Time      `json:"createdAt,omitempty"`
+ UpdatedAt    *time.Time      `json:"updatedAt,omitempty"`
+ Links        PaginationLinks `json:"_links,omitempty"`
+}
+```
+
+Terminal symbolizes a physical device to receive payments.
+
+#### type TerminalList
+
+```go
+type TerminalList struct {
+ Count    int `json:"count,omitempty"`
+ Embedded struct {
+  Terminals []*Terminal `json:"terminals,omitempty"`
+ } `json:"_embedded,omitempty"`
+ Links PaginationLinks `json:"_links,omitempty"`
+}
+```
+
+TerminalList describes the response for terminals list endpoints.
+
+#### type TerminalListOptions
+
+```go
+type TerminalListOptions struct {
+ From      string `url:"from,omitempty"`
+ Limit     int    `url:"limit,omitempty"`
+ ProfileID string `url:"profileID,omitempty"`
+ TestMode  bool   `url:"testMode,omitempty"`
+}
+```
+
+TerminalListOptions holds query string parameters valid for terminals lists.
+
+ProfileID and TestMode are valid only when using access tokens.
+
+#### type TerminalStatus
+
+```go
+type TerminalStatus string
+```
+
+TerminalStatus is the status of the terminal, which is a read-only value
+determined by Mollie.
+
+```go
+const (
+ TerminalPending  TerminalStatus = "pending"
+ TerminalActive   TerminalStatus = "active"
+ TerminalInactive TerminalStatus = "inactive"
+)
+```
+
+Possible terminal statuses.
+
+#### type TerminalsService
+
+```go
+type TerminalsService service
+```
+
+TerminalsService operates over terminals resource.
+
+#### func (*TerminalsService) Get
+
+```go
+func (ts *TerminalsService) Get(ctx context.Context, id string) (res *Response, t *Terminal, err error)
+```
+
+Get terminal retrieves a single terminal object by its terminal ID.
+
+#### func (*TerminalsService) List
+
+```go
+func (ts *TerminalsService) List(ctx context.Context, options *TerminalListOptions) (
+ res *Response,
+ tl *TerminalList,
+ err error,
+)
+```
+
+List retrieves a list of terminals symbolizing the physical devices to receive
+payments.
 
 #### type TransactionType
 
