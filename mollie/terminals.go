@@ -75,6 +75,10 @@ func (ts *TerminalsService) List(ctx context.Context, options *TerminalListOptio
 	tl *TerminalList,
 	err error,
 ) {
+	if ts.client.HasAccessToken() && ts.client.config.testing {
+		options.TestMode = true
+	}
+
 	res, err = ts.client.get(ctx, "v2/terminals", options)
 	if err != nil {
 		return
