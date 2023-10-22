@@ -49,7 +49,7 @@ linters-settings:
           - "$gostd"
           - "github.com/google"
           - "golang.org/x/oauth2"
-          - "github.com/VictorAvelar/mollie-api-go/v3/"
+          - "github.com/VictorAvelar/mollie-api-go/v4/"
       tests:
         files:
           - "$test"

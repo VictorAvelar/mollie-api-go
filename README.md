@@ -14,7 +14,7 @@
 
 ## Go ecosystem
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/VictorAvelar/mollie-api-go/v3/mollie.svg)](https://pkg.go.dev/github.com/VictorAvelar/mollie-api-go/v3/mollie)
+[![Go Reference](https://pkg.go.dev/badge/github.com/VictorAvelar/mollie-api-go/v4/mollie.svg)](https://pkg.go.dev/github.com/VictorAvelar/mollie-api-go/v4/mollie)
 [![Go Report Card](https://goreportcard.com/badge/github.com/VictorAvelar/mollie-api-go/v3)](https://goreportcard.com/report/github.com/VictorAvelar/mollie-api-go/v3)
 [![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/3522/badge)](https://bestpractices.coreinfrastructure.org/projects/3522)
 
@@ -34,7 +34,7 @@ For leveraging [Mollie Connect](https://docs.mollie.com/oauth/overview) (advance
 ## Install
 
 ```sh
-go get -u github.com/VictorAvelar/mollie-api-go/v3/mollie
+go get -u github.com/VictorAvelar/mollie-api-go/v4/mollie
 ```
 
 ## Usage
