@@ -27,12 +27,16 @@ const (
 	OrgTokenEnv          string = "MOLLIE_ORG_TOKEN"
 	RequestContentType   string = "application/json"
 	IdempotencyKeyHeader string = "Idempotency-Key"
+	ClientName           string = "MollieGoClient"
+	Version              string = "3.14.0"
 )
 
 var (
 	accessTokenExpr = regexp.MustCompile(`(?m)^access_`)
 	errEmptyAuthKey = errors.New("you must provide a non-empty authentication key")
 	errBadBaseURL   = errors.New("malformed base url, it must contain a trailing slash")
+
+	goData = strings.Join([]string{runtime.GOOS, runtime.GOARCH, runtime.Version()}, "/")
 )
 
 // Client manages communication with Mollie's API.
@@ -306,10 +310,10 @@ func NewClient(baseClient *http.Client, conf *Config) (mollie *Client, err error
 	mollie.Terminals = (*TerminalsService)(&mollie.common)
 
 	mollie.userAgent = strings.Join([]string{
-		runtime.GOOS,
-		runtime.GOARCH,
-		runtime.Version(),
-	}, ";")
+		ClientName,
+		Version,
+		goData,
+	}, "/")
 
 	// Parse authorization from specified environment variable
 	tkn, ok := os.LookupEnv(mollie.config.auth)
