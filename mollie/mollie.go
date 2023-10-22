@@ -14,7 +14,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/VictorAvelar/mollie-api-go/v4/mollie/tools/idempotency"
+	"github.com/VictorAvelar/mollie-api-go/v4/pkg/idempotency"
 	"github.com/google/go-querystring/query"
 )
 
