@@ -1,6 +1,6 @@
-module github.com/VictorAvelar/mollie-api-go/v3
+module github.com/VictorAvelar/mollie-api-go/v4
 
-go 1.17
+go 1.20
 
 require (
 	github.com/google/go-querystring v1.1.0
@@ -12,11 +12,9 @@ require (
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
-	github.com/kr/pretty v0.1.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	golang.org/x/net v0.17.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
-	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

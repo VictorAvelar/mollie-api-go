@@ -1,7 +1,7 @@
 # connect
 
 --
-    import "github.com/VictorAvelar/mollie-api-go/v3/mollie/connect"
+    import "github.com/VictorAvelar/mollie-api-go/v4/mollie/connect"
 
 ## Usage
 

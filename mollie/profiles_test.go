@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
+	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -1092,6 +1092,7 @@ func (ps *profilesServiceSuite) TestProfilesService_DisableGiftCardIssuerForCurr
 		})
 	}
 }
+
 func TestProfilesService(t *testing.T) {
 	suite.Run(t, new(profilesServiceSuite))
 }

@@ -1,7 +1,7 @@
 # mollie
 
 --
-    import "github.com/VictorAvelar/mollie-api-go/v3/mollie"
+    import "github.com/VictorAvelar/mollie-api-go/v4/mollie"
 
 Package mollie is a wrapper around Mollie's REST API.
 

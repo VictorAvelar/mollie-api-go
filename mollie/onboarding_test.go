@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
+	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -145,6 +145,7 @@ func (os *onboardingServiceSuite) TestOnboardingService_SubmitOnboardingData() {
 		})
 	}
 }
+
 func TestOnboardingService(t *testing.T) {
 	suite.Run(t, new(onboardingServiceSuite))
 }
