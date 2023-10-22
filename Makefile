@@ -33,7 +33,7 @@ test: run
 .PHONY: test
 
 test-local:
-	@go test -v -failfast ./mollie/... -coverprofile cover.out
+	@go test -failfast ./... -coverprofile cover.out
 .PHONY: test-local
 
 coverage: test-local
@@ -57,6 +57,6 @@ update-docs:
 sub-pkg-docs:
 	@godocdown ./mollie/connect > docs/connect/README.md
 	@godocdown ./mollie/tools > docs/tools/README.md
-	@godocdown ./mollie/tools/idempotency > docs/tools/idempotency/README.md
+	@godocdown ./pkg/idempotency > docs/pkg/idempotency/README.md
 	@godocdown ./mollie/tools/pagination > docs/tools/pagination/README.md
 .PHONY: sub-pkg-docs
