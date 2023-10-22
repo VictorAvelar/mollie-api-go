@@ -1,7 +1,7 @@
 # pagination
 
 --
-    import "github.com/VictorAvelar/mollie-api-go/v4/mollie/tools/pagination"
+    import "github.com/VictorAvelar/mollie-api-go/v4/pkg/pagination"
 
 Package pagination provides utilities to handle pagination in API responses.
 
