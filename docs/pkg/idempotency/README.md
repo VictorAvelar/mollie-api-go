@@ -1,7 +1,7 @@
 # idempotency
 
 --
-    import "github.com/VictorAvelar/mollie-api-go/v3/mollie/tools/idempotency"
+    import "github.com/VictorAvelar/mollie-api-go/v3/pkg/idempotency"
 
 package idempotency contains the services in charge of generating a unique keys
 to be passed in POST requests to ensure operation uniqueness.

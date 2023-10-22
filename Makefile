@@ -56,7 +56,6 @@ update-docs:
 
 sub-pkg-docs:
 	@godocdown ./mollie/connect > docs/connect/README.md
-	@godocdown ./mollie/tools > docs/tools/README.md
 	@godocdown ./pkg/idempotency > docs/pkg/idempotency/README.md
 	@godocdown ./mollie/tools/pagination > docs/tools/pagination/README.md
 .PHONY: sub-pkg-docs
