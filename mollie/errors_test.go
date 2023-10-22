@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
+	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
 	"github.com/stretchr/testify/assert"
 )
 

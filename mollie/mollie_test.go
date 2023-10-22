@@ -13,8 +13,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/VictorAvelar/mollie-api-go/v3/pkg/idempotency"
-	"github.com/VictorAvelar/mollie-api-go/v3/testdata"
+	"github.com/VictorAvelar/mollie-api-go/v4/mollie/tools/idempotency"
+	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
