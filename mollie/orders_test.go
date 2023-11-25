@@ -54,6 +54,22 @@ func (os *ordersServiceSuite) TestOrdersService_Get() {
 			},
 		},
 		{
+			"get orders without shipping address works as expected.",
+			args{
+				context.Background(),
+				"ord_kEn1PlbGa",
+				&OrderOptions{
+					ProfileID: "pfl_1236h213bv1",
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				_, _ = w.Write([]byte(testdata.GetOrderWithoutShippingResponse))
+			},
+		},
+		{
 			"get orders, an error is returned from the server",
 			args{
 				context.Background(),

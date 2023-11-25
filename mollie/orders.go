@@ -26,7 +26,7 @@ type Order struct {
 	Method                                   PaymentMethod `json:"method,omitempty"`
 	Status                                   OrderStatus   `json:"status,omitempty"`
 	Locale                                   Locale        `json:"locale,omitempty"`
-	ShippingAddress                          OrderAddress  `json:"shippingAddress,omitempty"`
+	ShippingAddress                          *OrderAddress `json:"shippingAddress,omitempty"`
 	Links                                    OrderLinks    `json:"_links,omitempty"`
 	Amount                                   *Amount       `json:"amount,omitempty"`
 	AmountCaptured                           *Amount       `json:"amountCaptured,omitempty"`
@@ -257,7 +257,7 @@ type OrderListRefundOptions struct {
 	Embed EmbedValue `url:"embed,omitempty"`
 }
 
-// OrdersService instance operates over refund resources.
+// OrdersService instance operates over order resources.
 type OrdersService service
 
 // Get retrieve a single order by its ID.

@@ -287,6 +287,117 @@ const GetOrderResponse = `{
      }
  }`
 
+const GetOrderWithoutShippingResponse = `{
+     "resource": "order",
+     "id": "ord_kEn1PlbGa",
+     "profileId": "pfl_URR55HPMGx",
+     "method": "ideal",
+     "amount": {
+         "value": "1027.99",
+         "currency": "EUR"
+     },
+     "status": "created",
+     "isCancelable": true,
+     "metadata": null,
+     "createdAt": "2018-08-02T09:29:56+00:00",
+     "expiresAt": "2018-08-30T09:29:56+00:00",
+     "mode": "live",
+     "locale": "nl_NL",
+     "billingAddress": {
+         "organizationName": "Mollie B.V.",
+         "streetAndNumber": "Keizersgracht 313",
+         "postalCode": "1016 EE",
+         "city": "Amsterdam",
+         "country": "nl",
+         "givenName": "Luke",
+         "familyName": "Skywalker",
+         "email": "luke@skywalker.com"
+     },
+     "shopperCountryMustMatchBillingCountry": false,
+     "consumerDateOfBirth": "1993-10-21",
+     "orderNumber": "18475",
+     "redirectUrl": "https://example.org/redirect",
+     "lines": [
+         {
+             "resource": "orderline",
+             "id": "odl_dgtxyl",
+             "orderId": "ord_pbjz8x",
+             "name": "LEGO Digital 42083 Bugatti Chiron",
+             "sku": "5702016116977",
+             "type": "digital",
+             "status": "created",
+             "metadata": null,
+             "isCancelable": false,
+             "quantity": 2,
+             "quantityShipped": 0,
+             "amountShipped": {
+                 "value": "0.00",
+                 "currency": "EUR"
+             },
+             "quantityRefunded": 0,
+             "amountRefunded": {
+                 "value": "0.00",
+                 "currency": "EUR"
+             },
+             "quantityCanceled": 0,
+             "amountCanceled": {
+                 "value": "0.00",
+                 "currency": "EUR"
+             },
+             "shippableQuantity": 0,
+             "refundableQuantity": 0,
+             "cancelableQuantity": 0,
+             "unitPrice": {
+                 "value": "399.00",
+                 "currency": "EUR"
+             },
+             "vatRate": "21.00",
+             "vatAmount": {
+                 "value": "121.14",
+                 "currency": "EUR"
+             },
+             "discountAmount": {
+                 "value": "100.00",
+                 "currency": "EUR"
+             },
+             "totalAmount": {
+                 "value": "698.00",
+                 "currency": "EUR"
+             },
+             "createdAt": "2018-08-02T09:29:56+00:00",
+             "_links": {
+                 "productUrl": {
+                     "href": "https://shop.lego.com/nl-NL/Bugatti-Chiron-42083",
+                     "type": "text/html"
+                 },
+                 "imageUrl": {
+                     "href": "https://sh-s7-live-s.legocdn.com/is/image//LEGO/42083_alt1?$main$",
+                     "type": "text/html"
+                 }
+             }
+         }
+     ],
+     "_embedded": {},
+     "_links": {
+         "self": {
+             "href": "https://api.mollie.com/v2/orders/ord_pbjz8x",
+             "type": "application/hal+json"
+         },
+         "checkout": {
+             "href": "https://www.mollie.com/payscreen/order/checkout/pbjz8x",
+             "type": "text/html"
+         },
+        "dashboard": {
+            "href": "https://www.mollie.com/dashboard/org_123456789/orders/ord_pbjz8x",
+            "type": "text/html"
+        },
+         "documentation": {
+             "href": "https://docs.mollie.com/reference/v2/orders-api/get-order",
+             "type": "text/html"
+         }
+     }
+ }`
+
 // CreateOrderRequest example of create order request
 const CreateOrderRequest = `{
 	"amount": {
