@@ -132,5 +132,8 @@
   },
   "remoteUser": "root",
   "containerUser": "root",
-  "containerEnv": {}
+  "containerEnv": {
+    "MOLLIE_API_TOKEN": "${localEnv:MOLLIE_API_TOKEN}",
+    "MOLLIE_ORG_TOKEN": "${localEnv:MOLLIE_ORG_TOKEN}"
+  }
 }
