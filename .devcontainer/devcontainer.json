@@ -115,7 +115,9 @@
         "editor.guides.bracketPairs": "active",
         "workbench.iconTheme": "material-icon-theme",
         "editor.fontFamily": "'Fira Code', Menlo, Monaco, 'Courier New', monospace",
-        "editor.fontLigatures": true
+        "editor.fontLigatures": true,
+        "files.insertFinalNewline": true,
+        "files.trimFinalNewlines": true
       }
     }
   },
