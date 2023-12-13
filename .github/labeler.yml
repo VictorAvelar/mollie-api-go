@@ -2,22 +2,22 @@ tests:
   - any: ["mollie/*_test.go", "mollie/connect/*_test.go", "mollie/tools/*_test.go"]
 
 documentation:
-  - docs/*
+  - any: ["docs/*"]
 
 docker:
   - any: ["Dockerfile", ".dockerignore"]
 
 gh-actions:
-  - .github/**/*.yml
+  - any: [".github/**/*.yml"]
 
 core:
   - any: ["mollie/*.go", "!mollie/*_tests.go", "!mollie/tools/*"]
 
 modules:
-  - go.*  
+  - any: ["go.*"]
 
 testdata:
-  - testdata/*
+  - any: ["testdata/*"]
 
 config:
   - any: [".*.yml"]
