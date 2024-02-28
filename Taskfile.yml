@@ -1,0 +1,74 @@
+version: '3'
+
+tasks:
+  build:
+    cmds:
+      - docker build -t mollie-go:latest -f Dockerfile .
+    silent: true
+
+  run:
+    cmds:
+      - docker run --rm mollie-go:latest
+    silent: true
+
+  ci-lint:
+    cmds:
+      - golangci-lint run --out-format=tab --issues-exit-code=0 --sort-results --skip-dirs-use-default --tests=false --presets=bugs,complexity,format,performance,style,unused
+    silent: true
+
+  pr-lint:
+    cmds:
+      - golangci-lint run --issues-exit-code=0 --out-format=github-actions --new=true --sort-results --skip-dirs-use-default --tests=false --presets=bugs,complexity,format,performance,style,unused
+    silent: true
+
+  ci-all-presets:
+    cmds:
+      - golangci-lint run --out-format=tab --issues-exit-code=0 --sort-results --skip-dirs-use-default --tests=false --presets=bugs,comment,complexity,error,format,import,metalinter,module,performance,sql,style,test,unused
+    silent: true
+
+  lint:
+    cmds:
+      - go version
+      - echo "Running go lint"
+      - golint ./...
+      - echo "Running go vet"
+      - go vet ./...
+    silent: false
+
+  test:
+    cmds:
+      - task: run
+    silent: false
+
+  test-local:
+    cmds:
+      - go test -failfast ./... -coverprofile cover.out
+    silent: false
+
+  coverage:
+    cmds:
+      - go tool cover -func=cover.out
+    silent: false
+
+  cover-report:
+    cmds:
+      - go tool cover -html=cover.out
+    silent: false
+
+  clean:
+    cmds:
+      - go mod verify
+      - go mod tidy
+    silent: false
+
+  update-docs:
+    cmds:
+      - godocdown ./mollie > docs/README.md
+    silent: false
+
+  sub-pkg-docs:
+    cmds:
+      - godocdown ./mollie/connect > docs/connect/README.md
+      - godocdown ./pkg/idempotency > docs/pkg/idempotency/README.md
+      - godocdown ./pkg/pagination > docs/pkg/pagination/README.md
+    silent: false
