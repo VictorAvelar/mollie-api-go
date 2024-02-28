@@ -9,16 +9,13 @@ import (
 	"time"
 
 	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
 )
 
-type invoiceServiceSuite struct{ suite.Suite }
+func TestInvoicesService_Get(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 
-func (is *invoiceServiceSuite) SetupSuite() { setEnv() }
-
-func (is *invoiceServiceSuite) TearDownSuite() { unsetEnv() }
-
-func (is *invoiceServiceSuite) TestInvoicesService_Get() {
 	type args struct {
 		ctx     context.Context
 		invoice string
@@ -44,8 +41,8 @@ func (is *invoiceServiceSuite) TestInvoicesService_Get() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(is.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(is.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -95,25 +92,28 @@ func (is *invoiceServiceSuite) TestInvoicesService_Get() {
 	for _, c := range cases {
 		setup()
 		defer teardown()
-		is.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/invoices/%s", c.args.invoice), c.handler)
 
 			res, i, err := tClient.Invoices.Get(c.args.ctx, c.args.invoice)
 			if c.wantErr {
-				is.NotNil(err)
-				is.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				is.Nil(err)
-				is.IsType(&Invoice{}, i)
-				is.Same(c.args.ctx, res.Request.Context())
-				is.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Invoice{}, i)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (is *invoiceServiceSuite) TestInvoicesService_List() {
+func TestInvoicesService_List(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		invoice string
@@ -139,8 +139,8 @@ func (is *invoiceServiceSuite) TestInvoicesService_List() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(is.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(is.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -162,8 +162,8 @@ func (is *invoiceServiceSuite) TestInvoicesService_List() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(is.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(is.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -213,24 +213,20 @@ func (is *invoiceServiceSuite) TestInvoicesService_List() {
 	for _, c := range cases {
 		setup()
 		defer teardown()
-		is.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/invoices", c.handler)
 
 			res, i, err := tClient.Invoices.List(c.args.ctx, c.args.options)
 			if c.wantErr {
-				is.NotNil(err)
-				is.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				is.Nil(err)
-				is.IsType(&InvoicesList{}, i)
-				is.Same(c.args.ctx, res.Request.Context())
-				is.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &InvoicesList{}, i)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
-}
-
-func TestInvoicesService(t *testing.T) {
-	suite.Run(t, new(invoiceServiceSuite))
 }
