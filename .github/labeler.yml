@@ -7,6 +7,9 @@ documentation:
 docker:
   - any: ["Dockerfile", ".dockerignore"]
 
+devcontainers:
+  - any: [".devcontainer/*"]
+
 gh-actions:
   - any: [".github/**/*.yml"]
 
