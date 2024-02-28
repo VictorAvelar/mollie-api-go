@@ -63,12 +63,12 @@ tasks:
 
   update-docs:
     cmds:
-      - godocdown ./mollie > docs/README.md
+      - gomarkdoc --output docs/README.md ./mollie
     silent: false
 
   sub-pkg-docs:
     cmds:
-      - godocdown ./mollie/connect > docs/connect/README.md
-      - godocdown ./pkg/idempotency > docs/pkg/idempotency/README.md
-      - godocdown ./pkg/pagination > docs/pkg/pagination/README.md
+      - gomarkdoc ./pkg/connect > docs/pkg/connect/README.md
+      - gomarkdoc ./pkg/idempotency > docs/pkg/idempotency/README.md
+      - gomarkdoc ./pkg/pagination > docs/pkg/pagination/README.md
     silent: false
