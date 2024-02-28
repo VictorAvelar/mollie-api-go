@@ -8,16 +8,13 @@ import (
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
 )
 
-type chargebacksSuite struct{ suite.Suite }
+func TestChargebacksService_Get(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 
-func (cbs *chargebacksSuite) SetupSuite() { setEnv() }
-
-func (cbs *chargebacksSuite) TearDownSuite() { unsetEnv() }
-
-func (cbs *chargebacksSuite) TestChargebacksService_Get() {
 	type args struct {
 		ctx        context.Context
 		payment    string
@@ -46,8 +43,8 @@ func (cbs *chargebacksSuite) TestChargebacksService_Get() {
 			false,
 			nil,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(cbs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(cbs.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -109,7 +106,7 @@ func (cbs *chargebacksSuite) TestChargebacksService_Get() {
 	for _, c := range cases {
 		setup()
 		defer teardown()
-		cbs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			tMux.HandleFunc(
 				fmt.Sprintf(
 					"/v2/payments/%s/chargebacks/%s",
@@ -122,19 +119,22 @@ func (cbs *chargebacksSuite) TestChargebacksService_Get() {
 
 			res, cb, err := tClient.Chargebacks.Get(c.args.ctx, c.args.payment, c.args.chargeback, c.args.options)
 			if c.wantErr {
-				cbs.Error(err)
-				cbs.EqualError(err, c.err.Error())
+				assert.Error(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				cbs.Nil(err)
-				cbs.Same(c.args.ctx, res.Request.Context())
-				cbs.IsType(&Chargeback{}, cb)
-				cbs.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &Chargeback{}, cb)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (cbs *chargebacksSuite) TestChargebacksService_List() {
+func TestChargebacksService_List(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		options *ChargebacksListOptions
@@ -159,8 +159,8 @@ func (cbs *chargebacksSuite) TestChargebacksService_List() {
 			false,
 			nil,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(cbs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(cbs.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -180,8 +180,8 @@ func (cbs *chargebacksSuite) TestChargebacksService_List() {
 			false,
 			nil,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(cbs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(cbs.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -228,25 +228,28 @@ func (cbs *chargebacksSuite) TestChargebacksService_List() {
 	for _, c := range cases {
 		setup()
 		defer teardown()
-		cbs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			tMux.HandleFunc("/v2/chargebacks", c.handler)
 
 			c.pre()
 			res, cbl, err := tClient.Chargebacks.List(c.args.ctx, c.args.options)
 			if c.wantErr {
-				cbs.Error(err)
-				cbs.EqualError(err, c.err.Error())
+				assert.Error(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				cbs.Nil(err)
-				cbs.Same(c.args.ctx, res.Request.Context())
-				cbs.IsType(&ChargebacksList{}, cbl)
-				cbs.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &ChargebacksList{}, cbl)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (cbs *chargebacksSuite) TestChargebacksService_ListForPayment() {
+func TestChargebacksService_ListForPayment(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		payment string
@@ -271,8 +274,8 @@ func (cbs *chargebacksSuite) TestChargebacksService_ListForPayment() {
 			false,
 			nil,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(cbs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(cbs.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -293,8 +296,8 @@ func (cbs *chargebacksSuite) TestChargebacksService_ListForPayment() {
 			false,
 			nil,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(cbs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(cbs.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -344,7 +347,7 @@ func (cbs *chargebacksSuite) TestChargebacksService_ListForPayment() {
 	for _, c := range cases {
 		setup()
 		defer teardown()
-		cbs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			tMux.HandleFunc(
 				fmt.Sprintf("/v2/payments/%s/chargebacks", c.args.payment),
 				c.handler,
@@ -354,18 +357,14 @@ func (cbs *chargebacksSuite) TestChargebacksService_ListForPayment() {
 
 			res, cbl, err := tClient.Chargebacks.ListForPayment(c.args.ctx, c.args.payment, c.args.options)
 			if c.wantErr {
-				cbs.Error(err)
-				cbs.EqualError(err, c.err.Error())
+				assert.Error(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				cbs.Nil(err)
-				cbs.Same(c.args.ctx, res.Request.Context())
-				cbs.IsType(&ChargebacksList{}, cbl)
-				cbs.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &ChargebacksList{}, cbl)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
-}
-
-func TestChargebacksService(t *testing.T) {
-	suite.Run(t, new(chargebacksSuite))
 }
