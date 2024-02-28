@@ -24,3 +24,11 @@ updates:
   target-branch: master
   reviewers:
    - VictorAvelar
+
+- package-ecosystem: docker
+  directory: '.devcontainer'
+  schedule:
+    interval: weekly
+  target-branch: master
+  reviewers:
+   - VictorAvelar
