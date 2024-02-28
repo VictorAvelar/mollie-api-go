@@ -58,7 +58,8 @@
         "GitHub.vscode-github-actions",
         "GitHub.copilot-chat",
         "golang.Go",
-        "usernamehw.errorlens"
+        "usernamehw.errorlens",
+        "redhat.vscode-yaml"
       ],
       "settings": {
         "files.eol": "\n",

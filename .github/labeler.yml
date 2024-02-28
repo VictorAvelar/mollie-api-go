@@ -1,43 +1,50 @@
 tests:
-  - changed-files
-    - any-glob-to-any-file: ["mollie/*_test.go", "mollie/connect/*_test.go", "mollie/tools/*_test.go"]
+  - changed-files:
+      - any-glob-to-any-file:
+          [
+            "mollie/*_test.go",
+            "mollie/connect/*_test.go",
+            "mollie/tools/*_test.go",
+          ]
 
 documentation:
-  - changed-files
-    - any-glob-to-any-file: ["docs/*"]
+  - changed-files:
+      - any-glob-to-any-file: ["docs/*"]
 
 docker:
-  - changed-files
-    - any-glob-to-any-file: ["Dockerfile", ".dockerignore"]
+  - changed-files:
+      - any-glob-to-any-file: ["Dockerfile", ".dockerignore"]
 
 devcontainers:
-  - changed-files
-    - any-glob-to-any-file: [".devcontainer/*"]
+  - changed-files:
+      - any-glob-to-any-file: [".devcontainer/*"]
 
 gh-actions:
   - changed-files:
-    - any-glob-to-any-file: [".github/**/*.yml"]
+      - any-glob-to-any-file: [".github/**/*.yml"]
 
 core:
   - changed-files:
-    - any-glob-to-any-file: ["mollie/*.go", "!mollie/*_tests.go", "!mollie/tools/*"]
+      - any-glob-to-any-file:
+          ["mollie/*.go", "!mollie/*_tests.go", "!mollie/tools/*"]
 
 modules:
   - changed-files:
-    - any-glob-to-any-file: ["go.*"]
+      - any-glob-to-any-file: ["go.*"]
 
 testdata:
   - changed-files:
-    - any-glob-to-any-file: ["testdata/*"]
+      - any-glob-to-any-file: ["testdata/*"]
 
 config:
   - changed-files:
-    - any-glob-to-any-file: [".*.yml"]
+      - any-glob-to-any-file: [".*.yml"]
 
 meta-files:
   - changed-files:
-    - any-glob-to-any-file: ["Makefile", "README.md", "LICENSE", "SECURITY.md"]
+      - any-glob-to-any-file:
+          ["Taskfile", "README.md", "LICENSE", "SECURITY.md"]
 
-tools:
+pkg:
   - changed-files:
-    - any-glob-to-any-file: ["mollie/tools/*.go"]
+      - any-glob-to-any-file: ["mollie/pkg/**/*.go"]
