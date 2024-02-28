@@ -15,29 +15,29 @@ devcontainers:
     - any-glob-to-any-file: [".devcontainer/*"]
 
 gh-actions:
-  - changed-files
+  - changed-files:
     - any-glob-to-any-file: [".github/**/*.yml"]
 
 core:
-  - changed-files
+  - changed-files:
     - any-glob-to-any-file: ["mollie/*.go", "!mollie/*_tests.go", "!mollie/tools/*"]
 
 modules:
-  - changed-files
+  - changed-files:
     - any-glob-to-any-file: ["go.*"]
 
 testdata:
-  - changed-files
+  - changed-files:
     - any-glob-to-any-file: ["testdata/*"]
 
 config:
-  - changed-files
+  - changed-files:
     - any-glob-to-any-file: [".*.yml"]
 
 meta-files:
-  - changed-files
+  - changed-files:
     - any-glob-to-any-file: ["Makefile", "README.md", "LICENSE", "SECURITY.md"]
 
 tools:
-  - changed-files
+  - changed-files:
     - any-glob-to-any-file: ["mollie/tools/*.go"]
