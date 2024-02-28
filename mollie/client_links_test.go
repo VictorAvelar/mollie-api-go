@@ -11,6 +11,9 @@ import (
 )
 
 func TestCreateClientLink(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx context.Context
 		cd  *ClientDetails
