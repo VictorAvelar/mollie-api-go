@@ -37,36 +37,28 @@
     },
     "ghcr.io/devcontainers-contrib/features/starship:1": {},
     "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
-      "packages": "exa,bat,curl,fontconfig",
+      "packages": "exa,bat,curl",
       "upgradePackages": true
     }
   },
   "customizations": {
     "vscode": {
       "extensions": [
-        // Editor extensions
         "GitHub.vscode-pull-request-github",
-        "pnp.polacode",
-        "eamodio.gitlens",
         "jasonlhy.hungry-delete",
         "formulahendry.auto-rename-tag",
-        "bierner.github-markdown-preview",
         "DavidAnson.vscode-markdownlint",
         "aaron-bond.better-comments",
         "streetsidesoftware.code-spell-checker",
         "PKief.material-icon-theme",
         "ms-azuretools.vscode-docker",
-        "Gruntfuggly.todo-tree",
         "shardulm94.trailing-spaces",
-        "ms-vscode.makefile-tools",
-        "redhat.vscode-yaml",
         "tamasfe.even-better-toml",
         "GitHub.copilot",
         "GitHub.vscode-github-actions",
-        "GitHub.copilot-labs",
         "GitHub.copilot-chat",
-        // Go
-        "golang.Go"
+        "golang.Go",
+        "usernamehw.errorlens"
       ],
       "settings": {
         "files.eol": "\n",
@@ -129,7 +121,6 @@
   },
   "postCreateCommand": {
     "install-zsh-plugins": "git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions",
-    "install-firacode": "mkdir /root/.fonts && cd /root/.fonts && wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.3.3/FiraCode.zip && unzip FiraCode.zip && rm FiraCode.zip &&fc-cache /root/.fonts",
     "modules": "go mod download"
   },
   "remoteUser": "root",
