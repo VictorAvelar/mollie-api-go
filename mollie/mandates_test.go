@@ -7,16 +7,13 @@ import (
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
 )
 
-type mandateServiceSuite struct{ suite.Suite }
+func TestMandatesService_Get(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 
-func (ms *mandateServiceSuite) SetupSuite() { setEnv() }
-
-func (ms *mandateServiceSuite) TearDownSuite() { unsetEnv() }
-
-func (ms *mandateServiceSuite) TestMandatesService_Get() {
 	type args struct {
 		ctx      context.Context
 		mandate  string
@@ -42,8 +39,8 @@ func (ms *mandateServiceSuite) TestMandatesService_Get() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ms.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -92,7 +89,7 @@ func (ms *mandateServiceSuite) TestMandatesService_Get() {
 		setup()
 		defer teardown()
 
-		ms.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(
 				fmt.Sprintf(
@@ -105,19 +102,22 @@ func (ms *mandateServiceSuite) TestMandatesService_Get() {
 
 			res, m, err := tClient.Mandates.Get(c.args.ctx, c.args.customer, c.args.mandate)
 			if c.wantErr {
-				ms.NotNil(err)
-				ms.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ms.Nil(err)
-				ms.IsType(&Mandate{}, m)
-				ms.Same(c.args.ctx, res.Request.Context())
-				ms.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Mandate{}, m)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ms *mandateServiceSuite) TestMandatesService_Create() {
+func TestMandatesService_Create(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx      context.Context
 		mandate  Mandate
@@ -145,8 +145,8 @@ func (ms *mandateServiceSuite) TestMandatesService_Create() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ms.T(), r, "POST")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "POST")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -202,7 +202,7 @@ func (ms *mandateServiceSuite) TestMandatesService_Create() {
 		setup()
 		defer teardown()
 
-		ms.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(
 				fmt.Sprintf(
@@ -214,19 +214,22 @@ func (ms *mandateServiceSuite) TestMandatesService_Create() {
 
 			res, m, err := tClient.Mandates.Create(c.args.ctx, c.args.customer, c.args.mandate)
 			if c.wantErr {
-				ms.NotNil(err)
-				ms.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ms.Nil(err)
-				ms.IsType(&Mandate{}, m)
-				ms.Same(c.args.ctx, res.Request.Context())
-				ms.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Mandate{}, m)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ms *mandateServiceSuite) TestMandatesService_Revoke() {
+func TestMandatesService_Revoke(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx      context.Context
 		mandate  string
@@ -252,8 +255,8 @@ func (ms *mandateServiceSuite) TestMandatesService_Revoke() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ms.T(), r, "DELETE")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "DELETE")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -291,7 +294,7 @@ func (ms *mandateServiceSuite) TestMandatesService_Revoke() {
 		setup()
 		defer teardown()
 
-		ms.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(
 				fmt.Sprintf(
@@ -304,18 +307,21 @@ func (ms *mandateServiceSuite) TestMandatesService_Revoke() {
 
 			res, err := tClient.Mandates.Revoke(c.args.ctx, c.args.customer, c.args.mandate)
 			if c.wantErr {
-				ms.NotNil(err)
-				ms.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ms.Nil(err)
-				ms.Same(c.args.ctx, res.Request.Context())
-				ms.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ms *mandateServiceSuite) TestMandatesService_List() {
+func TestMandatesService_List(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx      context.Context
 		options  *MandatesListOptions
@@ -341,8 +347,8 @@ func (ms *mandateServiceSuite) TestMandatesService_List() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ms.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -362,8 +368,8 @@ func (ms *mandateServiceSuite) TestMandatesService_List() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ms.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -412,7 +418,7 @@ func (ms *mandateServiceSuite) TestMandatesService_List() {
 		setup()
 		defer teardown()
 
-		ms.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(
 				fmt.Sprintf(
@@ -424,18 +430,14 @@ func (ms *mandateServiceSuite) TestMandatesService_List() {
 
 			res, m, err := tClient.Mandates.List(c.args.ctx, c.args.customer, c.args.options)
 			if c.wantErr {
-				ms.NotNil(err)
-				ms.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ms.Nil(err)
-				ms.IsType(&MandatesList{}, m)
-				ms.Same(c.args.ctx, res.Request.Context())
-				ms.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &MandatesList{}, m)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
-}
-
-func TestMandatesService(t *testing.T) {
-	suite.Run(t, new(mandateServiceSuite))
 }
