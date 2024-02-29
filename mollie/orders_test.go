@@ -7,16 +7,13 @@ import (
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
 )
 
-type ordersServiceSuite struct{ suite.Suite }
+func TestOrdersService_Get(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 
-func (os *ordersServiceSuite) SetupSuite() { setEnv() }
-
-func (os *ordersServiceSuite) TearDownSuite() { unsetEnv() }
-
-func (os *ordersServiceSuite) TestOrdersService_Get() {
 	type args struct {
 		ctx     context.Context
 		order   string
@@ -43,9 +40,9 @@ func (os *ordersServiceSuite) TestOrdersService_Get() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(os.T(), r, "GET")
-				testQuery(os.T(), r, "profileId=pfl_1236h213bv1")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "profileId=pfl_1236h213bv1")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -95,24 +92,27 @@ func (os *ordersServiceSuite) TestOrdersService_Get() {
 		setup()
 		defer teardown()
 
-		os.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s", c.args.order), c.handler)
 
 			res, m, err := tClient.Orders.Get(c.args.ctx, c.args.order, c.args.options)
 			if c.wantErr {
-				os.NotNil(err)
-				os.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				os.Nil(err)
-				os.IsType(&Order{}, m)
-				os.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Order{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (os *ordersServiceSuite) TestOrdersService_List() {
+func TestOrdersService_List(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		order   string
@@ -139,9 +139,9 @@ func (os *ordersServiceSuite) TestOrdersService_List() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(os.T(), r, "GET")
-				testQuery(os.T(), r, "profileId=pfl_1236h213bv1")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "profileId=pfl_1236h213bv1")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -191,24 +191,27 @@ func (os *ordersServiceSuite) TestOrdersService_List() {
 		setup()
 		defer teardown()
 
-		os.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/orders", c.handler)
 
 			res, m, err := tClient.Orders.List(c.args.ctx, c.args.options)
 			if c.wantErr {
-				os.NotNil(err)
-				os.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				os.Nil(err)
-				os.IsType(&OrderList{}, m)
-				os.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &OrderList{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (os *ordersServiceSuite) TestOrdersService_Create() {
+func TestOrdersService_Create(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		order   Order
@@ -235,8 +238,8 @@ func (os *ordersServiceSuite) TestOrdersService_Create() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(os.T(), r, "POST")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "POST")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -259,8 +262,8 @@ func (os *ordersServiceSuite) TestOrdersService_Create() {
 				tClient.WithAuthenticationValue("access_token_test")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
-				testMethod(os.T(), r, "POST")
+				testHeader(t, r, AuthHeader, "Bearer access_token_test")
+				testMethod(t, r, "POST")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -316,24 +319,27 @@ func (os *ordersServiceSuite) TestOrdersService_Create() {
 		setup()
 		defer teardown()
 
-		os.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/orders", c.handler)
 
 			res, m, err := tClient.Orders.Create(c.args.ctx, c.args.order, c.args.options)
 			if c.wantErr {
-				os.NotNil(err)
-				os.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				os.Nil(err)
-				os.IsType(&Order{}, m)
-				os.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Order{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (os *ordersServiceSuite) TestOrdersService_Update() {
+func TestOrdersService_Update(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		order   Order
@@ -361,8 +367,8 @@ func (os *ordersServiceSuite) TestOrdersService_Update() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(os.T(), r, "PATCH")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "PATCH")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -385,8 +391,8 @@ func (os *ordersServiceSuite) TestOrdersService_Update() {
 				tClient.WithAuthenticationValue("access_token_test")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
-				testMethod(os.T(), r, "PATCH")
+				testHeader(t, r, AuthHeader, "Bearer access_token_test")
+				testMethod(t, r, "PATCH")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -442,24 +448,27 @@ func (os *ordersServiceSuite) TestOrdersService_Update() {
 		setup()
 		defer teardown()
 
-		os.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s", c.args.order.ID), c.handler)
 
 			res, m, err := tClient.Orders.Update(c.args.ctx, c.args.order.ID, c.args.order)
 			if c.wantErr {
-				os.NotNil(err)
-				os.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				os.Nil(err)
-				os.IsType(&Order{}, m)
-				os.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Order{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (os *ordersServiceSuite) TestOrdersService_Cancel() {
+func TestOrdersService_Cancel(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		order   Order
@@ -487,8 +496,8 @@ func (os *ordersServiceSuite) TestOrdersService_Cancel() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(os.T(), r, "DELETE")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "DELETE")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -511,8 +520,8 @@ func (os *ordersServiceSuite) TestOrdersService_Cancel() {
 				tClient.WithAuthenticationValue("access_token_test")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
-				testMethod(os.T(), r, "DELETE")
+				testHeader(t, r, AuthHeader, "Bearer access_token_test")
+				testMethod(t, r, "DELETE")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -568,24 +577,27 @@ func (os *ordersServiceSuite) TestOrdersService_Cancel() {
 		setup()
 		defer teardown()
 
-		os.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s", c.args.order.ID), c.handler)
 
 			res, m, err := tClient.Orders.Cancel(c.args.ctx, c.args.order.ID)
 			if c.wantErr {
-				os.NotNil(err)
-				os.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				os.Nil(err)
-				os.IsType(&Order{}, m)
-				os.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Order{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (os *ordersServiceSuite) TestOrdersService_UpdateOrderLine() {
+func TestOrdersService_UpdateOrderLine(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx   context.Context
 		order string
@@ -613,8 +625,8 @@ func (os *ordersServiceSuite) TestOrdersService_UpdateOrderLine() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(os.T(), r, "PATCH")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "PATCH")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -638,8 +650,8 @@ func (os *ordersServiceSuite) TestOrdersService_UpdateOrderLine() {
 				tClient.WithAuthenticationValue("access_token_test")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
-				testMethod(os.T(), r, "PATCH")
+				testHeader(t, r, AuthHeader, "Bearer access_token_test")
+				testMethod(t, r, "PATCH")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -698,24 +710,27 @@ func (os *ordersServiceSuite) TestOrdersService_UpdateOrderLine() {
 		setup()
 		defer teardown()
 
-		os.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/lines/%s", c.args.order, c.args.line.ID), c.handler)
 
 			res, m, err := tClient.Orders.UpdateOrderLine(c.args.ctx, c.args.order, c.args.line.ID, c.args.line)
 			if c.wantErr {
-				os.NotNil(err)
-				os.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				os.Nil(err)
-				os.IsType(&Order{}, m)
-				os.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Order{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (os *ordersServiceSuite) TestOrdersService_CancelOrderLine() {
+func TestOrdersService_CancelOrderLine(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx   context.Context
 		order string
@@ -743,8 +758,8 @@ func (os *ordersServiceSuite) TestOrdersService_CancelOrderLine() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(os.T(), r, "DELETE")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "DELETE")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -768,8 +783,8 @@ func (os *ordersServiceSuite) TestOrdersService_CancelOrderLine() {
 				tClient.WithAuthenticationValue("access_token_test")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
-				testMethod(os.T(), r, "DELETE")
+				testHeader(t, r, AuthHeader, "Bearer access_token_test")
+				testMethod(t, r, "DELETE")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -813,7 +828,7 @@ func (os *ordersServiceSuite) TestOrdersService_CancelOrderLine() {
 		setup()
 		defer teardown()
 
-		os.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/lines", c.args.order), c.handler)
 
@@ -823,17 +838,20 @@ func (os *ordersServiceSuite) TestOrdersService_CancelOrderLine() {
 
 			res, err := tClient.Orders.CancelOrderLines(c.args.ctx, c.args.order, l)
 			if c.wantErr {
-				os.NotNil(err)
-				os.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				os.Nil(err)
-				os.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (os *ordersServiceSuite) TestOrdersService_CreateOrderPayment() {
+func TestOrdersService_CreateOrderPayment(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		order   string
@@ -861,8 +879,8 @@ func (os *ordersServiceSuite) TestOrdersService_CreateOrderPayment() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(os.T(), r, "POST")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "POST")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -886,8 +904,8 @@ func (os *ordersServiceSuite) TestOrdersService_CreateOrderPayment() {
 				tClient.WithAuthenticationValue("access_token_test")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
-				testMethod(os.T(), r, "POST")
+				testHeader(t, r, AuthHeader, "Bearer access_token_test")
+				testMethod(t, r, "POST")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -937,24 +955,27 @@ func (os *ordersServiceSuite) TestOrdersService_CreateOrderPayment() {
 		setup()
 		defer teardown()
 
-		os.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/payments", c.args.order), c.handler)
 
 			res, m, err := tClient.Orders.CreateOrderPayment(c.args.ctx, c.args.order, c.args.payment)
 			if c.wantErr {
-				os.NotNil(err)
-				os.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				os.Nil(err)
-				os.IsType(&Payment{}, m)
-				os.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Payment{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (os *ordersServiceSuite) TestOrdersService_CreateOrderRefund() {
+func TestOrdersService_CreateOrderRefund(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx   context.Context
 		order *Order
@@ -977,8 +998,8 @@ func (os *ordersServiceSuite) TestOrdersService_CreateOrderRefund() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(os.T(), r, "POST")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "POST")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -998,8 +1019,8 @@ func (os *ordersServiceSuite) TestOrdersService_CreateOrderRefund() {
 				tClient.WithAuthenticationValue("access_token_test")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
-				testMethod(os.T(), r, "POST")
+				testHeader(t, r, AuthHeader, "Bearer access_token_test")
+				testMethod(t, r, "POST")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -1046,24 +1067,27 @@ func (os *ordersServiceSuite) TestOrdersService_CreateOrderRefund() {
 		setup()
 		defer teardown()
 
-		os.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/refunds", c.args.order.ID), c.handler)
 
 			res, m, err := tClient.Orders.CreateOrderRefund(c.args.ctx, c.args.order.ID, c.args.order)
 			if c.wantErr {
-				os.NotNil(err)
-				os.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				os.Nil(err)
-				os.IsType(&Refund{}, m)
-				os.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Refund{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (os *ordersServiceSuite) TestOrdersService_ListOrderRefund() {
+func TestOrdersService_ListOrderRefund(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		order   *Order
@@ -1088,9 +1112,9 @@ func (os *ordersServiceSuite) TestOrdersService_ListOrderRefund() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(os.T(), r, "GET")
-				testQuery(os.T(), r, "limit=100")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "limit=100")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -1111,8 +1135,8 @@ func (os *ordersServiceSuite) TestOrdersService_ListOrderRefund() {
 				tClient.WithAuthenticationValue("access_token_test")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
-				testMethod(os.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer access_token_test")
+				testMethod(t, r, "GET")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -1162,24 +1186,27 @@ func (os *ordersServiceSuite) TestOrdersService_ListOrderRefund() {
 		setup()
 		defer teardown()
 
-		os.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/refunds", c.args.order.ID), c.handler)
 
 			res, m, err := tClient.Orders.ListOrderRefunds(c.args.ctx, c.args.order.ID, c.args.options)
 			if c.wantErr {
-				os.NotNil(err)
-				os.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				os.Nil(err)
-				os.IsType(&OrderListRefund{}, m)
-				os.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &OrderListRefund{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (os *ordersServiceSuite) TestOrdersService_ManageOrderLines() {
+func TestOrdersService_ManageOrderLines(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx        context.Context
 		order      string
@@ -1214,8 +1241,8 @@ func (os *ordersServiceSuite) TestOrdersService_ManageOrderLines() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(os.T(), r, "PATCH")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "PATCH")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -1246,8 +1273,8 @@ func (os *ordersServiceSuite) TestOrdersService_ManageOrderLines() {
 				tClient.WithAuthenticationValue("access_token_test")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer access_token_test")
-				testMethod(os.T(), r, "PATCH")
+				testHeader(t, r, AuthHeader, "Bearer access_token_test")
+				testMethod(t, r, "PATCH")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -1327,23 +1354,19 @@ func (os *ordersServiceSuite) TestOrdersService_ManageOrderLines() {
 		setup()
 		defer teardown()
 
-		os.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/lines", c.args.order), c.handler)
 
 			res, m, err := tClient.Orders.ManageOrderLines(c.args.ctx, c.args.order, c.args.operations)
 			if c.wantErr {
-				os.NotNil(err)
-				os.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				os.Nil(err)
-				os.IsType(&Order{}, m)
-				os.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Order{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
-}
-
-func TestOrdersService(t *testing.T) {
-	suite.Run(t, new(ordersServiceSuite))
 }
