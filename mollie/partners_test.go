@@ -7,16 +7,13 @@ import (
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
 )
 
-type partnersServiceSuite struct{ suite.Suite }
+func TestPartnerService_Get(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 
-func (os *partnersServiceSuite) SetupSuite() { setEnv() }
-
-func (os *partnersServiceSuite) TearDownSuite() { unsetEnv() }
-
-func (os *partnersServiceSuite) TestPartnerService_Get() {
 	type args struct {
 		ctx    context.Context
 		client string
@@ -42,8 +39,8 @@ func (os *partnersServiceSuite) TestPartnerService_Get() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(os.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -64,9 +61,9 @@ func (os *partnersServiceSuite) TestPartnerService_Get() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(os.T(), r, "GET")
-				testQuery(os.T(), r, "embed=organization")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "embed=organization")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -116,24 +113,27 @@ func (os *partnersServiceSuite) TestPartnerService_Get() {
 		setup()
 		defer teardown()
 
-		os.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/clients/%s", c.args.client), c.handler)
 
 			res, m, err := tClient.Partners.Get(c.args.ctx, c.args.client, c.args.opts)
 			if c.wantErr {
-				os.NotNil(err)
-				os.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				os.Nil(err)
-				os.IsType(&PartnerClient{}, m)
-				os.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &PartnerClient{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (os *partnersServiceSuite) TestPartnerService_List() {
+func TestPartnerService_List(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx    context.Context
 		client string
@@ -159,8 +159,8 @@ func (os *partnersServiceSuite) TestPartnerService_List() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(os.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -181,9 +181,9 @@ func (os *partnersServiceSuite) TestPartnerService_List() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(os.T(), r, "GET")
-				testQuery(os.T(), r, "year=2021")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "year=2021")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -233,23 +233,19 @@ func (os *partnersServiceSuite) TestPartnerService_List() {
 		setup()
 		defer teardown()
 
-		os.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/clients", c.handler)
 
 			res, m, err := tClient.Partners.List(c.args.ctx, c.args.opts)
 			if c.wantErr {
-				os.NotNil(err)
-				os.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				os.Nil(err)
-				os.IsType(&PartnerClientList{}, m)
-				os.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &PartnerClientList{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
-}
-
-func TestPartnersService(t *testing.T) {
-	suite.Run(t, new(partnersServiceSuite))
 }
