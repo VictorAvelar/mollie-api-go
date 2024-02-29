@@ -7,16 +7,13 @@ import (
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
 )
 
-type organizationsServiceSuite struct{ suite.Suite }
+func TestOrganizationsService_Get(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 
-func (os *organizationsServiceSuite) SetupSuite() { setEnv() }
-
-func (os *organizationsServiceSuite) TearDownSuite() { unsetEnv() }
-
-func (os *organizationsServiceSuite) TestOrganizationsService_Get() {
 	type args struct {
 		ctx          context.Context
 		organization string
@@ -40,8 +37,8 @@ func (os *organizationsServiceSuite) TestOrganizationsService_Get() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(os.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -88,24 +85,27 @@ func (os *organizationsServiceSuite) TestOrganizationsService_Get() {
 		setup()
 		defer teardown()
 
-		os.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/organizations/%s", c.args.organization), c.handler)
 
 			res, m, err := tClient.Organizations.Get(c.args.ctx, c.args.organization)
 			if c.wantErr {
-				os.NotNil(err)
-				os.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				os.Nil(err)
-				os.IsType(&Organization{}, m)
-				os.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Organization{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (os *organizationsServiceSuite) TestOrganizationsService_GetCurrent() {
+func TestOrganizationsService_GetCurrent(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx context.Context
 	}
@@ -127,8 +127,8 @@ func (os *organizationsServiceSuite) TestOrganizationsService_GetCurrent() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(os.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -172,24 +172,27 @@ func (os *organizationsServiceSuite) TestOrganizationsService_GetCurrent() {
 		setup()
 		defer teardown()
 
-		os.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/organizations/me", c.handler)
 
 			res, m, err := tClient.Organizations.GetCurrent(c.args.ctx)
 			if c.wantErr {
-				os.NotNil(err)
-				os.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				os.Nil(err)
-				os.IsType(&Organization{}, m)
-				os.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Organization{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (os *organizationsServiceSuite) TestOrganizationsService_GetPartnerStatus() {
+func TestOrganizationsService_GetPartnerStatus(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx context.Context
 	}
@@ -211,8 +214,8 @@ func (os *organizationsServiceSuite) TestOrganizationsService_GetPartnerStatus()
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(os.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -256,23 +259,19 @@ func (os *organizationsServiceSuite) TestOrganizationsService_GetPartnerStatus()
 		setup()
 		defer teardown()
 
-		os.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/organizations/me/partner", c.handler)
 
 			res, m, err := tClient.Organizations.GetPartnerStatus(c.args.ctx)
 			if c.wantErr {
-				os.NotNil(err)
-				os.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				os.Nil(err)
-				os.IsType(&OrganizationPartnerStatus{}, m)
-				os.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &OrganizationPartnerStatus{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
-}
-
-func TestOrganizationsService(t *testing.T) {
-	suite.Run(t, new(organizationsServiceSuite))
 }
