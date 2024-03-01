@@ -7,6 +7,15 @@ import (
 	"time"
 )
 
+// CaptureMode describes the mode of a capture.
+type CaptureMode string
+
+// CaptureMode possible values.
+const (
+	AutomaticCapture CaptureMode = "automatic"
+	ManualCapture    CaptureMode = "manual"
+)
+
 // CapturesService operates over captures resource.
 type CapturesService service
 
