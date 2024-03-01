@@ -7,16 +7,13 @@ import (
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
 )
 
-type miscellaneousServiceSuite struct{ suite.Suite }
+func TestMiscellaneousService_ApplePaymentSession(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 
-func (ms *miscellaneousServiceSuite) SetupSuite() { setEnv() }
-
-func (ms *miscellaneousServiceSuite) TearDownSuite() { unsetEnv() }
-
-func (ms *miscellaneousServiceSuite) TestMiscellaneousService_ApplePaymentSession() {
 	type args struct {
 		ctx       context.Context
 		appleSess *ApplePaymentSessionRequest
@@ -42,8 +39,8 @@ func (ms *miscellaneousServiceSuite) TestMiscellaneousService_ApplePaymentSessio
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ms.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ms.T(), r, "POST")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "POST")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -90,23 +87,19 @@ func (ms *miscellaneousServiceSuite) TestMiscellaneousService_ApplePaymentSessio
 		setup()
 		defer teardown()
 
-		ms.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/wallets/applepay/sessions", c.handler)
 
 			res, m, err := tClient.Miscellaneous.ApplePaymentSession(c.args.ctx, c.args.appleSess)
 			if c.wantErr {
-				ms.NotNil(err)
-				ms.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ms.Nil(err)
-				ms.IsType(&ApplePaymentSession{}, m)
-				ms.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &ApplePaymentSession{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
-}
-
-func TestMiscellaneousService(t *testing.T) {
-	suite.Run(t, new(miscellaneousServiceSuite))
 }

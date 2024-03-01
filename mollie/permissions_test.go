@@ -7,16 +7,13 @@ import (
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
 )
 
-type permissionsServiceSuite struct{ suite.Suite }
+func TestPermissionsService_Get(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 
-func (os *permissionsServiceSuite) SetupSuite() { setEnv() }
-
-func (os *permissionsServiceSuite) TearDownSuite() { unsetEnv() }
-
-func (ps *permissionsServiceSuite) TestPermissionsService_Get() {
 	type args struct {
 		ctx        context.Context
 		permission PermissionGrant
@@ -41,9 +38,9 @@ func (ps *permissionsServiceSuite) TestPermissionsService_Get() {
 				tClient.WithAuthenticationValue("access_X12b31ggg23")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "testmode=true")
+				testHeader(t, r, AuthHeader, "Bearer access_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -90,24 +87,27 @@ func (ps *permissionsServiceSuite) TestPermissionsService_Get() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/permissions/%s", c.args.permission), c.handler)
 
 			res, m, err := tClient.Permissions.Get(c.args.ctx, c.args.permission)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&Permission{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Permission{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *permissionsServiceSuite) TestPermissionsService_List() {
+func TestPermissionsService_List(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx context.Context
 	}
@@ -128,8 +128,8 @@ func (ps *permissionsServiceSuite) TestPermissionsService_List() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -174,23 +174,19 @@ func (ps *permissionsServiceSuite) TestPermissionsService_List() {
 	for _, c := range cases {
 		setup()
 		defer teardown()
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/permissions", c.handler)
 
 			res, m, err := tClient.Permissions.List(c.args.ctx)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&PermissionsList{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &PermissionsList{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
-}
-
-func TestPermissionService(t *testing.T) {
-	suite.Run(t, new(permissionsServiceSuite))
 }

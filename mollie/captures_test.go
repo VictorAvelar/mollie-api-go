@@ -7,16 +7,13 @@ import (
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
 )
 
-type capturesServiceSuite struct{ suite.Suite }
+func TestCapturesService_Get(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 
-func (cs *capturesServiceSuite) SetupSuite() { setEnv() }
-
-func (cs *capturesServiceSuite) TearDownSuite() { unsetEnv() }
-
-func (cs *capturesServiceSuite) TestCapturesService_Get() {
 	type args struct {
 		ctx     context.Context
 		payment string
@@ -41,8 +38,8 @@ func (cs *capturesServiceSuite) TestCapturesService_Get() {
 			false,
 			nil,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(cs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(cs.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -93,7 +90,7 @@ func (cs *capturesServiceSuite) TestCapturesService_Get() {
 		setup()
 		defer teardown()
 
-		cs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 
 			tMux.HandleFunc(
@@ -107,19 +104,22 @@ func (cs *capturesServiceSuite) TestCapturesService_Get() {
 
 			res, capture, err := tClient.Captures.Get(c.args.ctx, c.args.payment, c.args.capture)
 			if c.wantErr {
-				cs.NotNil(err)
-				cs.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				cs.Nil(err)
-				cs.IsType(&Capture{}, capture)
-				cs.Same(c.args.ctx, res.Request.Context())
-				cs.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Capture{}, capture)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (cs *capturesServiceSuite) TestCapturesService_List() {
+func TestCapturesService_List(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		payment string
@@ -146,8 +146,8 @@ func (cs *capturesServiceSuite) TestCapturesService_List() {
 			false,
 			nil,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(cs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(cs.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -198,7 +198,7 @@ func (cs *capturesServiceSuite) TestCapturesService_List() {
 		setup()
 		defer teardown()
 
-		cs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 
 			tMux.HandleFunc(
@@ -211,18 +211,14 @@ func (cs *capturesServiceSuite) TestCapturesService_List() {
 
 			res, list, err := tClient.Captures.List(c.args.ctx, c.args.payment)
 			if c.wantErr {
-				cs.NotNil(err)
-				cs.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				cs.Nil(err)
-				cs.IsType(&CapturesList{}, list)
-				cs.Same(c.args.ctx, res.Request.Context())
-				cs.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &CapturesList{}, list)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
-}
-
-func TestCapturesService(t *testing.T) {
-	suite.Run(t, new(capturesServiceSuite))
 }

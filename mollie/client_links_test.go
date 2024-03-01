@@ -7,16 +7,13 @@ import (
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
 )
 
-type clientLinkSuite struct{ suite.Suite }
+func TestCreateClientLink(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 
-func (cls *clientLinkSuite) SetupSuite() { setEnv() }
-
-func (cls *clientLinkSuite) TearDownSuite() { unsetEnv() }
-
-func (cls *clientLinkSuite) TestCreateClientLink() {
 	type args struct {
 		ctx context.Context
 		cd  *ClientDetails
@@ -39,8 +36,8 @@ func (cls *clientLinkSuite) TestCreateClientLink() {
 			false,
 			nil,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(cls.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(cls.T(), r, "POST")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "POST")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -87,7 +84,7 @@ func (cls *clientLinkSuite) TestCreateClientLink() {
 	for _, c := range cases {
 		setup()
 		defer teardown()
-		cls.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			tMux.HandleFunc(
 				"/v2/client-links",
 				c.handler,
@@ -96,19 +93,19 @@ func (cls *clientLinkSuite) TestCreateClientLink() {
 
 			res, cb, err := tClient.ClientLinks.CreateClientLink(c.args.ctx, c.args.cd)
 			if c.wantErr {
-				cls.Error(err)
-				cls.EqualError(err, c.err.Error())
+				assert.Error(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				cls.Nil(err)
-				cls.Same(c.args.ctx, res.Request.Context())
-				cls.IsType(&ClientLink{}, cb)
-				cls.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &ClientLink{}, cb)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (cls *clientLinkSuite) TestCreateFinalizeClientLink() {
+func TestCreateFinalizeClientLink(t *testing.T) {
 	type args struct {
 		ctx        context.Context
 		clientLink string
@@ -156,15 +153,11 @@ func (cls *clientLinkSuite) TestCreateFinalizeClientLink() {
 		},
 	}
 	for _, tt := range tests {
-		cls.T().Run(tt.name, func(t *testing.T) {
+		t.Run(tt.name, func(t *testing.T) {
 			gotClientLinkURI := tClient.ClientLinks.CreateFinalizeClientLink(tt.args.ctx, tt.args.clientLink, tt.args.options)
 			if gotClientLinkURI != tt.wantClientLinkURI {
 				t.Errorf("ClientLinksService.CreateFinalizeClientLink() = %v, want %v", gotClientLinkURI, tt.wantClientLinkURI)
 			}
 		})
 	}
-}
-
-func TestClientLinks(t *testing.T) {
-	suite.Run(t, new(clientLinkSuite))
 }

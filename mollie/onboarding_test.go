@@ -7,16 +7,13 @@ import (
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
 )
 
-type onboardingServiceSuite struct{ suite.Suite }
+func TestOnboardingService_GetOnboardingStatus(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 
-func (os *onboardingServiceSuite) SetupSuite() { setEnv() }
-
-func (os *onboardingServiceSuite) TearDownSuite() { unsetEnv() }
-
-func (os *onboardingServiceSuite) TestOnboardingService_GetOnboardingStatus() {
 	cases := []struct {
 		name    string
 		wantErr bool
@@ -30,8 +27,8 @@ func (os *onboardingServiceSuite) TestOnboardingService_GetOnboardingStatus() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(os.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -66,24 +63,27 @@ func (os *onboardingServiceSuite) TestOnboardingService_GetOnboardingStatus() {
 		setup()
 		defer teardown()
 
-		os.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/onboarding/me", c.handler)
 
 			res, m, err := tClient.Onboarding.GetOnboardingStatus(context.Background())
 			if c.wantErr {
-				os.NotNil(err)
-				os.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				os.Nil(err)
-				os.IsType(&Onboarding{}, m)
-				os.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Onboarding{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (os *onboardingServiceSuite) TestOnboardingService_SubmitOnboardingData() {
+func TestOnboardingService_SubmitOnboardingData(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	cases := []struct {
 		name    string
 		data    *OnboardingData
@@ -99,8 +99,8 @@ func (os *onboardingServiceSuite) TestOnboardingService_SubmitOnboardingData() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(os.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(os.T(), r, "POST")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "POST")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -130,22 +130,18 @@ func (os *onboardingServiceSuite) TestOnboardingService_SubmitOnboardingData() {
 		setup()
 		defer teardown()
 
-		os.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/onboarding/me", c.handler)
 
 			res, err := tClient.Onboarding.SubmitOnboardingData(context.Background(), c.data)
 			if c.wantErr {
-				os.NotNil(err)
-				os.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				os.Nil(err)
-				os.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
-}
-
-func TestOnboardingService(t *testing.T) {
-	suite.Run(t, new(onboardingServiceSuite))
 }

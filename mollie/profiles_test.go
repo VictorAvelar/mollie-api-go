@@ -7,16 +7,13 @@ import (
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
 )
 
-type profilesServiceSuite struct{ suite.Suite }
+func TestProfilesService_Get(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 
-func (ps *profilesServiceSuite) SetupSuite() { setEnv() }
-
-func (ps *profilesServiceSuite) TearDownSuite() { unsetEnv() }
-
-func (ps *profilesServiceSuite) TestProfilesService_Get() {
 	type args struct {
 		ctx     context.Context
 		profile string
@@ -41,9 +38,9 @@ func (ps *profilesServiceSuite) TestProfilesService_Get() {
 				tClient.WithAuthenticationValue("access_X12b31ggg23")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "testmode=true")
+				testHeader(t, r, AuthHeader, "Bearer access_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -90,24 +87,27 @@ func (ps *profilesServiceSuite) TestProfilesService_Get() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s", c.args.profile), c.handler)
 
 			res, m, err := tClient.Profiles.Get(c.args.ctx, c.args.profile)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&Profile{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Profile{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *profilesServiceSuite) TestProfilesService_GetCurrent() {
+func TestProfilesService_GetCurrent(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	cases := []struct {
 		name    string
 		wantErr bool
@@ -123,9 +123,9 @@ func (ps *profilesServiceSuite) TestProfilesService_GetCurrent() {
 				tClient.WithAuthenticationValue("access_X12b31ggg23")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "testmode=true")
+				testHeader(t, r, AuthHeader, "Bearer access_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -160,24 +160,27 @@ func (ps *profilesServiceSuite) TestProfilesService_GetCurrent() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s", "me"), c.handler)
 
 			res, m, err := tClient.Profiles.Current(context.Background())
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&Profile{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Profile{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *profilesServiceSuite) TestProfilesService_List() {
+func TestProfilesService_List(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		options *ProfileListOptions
@@ -202,9 +205,9 @@ func (ps *profilesServiceSuite) TestProfilesService_List() {
 				tClient.WithAuthenticationValue("access_X12b31ggg23")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "testmode=true")
+				testHeader(t, r, AuthHeader, "Bearer access_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -226,9 +229,9 @@ func (ps *profilesServiceSuite) TestProfilesService_List() {
 				tClient.WithAuthenticationValue("access_X12b31ggg23")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "limit=100&testmode=true")
+				testHeader(t, r, AuthHeader, "Bearer access_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "limit=100&testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -275,24 +278,27 @@ func (ps *profilesServiceSuite) TestProfilesService_List() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/profiles", c.handler)
 
 			res, m, err := tClient.Profiles.List(c.args.ctx, c.args.options)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&ProfileList{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &ProfileList{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *profilesServiceSuite) TestProfilesService_Create() {
+func TestProfilesService_Create(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		profile *Profile
@@ -319,9 +325,9 @@ func (ps *profilesServiceSuite) TestProfilesService_Create() {
 				tClient.WithAuthenticationValue("access_X12b31ggg23")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
-				testMethod(ps.T(), r, "POST")
-				testQuery(ps.T(), r, "testmode=true")
+				testHeader(t, r, AuthHeader, "Bearer access_X12b31ggg23")
+				testMethod(t, r, "POST")
+				testQuery(t, r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -368,24 +374,27 @@ func (ps *profilesServiceSuite) TestProfilesService_Create() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/profiles", c.handler)
 
 			res, m, err := tClient.Profiles.Create(c.args.ctx, c.args.profile)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&Profile{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Profile{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *profilesServiceSuite) TestProfilesService_Update() {
+func TestProfilesService_Update(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx       context.Context
 		profileID string
@@ -414,9 +423,9 @@ func (ps *profilesServiceSuite) TestProfilesService_Update() {
 				tClient.WithAuthenticationValue("access_X12b31ggg23")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
-				testMethod(ps.T(), r, "PATCH")
-				testQuery(ps.T(), r, "testmode=true")
+				testHeader(t, r, AuthHeader, "Bearer access_X12b31ggg23")
+				testMethod(t, r, "PATCH")
+				testQuery(t, r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -466,24 +475,27 @@ func (ps *profilesServiceSuite) TestProfilesService_Update() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s", c.args.profileID), c.handler)
 
 			res, m, err := tClient.Profiles.Update(c.args.ctx, c.args.profileID, c.args.profile)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&Profile{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Profile{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *profilesServiceSuite) TestProfilesService_Delete() {
+func TestProfilesService_Delete(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		profile string
@@ -508,9 +520,9 @@ func (ps *profilesServiceSuite) TestProfilesService_Delete() {
 				tClient.WithAuthenticationValue("access_X12b31ggg23")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
-				testMethod(ps.T(), r, "DELETE")
-				testQuery(ps.T(), r, "testmode=true")
+				testHeader(t, r, AuthHeader, "Bearer access_X12b31ggg23")
+				testMethod(t, r, "DELETE")
+				testQuery(t, r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -546,23 +558,26 @@ func (ps *profilesServiceSuite) TestProfilesService_Delete() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s", c.args.profile), c.handler)
 
 			res, err := tClient.Profiles.Delete(c.args.ctx, c.args.profile)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *profilesServiceSuite) TestProfilesService_EnablePaymentMethod() {
+func TestProfilesService_EnablePaymentMethod(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		profile string
@@ -589,9 +604,9 @@ func (ps *profilesServiceSuite) TestProfilesService_EnablePaymentMethod() {
 				tClient.WithAuthenticationValue("access_X12b31ggg23")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
-				testMethod(ps.T(), r, "POST")
-				testQuery(ps.T(), r, "testmode=true")
+				testHeader(t, r, AuthHeader, "Bearer access_X12b31ggg23")
+				testMethod(t, r, "POST")
+				testQuery(t, r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -641,24 +656,27 @@ func (ps *profilesServiceSuite) TestProfilesService_EnablePaymentMethod() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s/methods/%s", c.args.profile, c.args.method), c.handler)
 
 			res, m, err := tClient.Profiles.EnablePaymentMethod(c.args.ctx, c.args.profile, c.args.method)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&PaymentMethodDetails{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &PaymentMethodDetails{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *profilesServiceSuite) TestProfilesService_DisablePaymentMethod() {
+func TestProfilesService_DisablePaymentMethod(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		profile string
@@ -685,9 +703,9 @@ func (ps *profilesServiceSuite) TestProfilesService_DisablePaymentMethod() {
 				tClient.WithAuthenticationValue("access_X12b31ggg23")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
-				testMethod(ps.T(), r, "DELETE")
-				testQuery(ps.T(), r, "testmode=true")
+				testHeader(t, r, AuthHeader, "Bearer access_X12b31ggg23")
+				testMethod(t, r, "DELETE")
+				testQuery(t, r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -726,23 +744,26 @@ func (ps *profilesServiceSuite) TestProfilesService_DisablePaymentMethod() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s/methods/%s", c.args.profile, c.args.method), c.handler)
 
 			res, err := tClient.Profiles.DisablePaymentMethod(c.args.ctx, c.args.profile, c.args.method)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *profilesServiceSuite) TestProfilesService_EnableGiftCardIssuer() {
+func TestProfilesService_EnableGiftCardIssuer(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		profile string
@@ -769,9 +790,9 @@ func (ps *profilesServiceSuite) TestProfilesService_EnableGiftCardIssuer() {
 				tClient.WithAuthenticationValue("access_X12b31ggg23")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
-				testMethod(ps.T(), r, "POST")
-				testQuery(ps.T(), r, "testmode=true")
+				testHeader(t, r, AuthHeader, "Bearer access_X12b31ggg23")
+				testMethod(t, r, "POST")
+				testQuery(t, r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -821,24 +842,27 @@ func (ps *profilesServiceSuite) TestProfilesService_EnableGiftCardIssuer() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s/methods/giftcard/issuers/%s", c.args.profile, c.args.issuer), c.handler)
 
 			res, m, err := tClient.Profiles.EnableGiftCardIssuer(c.args.ctx, c.args.profile, c.args.issuer)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&GiftCardEnabled{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &GiftCardEnabled{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *profilesServiceSuite) TestProfilesService_DisableGiftCardIssuer() {
+func TestProfilesService_DisableGiftCardIssuer(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		profile string
@@ -865,9 +889,9 @@ func (ps *profilesServiceSuite) TestProfilesService_DisableGiftCardIssuer() {
 				tClient.WithAuthenticationValue("access_X12b31ggg23")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
-				testMethod(ps.T(), r, "DELETE")
-				testQuery(ps.T(), r, "testmode=true")
+				testHeader(t, r, AuthHeader, "Bearer access_X12b31ggg23")
+				testMethod(t, r, "DELETE")
+				testQuery(t, r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -906,23 +930,26 @@ func (ps *profilesServiceSuite) TestProfilesService_DisableGiftCardIssuer() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/%s/methods/giftcard/issuers/%s", c.args.profile, c.args.issuer), c.handler)
 
 			res, err := tClient.Profiles.DisableGiftCardIssuer(c.args.ctx, c.args.profile, c.args.issuer)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *profilesServiceSuite) TestProfilesService_EnableGiftCardIssuerForCurrent() {
+func TestProfilesService_EnableGiftCardIssuerForCurrent(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx    context.Context
 		issuer GiftCardIssuer
@@ -947,9 +974,9 @@ func (ps *profilesServiceSuite) TestProfilesService_EnableGiftCardIssuerForCurre
 				tClient.WithAuthenticationValue("access_X12b31ggg23")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
-				testMethod(ps.T(), r, "POST")
-				testQuery(ps.T(), r, "testmode=true")
+				testHeader(t, r, AuthHeader, "Bearer access_X12b31ggg23")
+				testMethod(t, r, "POST")
+				testQuery(t, r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -996,24 +1023,27 @@ func (ps *profilesServiceSuite) TestProfilesService_EnableGiftCardIssuerForCurre
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/me/methods/giftcard/issuers/%s", c.args.issuer), c.handler)
 
 			res, m, err := tClient.Profiles.EnableGiftCardIssuerForCurrent(c.args.ctx, c.args.issuer)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&GiftCardEnabled{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &GiftCardEnabled{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *profilesServiceSuite) TestProfilesService_DisableGiftCardIssuerForCurrent() {
+func TestProfilesService_DisableGiftCardIssuerForCurrent(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx    context.Context
 		issuer GiftCardIssuer
@@ -1038,9 +1068,9 @@ func (ps *profilesServiceSuite) TestProfilesService_DisableGiftCardIssuerForCurr
 				tClient.WithAuthenticationValue("access_X12b31ggg23")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer access_X12b31ggg23")
-				testMethod(ps.T(), r, "DELETE")
-				testQuery(ps.T(), r, "testmode=true")
+				testHeader(t, r, AuthHeader, "Bearer access_X12b31ggg23")
+				testMethod(t, r, "DELETE")
+				testQuery(t, r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -1077,22 +1107,18 @@ func (ps *profilesServiceSuite) TestProfilesService_DisableGiftCardIssuerForCurr
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/profiles/me/methods/giftcard/issuers/%s", c.args.issuer), c.handler)
 
 			res, err := tClient.Profiles.DisableGiftCardIssuerForCurrent(c.args.ctx, c.args.issuer)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
-}
-
-func TestProfilesService(t *testing.T) {
-	suite.Run(t, new(profilesServiceSuite))
 }

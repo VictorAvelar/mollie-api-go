@@ -7,16 +7,13 @@ import (
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
 )
 
-type customersTestSuite struct{ suite.Suite }
+func TestCustomerService_Get(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 
-func (cs *customersTestSuite) SetupSuite() { setEnv() }
-
-func (cs *customersTestSuite) TearDownSuite() { unsetEnv() }
-
-func (cs *customersTestSuite) TestCustomerService_Get() {
 	type args struct {
 		ctx      context.Context
 		customer string
@@ -40,8 +37,8 @@ func (cs *customersTestSuite) TestCustomerService_Get() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(cs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(cs.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -85,26 +82,28 @@ func (cs *customersTestSuite) TestCustomerService_Get() {
 	}
 
 	for _, c := range cases {
-		cs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			setup()
 			defer teardown()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s", c.args.customer), c.handler)
 			c.pre()
 			res, cc, err := tClient.Customers.Get(c.args.ctx, c.args.customer)
 			if c.wantErr {
-				cs.NotNil(err)
-				cs.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				cs.Nil(err)
-				cs.IsType(&Customer{}, cc)
-				cs.Same(c.args.ctx, res.Request.Context())
-				cs.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Customer{}, cc)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (cs *customersTestSuite) TestCustomersService_Create() {
+func TestCustomersService_Create(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 	type args struct {
 		ctx      context.Context
 		customer Customer
@@ -130,8 +129,8 @@ func (cs *customersTestSuite) TestCustomersService_Create() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(cs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(cs.T(), r, "POST")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "POST")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -178,26 +177,29 @@ func (cs *customersTestSuite) TestCustomersService_Create() {
 	}
 
 	for _, c := range cases {
-		cs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			setup()
 			defer teardown()
 			tMux.HandleFunc("/v2/customers", c.handler)
 			c.pre()
 			res, cc, err := tClient.Customers.Create(c.args.ctx, c.args.customer)
 			if c.wantErr {
-				cs.NotNil(err)
-				cs.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				cs.Nil(err)
-				cs.IsType(&Customer{}, cc)
-				cs.Same(c.args.ctx, res.Request.Context())
-				cs.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Customer{}, cc)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (cs *customersTestSuite) TestCustomersService_Update() {
+func TestCustomersService_Update(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx        context.Context
 		customerID string
@@ -225,8 +227,8 @@ func (cs *customersTestSuite) TestCustomersService_Update() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(cs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(cs.T(), r, "PATCH")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "PATCH")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -276,26 +278,28 @@ func (cs *customersTestSuite) TestCustomersService_Update() {
 	}
 
 	for _, c := range cases {
-		cs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			setup()
 			defer teardown()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s", c.args.customerID), c.handler)
 			c.pre()
 			res, cc, err := tClient.Customers.Update(c.args.ctx, c.args.customerID, c.args.customer)
 			if c.wantErr {
-				cs.NotNil(err)
-				cs.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				cs.Nil(err)
-				cs.IsType(&Customer{}, cc)
-				cs.Same(c.args.ctx, res.Request.Context())
-				cs.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Customer{}, cc)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (cs *customersTestSuite) TestCustomersService_List() {
+func TestCustomersService_List(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 	type args struct {
 		ctx     context.Context
 		options *CustomersListOptions
@@ -323,8 +327,8 @@ func (cs *customersTestSuite) TestCustomersService_List() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(cs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(cs.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -343,8 +347,8 @@ func (cs *customersTestSuite) TestCustomersService_List() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(cs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(cs.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -395,26 +399,28 @@ func (cs *customersTestSuite) TestCustomersService_List() {
 	}
 
 	for _, c := range cases {
-		cs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			setup()
 			defer teardown()
 			tMux.HandleFunc("/v2/customers", c.handler)
 			c.pre()
 			res, cc, err := tClient.Customers.List(c.args.ctx, c.args.options)
 			if c.wantErr {
-				cs.NotNil(err)
-				cs.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				cs.Nil(err)
-				cs.IsType(&CustomersList{}, cc)
-				cs.Same(c.args.ctx, res.Request.Context())
-				cs.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &CustomersList{}, cc)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (cs *customersTestSuite) TestCustomersService_Delete() {
+func TestCustomersService_Delete(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 	type args struct {
 		ctx      context.Context
 		customer string
@@ -440,8 +446,8 @@ func (cs *customersTestSuite) TestCustomersService_Delete() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(cs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(cs.T(), r, "DELETE")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "DELETE")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -476,25 +482,27 @@ func (cs *customersTestSuite) TestCustomersService_Delete() {
 	}
 
 	for _, c := range cases {
-		cs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			setup()
 			defer teardown()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s", c.args.customer), c.handler)
 			c.pre()
 			res, err := tClient.Customers.Delete(c.args.ctx, c.args.customer)
 			if c.wantErr {
-				cs.NotNil(err)
-				cs.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				cs.Nil(err)
-				cs.Same(c.args.ctx, res.Request.Context())
-				cs.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (cs *customersTestSuite) TestCustomerService_GetPayments() {
+func TestCustomerService_GetPayments(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 	type args struct {
 		ctx      context.Context
 		customer string
@@ -520,8 +528,8 @@ func (cs *customersTestSuite) TestCustomerService_GetPayments() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(cs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(cs.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -540,8 +548,8 @@ func (cs *customersTestSuite) TestCustomerService_GetPayments() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(cs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(cs.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -588,26 +596,28 @@ func (cs *customersTestSuite) TestCustomerService_GetPayments() {
 	}
 
 	for _, c := range cases {
-		cs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			setup()
 			defer teardown()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/payments", c.args.customer), c.handler)
 			c.pre()
 			res, cc, err := tClient.Customers.GetPayments(c.args.ctx, c.args.customer, c.args.options)
 			if c.wantErr {
-				cs.NotNil(err)
-				cs.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				cs.Nil(err)
-				cs.IsType(&PaymentList{}, cc)
-				cs.Same(c.args.ctx, res.Request.Context())
-				cs.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &PaymentList{}, cc)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (cs *customersTestSuite) TestCustomerService_CreatePayment() {
+func TestCustomerService_CreatePayment(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 	type args struct {
 		ctx      context.Context
 		customer string
@@ -633,8 +643,8 @@ func (cs *customersTestSuite) TestCustomerService_CreatePayment() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(cs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(cs.T(), r, "POST")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "POST")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -681,26 +691,22 @@ func (cs *customersTestSuite) TestCustomerService_CreatePayment() {
 	}
 
 	for _, c := range cases {
-		cs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			setup()
 			defer teardown()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/payments", c.args.customer), c.handler)
 			c.pre()
 			res, cc, err := tClient.Customers.CreatePayment(c.args.ctx, c.args.customer, c.args.payment)
 			if c.wantErr {
-				cs.NotNil(err)
-				cs.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				cs.Nil(err)
-				cs.Nil(err)
-				cs.IsType(&Payment{}, cc)
-				cs.Same(c.args.ctx, res.Request.Context())
-				cs.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.Nil(t, err)
+				assert.IsType(t, &Payment{}, cc)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
-}
-
-func TestCustomersService(t *testing.T) {
-	suite.Run(t, new(customersTestSuite))
 }

@@ -7,16 +7,13 @@ import (
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
 )
 
-type refundsServiceTest struct{ suite.Suite }
+func TestRefundsService_Get(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 
-func (rs *refundsServiceTest) SetupSuite() { setEnv() }
-
-func (rs *refundsServiceTest) TearDownSuite() { unsetEnv() }
-
-func (rs *refundsServiceTest) TestRefundsService_Get() {
 	type args struct {
 		ctx     context.Context
 		payment string
@@ -45,9 +42,9 @@ func (rs *refundsServiceTest) TestRefundsService_Get() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(rs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(rs.T(), r, "GET")
-				testQuery(rs.T(), r, "embed=profile")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "embed=profile")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -100,24 +97,27 @@ func (rs *refundsServiceTest) TestRefundsService_Get() {
 		setup()
 		defer teardown()
 
-		rs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s/refunds/%s", c.args.payment, c.args.refund), c.handler)
 
 			res, m, err := tClient.Refunds.Get(c.args.ctx, c.args.payment, c.args.refund, c.args.options)
 			if c.wantErr {
-				rs.NotNil(err)
-				rs.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				rs.Nil(err)
-				rs.IsType(&Refund{}, m)
-				rs.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Refund{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (rs *refundsServiceTest) TestRefundsService_Create() {
+func TestRefundsService_Create(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		payment string
@@ -151,9 +151,9 @@ func (rs *refundsServiceTest) TestRefundsService_Create() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(rs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(rs.T(), r, "POST")
-				testQuery(rs.T(), r, "embed=profile")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "POST")
+				testQuery(t, r, "embed=profile")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -178,9 +178,9 @@ func (rs *refundsServiceTest) TestRefundsService_Create() {
 			nil,
 			setAccessToken,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(rs.T(), r, AuthHeader, "Bearer access_token_test")
-				testMethod(rs.T(), r, "POST")
-				testQuery(rs.T(), r, "testmode=true")
+				testHeader(t, r, AuthHeader, "Bearer access_token_test")
+				testMethod(t, r, "POST")
+				testQuery(t, r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -248,24 +248,27 @@ func (rs *refundsServiceTest) TestRefundsService_Create() {
 		setup()
 		defer teardown()
 
-		rs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s/refunds", c.args.payment), c.handler)
 
 			res, m, err := tClient.Refunds.Create(c.args.ctx, c.args.payment, c.args.refund, c.args.options)
 			if c.wantErr {
-				rs.NotNil(err)
-				rs.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				rs.Nil(err)
-				rs.IsType(&Refund{}, m)
-				rs.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Refund{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (rs *refundsServiceTest) TestRefundsService_Cancel() {
+func TestRefundsService_Cancel(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		payment string
@@ -290,8 +293,8 @@ func (rs *refundsServiceTest) TestRefundsService_Cancel() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(rs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(rs.T(), r, "DELETE")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "DELETE")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -329,23 +332,26 @@ func (rs *refundsServiceTest) TestRefundsService_Cancel() {
 		setup()
 		defer teardown()
 
-		rs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s/refunds/%s", c.args.payment, c.args.refund), c.handler)
 
 			res, err := tClient.Refunds.Cancel(c.args.ctx, c.args.payment, c.args.refund)
 			if c.wantErr {
-				rs.NotNil(err)
-				rs.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				rs.Nil(err)
-				rs.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (rs *refundsServiceTest) TestRefundsService_List() {
+func TestRefundsService_List(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		payment string
@@ -372,9 +378,9 @@ func (rs *refundsServiceTest) TestRefundsService_List() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(rs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(rs.T(), r, "GET")
-				testQuery(rs.T(), r, "limit=10")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "limit=10")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -424,24 +430,27 @@ func (rs *refundsServiceTest) TestRefundsService_List() {
 		setup()
 		defer teardown()
 
-		rs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/refunds", c.handler)
 
 			res, m, err := tClient.Refunds.ListRefund(c.args.ctx, c.args.options)
 			if c.wantErr {
-				rs.NotNil(err)
-				rs.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				rs.Nil(err)
-				rs.IsType(&RefundList{}, m)
-				rs.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &RefundList{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (rs *refundsServiceTest) TestRefundsService_ListPaynents() {
+func TestRefundsService_ListPaynents(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		payment string
@@ -470,9 +479,9 @@ func (rs *refundsServiceTest) TestRefundsService_ListPaynents() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(rs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(rs.T(), r, "GET")
-				testQuery(rs.T(), r, "limit=10")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "limit=10")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -525,23 +534,19 @@ func (rs *refundsServiceTest) TestRefundsService_ListPaynents() {
 		setup()
 		defer teardown()
 
-		rs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s/refunds", c.args.payment), c.handler)
 
 			res, m, err := tClient.Refunds.ListRefundPayment(c.args.ctx, c.args.payment, c.args.options)
 			if c.wantErr {
-				rs.NotNil(err)
-				rs.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				rs.Nil(err)
-				rs.IsType(&RefundList{}, m)
-				rs.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &RefundList{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
-}
-
-func TestRefundsService(t *testing.T) {
-	suite.Run(t, new(refundsServiceTest))
 }

@@ -7,16 +7,13 @@ import (
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
 )
 
-type shipmentsServiceSuite struct{ suite.Suite }
+func TestShipmentsService_Get(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 
-func (ps *shipmentsServiceSuite) SetupSuite() { setEnv() }
-
-func (ps *shipmentsServiceSuite) TearDownSuite() { unsetEnv() }
-
-func (ps *shipmentsServiceSuite) TestShipmentsService_Get() {
 	type args struct {
 		ctx      context.Context
 		order    string
@@ -41,8 +38,8 @@ func (ps *shipmentsServiceSuite) TestShipmentsService_Get() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -92,24 +89,27 @@ func (ps *shipmentsServiceSuite) TestShipmentsService_Get() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/shipments/%s", c.args.order, c.args.shipment), c.handler)
 
 			res, m, err := tClient.Shipments.Get(c.args.ctx, c.args.order, c.args.shipment)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&Shipment{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Shipment{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *shipmentsServiceSuite) TestShipmentsService_List() {
+func TestShipmentsService_List(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx      context.Context
 		order    string
@@ -134,8 +134,8 @@ func (ps *shipmentsServiceSuite) TestShipmentsService_List() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -185,24 +185,27 @@ func (ps *shipmentsServiceSuite) TestShipmentsService_List() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/shipments", c.args.order), c.handler)
 
 			res, m, err := tClient.Shipments.List(c.args.ctx, c.args.order)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&ShipmentsList{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &ShipmentsList{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *shipmentsServiceSuite) TestShipmentsService_Create() {
+func TestShipmentsService_Create(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx      context.Context
 		order    string
@@ -229,8 +232,8 @@ func (ps *shipmentsServiceSuite) TestShipmentsService_Create() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "POST")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "POST")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -251,9 +254,9 @@ func (ps *shipmentsServiceSuite) TestShipmentsService_Create() {
 			nil,
 			setAccessToken,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer access_token_test")
-				testMethod(ps.T(), r, "POST")
-				testQuery(ps.T(), r, "testmode=true")
+				testHeader(t, r, AuthHeader, "Bearer access_token_test")
+				testMethod(t, r, "POST")
+				testQuery(t, r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -309,24 +312,27 @@ func (ps *shipmentsServiceSuite) TestShipmentsService_Create() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/shipments", c.args.order), c.handler)
 
 			res, m, err := tClient.Shipments.Create(c.args.ctx, c.args.order, c.args.shipment)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&Shipment{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Shipment{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *shipmentsServiceSuite) TestShipmentsService_Update() {
+func TestShipmentsService_Update(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx      context.Context
 		order    string
@@ -355,8 +361,8 @@ func (ps *shipmentsServiceSuite) TestShipmentsService_Update() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "PATCH")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "PATCH")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -378,9 +384,9 @@ func (ps *shipmentsServiceSuite) TestShipmentsService_Update() {
 			nil,
 			setAccessToken,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer access_token_test")
-				testMethod(ps.T(), r, "PATCH")
-				testQuery(ps.T(), r, "testmode=true")
+				testHeader(t, r, AuthHeader, "Bearer access_token_test")
+				testMethod(t, r, "PATCH")
+				testQuery(t, r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -439,23 +445,19 @@ func (ps *shipmentsServiceSuite) TestShipmentsService_Update() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/shipments/%s", c.args.order, c.args.shipment), c.handler)
 
 			res, m, err := tClient.Shipments.Update(c.args.ctx, c.args.order, c.args.shipment, c.args.st)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&Shipment{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Shipment{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
-}
-
-func TestShipmentsService(t *testing.T) {
-	suite.Run(t, new(shipmentsServiceSuite))
 }

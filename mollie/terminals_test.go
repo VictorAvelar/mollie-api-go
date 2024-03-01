@@ -7,16 +7,13 @@ import (
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
 )
 
-type terminalsServiceSuite struct{ suite.Suite }
+func TestTerminalsService_Get(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 
-func (ts *terminalsServiceSuite) SetupSuite() { setEnv() }
-
-func (ts *terminalsServiceSuite) TearDownSuite() { unsetEnv() }
-
-func (ts *terminalsServiceSuite) TestTerminalsService_Get() {
 	type args struct {
 		ctx context.Context
 		id  string
@@ -42,8 +39,8 @@ func (ts *terminalsServiceSuite) TestTerminalsService_Get() {
 			testdata.GetTerminalResponse,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ts.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ts.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -93,24 +90,27 @@ func (ts *terminalsServiceSuite) TestTerminalsService_Get() {
 		setup()
 		defer teardown()
 
-		ts.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/terminals/%s", c.args.id), c.handler)
 
 			res, m, err := tClient.Terminals.Get(c.args.ctx, c.args.id)
 			if c.wantErr {
-				ts.NotNil(err)
-				ts.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ts.Nil(err)
-				ts.IsType(&Terminal{}, m)
-				ts.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Terminal{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ts *terminalsServiceSuite) TestTerminalsService_List() {
+func TestTerminalsService_List(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		options *TerminalListOptions
@@ -136,8 +136,8 @@ func (ts *terminalsServiceSuite) TestTerminalsService_List() {
 			testdata.GetTerminalResponse,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ts.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ts.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -187,23 +187,19 @@ func (ts *terminalsServiceSuite) TestTerminalsService_List() {
 		setup()
 		defer teardown()
 
-		ts.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/terminals", c.handler)
 
 			res, m, err := tClient.Terminals.List(c.args.ctx, c.args.options)
 			if c.wantErr {
-				ts.NotNil(err)
-				ts.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ts.Nil(err)
-				ts.IsType(&TerminalList{}, m)
-				ts.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &TerminalList{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
-}
-
-func TestTerminalService(t *testing.T) {
-	suite.Run(t, new(terminalsServiceSuite))
 }

@@ -7,16 +7,13 @@ import (
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
 )
 
-type balancesServiceSuite struct{ suite.Suite }
+func TestBalancesService_Get(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 
-func (bs *balancesServiceSuite) SetupSuite() { setEnv() }
-
-func (bs *balancesServiceSuite) TearDownSuite() { unsetEnv() }
-
-func (bs *balancesServiceSuite) TestBalancesService_Get() {
 	type args struct {
 		ctx     context.Context
 		balance string
@@ -39,8 +36,8 @@ func (bs *balancesServiceSuite) TestBalancesService_Get() {
 			false,
 			nil,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(bs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(bs.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -88,7 +85,7 @@ func (bs *balancesServiceSuite) TestBalancesService_Get() {
 		setup()
 		defer teardown()
 
-		bs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 
 			tMux.HandleFunc(
@@ -101,19 +98,22 @@ func (bs *balancesServiceSuite) TestBalancesService_Get() {
 
 			res, capture, err := tClient.Balances.Get(c.args.ctx, c.args.balance)
 			if c.wantErr {
-				bs.NotNil(err)
-				bs.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				bs.Nil(err)
-				bs.IsType(&Balance{}, capture)
-				bs.Same(c.args.ctx, res.Request.Context())
-				bs.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Balance{}, capture)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (bs *balancesServiceSuite) TestBalancesService_Primary() {
+func TestBalancesService_Primary(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx context.Context
 	}
@@ -134,8 +134,8 @@ func (bs *balancesServiceSuite) TestBalancesService_Primary() {
 			false,
 			nil,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(bs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(bs.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -180,7 +180,7 @@ func (bs *balancesServiceSuite) TestBalancesService_Primary() {
 		setup()
 		defer teardown()
 
-		bs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 
 			tMux.HandleFunc(
@@ -190,19 +190,22 @@ func (bs *balancesServiceSuite) TestBalancesService_Primary() {
 
 			res, capture, err := tClient.Balances.Primary(c.args.ctx)
 			if c.wantErr {
-				bs.NotNil(err)
-				bs.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				bs.Nil(err)
-				bs.IsType(&Balance{}, capture)
-				bs.Same(c.args.ctx, res.Request.Context())
-				bs.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Balance{}, capture)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (bs *balancesServiceSuite) TestBalancesService_List() {
+func TestBalancesService_List(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		options *BalanceListOptions
@@ -225,8 +228,8 @@ func (bs *balancesServiceSuite) TestBalancesService_List() {
 			false,
 			nil,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(bs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(bs.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -274,7 +277,7 @@ func (bs *balancesServiceSuite) TestBalancesService_List() {
 		setup()
 		defer teardown()
 
-		bs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 
 			tMux.HandleFunc(
@@ -284,19 +287,22 @@ func (bs *balancesServiceSuite) TestBalancesService_List() {
 
 			res, capture, err := tClient.Balances.List(c.args.ctx, c.args.options)
 			if c.wantErr {
-				bs.NotNil(err)
-				bs.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				bs.Nil(err)
-				bs.IsType(&BalancesList{}, capture)
-				bs.Same(c.args.ctx, res.Request.Context())
-				bs.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &BalancesList{}, capture)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (bs *balancesServiceSuite) TestBalancesService_GetReport() {
+func TestBalancesService_GetReport(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		balance string
@@ -321,8 +327,8 @@ func (bs *balancesServiceSuite) TestBalancesService_GetReport() {
 			false,
 			nil,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(bs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(bs.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -373,7 +379,7 @@ func (bs *balancesServiceSuite) TestBalancesService_GetReport() {
 		setup()
 		defer teardown()
 
-		bs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 
 			tMux.HandleFunc(
@@ -386,20 +392,22 @@ func (bs *balancesServiceSuite) TestBalancesService_GetReport() {
 
 			res, balanceReport, err := tClient.Balances.GetReport(c.args.ctx, c.args.balance, c.args.options)
 			if c.wantErr {
-				bs.NotNil(err)
-				bs.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				bs.Nil(err)
-				bs.IsType(&BalanceReport{}, balanceReport)
-				bs.Same(c.args.ctx, res.Request.Context())
-				bs.IsType(&http.Response{}, res.Response)
-				fmt.Printf("\n%+v\n", *balanceReport)
+				assert.Nil(t, err)
+				assert.IsType(t, &BalanceReport{}, balanceReport)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (bs *balancesServiceSuite) TestBalancesService_GetPrimaryReport() {
+func TestBalancesService_GetPrimaryReport(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		options *BalanceReportOptions
@@ -423,8 +431,8 @@ func (bs *balancesServiceSuite) TestBalancesService_GetPrimaryReport() {
 			false,
 			nil,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(bs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(bs.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -475,7 +483,7 @@ func (bs *balancesServiceSuite) TestBalancesService_GetPrimaryReport() {
 		setup()
 		defer teardown()
 
-		bs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 
 			tMux.HandleFunc(
@@ -488,19 +496,22 @@ func (bs *balancesServiceSuite) TestBalancesService_GetPrimaryReport() {
 
 			res, balanceReport, err := tClient.Balances.GetPrimaryReport(c.args.ctx, c.args.options)
 			if c.wantErr {
-				bs.NotNil(err)
-				bs.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				bs.Nil(err)
-				bs.IsType(&BalanceReport{}, balanceReport)
-				bs.Same(c.args.ctx, res.Request.Context())
-				bs.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &BalanceReport{}, balanceReport)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (bs *balancesServiceSuite) TestBalancesService_ListBalanceTransactions() {
+func TestBalancesService_ListBalanceTransactions(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		balance string
@@ -525,8 +536,8 @@ func (bs *balancesServiceSuite) TestBalancesService_ListBalanceTransactions() {
 			false,
 			nil,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(bs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(bs.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -577,7 +588,7 @@ func (bs *balancesServiceSuite) TestBalancesService_ListBalanceTransactions() {
 		setup()
 		defer teardown()
 
-		bs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 
 			tMux.HandleFunc(
@@ -590,19 +601,22 @@ func (bs *balancesServiceSuite) TestBalancesService_ListBalanceTransactions() {
 
 			res, balanceReport, err := tClient.Balances.GetTransactionsList(c.args.ctx, c.args.balance, c.args.options)
 			if c.wantErr {
-				bs.NotNil(err)
-				bs.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				bs.Nil(err)
-				bs.IsType(&BalanceTransactionsList{}, balanceReport)
-				bs.Same(c.args.ctx, res.Request.Context())
-				bs.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &BalanceTransactionsList{}, balanceReport)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (bs *balancesServiceSuite) TestBalancesService_ListPrimaryBalanceTransactions() {
+func TestBalancesService_ListPrimaryBalanceTransactions(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		options *BalanceTransactionsListOptions
@@ -625,8 +639,8 @@ func (bs *balancesServiceSuite) TestBalancesService_ListPrimaryBalanceTransactio
 			false,
 			nil,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(bs.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(bs.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -674,7 +688,7 @@ func (bs *balancesServiceSuite) TestBalancesService_ListPrimaryBalanceTransactio
 		setup()
 		defer teardown()
 
-		bs.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 
 			tMux.HandleFunc(
@@ -687,18 +701,14 @@ func (bs *balancesServiceSuite) TestBalancesService_ListPrimaryBalanceTransactio
 
 			res, balanceReport, err := tClient.Balances.GetPrimaryTransactionsList(c.args.ctx, c.args.options)
 			if c.wantErr {
-				bs.NotNil(err)
-				bs.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				bs.Nil(err)
-				bs.IsType(&BalanceTransactionsList{}, balanceReport)
-				bs.Same(c.args.ctx, res.Request.Context())
-				bs.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &BalanceTransactionsList{}, balanceReport)
+				assert.EqualValues(t, c.args.ctx, res.Request.Context())
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
-}
-
-func TestBalancesService(t *testing.T) {
-	suite.Run(t, new(balancesServiceSuite))
 }
