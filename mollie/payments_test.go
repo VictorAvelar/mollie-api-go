@@ -209,7 +209,7 @@ func TestPaymentsService_Create(t *testing.T) {
 
 	type args struct {
 		ctx     context.Context
-		payment PaymentAction
+		payment CreatePayment
 		options *PaymentOptions
 	}
 	cases := []struct {
@@ -224,7 +224,7 @@ func TestPaymentsService_Create(t *testing.T) {
 			"create payments works as expected.",
 			args{
 				context.Background(),
-				PaymentAction{
+				CreatePayment{
 					BillingEmail: "test@example.com",
 				},
 				&PaymentOptions{
@@ -248,7 +248,7 @@ func TestPaymentsService_Create(t *testing.T) {
 			"create payments with access token works as expected.",
 			args{
 				context.Background(),
-				PaymentAction{
+				CreatePayment{
 					BillingEmail: "test@example.com",
 				},
 				&PaymentOptions{
@@ -273,7 +273,7 @@ func TestPaymentsService_Create(t *testing.T) {
 			"create payments, an error is returned from the server",
 			args{
 				context.Background(),
-				PaymentAction{},
+				CreatePayment{},
 				nil,
 			},
 			true,
@@ -285,7 +285,7 @@ func TestPaymentsService_Create(t *testing.T) {
 			"create payments, an error occurs when parsing json",
 			args{
 				context.Background(),
-				PaymentAction{},
+				CreatePayment{},
 				nil,
 			},
 			true,
@@ -297,7 +297,7 @@ func TestPaymentsService_Create(t *testing.T) {
 			"create payments, invalid url when building request",
 			args{
 				context.Background(),
-				PaymentAction{},
+				CreatePayment{},
 				nil,
 			},
 			true,
@@ -335,7 +335,7 @@ func TestPaymentsService_Update(t *testing.T) {
 	type args struct {
 		ctx     context.Context
 		id      string
-		payment PaymentAction
+		payment UpdatePayment
 	}
 	cases := []struct {
 		name    string
@@ -350,7 +350,7 @@ func TestPaymentsService_Update(t *testing.T) {
 			args{
 				context.Background(),
 				"tr_WDqYK6vllg",
-				PaymentAction{
+				UpdatePayment{
 					BillingEmail: "test@example.com",
 				},
 			},
@@ -372,7 +372,7 @@ func TestPaymentsService_Update(t *testing.T) {
 			args{
 				context.Background(),
 				"tr_WDqYK6vllg",
-				PaymentAction{
+				UpdatePayment{
 					BillingEmail: "test@example.com",
 				},
 			},
@@ -397,7 +397,7 @@ func TestPaymentsService_Update(t *testing.T) {
 			args{
 				context.Background(),
 				"tr_WDqYK6vllg",
-				PaymentAction{},
+				UpdatePayment{},
 			},
 			true,
 			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
@@ -409,7 +409,7 @@ func TestPaymentsService_Update(t *testing.T) {
 			args{
 				context.Background(),
 				"tr_WDqYK6vllg",
-				PaymentAction{},
+				UpdatePayment{},
 			},
 			true,
 			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
@@ -421,7 +421,7 @@ func TestPaymentsService_Update(t *testing.T) {
 			args{
 				context.Background(),
 				"tr_WDqYK6vllg",
-				PaymentAction{},
+				UpdatePayment{},
 			},
 			true,
 			errBadBaseURL,

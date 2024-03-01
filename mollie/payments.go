@@ -55,7 +55,7 @@ type PaymentDestination struct {
 	OrganizationID string `json:"organizationId,omitempty"`
 }
 
-// PaymentAction describes the payload to be sent to the Mollie API when
+// CreatePayment describes the payload to be sent to the Mollie API when
 // creating or updating a new payment.
 //
 // Some fields are only valid for specific payment methods, and are
@@ -65,7 +65,7 @@ type PaymentDestination struct {
 // see: https://docs.mollie.com/reference/v2/payments-api/create-payment#payment-method-specific-parameters
 // For payment updates,
 // see: https://docs.mollie.com/reference/v2/payments-api/update-payment#payment-method-specific-parameters
-type PaymentAction struct {
+type CreatePayment struct {
 	Description                     string          `json:"description,omitempty"`
 	RedirectURL                     string          `json:"redirectUrl,omitempty"`
 	CancelURL                       string          `json:"cancelUrl,omitempty"`
@@ -137,6 +137,26 @@ type CreatePaymentAccessTokenFields struct {
 type CreateMollieConnectPaymentFields struct {
 	ApplicationFee *ApplicationFee   `json:"applicationFee,omitempty"`
 	Routing        []*PaymentRouting `json:"routing,omitempty"`
+}
+
+// UpdatePayment describes the payload to be sent to the Mollie API when
+// updating a payment.
+//
+// See: https://docs.mollie.com/reference/v2/payments-api/update-payment
+type UpdatePayment struct {
+	Description                     string        `json:"description,omitempty"`
+	RedirectURL                     string        `json:"redirectUrl,omitempty"`
+	CancelURL                       string        `json:"cancelUrl,omitempty"`
+	WebhookURL                      string        `json:"webhookUrl,omitempty"`
+	Metadata                        any           `json:"metadata,omitempty"`
+	Method                          PaymentMethod `json:"method,omitempty"`
+	Locale                          Locale        `json:"locale,omitempty"`
+	RestrictPaymentMethodsToCountry string        `json:"restrictPaymentMethodsToCountry,omitempty"`
+
+	// PaymentMethods specific fields
+	BillingEmail string     `json:"billingEmail,omitempty"`
+	DueDate      *ShortDate `json:"dueDate,omitempty"`
+	Issuer       string     `json:"issuer,omitempty"`
 }
 
 // Payment describes a transaction between a customer and a merchant.
@@ -268,7 +288,7 @@ func (ps *PaymentsService) Get(ctx context.Context, id string, opts *PaymentOpti
 // Create stores a new payment object attached to your Mollie account.
 //
 // See: https://docs.mollie.com/reference/v2/payments-api/create-payment#
-func (ps *PaymentsService) Create(ctx context.Context, p PaymentAction, opts *PaymentOptions) (
+func (ps *PaymentsService) Create(ctx context.Context, p CreatePayment, opts *PaymentOptions) (
 	res *Response,
 	np *Payment,
 	err error,
@@ -308,7 +328,7 @@ func (ps *PaymentsService) Cancel(ctx context.Context, id string) (res *Response
 // Update can be used to update some details of a created payment.
 //
 // See: https://docs.mollie.com/reference/v2/payments-api/update-payment
-func (ps *PaymentsService) Update(ctx context.Context, id string, up PaymentAction) (
+func (ps *PaymentsService) Update(ctx context.Context, id string, up UpdatePayment) (
 	res *Response,
 	p *Payment,
 	err error,
