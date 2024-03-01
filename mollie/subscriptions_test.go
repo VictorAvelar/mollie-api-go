@@ -7,16 +7,13 @@ import (
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
 )
 
-type subscriptionsServiceSuite struct{ suite.Suite }
+func TestSubscriptionsService_Get(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 
-func (ps *subscriptionsServiceSuite) SetupSuite() { setEnv() }
-
-func (ps *subscriptionsServiceSuite) TearDownSuite() { unsetEnv() }
-
-func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Get() {
 	type args struct {
 		ctx          context.Context
 		customer     string
@@ -41,8 +38,8 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Get() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -92,24 +89,27 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Get() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/subscriptions/%s", c.args.customer, c.args.subscription), c.handler)
 
 			res, m, err := tClient.Subscriptions.Get(c.args.ctx, c.args.customer, c.args.subscription)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&Subscription{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Subscription{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Create() {
+func TestSubscriptionsService_Create(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx          context.Context
 		customer     string
@@ -140,8 +140,8 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Create() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "POST")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "POST")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -166,9 +166,9 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Create() {
 			nil,
 			setAccessToken,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer access_token_test")
-				testMethod(ps.T(), r, "POST")
-				testQuery(ps.T(), r, "testmode=true")
+				testHeader(t, r, AuthHeader, "Bearer access_token_test")
+				testMethod(t, r, "POST")
+				testQuery(t, r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -236,24 +236,27 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Create() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/subscriptions", c.args.customer), c.handler)
 
 			res, m, err := tClient.Subscriptions.Create(c.args.ctx, c.args.customer, c.args.subscription)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&Subscription{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Subscription{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Update() {
+func TestSubscriptionsService_Update(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx          context.Context
 		customer     string
@@ -286,8 +289,8 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Update() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "PATCH")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "PATCH")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -313,9 +316,9 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Update() {
 			nil,
 			setAccessToken,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer access_token_test")
-				testMethod(ps.T(), r, "PATCH")
-				testQuery(ps.T(), r, "testmode=true")
+				testHeader(t, r, AuthHeader, "Bearer access_token_test")
+				testMethod(t, r, "PATCH")
+				testQuery(t, r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -386,24 +389,27 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Update() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/subscriptions/%s", c.args.customer, c.args.sid), c.handler)
 
 			res, m, err := tClient.Subscriptions.Update(c.args.ctx, c.args.customer, c.args.sid, c.args.subscription)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&Subscription{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Subscription{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Delete() {
+func TestSubscriptionsService_Delete(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx      context.Context
 		customer string
@@ -428,8 +434,8 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Delete() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "DELETE")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "DELETE")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -448,9 +454,9 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Delete() {
 			nil,
 			setAccessToken,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer access_token_test")
-				testMethod(ps.T(), r, "DELETE")
-				testQuery(ps.T(), r, "testmode=true")
+				testHeader(t, r, AuthHeader, "Bearer access_token_test")
+				testMethod(t, r, "DELETE")
+				testQuery(t, r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -500,24 +506,27 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_Delete() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/subscriptions/%s", c.args.customer, c.args.sid), c.handler)
 
 			res, m, err := tClient.Subscriptions.Delete(c.args.ctx, c.args.customer, c.args.sid)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&Subscription{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Subscription{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *subscriptionsServiceSuite) TestSubscriptionsService_List() {
+func TestSubscriptionsService_List(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx      context.Context
 		customer string
@@ -542,8 +551,8 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_List() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -564,9 +573,9 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_List() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "limit=10")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "limit=10")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -616,24 +625,27 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_List() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/subscriptions", c.args.customer), c.handler)
 
 			res, m, err := tClient.Subscriptions.List(c.args.ctx, c.args.customer, c.args.options)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&SubscriptionList{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &SubscriptionList{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *subscriptionsServiceSuite) TestSubscriptionsService_All() {
+func TestSubscriptionsService_All(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		options *SubscriptionListOptions
@@ -656,8 +668,8 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_All() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -677,9 +689,9 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_All() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "limit=10")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "limit=10")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -726,24 +738,27 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_All() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/subscriptions", c.handler)
 
 			res, m, err := tClient.Subscriptions.All(c.args.ctx, c.args.options)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&SubscriptionList{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &SubscriptionList{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *subscriptionsServiceSuite) TestSubscriptionsService_GetPayments() {
+func TestSubscriptionsService_GetPayments(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx          context.Context
 		customer     string
@@ -770,8 +785,8 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_GetPayments() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -793,9 +808,9 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_GetPayments() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "limit=10")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "limit=10")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -848,23 +863,19 @@ func (ps *subscriptionsServiceSuite) TestSubscriptionsService_GetPayments() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/subscriptions/%s/payments", c.args.customer, c.args.subscription), c.handler)
 
 			res, m, err := tClient.Subscriptions.GetPayments(c.args.ctx, c.args.customer, c.args.subscription, c.args.options)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&PaymentList{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &PaymentList{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
-}
-
-func TestSubscriptionService(t *testing.T) {
-	suite.Run(t, new(subscriptionsServiceSuite))
 }
