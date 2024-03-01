@@ -621,7 +621,7 @@ func TestCustomerService_CreatePayment(t *testing.T) {
 	type args struct {
 		ctx      context.Context
 		customer string
-		payment  PaymentAction
+		payment  CreatePayment
 	}
 
 	cases := []struct {
@@ -637,7 +637,7 @@ func TestCustomerService_CreatePayment(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_kEn1PlbGa",
-				PaymentAction{
+				CreatePayment{
 					CreatePaymentAccessTokenFields: CreatePaymentAccessTokenFields{
 						Testmode: true,
 					},
@@ -661,7 +661,7 @@ func TestCustomerService_CreatePayment(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_kEn1PlbGa",
-				PaymentAction{
+				CreatePayment{
 					CreatePaymentAccessTokenFields: CreatePaymentAccessTokenFields{
 						Testmode: true,
 					},
@@ -677,7 +677,7 @@ func TestCustomerService_CreatePayment(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_kEn1PlbGa",
-				PaymentAction{
+				CreatePayment{
 					CreatePaymentAccessTokenFields: CreatePaymentAccessTokenFields{
 						Testmode: true,
 					},
@@ -693,7 +693,7 @@ func TestCustomerService_CreatePayment(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_kEn1PlbGa",
-				PaymentAction{
+				CreatePayment{
 					CreatePaymentAccessTokenFields: CreatePaymentAccessTokenFields{
 						Testmode: true,
 					},
