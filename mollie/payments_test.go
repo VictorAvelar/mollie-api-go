@@ -7,16 +7,13 @@ import (
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
 )
 
-type paymentsServiceSuite struct{ suite.Suite }
+func TestPaymentsService_Get(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 
-func (ps *paymentsServiceSuite) SetupSuite() { setEnv() }
-
-func (ps *paymentsServiceSuite) TearDownSuite() { unsetEnv() }
-
-func (ps *paymentsServiceSuite) TestPaymentsService_Get() {
 	type args struct {
 		ctx     context.Context
 		payment string
@@ -43,9 +40,9 @@ func (ps *paymentsServiceSuite) TestPaymentsService_Get() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "include=settlements")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "include=settlements")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -95,24 +92,27 @@ func (ps *paymentsServiceSuite) TestPaymentsService_Get() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s", c.args.payment), c.handler)
 
 			res, m, err := tClient.Payments.Get(c.args.ctx, c.args.payment, c.args.options)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&Payment{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Payment{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *paymentsServiceSuite) TestPaymentsService_List() {
+func TestPaymentsService_List(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		options *ListPaymentOptions
@@ -137,9 +137,9 @@ func (ps *paymentsServiceSuite) TestPaymentsService_List() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "from=tr_12o93213")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "from=tr_12o93213")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -186,24 +186,27 @@ func (ps *paymentsServiceSuite) TestPaymentsService_List() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/payments", c.handler)
 
 			res, m, err := tClient.Payments.List(c.args.ctx, c.args.options)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&PaymentList{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &PaymentList{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *paymentsServiceSuite) TestPaymentsService_Create() {
+func TestPaymentsService_Create(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		payment Payment
@@ -232,9 +235,9 @@ func (ps *paymentsServiceSuite) TestPaymentsService_Create() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "POST")
-				testQuery(ps.T(), r, "include=settlements")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "POST")
+				testQuery(t, r, "include=settlements")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -257,9 +260,9 @@ func (ps *paymentsServiceSuite) TestPaymentsService_Create() {
 			nil,
 			setAccessToken,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer access_token_test")
-				testMethod(ps.T(), r, "POST")
-				testQuery(ps.T(), r, "include=settlements&testmode=true")
+				testHeader(t, r, AuthHeader, "Bearer access_token_test")
+				testMethod(t, r, "POST")
+				testQuery(t, r, "include=settlements&testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -309,24 +312,27 @@ func (ps *paymentsServiceSuite) TestPaymentsService_Create() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/payments", c.handler)
 
 			res, m, err := tClient.Payments.Create(c.args.ctx, c.args.payment, c.args.options)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&Payment{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Payment{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *paymentsServiceSuite) TestPaymentsService_Update() {
+func TestPaymentsService_Update(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		id      string
@@ -353,8 +359,8 @@ func (ps *paymentsServiceSuite) TestPaymentsService_Update() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "PATCH")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "PATCH")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -377,9 +383,9 @@ func (ps *paymentsServiceSuite) TestPaymentsService_Update() {
 				tClient.WithAuthenticationValue("access_example_token")
 			},
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer access_example_token")
-				testMethod(ps.T(), r, "PATCH")
-				testQuery(ps.T(), r, "testmode=true")
+				testHeader(t, r, AuthHeader, "Bearer access_example_token")
+				testMethod(t, r, "PATCH")
+				testQuery(t, r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -429,24 +435,27 @@ func (ps *paymentsServiceSuite) TestPaymentsService_Update() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s", c.args.id), c.handler)
 
 			res, m, err := tClient.Payments.Update(c.args.ctx, c.args.id, c.args.payment)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&Payment{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Payment{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *paymentsServiceSuite) TestPaymentsService_Cancel() {
+func TestPaymentsService_Cancel(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx context.Context
 		id  string
@@ -469,8 +478,8 @@ func (ps *paymentsServiceSuite) TestPaymentsService_Cancel() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "DELETE")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "DELETE")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -517,23 +526,19 @@ func (ps *paymentsServiceSuite) TestPaymentsService_Cancel() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s", c.args.id), c.handler)
 
 			res, m, err := tClient.Payments.Cancel(c.args.ctx, c.args.id)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&Payment{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Payment{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
-}
-
-func TestPaymentsService(t *testing.T) {
-	suite.Run(t, new(paymentsServiceSuite))
 }
