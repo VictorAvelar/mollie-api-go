@@ -7,9 +7,10 @@
 - `connect` package has moved from the `mollie` directory to the `pkg` directory.
 - root namespace is not `github.com/VictorAvelar/mollie-api-go/v4/`.
 - Changes for payments resource
-  - Add `PaymentAction` type to use when creating or updating a payment.
-  - Ensure `Payment` object (used for read operations) contains all the available fields.
-  - Create types specific for fields that are conditional given the payment values, both to create new payments and to list existing payments.
+  - Added `CreatePayment` type to use when creating a payment.
+  - Added `UpdatePayment` type to use when updating a payment.
+  - Ensured `Payment` object (used for read operations) contains all the available fields.
+  - Created types specific for fields that are conditional given the payment values, both to create new payments and to list existing payments.
 
 ## Other changes
 
