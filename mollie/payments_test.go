@@ -33,7 +33,7 @@ func TestPaymentsService_Get(t *testing.T) {
 				context.Background(),
 				"tr_WDqYK6vllg",
 				&PaymentOptions{
-					Include: "settlements",
+					Include: []IncludeValue{IncludeQrCode},
 				},
 			},
 			false,
@@ -42,7 +42,7 @@ func TestPaymentsService_Get(t *testing.T) {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(t, r, "GET")
-				testQuery(t, r, "include=settlements")
+				testQuery(t, r, "include=details.qrCode")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -209,7 +209,7 @@ func TestPaymentsService_Create(t *testing.T) {
 
 	type args struct {
 		ctx     context.Context
-		payment Payment
+		payment PaymentAction
 		options *PaymentOptions
 	}
 	cases := []struct {
@@ -224,11 +224,11 @@ func TestPaymentsService_Create(t *testing.T) {
 			"create payments works as expected.",
 			args{
 				context.Background(),
-				Payment{
+				PaymentAction{
 					BillingEmail: "test@example.com",
 				},
 				&PaymentOptions{
-					Include: "settlements",
+					Include: []IncludeValue{},
 				},
 			},
 			false,
@@ -237,7 +237,6 @@ func TestPaymentsService_Create(t *testing.T) {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(t, r, "POST")
-				testQuery(t, r, "include=settlements")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -249,11 +248,11 @@ func TestPaymentsService_Create(t *testing.T) {
 			"create payments with access token works as expected.",
 			args{
 				context.Background(),
-				Payment{
+				PaymentAction{
 					BillingEmail: "test@example.com",
 				},
 				&PaymentOptions{
-					Include: "settlements",
+					Include: []IncludeValue{},
 				},
 			},
 			false,
@@ -262,7 +261,7 @@ func TestPaymentsService_Create(t *testing.T) {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(t, r, AuthHeader, "Bearer access_token_test")
 				testMethod(t, r, "POST")
-				testQuery(t, r, "include=settlements&testmode=true")
+				testQuery(t, r, "testmode=true")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -274,7 +273,7 @@ func TestPaymentsService_Create(t *testing.T) {
 			"create payments, an error is returned from the server",
 			args{
 				context.Background(),
-				Payment{},
+				PaymentAction{},
 				nil,
 			},
 			true,
@@ -286,7 +285,7 @@ func TestPaymentsService_Create(t *testing.T) {
 			"create payments, an error occurs when parsing json",
 			args{
 				context.Background(),
-				Payment{},
+				PaymentAction{},
 				nil,
 			},
 			true,
@@ -298,7 +297,7 @@ func TestPaymentsService_Create(t *testing.T) {
 			"create payments, invalid url when building request",
 			args{
 				context.Background(),
-				Payment{},
+				PaymentAction{},
 				nil,
 			},
 			true,
@@ -336,7 +335,7 @@ func TestPaymentsService_Update(t *testing.T) {
 	type args struct {
 		ctx     context.Context
 		id      string
-		payment Payment
+		payment PaymentAction
 	}
 	cases := []struct {
 		name    string
@@ -351,7 +350,7 @@ func TestPaymentsService_Update(t *testing.T) {
 			args{
 				context.Background(),
 				"tr_WDqYK6vllg",
-				Payment{
+				PaymentAction{
 					BillingEmail: "test@example.com",
 				},
 			},
@@ -373,7 +372,7 @@ func TestPaymentsService_Update(t *testing.T) {
 			args{
 				context.Background(),
 				"tr_WDqYK6vllg",
-				Payment{
+				PaymentAction{
 					BillingEmail: "test@example.com",
 				},
 			},
@@ -398,7 +397,7 @@ func TestPaymentsService_Update(t *testing.T) {
 			args{
 				context.Background(),
 				"tr_WDqYK6vllg",
-				Payment{},
+				PaymentAction{},
 			},
 			true,
 			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
@@ -410,7 +409,7 @@ func TestPaymentsService_Update(t *testing.T) {
 			args{
 				context.Background(),
 				"tr_WDqYK6vllg",
-				Payment{},
+				PaymentAction{},
 			},
 			true,
 			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
@@ -422,7 +421,7 @@ func TestPaymentsService_Update(t *testing.T) {
 			args{
 				context.Background(),
 				"tr_WDqYK6vllg",
-				Payment{},
+				PaymentAction{},
 			},
 			true,
 			errBadBaseURL,
