@@ -7,16 +7,13 @@ import (
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
 )
 
-type paymentLinksSuite struct{ suite.Suite }
+func TestPaymentLinkService_Get(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 
-func (ps *paymentLinksSuite) SetupSuite() { setEnv() }
-
-func (ps *paymentLinksSuite) TearDownSuite() { unsetEnv() }
-
-func (ps *paymentLinksSuite) TestPaymentLinkService_Get() {
 	type args struct {
 		ctx         context.Context
 		paymentLink string
@@ -42,8 +39,8 @@ func (ps *paymentLinksSuite) TestPaymentLinkService_Get() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -93,24 +90,27 @@ func (ps *paymentLinksSuite) TestPaymentLinkService_Get() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/payment-links/%s", c.args.paymentLink), c.handler)
 
 			res, m, err := tClient.PaymentLinks.Get(c.args.ctx, c.args.paymentLink)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&PaymentLink{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &PaymentLink{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *paymentLinksSuite) TestPaymentLinkService_Create() {
+func TestPaymentLinkService_Create(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx         context.Context
 		paymentLink PaymentLink
@@ -138,9 +138,9 @@ func (ps *paymentLinksSuite) TestPaymentLinkService_Create() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "POST")
-				testQuery(ps.T(), r, "profileId=prf_12312312")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "POST")
+				testQuery(t, r, "profileId=prf_12312312")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -190,24 +190,27 @@ func (ps *paymentLinksSuite) TestPaymentLinkService_Create() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/payment-links", c.handler)
 
 			res, m, err := tClient.PaymentLinks.Create(c.args.ctx, c.args.paymentLink, c.args.options)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&PaymentLink{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &PaymentLink{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *paymentLinksSuite) TestPaymentLinkService_List() {
+func TestPaymentLinkService_List(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx  context.Context
 		opts *PaymentLinkOptions
@@ -231,8 +234,8 @@ func (ps *paymentLinksSuite) TestPaymentLinkService_List() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -252,9 +255,9 @@ func (ps *paymentLinksSuite) TestPaymentLinkService_List() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "profileId=pfl_11211")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "profileId=pfl_11211")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -301,23 +304,19 @@ func (ps *paymentLinksSuite) TestPaymentLinkService_List() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/payment-links", c.handler)
 
 			res, m, err := tClient.PaymentLinks.List(c.args.ctx, c.args.opts)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&PaymentLinksList{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &PaymentLinksList{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
-}
-
-func TestPaymentLinksService(t *testing.T) {
-	suite.Run(t, new(paymentLinksSuite))
 }
