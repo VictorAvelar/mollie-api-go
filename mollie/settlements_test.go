@@ -7,16 +7,13 @@ import (
 	"testing"
 
 	"github.com/VictorAvelar/mollie-api-go/v4/testdata"
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/assert"
 )
 
-type settlementsServiceSuite struct{ suite.Suite }
+func TestSettlementsService_Get(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
 
-func (ps *settlementsServiceSuite) SetupSuite() { setEnv() }
-
-func (ps *settlementsServiceSuite) TearDownSuite() { unsetEnv() }
-
-func (ps *settlementsServiceSuite) TestSettlementsService_Get() {
 	type args struct {
 		ctx        context.Context
 		settlement string
@@ -39,8 +36,8 @@ func (ps *settlementsServiceSuite) TestSettlementsService_Get() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -87,24 +84,27 @@ func (ps *settlementsServiceSuite) TestSettlementsService_Get() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/settlements/%s", c.args.settlement), c.handler)
 
 			res, m, err := tClient.Settlements.Get(c.args.ctx, c.args.settlement)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&Settlement{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Settlement{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *settlementsServiceSuite) TestSettlementsService_Next() {
+func TestSettlementsService_Next(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx        context.Context
 		settlement string
@@ -127,8 +127,8 @@ func (ps *settlementsServiceSuite) TestSettlementsService_Next() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -175,24 +175,27 @@ func (ps *settlementsServiceSuite) TestSettlementsService_Next() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/settlements/%s", c.args.settlement), c.handler)
 
 			res, m, err := tClient.Settlements.Next(c.args.ctx)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&Settlement{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Settlement{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *settlementsServiceSuite) TestSettlementsService_Open() {
+func TestSettlementsService_Open(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx        context.Context
 		settlement string
@@ -215,8 +218,8 @@ func (ps *settlementsServiceSuite) TestSettlementsService_Open() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -263,24 +266,27 @@ func (ps *settlementsServiceSuite) TestSettlementsService_Open() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/settlements/%s", c.args.settlement), c.handler)
 
 			res, m, err := tClient.Settlements.Open(c.args.ctx)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&Settlement{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &Settlement{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *settlementsServiceSuite) TestSettlementsService_List() {
+func TestSettlementsService_List(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx     context.Context
 		options *SettlementsListOptions
@@ -305,9 +311,9 @@ func (ps *settlementsServiceSuite) TestSettlementsService_List() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "limit=40")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "limit=40")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -360,24 +366,27 @@ func (ps *settlementsServiceSuite) TestSettlementsService_List() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/settlements", c.handler)
 
 			res, m, err := tClient.Settlements.List(c.args.ctx, c.args.options)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&SettlementsList{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &SettlementsList{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *settlementsServiceSuite) TestSettlementsService_GetPayments() {
+func TestSettlementsService_GetPayments(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx        context.Context
 		settlement string
@@ -404,9 +413,9 @@ func (ps *settlementsServiceSuite) TestSettlementsService_GetPayments() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "limit=10")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "limit=10")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -462,24 +471,27 @@ func (ps *settlementsServiceSuite) TestSettlementsService_GetPayments() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/settlements/%s/payments", c.args.settlement), c.handler)
 
 			res, m, err := tClient.Settlements.GetPayments(c.args.ctx, c.args.settlement, c.args.options)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&PaymentList{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &PaymentList{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *settlementsServiceSuite) TestSettlementsService_GetCaptures() {
+func TestSettlementsService_GetCaptures(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx        context.Context
 		settlement string
@@ -506,9 +518,9 @@ func (ps *settlementsServiceSuite) TestSettlementsService_GetCaptures() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "limit=10")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "limit=10")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -564,24 +576,27 @@ func (ps *settlementsServiceSuite) TestSettlementsService_GetCaptures() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/settlements/%s/captures", c.args.settlement), c.handler)
 
 			res, m, err := tClient.Settlements.GetCaptures(c.args.ctx, c.args.settlement, c.args.options)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&CapturesList{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &CapturesList{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *settlementsServiceSuite) TestSettlementsService_GetChargebacks() {
+func TestSettlementsService_GetChargebacks(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx        context.Context
 		settlement string
@@ -608,9 +623,9 @@ func (ps *settlementsServiceSuite) TestSettlementsService_GetChargebacks() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "limit=10")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "limit=10")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -666,24 +681,27 @@ func (ps *settlementsServiceSuite) TestSettlementsService_GetChargebacks() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/settlements/%s/chargebacks", c.args.settlement), c.handler)
 
 			res, m, err := tClient.Settlements.GetChargebacks(c.args.ctx, c.args.settlement, c.args.options)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&ChargebacksList{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &ChargebacksList{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func (ps *settlementsServiceSuite) TestSettlementsService_GetRefunds() {
+func TestSettlementsService_GetRefunds(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx        context.Context
 		settlement string
@@ -710,9 +728,9 @@ func (ps *settlementsServiceSuite) TestSettlementsService_GetRefunds() {
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(ps.T(), r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(ps.T(), r, "GET")
-				testQuery(ps.T(), r, "limit=10")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "limit=10")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -768,23 +786,19 @@ func (ps *settlementsServiceSuite) TestSettlementsService_GetRefunds() {
 		setup()
 		defer teardown()
 
-		ps.T().Run(c.name, func(t *testing.T) {
+		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/settlements/%s/refunds", c.args.settlement), c.handler)
 
 			res, m, err := tClient.Settlements.GetRefunds(c.args.ctx, c.args.settlement, c.args.options)
 			if c.wantErr {
-				ps.NotNil(err)
-				ps.EqualError(err, c.err.Error())
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
 			} else {
-				ps.Nil(err)
-				ps.IsType(&RefundList{}, m)
-				ps.IsType(&http.Response{}, res.Response)
+				assert.Nil(t, err)
+				assert.IsType(t, &RefundList{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
-}
-
-func TestSettlementsService(t *testing.T) {
-	suite.Run(t, new(settlementsServiceSuite))
 }
