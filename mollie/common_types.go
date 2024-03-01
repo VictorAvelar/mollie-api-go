@@ -321,6 +321,15 @@ const (
 	TestMode Mode = "test"
 )
 
+// IncludeValue is a valid value for the Include query string parameter.
+type IncludeValue string
+
+// Supported Include values.
+const (
+	IncludeQrCode           IncludeValue = "details.qrCode"
+	IncludeRemainderDetails IncludeValue = "details.remainderDetails"
+)
+
 // EmbedValue describes the valid value of embed query string.
 type EmbedValue string
 
@@ -330,6 +339,7 @@ const (
 	EmbedRefund      EmbedValue = "refunds"
 	EmbedShipments   EmbedValue = "shipments"
 	EmbedChargebacks EmbedValue = "chargebacks"
+	EmbedCaptures    EmbedValue = "captures"
 )
 
 // Rate describes service rates, further divided into fixed and percentage costs.
