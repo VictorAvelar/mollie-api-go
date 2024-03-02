@@ -255,11 +255,11 @@ type PaymentOptions struct {
 
 // ListPaymentOptions describes list payments endpoint valid query string parameters.
 type ListPaymentOptions struct {
-	Limit     int    `url:"limit,omitempty"`
-	Include   string `url:"include,omitempty"`
-	Embed     string `url:"embed,omitempty"`
-	ProfileID string `url:"profileId,omitempty"`
-	From      string `url:"from,omitempty"`
+	Limit     int            `url:"limit,omitempty"`
+	Include   []IncludeValue `url:"include,omitempty"`
+	Embed     []EmbedValue   `url:"embed,omitempty"`
+	ProfileID string         `url:"profileId,omitempty"`
+	From      string         `url:"from,omitempty"`
 }
 
 // PaymentsService instance operates over payment resources.
