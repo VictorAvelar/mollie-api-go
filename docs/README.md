@@ -380,7 +380,7 @@ func CheckResponse(r *Response) error
 CheckResponse checks the API response for errors, and returns them if present. A response is considered an error if it has a status code outside the 200 range. API error responses are expected to have either no response body, or a JSON response body.
 
 <a name="AccessTokenPaymentFields"></a>
-## type [AccessTokenPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L226-L228>)
+## type [AccessTokenPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L224-L226>)
 
 AccessTokenPaymentFields describes the fields specific to payments created using an access token.
 
@@ -1711,7 +1711,7 @@ type ContextValues map[TransactionType]ContextValue
 ```
 
 <a name="CreateMollieConnectPaymentFields"></a>
-## type [CreateMollieConnectPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L137-L140>)
+## type [CreateMollieConnectPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L134-L137>)
 
 CreateMollieConnectPaymentFields describes the fields to be sent to the Mollie API when creating a new payment using Mollie Connect.
 
@@ -1725,13 +1725,13 @@ type CreateMollieConnectPaymentFields struct {
 ```
 
 <a name="CreatePayment"></a>
-## type [CreatePayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L68-L103>)
+## type [CreatePayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L65-L100>)
 
 CreatePayment describes the payload to be sent to the Mollie API when creating or updating a new payment.
 
 Some fields are only valid for specific payment methods, and are documented in the Mollie API reference.
 
-For payment creation, see: https://docs.mollie.com/reference/v2/payments-api/create-payment#payment-method-specific-parameters For payment updates, see: https://docs.mollie.com/reference/v2/payments-api/update-payment#payment-method-specific-parameters
+See: https://docs.mollie.com/reference/v2/payments-api/create-payment#payment-method-specific-parameters
 
 ```go
 type CreatePayment struct {
@@ -1773,7 +1773,7 @@ type CreatePayment struct {
 ```
 
 <a name="CreatePaymentAccessTokenFields"></a>
-## type [CreatePaymentAccessTokenFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L128-L131>)
+## type [CreatePaymentAccessTokenFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L125-L128>)
 
 CreatePaymentAccessTokenFields describes the fields to be sent to the Mollie API when creating a new payment using an access token.
 
@@ -1787,7 +1787,7 @@ type CreatePaymentAccessTokenFields struct {
 ```
 
 <a name="CreatePreAuthorizedPaymentFields"></a>
-## type [CreatePreAuthorizedPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L119-L122>)
+## type [CreatePreAuthorizedPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L116-L119>)
 
 CreatePreAuthorizedPaymentFields describes the fields to be sent to the Mollie API when creating a new pre\-authorized payment.
 
@@ -1801,7 +1801,7 @@ type CreatePreAuthorizedPaymentFields struct {
 ```
 
 <a name="CreateRecurrentPaymentFields"></a>
-## type [CreateRecurrentPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L109-L113>)
+## type [CreateRecurrentPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L106-L110>)
 
 CreateRecurrentPaymentFields describes the fields to be sent to the Mollie API when creating a new recurrent payment.
 
@@ -2389,7 +2389,7 @@ type ListPartnerClientsOptions struct {
 ```
 
 <a name="ListPaymentOptions"></a>
-## type [ListPaymentOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L259-L265>)
+## type [ListPaymentOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L257-L263>)
 
 ListPaymentOptions describes list payments endpoint valid query string parameters.
 
@@ -2667,7 +2667,7 @@ const (
 ```
 
 <a name="MollieConnectPaymentFields"></a>
-## type [MollieConnectPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L221-L223>)
+## type [MollieConnectPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L219-L221>)
 
 MollieConnectPaymentFields describes the fields specific to Mollie Connect payments.
 
@@ -3518,7 +3518,7 @@ const (
 ```
 
 <a name="Payment"></a>
-## type [Payment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L163-L203>)
+## type [Payment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L161-L201>)
 
 Payment describes a transaction between a customer and a merchant.
 
@@ -3708,7 +3708,7 @@ type PaymentLinkOptions struct {
 ```
 
 <a name="PaymentLinks"></a>
-## type [PaymentLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L232-L248>)
+## type [PaymentLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L230-L246>)
 
 PaymentLinks describes all the possible links to be returned with a payment object.
 
@@ -3790,7 +3790,7 @@ List retrieves all payments links created with the current website profile, orde
 See: https://docs.mollie.com/reference/v2/payment-links-api/list-payment-links
 
 <a name="PaymentList"></a>
-## type [PaymentList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L349-L355>)
+## type [PaymentList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L347-L353>)
 
 PaymentList describes how a list of payments will be retrieved by Mollie.
 
@@ -4000,7 +4000,7 @@ The results are not paginated.
 See: https://docs.mollie.com/reference/v2/methods-api/list-methods
 
 <a name="PaymentOptions"></a>
-## type [PaymentOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L253-L256>)
+## type [PaymentOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L251-L254>)
 
 PaymentOptions describes payments endpoint valid query string parameters.
 
@@ -4027,7 +4027,7 @@ type PaymentRouting struct {
 ```
 
 <a name="PaymentsService"></a>
-## type [PaymentsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L268>)
+## type [PaymentsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L266>)
 
 PaymentsService instance operates over payment resources.
 
@@ -4036,7 +4036,7 @@ type PaymentsService service
 ```
 
 <a name="PaymentsService.Cancel"></a>
-### func \(\*PaymentsService\) [Cancel](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L315>)
+### func \(\*PaymentsService\) [Cancel](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L313>)
 
 ```go
 func (ps *PaymentsService) Cancel(ctx context.Context, id string) (res *Response, p *Payment, err error)
@@ -4047,7 +4047,7 @@ Cancel removes a payment \(if possible\) from your Mollie account.
 See: https://docs.mollie.com/reference/v2/payments-api/cancel-payment
 
 <a name="PaymentsService.Create"></a>
-### func \(\*PaymentsService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L291-L295>)
+### func \(\*PaymentsService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L289-L293>)
 
 ```go
 func (ps *PaymentsService) Create(ctx context.Context, p CreatePayment, opts *PaymentOptions) (res *Response, np *Payment, err error)
@@ -4058,7 +4058,7 @@ Create stores a new payment object attached to your Mollie account.
 See: https://docs.mollie.com/reference/v2/payments-api/create-payment#
 
 <a name="PaymentsService.Get"></a>
-### func \(\*PaymentsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L271-L275>)
+### func \(\*PaymentsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L269-L273>)
 
 ```go
 func (ps *PaymentsService) Get(ctx context.Context, id string, opts *PaymentOptions) (res *Response, p *Payment, err error)
@@ -4067,7 +4067,7 @@ func (ps *PaymentsService) Get(ctx context.Context, id string, opts *PaymentOpti
 Get retrieves a single payment object by its payment token.
 
 <a name="PaymentsService.List"></a>
-### func \(\*PaymentsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L360-L364>)
+### func \(\*PaymentsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L358-L362>)
 
 ```go
 func (ps *PaymentsService) List(ctx context.Context, opts *ListPaymentOptions) (res *Response, pl *PaymentList, err error)
@@ -4078,7 +4078,7 @@ List retrieves a list of payments associated with your account/organization.
 See: https://docs.mollie.com/reference/v2/payments-api/list-payments
 
 <a name="PaymentsService.Update"></a>
-### func \(\*PaymentsService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L331-L335>)
+### func \(\*PaymentsService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L329-L333>)
 
 ```go
 func (ps *PaymentsService) Update(ctx context.Context, id string, up UpdatePayment) (res *Response, p *Payment, err error)
@@ -4208,7 +4208,7 @@ type PhoneNumber string
 ```
 
 <a name="PreAuthorizedPaymentFields"></a>
-## type [PreAuthorizedPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L214-L218>)
+## type [PreAuthorizedPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L212-L216>)
 
 PreAuthorizedPaymentFields describes the fields specific to pre\-authorized payments.
 
@@ -4481,7 +4481,7 @@ type Rate struct {
 ```
 
 <a name="RecurrentPaymentFields"></a>
-## type [RecurrentPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L206-L211>)
+## type [RecurrentPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L204-L209>)
 
 RecurrentPaymentFields describes the fields specific to recurrent payments.
 
@@ -5431,11 +5431,11 @@ type URL struct {
 ```
 
 <a name="UpdatePayment"></a>
-## type [UpdatePayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L146-L160>)
+## type [UpdatePayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L144-L158>)
 
 UpdatePayment describes the payload to be sent to the Mollie API when updating a payment.
 
-See: https://docs.mollie.com/reference/v2/payments-api/update-payment
+See: https://docs.mollie.com/reference/v2/payments-api/update-payment See: https://docs.mollie.com/reference/v2/payments-api/update-payment#payment-method-specific-parameters
 
 ```go
 type UpdatePayment struct {
