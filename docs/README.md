@@ -20,6 +20,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 
 - [Constants](<#constants>)
 - [func CheckResponse\(r \*Response\) error](<#CheckResponse>)
+- [type AccessTokenPaymentFields](<#AccessTokenPaymentFields>)
 - [type Address](<#Address>)
 - [type Amount](<#Amount>)
 - [type ApplePaymentSession](<#ApplePaymentSession>)
@@ -54,6 +55,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type BusinessCategory](<#BusinessCategory>)
 - [type Capture](<#Capture>)
 - [type CaptureLinks](<#CaptureLinks>)
+- [type CaptureMode](<#CaptureMode>)
 - [type CapturesList](<#CapturesList>)
 - [type CapturesService](<#CapturesService>)
   - [func \(cs \*CapturesService\) Get\(ctx context.Context, payment, capture string\) \(res \*Response, c \*Capture, err error\)](<#CapturesService.Get>)
@@ -96,6 +98,11 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
   - [func \(c \*Config\) ToggleTesting\(\) bool](<#Config.ToggleTesting>)
 - [type ContextValue](<#ContextValue>)
 - [type ContextValues](<#ContextValues>)
+- [type CreateMollieConnectPaymentFields](<#CreateMollieConnectPaymentFields>)
+- [type CreatePayment](<#CreatePayment>)
+- [type CreatePaymentAccessTokenFields](<#CreatePaymentAccessTokenFields>)
+- [type CreatePreAuthorizedPaymentFields](<#CreatePreAuthorizedPaymentFields>)
+- [type CreateRecurrentPaymentFields](<#CreateRecurrentPaymentFields>)
 - [type CreateShipmentRequest](<#CreateShipmentRequest>)
 - [type Customer](<#Customer>)
 - [type CustomerLinks](<#CustomerLinks>)
@@ -103,7 +110,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type CustomersListOptions](<#CustomersListOptions>)
 - [type CustomersService](<#CustomersService>)
   - [func \(cs \*CustomersService\) Create\(ctx context.Context, c Customer\) \(res \*Response, cc \*Customer, err error\)](<#CustomersService.Create>)
-  - [func \(cs \*CustomersService\) CreatePayment\(ctx context.Context, id string, p Payment\) \(res \*Response, pp \*Payment, err error\)](<#CustomersService.CreatePayment>)
+  - [func \(cs \*CustomersService\) CreatePayment\(ctx context.Context, id string, p CreatePayment\) \(res \*Response, pp \*Payment, err error\)](<#CustomersService.CreatePayment>)
   - [func \(cs \*CustomersService\) Delete\(ctx context.Context, id string\) \(res \*Response, err error\)](<#CustomersService.Delete>)
   - [func \(cs \*CustomersService\) Get\(ctx context.Context, id string\) \(res \*Response, c \*Customer, err error\)](<#CustomersService.Get>)
   - [func \(cs \*CustomersService\) GetPayments\(ctx context.Context, id string, options \*CustomersListOptions\) \(res \*Response, pl \*PaymentList, err error\)](<#CustomersService.GetPayments>)
@@ -121,6 +128,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type GiftCardIssuerStatus](<#GiftCardIssuerStatus>)
 - [type GiftCardLinks](<#GiftCardLinks>)
 - [type Image](<#Image>)
+- [type IncludeValue](<#IncludeValue>)
 - [type Invoice](<#Invoice>)
 - [type InvoiceLinks](<#InvoiceLinks>)
 - [type InvoiceStatus](<#InvoiceStatus>)
@@ -149,6 +157,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type MiscellaneousService](<#MiscellaneousService>)
   - [func \(ms \*MiscellaneousService\) ApplePaymentSession\(ctx context.Context, asr \*ApplePaymentSessionRequest\) \(res \*Response, aps \*ApplePaymentSession, err error\)](<#MiscellaneousService.ApplePaymentSession>)
 - [type Mode](<#Mode>)
+- [type MollieConnectPaymentFields](<#MollieConnectPaymentFields>)
 - [type Onboarding](<#Onboarding>)
 - [type OnboardingData](<#OnboardingData>)
 - [type OnboardingDataOrganization](<#OnboardingDataOrganization>)
@@ -206,6 +215,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
   - [func \(ps \*PartnerService\) List\(ctx context.Context, opts \*ListPartnerClientsOptions\) \(res \*Response, pc \*PartnerClientList, err error\)](<#PartnerService.List>)
 - [type PartnerType](<#PartnerType>)
 - [type Payment](<#Payment>)
+- [type PaymentDestination](<#PaymentDestination>)
 - [type PaymentDetails](<#PaymentDetails>)
 - [type PaymentDetailsAddress](<#PaymentDetailsAddress>)
 - [type PaymentLink](<#PaymentLink>)
@@ -231,12 +241,13 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
   - [func \(ms \*PaymentMethodsService\) Get\(ctx context.Context, id PaymentMethod, options \*PaymentMethodOptions\) \(res \*Response, pmd \*PaymentMethodDetails, err error\)](<#PaymentMethodsService.Get>)
   - [func \(ms \*PaymentMethodsService\) List\(ctx context.Context, options \*PaymentMethodsListOptions\) \(res \*Response, pm \*PaymentMethodsList, err error\)](<#PaymentMethodsService.List>)
 - [type PaymentOptions](<#PaymentOptions>)
+- [type PaymentRouting](<#PaymentRouting>)
 - [type PaymentsService](<#PaymentsService>)
   - [func \(ps \*PaymentsService\) Cancel\(ctx context.Context, id string\) \(res \*Response, p \*Payment, err error\)](<#PaymentsService.Cancel>)
-  - [func \(ps \*PaymentsService\) Create\(ctx context.Context, p Payment, opts \*PaymentOptions\) \(res \*Response, np \*Payment, err error\)](<#PaymentsService.Create>)
+  - [func \(ps \*PaymentsService\) Create\(ctx context.Context, p CreatePayment, opts \*PaymentOptions\) \(res \*Response, np \*Payment, err error\)](<#PaymentsService.Create>)
   - [func \(ps \*PaymentsService\) Get\(ctx context.Context, id string, opts \*PaymentOptions\) \(res \*Response, p \*Payment, err error\)](<#PaymentsService.Get>)
   - [func \(ps \*PaymentsService\) List\(ctx context.Context, opts \*ListPaymentOptions\) \(res \*Response, pl \*PaymentList, err error\)](<#PaymentsService.List>)
-  - [func \(ps \*PaymentsService\) Update\(ctx context.Context, id string, up Payment\) \(res \*Response, p \*Payment, err error\)](<#PaymentsService.Update>)
+  - [func \(ps \*PaymentsService\) Update\(ctx context.Context, id string, up UpdatePayment\) \(res \*Response, p \*Payment, err error\)](<#PaymentsService.Update>)
 - [type Permission](<#Permission>)
 - [type PermissionGrant](<#PermissionGrant>)
 - [type PermissionLinks](<#PermissionLinks>)
@@ -245,6 +256,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
   - [func \(ps \*PermissionsService\) Get\(ctx context.Context, id PermissionGrant\) \(res \*Response, p \*Permission, err error\)](<#PermissionsService.Get>)
   - [func \(ps \*PermissionsService\) List\(ctx context.Context\) \(res \*Response, pl \*PermissionsList, err error\)](<#PermissionsService.List>)
 - [type PhoneNumber](<#PhoneNumber>)
+- [type PreAuthorizedPaymentFields](<#PreAuthorizedPaymentFields>)
 - [type ProductType](<#ProductType>)
 - [type Profile](<#Profile>)
 - [type ProfileLinks](<#ProfileLinks>)
@@ -266,6 +278,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
   - [func \(ps \*ProfilesService\) Update\(ctx context.Context, id string, up \*Profile\) \(res \*Response, p \*Profile, err error\)](<#ProfilesService.Update>)
 - [type QRCode](<#QRCode>)
 - [type Rate](<#Rate>)
+- [type RecurrentPaymentFields](<#RecurrentPaymentFields>)
 - [type Refund](<#Refund>)
 - [type RefundLinks](<#RefundLinks>)
 - [type RefundList](<#RefundList>)
@@ -334,6 +347,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type TransferDestination](<#TransferDestination>)
 - [type TransferFrequency](<#TransferFrequency>)
 - [type URL](<#URL>)
+- [type UpdatePayment](<#UpdatePayment>)
 - [type UsedGiftCard](<#UsedGiftCard>)
 - [type UserAgentToken](<#UserAgentToken>)
 
@@ -364,6 +378,17 @@ func CheckResponse(r *Response) error
 ```
 
 CheckResponse checks the API response for errors, and returns them if present. A response is considered an error if it has a status code outside the 200 range. API error responses are expected to have either no response body, or a JSON response body.
+
+<a name="AccessTokenPaymentFields"></a>
+## type [AccessTokenPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L226-L228>)
+
+AccessTokenPaymentFields describes the fields specific to payments created using an access token.
+
+```go
+type AccessTokenPaymentFields struct {
+    Testmode bool `json:"testmode,omitempty"`
+}
+```
 
 <a name="Address"></a>
 ## type [Address](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L23-L32>)
@@ -961,7 +986,7 @@ const (
 ```
 
 <a name="Capture"></a>
-## type [Capture](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L24-L35>)
+## type [Capture](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L33-L44>)
 
 Capture describes a single capture. Captures are used for payments that have the authorize\-then\-capture flow.
 
@@ -981,7 +1006,7 @@ type Capture struct {
 ```
 
 <a name="CaptureLinks"></a>
-## type [CaptureLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L14-L20>)
+## type [CaptureLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L23-L29>)
 
 CaptureLinks contains relevant links for a capture object.
 
@@ -995,8 +1020,26 @@ type CaptureLinks struct {
 }
 ```
 
+<a name="CaptureMode"></a>
+## type [CaptureMode](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L11>)
+
+CaptureMode describes the mode of a capture.
+
+```go
+type CaptureMode string
+```
+
+<a name="AutomaticCapture"></a>CaptureMode possible values.
+
+```go
+const (
+    AutomaticCapture CaptureMode = "automatic"
+    ManualCapture    CaptureMode = "manual"
+)
+```
+
 <a name="CapturesList"></a>
-## type [CapturesList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L38-L44>)
+## type [CapturesList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L47-L53>)
 
 CapturesList describes a list of captures.
 
@@ -1011,7 +1054,7 @@ type CapturesList struct {
 ```
 
 <a name="CapturesService"></a>
-## type [CapturesService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L11>)
+## type [CapturesService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L20>)
 
 CapturesService operates over captures resource.
 
@@ -1020,7 +1063,7 @@ type CapturesService service
 ```
 
 <a name="CapturesService.Get"></a>
-### func \(\*CapturesService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L50>)
+### func \(\*CapturesService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L59>)
 
 ```go
 func (cs *CapturesService) Get(ctx context.Context, payment, capture string) (res *Response, c *Capture, err error)
@@ -1031,7 +1074,7 @@ Get retrieves a single capture by its ID. Note the original payment’s ID is ne
 See: https://docs.mollie.com/reference/v2/captures-api/get-capture
 
 <a name="CapturesService.List"></a>
-### func \(\*CapturesService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L68>)
+### func \(\*CapturesService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L77>)
 
 ```go
 func (cs *CapturesService) List(ctx context.Context, payment string) (res *Response, cl *CapturesList, err error)
@@ -1667,6 +1710,111 @@ ContextValues is a map of TransactionType to ContextValue.
 type ContextValues map[TransactionType]ContextValue
 ```
 
+<a name="CreateMollieConnectPaymentFields"></a>
+## type [CreateMollieConnectPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L137-L140>)
+
+CreateMollieConnectPaymentFields describes the fields to be sent to the Mollie API when creating a new payment using Mollie Connect.
+
+See: https://docs.mollie.com/reference/v2/payments-api/create-payment#mollie-connect-parameters
+
+```go
+type CreateMollieConnectPaymentFields struct {
+    ApplicationFee *ApplicationFee   `json:"applicationFee,omitempty"`
+    Routing        []*PaymentRouting `json:"routing,omitempty"`
+}
+```
+
+<a name="CreatePayment"></a>
+## type [CreatePayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L68-L103>)
+
+CreatePayment describes the payload to be sent to the Mollie API when creating or updating a new payment.
+
+Some fields are only valid for specific payment methods, and are documented in the Mollie API reference.
+
+For payment creation, see: https://docs.mollie.com/reference/v2/payments-api/create-payment#payment-method-specific-parameters For payment updates, see: https://docs.mollie.com/reference/v2/payments-api/update-payment#payment-method-specific-parameters
+
+```go
+type CreatePayment struct {
+    Description                     string          `json:"description,omitempty"`
+    RedirectURL                     string          `json:"redirectUrl,omitempty"`
+    CancelURL                       string          `json:"cancelUrl,omitempty"`
+    WebhookURL                      string          `json:"webhookUrl,omitempty"`
+    RestrictPaymentMethodsToCountry string          `json:"restrictPaymentMethodsToCountry,omitempty"`
+    Amount                          *Amount         `json:"amount,omitempty"`
+    Locale                          Locale          `json:"locale,omitempty"`
+    Method                          []PaymentMethod `json:"method,omitempty"`
+    Metadata                        any             `json:"metadata,omitempty"`
+
+    // PaymentMethods specific fields
+    DigitalGoods         bool       `json:"digitalGoods,omitempty"`
+    ApplePayPaymentToken string     `json:"applePayPaymentToken,omitempty"`
+    BillingEmail         string     `json:"billingEmail,omitempty"`
+    CardToken            string     `json:"cardToken,omitempty"`
+    VoucherNumber        string     `json:"voucherNumber,omitempty"`
+    VoucherPin           string     `json:"voucherPin,omitempty"`
+    Issuer               string     `json:"issuer,omitempty"`
+    ExtraMerchantData    string     `json:"extraMerchantData,omitempty"`
+    SessionID            string     `json:"sessionId,omitempty"`
+    CustomerReference    string     `json:"customerReference,omitempty"`
+    TerminalID           string     `json:"terminalId,omitempty"`
+    ConsumerName         string     `json:"consumerName,omitempty"`
+    ConsumerAccount      string     `json:"consumerAccount,omitempty"`
+    DueDate              *ShortDate `json:"dueDate,omitempty"`
+    ShippingAddress      *Address   `json:"shippingAddress,omitempty"`
+    BillingAddress       *Address   `json:"billingAddress,omitempty"`
+    Company              *Company   `json:"company,omitempty"`
+
+    // Other case specific fields
+    CreateRecurrentPaymentFields
+    CreatePreAuthorizedPaymentFields
+    CreatePaymentAccessTokenFields
+    CreateMollieConnectPaymentFields
+}
+```
+
+<a name="CreatePaymentAccessTokenFields"></a>
+## type [CreatePaymentAccessTokenFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L128-L131>)
+
+CreatePaymentAccessTokenFields describes the fields to be sent to the Mollie API when creating a new payment using an access token.
+
+See: https://docs.mollie.com/reference/v2/payments-api/create-payment#access-token-parameters
+
+```go
+type CreatePaymentAccessTokenFields struct {
+    ProfileID string `json:"profileId,omitempty"`
+    Testmode  bool   `json:"testmode,omitempty"`
+}
+```
+
+<a name="CreatePreAuthorizedPaymentFields"></a>
+## type [CreatePreAuthorizedPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L119-L122>)
+
+CreatePreAuthorizedPaymentFields describes the fields to be sent to the Mollie API when creating a new pre\-authorized payment.
+
+See: https://docs.mollie.com/reference/v2/payments-api/create-payment#parameters-for-pre-authorized-payments
+
+```go
+type CreatePreAuthorizedPaymentFields struct {
+    CaptureDelay string      `json:"captureDelay,omitempty"`
+    CaptureMode  CaptureMode `json:"captureMode,omitempty"`
+}
+```
+
+<a name="CreateRecurrentPaymentFields"></a>
+## type [CreateRecurrentPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L109-L113>)
+
+CreateRecurrentPaymentFields describes the fields to be sent to the Mollie API when creating a new recurrent payment.
+
+See: https://docs.mollie.com/reference/v2/payments-api/create-payment#parameters-for-recurring-payments
+
+```go
+type CreateRecurrentPaymentFields struct {
+    CustomerID   string       `json:"customerId,omitempty"`
+    MandateID    string       `json:"mandateId,omitempty"`
+    SequenceType SequenceType `json:"sequenceType,omitempty"`
+}
+```
+
 <a name="CreateShipmentRequest"></a>
 ## type [CreateShipmentRequest](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L61-L65>)
 
@@ -1769,7 +1917,7 @@ See: https://docs.mollie.com/reference/v2/customers-api/create-customer
 ### func \(\*CustomersService\) [CreatePayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L173-L177>)
 
 ```go
-func (cs *CustomersService) CreatePayment(ctx context.Context, id string, p Payment) (res *Response, pp *Payment, err error)
+func (cs *CustomersService) CreatePayment(ctx context.Context, id string, p CreatePayment) (res *Response, pp *Payment, err error)
 ```
 
 CreatePayment creates a payment for the customer.
@@ -1857,7 +2005,7 @@ const (
 ```
 
 <a name="EmbedValue"></a>
-## type [EmbedValue](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L325>)
+## type [EmbedValue](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L334>)
 
 EmbedValue describes the valid value of embed query string.
 
@@ -1873,6 +2021,7 @@ const (
     EmbedRefund      EmbedValue = "refunds"
     EmbedShipments   EmbedValue = "shipments"
     EmbedChargebacks EmbedValue = "chargebacks"
+    EmbedCaptures    EmbedValue = "captures"
 )
 ```
 
@@ -2069,7 +2218,7 @@ type GiftCardLinks struct {
 ```
 
 <a name="Image"></a>
-## type [Image](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L342-L346>)
+## type [Image](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L352-L356>)
 
 Image describes a generic image resource retrieved by Mollie.
 
@@ -2079,6 +2228,24 @@ type Image struct {
     Size2X string `json:"size2X,omitempty"`
     Svg    string `json:"svg,omitempty"`
 }
+```
+
+<a name="IncludeValue"></a>
+## type [IncludeValue](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L325>)
+
+IncludeValue is a valid value for the Include query string parameter.
+
+```go
+type IncludeValue string
+```
+
+<a name="IncludeQrCode"></a>Supported Include values.
+
+```go
+const (
+    IncludeQrCode           IncludeValue = "details.qrCode"
+    IncludeRemainderDetails IncludeValue = "details.remainderDetails"
+)
 ```
 
 <a name="Invoice"></a>
@@ -2222,7 +2389,7 @@ type ListPartnerClientsOptions struct {
 ```
 
 <a name="ListPaymentOptions"></a>
-## type [ListPaymentOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L129-L135>)
+## type [ListPaymentOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L259-L265>)
 
 ListPaymentOptions describes list payments endpoint valid query string parameters.
 
@@ -2497,6 +2664,17 @@ const (
     LiveMode Mode = "live"
     TestMode Mode = "test"
 )
+```
+
+<a name="MollieConnectPaymentFields"></a>
+## type [MollieConnectPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L221-L223>)
+
+MollieConnectPaymentFields describes the fields specific to Mollie Connect payments.
+
+```go
+type MollieConnectPaymentFields struct {
+    ApplicationFee *ApplicationFee `json:"applicationFee,omitempty"`
+}
 ```
 
 <a name="Onboarding"></a>
@@ -3218,7 +3396,7 @@ GetPartnerStatus retrieves details about the partner status of the currently aut
 See: https://docs.mollie.com/reference/v2/organizations-api/get-partner
 
 <a name="Owner"></a>
-## type [Owner](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L349-L354>)
+## type [Owner](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L359-L364>)
 
 Personal data of your customer.
 
@@ -3340,66 +3518,63 @@ const (
 ```
 
 <a name="Payment"></a>
-## type [Payment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L45-L100>)
+## type [Payment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L163-L203>)
 
 Payment describes a transaction between a customer and a merchant.
 
 ```go
 type Payment struct {
-    IsCancellable                   bool                   `json:"isCancellable,omitempty"`
-    TestMode                        bool                   `json:"testmode,omitempty"`
-    DigitalGoods                    bool                   `json:"digitalGoods,omitempty"`
-    ApplePayPaymentToken            string                 `json:"applePayPaymentToken,omitempty"`
-    BillingEmail                    string                 `json:"billingEmail,omitempty"`
-    CardToken                       string                 `json:"cardToken,omitempty"`
-    Issuer                          string                 `json:"issuer,omitempty"`
-    VoucherNumber                   string                 `json:"voucherNumber,omitempty"`
-    VoucherPin                      string                 `json:"voucherPin,omitempty"`
-    ExtraMerchantData               string                 `json:"extraMerchantData,omitempty"`
-    SessionID                       string                 `json:"sessionId,omitempty"`
-    CustomerReference               string                 `json:"customerReference,omitempty"`
-    ConsumerName                    string                 `json:"consumerName,omitempty"`
-    ConsumerAccount                 string                 `json:"consumerAccount,omitempty"`
-    WebhookURL                      string                 `json:"webhookUrl,omitempty"`
-    Resource                        string                 `json:"resource,omitempty"`
-    ID                              string                 `json:"id,omitempty"`
-    MandateID                       string                 `json:"mandateId,omitempty"`
-    OrderID                         string                 `json:"orderId,omitempty"`
-    ProfileID                       string                 `json:"profileId,omitempty"`
-    SettlementID                    string                 `json:"settlementId,omitempty"`
-    CustomerID                      string                 `json:"customerId,omitempty"`
-    Status                          string                 `json:"status,omitempty"`
-    Description                     string                 `json:"description,omitempty"`
-    RedirectURL                     string                 `json:"redirectUrl,omitempty"`
-    CountryCode                     string                 `json:"countryCode,omitempty"`
-    SubscriptionID                  string                 `json:"subscriptionId,omitempty"`
-    CancelURL                       string                 `json:"cancelUrl,omitempty"`
-    Metadata                        interface{}            `json:"metadata,omitempty"`
-    Amount                          *Amount                `json:"amount,omitempty"`
-    AmountRefunded                  *Amount                `json:"amountRefunded,omitempty"`
-    AmountRemaining                 *Amount                `json:"amountRemaining,omitempty"`
-    AmountCaptured                  *Amount                `json:"amountCaptured,omitempty"`
-    AmountChargedBack               *Amount                `json:"amountChargedBack,omitempty"`
-    SettlementAmount                *Amount                `json:"settlementAmount,omitempty"`
-    ApplicationFee                  *ApplicationFee        `json:"applicationFee,omitempty"`
-    Details                         *PaymentDetails        `json:"details,omitempty"`
-    CreatedAt                       *time.Time             `json:"createdAt,omitempty"`
-    AuthorizedAt                    *time.Time             `json:"authorizedAt,omitempty"`
-    PaidAt                          *time.Time             `json:"paidAt,omitempty"`
-    CanceledAt                      *time.Time             `json:"canceledAt,omitempty"`
-    ExpiresAt                       *time.Time             `json:"expiresAt,omitempty"`
-    ExpiredAt                       *time.Time             `json:"expiredAt,omitempty"`
-    FailedAt                        *time.Time             `json:"failedAt,omitempty"`
-    DueDate                         *ShortDate             `json:"dueDate,omitempty"`
-    BillingAddress                  *Address               `json:"billingAddress,omitempty"`
-    ShippingAddress                 *PaymentDetailsAddress `json:"shippingAddress,omitempty"`
-    Mode                            Mode                   `json:"mode,omitempty"`
-    Locale                          Locale                 `json:"locale,omitempty"`
-    RestrictPaymentMethodsToCountry Locale                 `json:"restrictPaymentMethodsToCountry,omitempty"`
-    Method                          PaymentMethod          `json:"method,omitempty"`
-    Links                           PaymentLinks           `json:"_links,omitempty"`
-    SequenceType                    SequenceType           `json:"sequenceType,omitempty"`
-    Company                         Company                `json:"company,omitempty"`
+    Resource                        string        `json:"resource,omitempty"`
+    ID                              string        `json:"id,omitempty"`
+    Status                          string        `json:"status,omitempty"`
+    Description                     string        `json:"description,omitempty"`
+    CancelURL                       string        `json:"cancelUrl,omitempty"`
+    WebhookURL                      string        `json:"webhookUrl,omitempty"`
+    CountryCode                     string        `json:"countryCode,omitempty"`
+    RestrictPaymentMethodsToCountry string        `json:"restrictPaymentMethodsToCountry,omitempty"`
+    ProfileID                       string        `json:"profileId,omitempty"`
+    SettlementID                    string        `json:"settlementId,omitempty"`
+    OrderID                         string        `json:"orderId,omitempty"`
+    IsCancelable                    bool          `json:"isCancelable,omitempty"`
+    Mode                            Mode          `json:"mode,omitempty"`
+    Locale                          Locale        `json:"locale,omitempty"`
+    Method                          PaymentMethod `json:"method,omitempty"`
+    Metadata                        any           `json:"metadata,omitempty"`
+    Links                           PaymentLinks  `json:"_links,omitempty"`
+    CreatedAt                       *time.Time    `json:"createdAt,omitempty"`
+    AuthorizedAt                    *time.Time    `json:"authorizedAt,omitempty"`
+    PaidAt                          *time.Time    `json:"paidAt,omitempty"`
+    CanceledAt                      *time.Time    `json:"canceledAt,omitempty"`
+    ExpiresAt                       *time.Time    `json:"expiresAt,omitempty"`
+    ExpiredAt                       *time.Time    `json:"expiredAt,omitempty"`
+    FailedAt                        *time.Time    `json:"failedAt,omitempty"`
+    Amount                          *Amount       `json:"amount,omitempty"`
+    AmountRefunded                  *Amount       `json:"amountRefunded,omitempty"`
+    AmountRemaining                 *Amount       `json:"amountRemaining,omitempty"`
+    AmountCaptured                  *Amount       `json:"amountCaptured,omitempty"`
+    AmountChargedBack               *Amount       `json:"amountChargeback,omitempty"`
+    SettlementAmount                *Amount       `json:"settlementAmount,omitempty"`
+
+    // PaymentMethods specific fields
+    Details PaymentDetails `json:"details,omitempty"`
+
+    // Other case specific fields
+    RecurrentPaymentFields
+    PreAuthorizedPaymentFields
+    MollieConnectPaymentFields
+    AccessTokenPaymentFields
+}
+```
+
+<a name="PaymentDestination"></a>
+## type [PaymentDestination](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L53-L56>)
+
+PaymentDestination describes the destination of a payment.
+
+```go
+type PaymentDestination struct {
+    Kind           string `json:"type,omitempty"`
+    OrganizationID string `json:"organizationId,omitempty"`
 }
 ```
 
@@ -3533,7 +3708,7 @@ type PaymentLinkOptions struct {
 ```
 
 <a name="PaymentLinks"></a>
-## type [PaymentLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L104-L118>)
+## type [PaymentLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L232-L248>)
 
 PaymentLinks describes all the possible links to be returned with a payment object.
 
@@ -3552,6 +3727,8 @@ type PaymentLinks struct {
     Customer           *URL `json:"customer,omitempty"`
     Order              *URL `json:"order,omitempty"`
     Dashboard          *URL `json:"dashboard,omitempty"`
+    MobileAppCheckout  *URL `json:"mobileAppCheckout,omitempty"`
+    Terminal           *URL `json:"terminal,omitempty"`
 }
 ```
 
@@ -3613,7 +3790,7 @@ List retrieves all payments links created with the current website profile, orde
 See: https://docs.mollie.com/reference/v2/payment-links-api/list-payment-links
 
 <a name="PaymentList"></a>
-## type [PaymentList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L215-L221>)
+## type [PaymentList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L349-L355>)
 
 PaymentList describes how a list of payments will be retrieved by Mollie.
 
@@ -3643,6 +3820,7 @@ const (
     Bancontact     PaymentMethod = "bancontact"
     BankTransfer   PaymentMethod = "banktransfer"
     Belfius        PaymentMethod = "belfius"
+    CBC            PaymentMethod = "cbc"
     CreditCard     PaymentMethod = "creditcard"
     DirectDebit    PaymentMethod = "directdebit"
     EPS            PaymentMethod = "eps"
@@ -3822,7 +4000,7 @@ The results are not paginated.
 See: https://docs.mollie.com/reference/v2/methods-api/list-methods
 
 <a name="PaymentOptions"></a>
-## type [PaymentOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L123-L126>)
+## type [PaymentOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L253-L256>)
 
 PaymentOptions describes payments endpoint valid query string parameters.
 
@@ -3830,13 +4008,26 @@ See: https://docs.mollie.com/reference/v2/payments-api/get-payment
 
 ```go
 type PaymentOptions struct {
-    Include string `url:"include,omitempty"`
-    Embed   string `url:"embed,omitempty"`
+    Include []IncludeValue `url:"include,omitempty"`
+    Embed   []EmbedValue   `url:"embed,omitempty"`
+}
+```
+
+<a name="PaymentRouting"></a>
+## type [PaymentRouting](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L46-L50>)
+
+PaymentRouting describes the routing of a payment.
+
+```go
+type PaymentRouting struct {
+    Destination PaymentDestination `json:"destination,omitempty"`
+    Amount      *Amount            `json:"amount,omitempty"`
+    ReleaseDate *ShortDate         `json:"releaseDate,omitempty"`
 }
 ```
 
 <a name="PaymentsService"></a>
-## type [PaymentsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L138>)
+## type [PaymentsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L268>)
 
 PaymentsService instance operates over payment resources.
 
@@ -3845,7 +4036,7 @@ type PaymentsService service
 ```
 
 <a name="PaymentsService.Cancel"></a>
-### func \(\*PaymentsService\) [Cancel](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L185>)
+### func \(\*PaymentsService\) [Cancel](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L315>)
 
 ```go
 func (ps *PaymentsService) Cancel(ctx context.Context, id string) (res *Response, p *Payment, err error)
@@ -3856,10 +4047,10 @@ Cancel removes a payment \(if possible\) from your Mollie account.
 See: https://docs.mollie.com/reference/v2/payments-api/cancel-payment
 
 <a name="PaymentsService.Create"></a>
-### func \(\*PaymentsService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L161-L165>)
+### func \(\*PaymentsService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L291-L295>)
 
 ```go
-func (ps *PaymentsService) Create(ctx context.Context, p Payment, opts *PaymentOptions) (res *Response, np *Payment, err error)
+func (ps *PaymentsService) Create(ctx context.Context, p CreatePayment, opts *PaymentOptions) (res *Response, np *Payment, err error)
 ```
 
 Create stores a new payment object attached to your Mollie account.
@@ -3867,7 +4058,7 @@ Create stores a new payment object attached to your Mollie account.
 See: https://docs.mollie.com/reference/v2/payments-api/create-payment#
 
 <a name="PaymentsService.Get"></a>
-### func \(\*PaymentsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L141-L145>)
+### func \(\*PaymentsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L271-L275>)
 
 ```go
 func (ps *PaymentsService) Get(ctx context.Context, id string, opts *PaymentOptions) (res *Response, p *Payment, err error)
@@ -3876,7 +4067,7 @@ func (ps *PaymentsService) Get(ctx context.Context, id string, opts *PaymentOpti
 Get retrieves a single payment object by its payment token.
 
 <a name="PaymentsService.List"></a>
-### func \(\*PaymentsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L226-L230>)
+### func \(\*PaymentsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L360-L364>)
 
 ```go
 func (ps *PaymentsService) List(ctx context.Context, opts *ListPaymentOptions) (res *Response, pl *PaymentList, err error)
@@ -3887,15 +4078,15 @@ List retrieves a list of payments associated with your account/organization.
 See: https://docs.mollie.com/reference/v2/payments-api/list-payments
 
 <a name="PaymentsService.Update"></a>
-### func \(\*PaymentsService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L201>)
+### func \(\*PaymentsService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L331-L335>)
 
 ```go
-func (ps *PaymentsService) Update(ctx context.Context, id string, up Payment) (res *Response, p *Payment, err error)
+func (ps *PaymentsService) Update(ctx context.Context, id string, up UpdatePayment) (res *Response, p *Payment, err error)
 ```
 
 Update can be used to update some details of a created payment.
 
-See: https://docs.mollie.com/reference/v2/payments-api/update-payment#
+See: https://docs.mollie.com/reference/v2/payments-api/update-payment
 
 <a name="Permission"></a>
 ## type [Permission](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L39-L45>)
@@ -4014,6 +4205,19 @@ PhoneNumber represents a phone number in the E.164 format.
 
 ```go
 type PhoneNumber string
+```
+
+<a name="PreAuthorizedPaymentFields"></a>
+## type [PreAuthorizedPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L214-L218>)
+
+PreAuthorizedPaymentFields describes the fields specific to pre\-authorized payments.
+
+```go
+type PreAuthorizedPaymentFields struct {
+    CaptureDelay  string      `json:"captureDelay,omitempty"`
+    CaptureMode   CaptureMode `json:"captureMode,omitempty"`
+    CaptureBefore *time.Time  `json:"captureBefore,omitempty"`
+}
 ```
 
 <a name="ProductType"></a>
@@ -4265,7 +4469,7 @@ type QRCode struct {
 ```
 
 <a name="Rate"></a>
-## type [Rate](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L336-L339>)
+## type [Rate](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L346-L349>)
 
 Rate describes service rates, further divided into fixed and percentage costs.
 
@@ -4273,6 +4477,20 @@ Rate describes service rates, further divided into fixed and percentage costs.
 type Rate struct {
     Fixed    *Amount `json:"fixed,omitempty"`
     Variable string  `json:"variable,omitempty"`
+}
+```
+
+<a name="RecurrentPaymentFields"></a>
+## type [RecurrentPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L206-L211>)
+
+RecurrentPaymentFields describes the fields specific to recurrent payments.
+
+```go
+type RecurrentPaymentFields struct {
+    SequenceType   SequenceType `json:"sequenceType,omitempty"`
+    CustomerID     string       `json:"customerId,omitempty"`
+    MandateID      string       `json:"mandateId,omitempty"`
+    SubscriptionID string       `json:"subscriptionId,omitempty"`
 }
 ```
 
@@ -4439,7 +4657,7 @@ type Response struct {
 ```
 
 <a name="SequenceType"></a>
-## type [SequenceType](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L35>)
+## type [SequenceType](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L36>)
 
 SequenceType indicates which type of payment this is in a recurring sequence.
 
@@ -5209,6 +5427,31 @@ URL in Mollie are commonly represented as objects with an href and type field.
 type URL struct {
     Href string `json:"href,omitempty"`
     Type string `json:"type,omitempty"`
+}
+```
+
+<a name="UpdatePayment"></a>
+## type [UpdatePayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L146-L160>)
+
+UpdatePayment describes the payload to be sent to the Mollie API when updating a payment.
+
+See: https://docs.mollie.com/reference/v2/payments-api/update-payment
+
+```go
+type UpdatePayment struct {
+    Description                     string        `json:"description,omitempty"`
+    RedirectURL                     string        `json:"redirectUrl,omitempty"`
+    CancelURL                       string        `json:"cancelUrl,omitempty"`
+    WebhookURL                      string        `json:"webhookUrl,omitempty"`
+    Metadata                        any           `json:"metadata,omitempty"`
+    Method                          PaymentMethod `json:"method,omitempty"`
+    Locale                          Locale        `json:"locale,omitempty"`
+    RestrictPaymentMethodsToCountry string        `json:"restrictPaymentMethodsToCountry,omitempty"`
+
+    // PaymentMethods specific fields
+    BillingEmail string     `json:"billingEmail,omitempty"`
+    DueDate      *ShortDate `json:"dueDate,omitempty"`
+    Issuer       string     `json:"issuer,omitempty"`
 }
 ```
 
