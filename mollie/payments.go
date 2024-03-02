@@ -61,10 +61,7 @@ type PaymentDestination struct {
 // Some fields are only valid for specific payment methods, and are
 // documented in the Mollie API reference.
 //
-// For payment creation,
-// see: https://docs.mollie.com/reference/v2/payments-api/create-payment#payment-method-specific-parameters
-// For payment updates,
-// see: https://docs.mollie.com/reference/v2/payments-api/update-payment#payment-method-specific-parameters
+// See: https://docs.mollie.com/reference/v2/payments-api/create-payment#payment-method-specific-parameters
 type CreatePayment struct {
 	Description                     string          `json:"description,omitempty"`
 	RedirectURL                     string          `json:"redirectUrl,omitempty"`
@@ -143,6 +140,7 @@ type CreateMollieConnectPaymentFields struct {
 // updating a payment.
 //
 // See: https://docs.mollie.com/reference/v2/payments-api/update-payment
+// See: https://docs.mollie.com/reference/v2/payments-api/update-payment#payment-method-specific-parameters
 type UpdatePayment struct {
 	Description                     string        `json:"description,omitempty"`
 	RedirectURL                     string        `json:"redirectUrl,omitempty"`
