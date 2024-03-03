@@ -6,12 +6,6 @@
 [![Linter](https://github.com/VictorAvelar/mollie-api-go/actions/workflows/golangci-lint.yml/badge.svg)](https://github.com/VictorAvelar/mollie-api-go/actions/workflows/golangci-lint.yml)
 [![CodeQL](https://github.com/VictorAvelar/mollie-api-go/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/VictorAvelar/mollie-api-go/actions/workflows/codeql-analysis.yml)
 
-## Scrutinizer CI
-
-[![Build Status](https://scrutinizer-ci.com/g/VictorAvelar/mollie-api-go/badges/build.png?b=master)](https://scrutinizer-ci.com/g/VictorAvelar/mollie-api-go/build-status/master)
-[![Code Coverage](https://scrutinizer-ci.com/g/VictorAvelar/mollie-api-go/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/VictorAvelar/mollie-api-go/?branch=master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/VictorAvelar/mollie-api-go/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/VictorAvelar/mollie-api-go/?branch=master)
-
 ## Go ecosystem
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/VictorAvelar/mollie-api-go/v4/mollie.svg)](https://pkg.go.dev/github.com/VictorAvelar/mollie-api-go/v4/mollie)
