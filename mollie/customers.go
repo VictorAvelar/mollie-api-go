@@ -170,7 +170,7 @@ func (cs *CustomersService) GetPayments(ctx context.Context, id string, options 
 // CreatePayment creates a payment for the customer.
 //
 // See: https://docs.mollie.com/reference/v2/customers-api/create-customer-payment
-func (cs *CustomersService) CreatePayment(ctx context.Context, id string, p Payment) (
+func (cs *CustomersService) CreatePayment(ctx context.Context, id string, p CreatePayment) (
 	res *Response,
 	pp *Payment,
 	err error,

@@ -621,7 +621,7 @@ func TestCustomerService_CreatePayment(t *testing.T) {
 	type args struct {
 		ctx      context.Context
 		customer string
-		payment  Payment
+		payment  CreatePayment
 	}
 
 	cases := []struct {
@@ -637,7 +637,11 @@ func TestCustomerService_CreatePayment(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_kEn1PlbGa",
-				Payment{TestMode: true},
+				CreatePayment{
+					CreatePaymentAccessTokenFields: CreatePaymentAccessTokenFields{
+						Testmode: true,
+					},
+				},
 			},
 			false,
 			nil,
@@ -657,7 +661,11 @@ func TestCustomerService_CreatePayment(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_kEn1PlbGa",
-				Payment{TestMode: true},
+				CreatePayment{
+					CreatePaymentAccessTokenFields: CreatePaymentAccessTokenFields{
+						Testmode: true,
+					},
+				},
 			},
 			true,
 			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
@@ -669,7 +677,11 @@ func TestCustomerService_CreatePayment(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_kEn1PlbGa",
-				Payment{TestMode: true},
+				CreatePayment{
+					CreatePaymentAccessTokenFields: CreatePaymentAccessTokenFields{
+						Testmode: true,
+					},
+				},
 			},
 			true,
 			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
@@ -681,7 +693,11 @@ func TestCustomerService_CreatePayment(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_kEn1PlbGa",
-				Payment{TestMode: true},
+				CreatePayment{
+					CreatePaymentAccessTokenFields: CreatePaymentAccessTokenFields{
+						Testmode: true,
+					},
+				},
 			},
 			true,
 			errBadBaseURL,
