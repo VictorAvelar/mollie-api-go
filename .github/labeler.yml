@@ -1,11 +1,6 @@
 tests:
   - changed-files:
-      - any-glob-to-any-file:
-          [
-            "mollie/*_test.go",
-            "mollie/connect/*_test.go",
-            "mollie/tools/*_test.go",
-          ]
+      - any-glob-to-any-file: ["mollie/*_test.go", "pkg/**/*_test.go"]
 
 documentation:
   - changed-files:
