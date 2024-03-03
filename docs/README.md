@@ -98,6 +98,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
   - [func \(c \*Config\) ToggleTesting\(\) bool](<#Config.ToggleTesting>)
 - [type ContextValue](<#ContextValue>)
 - [type ContextValues](<#ContextValues>)
+  - [func \(cv \*ContextValues\) UnmarshalJSON\(data \[\]byte\) error](<#ContextValues.UnmarshalJSON>)
 - [type CreateMollieConnectPaymentFields](<#CreateMollieConnectPaymentFields>)
 - [type CreatePayment](<#CreatePayment>)
 - [type CreatePaymentAccessTokenFields](<#CreatePaymentAccessTokenFields>)
@@ -676,7 +677,7 @@ type BalanceTransaction struct {
 ```
 
 <a name="BalanceTransactionsList"></a>
-## type [BalanceTransactionsList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L215-L221>)
+## type [BalanceTransactionsList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L212-L218>)
 
 BalanceTransactionsList contains an array of embedded transactions.
 
@@ -691,7 +692,7 @@ type BalanceTransactionsList struct {
 ```
 
 <a name="BalanceTransactionsListOptions"></a>
-## type [BalanceTransactionsListOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L225-L228>)
+## type [BalanceTransactionsListOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L222-L225>)
 
 BalanceTransactionsListOptions are valid query parameters for list balance transactions requests.
 
@@ -733,7 +734,7 @@ type BalancesService service
 ```
 
 <a name="BalancesService.Get"></a>
-### func \(\*BalancesService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L233>)
+### func \(\*BalancesService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L230>)
 
 ```go
 func (bs *BalancesService) Get(ctx context.Context, balance string) (res *Response, b *Balance, err error)
@@ -744,7 +745,7 @@ GetBalance retrieves a balance by its id.
 See: https://docs.mollie.com/reference/v2/balances-api/get-balance
 
 <a name="BalancesService.GetPrimaryReport"></a>
-### func \(\*BalancesService\) [GetPrimaryReport](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L273-L277>)
+### func \(\*BalancesService\) [GetPrimaryReport](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L270-L274>)
 
 ```go
 func (bs *BalancesService) GetPrimaryReport(ctx context.Context, options *BalanceReportOptions) (res *Response, br *BalanceReport, err error)
@@ -755,7 +756,7 @@ GetPrimaryReport returns the report for the primary balance.
 See: https://docs.mollie.com/reference/v2/balances-api/get-primary-balance-report
 
 <a name="BalancesService.GetPrimaryTransactionsList"></a>
-### func \(\*BalancesService\) [GetPrimaryTransactionsList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L301-L305>)
+### func \(\*BalancesService\) [GetPrimaryTransactionsList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L298-L302>)
 
 ```go
 func (bs *BalancesService) GetPrimaryTransactionsList(ctx context.Context, options *BalanceTransactionsListOptions) (res *Response, btl *BalanceTransactionsList, err error)
@@ -766,7 +767,7 @@ GetPrimaryTransactionsList retrieves the list of movements \(transactions\) for 
 See: https://docs.mollie.com/reference/v2/balances-api/list-primary-balance-transactions
 
 <a name="BalancesService.GetReport"></a>
-### func \(\*BalancesService\) [GetReport](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L262-L266>)
+### func \(\*BalancesService\) [GetReport](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L259-L263>)
 
 ```go
 func (bs *BalancesService) GetReport(ctx context.Context, balance string, options *BalanceReportOptions) (res *Response, br *BalanceReport, err error)
@@ -777,7 +778,7 @@ GetReport returns the balance report for the specified balance id.
 See: https://docs.mollie.com/reference/v2/balances-api/get-balance-report
 
 <a name="BalancesService.GetTransactionsList"></a>
-### func \(\*BalancesService\) [GetTransactionsList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L285-L293>)
+### func \(\*BalancesService\) [GetTransactionsList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L282-L290>)
 
 ```go
 func (bs *BalancesService) GetTransactionsList(ctx context.Context, balance string, options *BalanceTransactionsListOptions) (res *Response, btl *BalanceTransactionsList, err error)
@@ -788,7 +789,7 @@ GetTransactionsList retrieves a list of movements \(transactions\) for the speci
 See: https://docs.mollie.com/reference/v2/balances-api/list-balance-transactions
 
 <a name="BalancesService.List"></a>
-### func \(\*BalancesService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L251-L255>)
+### func \(\*BalancesService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L248-L252>)
 
 ```go
 func (bs *BalancesService) List(ctx context.Context, options *BalanceListOptions) (res *Response, bl *BalancesList, err error)
@@ -799,7 +800,7 @@ List retrieves all the organization’s balances, including the primary balance,
 See: https://docs.mollie.com/reference/v2/balances-api/list-balances
 
 <a name="BalancesService.Primary"></a>
-### func \(\*BalancesService\) [Primary](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L241>)
+### func \(\*BalancesService\) [Primary](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L238>)
 
 ```go
 func (bs *BalancesService) Primary(ctx context.Context) (res *Response, b *Balance, err error)
@@ -1702,13 +1703,24 @@ type ContextValue string
 ```
 
 <a name="ContextValues"></a>
-## type [ContextValues](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L212>)
+## type [ContextValues](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/custom_types.go#L8>)
 
 ContextValues is a map of TransactionType to ContextValue.
 
 ```go
 type ContextValues map[TransactionType]ContextValue
 ```
+
+<a name="ContextValues.UnmarshalJSON"></a>
+### func \(\*ContextValues\) [UnmarshalJSON](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/custom_types.go#L13>)
+
+```go
+func (cv *ContextValues) UnmarshalJSON(data []byte) error
+```
+
+UnmarshalJSON implements the json.Unmarshaler interface on ContextValues.
+
+See: https://github.com/VictorAvelar/mollie-api-go/issues/251
 
 <a name="CreateMollieConnectPaymentFields"></a>
 ## type [CreateMollieConnectPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L134-L137>)
