@@ -64,6 +64,8 @@ tasks:
   update-docs:
     cmds:
       - gomarkdoc --output docs/README.md ./mollie
+      - git add --all
+      - "git commit --message 'chore(docs): update generated docs'"
     silent: false
 
   sub-pkg-docs:

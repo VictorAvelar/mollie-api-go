@@ -63,12 +63,14 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type CapturesService](<#CapturesService>)
   - [func \(cs \*CapturesService\) Create\(ctx context.Context, payment string, capture CreateCapture\) \(res \*Response, c \*Capture, err error\)](<#CapturesService.Create>)
   - [func \(cs \*CapturesService\) Get\(ctx context.Context, payment, capture string, options \*CaptureOptions\) \(res \*Response, c \*Capture, err error\)](<#CapturesService.Get>)
-  - [func \(cs \*CapturesService\) List\(ctx context.Context, payment string\) \(res \*Response, cl \*CapturesList, err error\)](<#CapturesService.List>)
+  - [func \(cs \*CapturesService\) List\(ctx context.Context, payment string, options \*CaptureOptions\) \(res \*Response, cl \*CapturesList, err error\)](<#CapturesService.List>)
 - [type CardLabel](<#CardLabel>)
 - [type CategoryCode](<#CategoryCode>)
 - [type Chargeback](<#Chargeback>)
+- [type ChargebackAccessTokenFields](<#ChargebackAccessTokenFields>)
 - [type ChargebackLinks](<#ChargebackLinks>)
 - [type ChargebackOptions](<#ChargebackOptions>)
+- [type ChargebackReason](<#ChargebackReason>)
 - [type ChargebacksList](<#ChargebacksList>)
 - [type ChargebacksListOptions](<#ChargebacksListOptions>)
 - [type ChargebacksService](<#ChargebacksService>)
@@ -1010,7 +1012,7 @@ type Capture struct {
     CreatedAt        *time.Time    `json:"createdAt,omitempty"`
     Metadata         any           `json:"metadata,omitempty"`
     Links            CaptureLinks  `json:"_links,omitempty"`
-    AccessTokenPaymentFields
+    CaptureAccessTokenFields
 }
 ```
 
@@ -1137,10 +1139,10 @@ Get retrieves a single capture by its ID. Note the original payment’s ID is ne
 See: https://docs.mollie.com/reference/v2/captures-api/get-capture
 
 <a name="CapturesService.List"></a>
-### func \(\*CapturesService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L140>)
+### func \(\*CapturesService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L140-L144>)
 
 ```go
-func (cs *CapturesService) List(ctx context.Context, payment string) (res *Response, cl *CapturesList, err error)
+func (cs *CapturesService) List(ctx context.Context, payment string, options *CaptureOptions) (res *Response, cl *CapturesList, err error)
 ```
 
 List retrieves all captures for a certain payment.
@@ -1214,25 +1216,39 @@ const (
 ```
 
 <a name="Chargeback"></a>
-## type [Chargeback](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/chargebacks.go#L11-L20>)
+## type [Chargeback](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/chargebacks.go#L11-L22>)
 
 Chargeback describes a forced transaction reversal initiated by the cardholder's bank.
 
 ```go
 type Chargeback struct {
-    Resource         string          `json:"resource,omitempty"`
-    ID               string          `json:"id,omitempty"`
-    Amount           *Amount         `json:"amount,omitempty"`
-    SettlementAmount *Amount         `json:"settlementAmount,omitempty"`
-    CreatedAt        *time.Time      `json:"createdAt,omitempty"`
-    ReversedAt       *time.Time      `json:"reversedAt,omitempty"`
-    PaymentID        string          `json:"paymentId,omitempty"`
-    Links            ChargebackLinks `json:"_links,omitempty"`
+    Resource         string            `json:"resource,omitempty"`
+    ID               string            `json:"id,omitempty"`
+    PaymentID        string            `json:"paymentId,omitempty"`
+    Amount           *Amount           `json:"amount,omitempty"`
+    SettlementAmount *Amount           `json:"settlementAmount,omitempty"`
+    Reason           *ChargebackReason `json:"reason,omitempty"`
+    CreatedAt        *time.Time        `json:"createdAt,omitempty"`
+    ReversedAt       *time.Time        `json:"reversedAt,omitempty"`
+    Links            ChargebackLinks   `json:"_links,omitempty"`
+    ChargebackAccessTokenFields
+}
+```
+
+<a name="ChargebackAccessTokenFields"></a>
+## type [ChargebackAccessTokenFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/chargebacks.go#L31-L34>)
+
+ChargebackAccessTokenFields describes the fields to be used to create a chargeback access token.
+
+```go
+type ChargebackAccessTokenFields struct {
+    ProfileID string `json:"profileId,omitempty"`
+    Testmode  bool   `json:"testmode,omitempty"`
 }
 ```
 
 <a name="ChargebackLinks"></a>
-## type [ChargebackLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/chargebacks.go#L24-L29>)
+## type [ChargebackLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/chargebacks.go#L38-L43>)
 
 ChargebackLinks describes all the possible links to be returned with a chargeback object.
 
@@ -1246,19 +1262,31 @@ type ChargebackLinks struct {
 ```
 
 <a name="ChargebackOptions"></a>
-## type [ChargebackOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/chargebacks.go#L32-L35>)
+## type [ChargebackOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/chargebacks.go#L46-L49>)
 
 ChargebackOptions describes chargeback endpoint valid query string parameters.
 
 ```go
 type ChargebackOptions struct {
-    Include string `url:"include,omitempty"`
-    Embed   string `url:"embed,omitempty"`
+    Include []IncludeValue `url:"include,omitempty"`
+    Embed   []EmbedValue   `url:"embed,omitempty"`
+}
+```
+
+<a name="ChargebackReason"></a>
+## type [ChargebackReason](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/chargebacks.go#L25-L28>)
+
+ChargebackReason describes the reason for the chargeback as given by the bank.
+
+```go
+type ChargebackReason struct {
+    Code        string `json:"code,omitempty"`
+    Description string `json:"description,omitempty"`
 }
 ```
 
 <a name="ChargebacksList"></a>
-## type [ChargebacksList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/chargebacks.go#L47-L53>)
+## type [ChargebacksList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/chargebacks.go#L61-L67>)
 
 ChargebacksList describes how a list of chargebacks will be retrieved by Mollie.
 
@@ -1266,29 +1294,29 @@ ChargebacksList describes how a list of chargebacks will be retrieved by Mollie.
 type ChargebacksList struct {
     Count    int `json:"count,omitempty"`
     Embedded struct {
-        Chargebacks []Chargeback
+        Chargebacks []*Chargeback
     }   `json:"_embedded,omitempty"`
     Links PaginationLinks `json:"_links,omitempty"`
 }
 ```
 
 <a name="ChargebacksListOptions"></a>
-## type [ChargebacksListOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/chargebacks.go#L38-L44>)
+## type [ChargebacksListOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/chargebacks.go#L52-L58>)
 
 ChargebacksListOptions describes list chargebacks endpoint valid query string parameters.
 
 ```go
 type ChargebacksListOptions struct {
-    From      string `url:"from,omitempty"`
-    Limit     int    `url:"limit,omitempty"`
-    Include   string `url:"include,omitempty"`
-    Embed     string `url:"embed,omitempty"`
-    ProfileID string `url:"profileId,omitempty"`
+    From      string         `url:"from,omitempty"`
+    Limit     int            `url:"limit,omitempty"`
+    Include   []IncludeValue `url:"include,omitempty"`
+    Embed     []EmbedValue   `url:"embed,omitempty"`
+    ProfileID string         `url:"profileId,omitempty"`
 }
 ```
 
 <a name="ChargebacksService"></a>
-## type [ChargebacksService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/chargebacks.go#L56>)
+## type [ChargebacksService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/chargebacks.go#L70>)
 
 ChargebacksService instance operates over chargeback resources.
 
@@ -1297,7 +1325,7 @@ type ChargebacksService service
 ```
 
 <a name="ChargebacksService.Get"></a>
-### func \(\*ChargebacksService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/chargebacks.go#L62-L66>)
+### func \(\*ChargebacksService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/chargebacks.go#L76-L80>)
 
 ```go
 func (cs *ChargebacksService) Get(ctx context.Context, payment, chargeback string, opts *ChargebackOptions) (res *Response, p *Chargeback, err error)
@@ -1308,7 +1336,7 @@ Get retrieves a single chargeback by its ID. Note the original payment’s ID is
 See: https://docs.mollie.com/reference/v2/chargebacks-api/get-chargeback
 
 <a name="ChargebacksService.List"></a>
-### func \(\*ChargebacksService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/chargebacks.go#L84-L88>)
+### func \(\*ChargebacksService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/chargebacks.go#L98-L102>)
 
 ```go
 func (cs *ChargebacksService) List(ctx context.Context, options *ChargebacksListOptions) (res *Response, cl *ChargebacksList, err error)
@@ -1319,7 +1347,7 @@ List retrieves a list of chargebacks associated with your account/organization.
 See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
 
 <a name="ChargebacksService.ListForPayment"></a>
-### func \(\*ChargebacksService\) [ListForPayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/chargebacks.go#L95-L99>)
+### func \(\*ChargebacksService\) [ListForPayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/chargebacks.go#L109-L113>)
 
 ```go
 func (cs *ChargebacksService) ListForPayment(ctx context.Context, payment string, options *ChargebacksListOptions) (res *Response, cl *ChargebacksList, err error)
