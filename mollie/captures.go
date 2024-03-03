@@ -54,7 +54,7 @@ type Capture struct {
 	CreatedAt        *time.Time    `json:"createdAt,omitempty"`
 	Metadata         any           `json:"metadata,omitempty"`
 	Links            CaptureLinks  `json:"_links,omitempty"`
-	AccessTokenPaymentFields
+	CaptureAccessTokenFields
 }
 
 // CaptureLinks contains relevant links for a capture object.

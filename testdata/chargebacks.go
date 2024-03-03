@@ -13,6 +13,10 @@ const (
         "value": "-35.07"
     },
     "createdAt": "2018-03-14T17:00:52.0Z",
+     "reason": {
+       "code": "AC01",
+       "description": "Account identifier incorrect (i.e. invalid IBAN)"
+     },
     "reversedAt": null,
     "paymentId": "tr_WDqYK6vllg",
     "_links": {
@@ -25,7 +29,7 @@ const (
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/chargebacks-api/get-chargeback",
+            "href": "https://docs.mollie.com/reference/v2/chargebacks-api/get-payment-chargeback",
             "type": "text/html"
         }
     }

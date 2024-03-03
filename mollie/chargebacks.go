@@ -9,14 +9,28 @@ import (
 
 // Chargeback describes a forced transaction reversal initiated by the cardholder's bank.
 type Chargeback struct {
-	Resource         string          `json:"resource,omitempty"`
-	ID               string          `json:"id,omitempty"`
-	Amount           *Amount         `json:"amount,omitempty"`
-	SettlementAmount *Amount         `json:"settlementAmount,omitempty"`
-	CreatedAt        *time.Time      `json:"createdAt,omitempty"`
-	ReversedAt       *time.Time      `json:"reversedAt,omitempty"`
-	PaymentID        string          `json:"paymentId,omitempty"`
-	Links            ChargebackLinks `json:"_links,omitempty"`
+	Resource         string            `json:"resource,omitempty"`
+	ID               string            `json:"id,omitempty"`
+	PaymentID        string            `json:"paymentId,omitempty"`
+	Amount           *Amount           `json:"amount,omitempty"`
+	SettlementAmount *Amount           `json:"settlementAmount,omitempty"`
+	Reason           *ChargebackReason `json:"reason,omitempty"`
+	CreatedAt        *time.Time        `json:"createdAt,omitempty"`
+	ReversedAt       *time.Time        `json:"reversedAt,omitempty"`
+	Links            ChargebackLinks   `json:"_links,omitempty"`
+	ChargebackAccessTokenFields
+}
+
+// ChargebackReason describes the reason for the chargeback as given by the bank.
+type ChargebackReason struct {
+	Code        string `json:"code,omitempty"`
+	Description string `json:"description,omitempty"`
+}
+
+// ChargebackAccessTokenFields describes the fields to be used to create a chargeback access token.
+type ChargebackAccessTokenFields struct {
+	ProfileID string `json:"profileId,omitempty"`
+	Testmode  bool   `json:"testmode,omitempty"`
 }
 
 // ChargebackLinks describes all the possible links to be returned with
@@ -30,24 +44,24 @@ type ChargebackLinks struct {
 
 // ChargebackOptions describes chargeback endpoint valid query string parameters.
 type ChargebackOptions struct {
-	Include string `url:"include,omitempty"`
-	Embed   string `url:"embed,omitempty"`
+	Include []IncludeValue `url:"include,omitempty"`
+	Embed   []EmbedValue   `url:"embed,omitempty"`
 }
 
 // ChargebacksListOptions describes list chargebacks endpoint valid query string parameters.
 type ChargebacksListOptions struct {
-	From      string `url:"from,omitempty"`
-	Limit     int    `url:"limit,omitempty"`
-	Include   string `url:"include,omitempty"`
-	Embed     string `url:"embed,omitempty"`
-	ProfileID string `url:"profileId,omitempty"`
+	From      string         `url:"from,omitempty"`
+	Limit     int            `url:"limit,omitempty"`
+	Include   []IncludeValue `url:"include,omitempty"`
+	Embed     []EmbedValue   `url:"embed,omitempty"`
+	ProfileID string         `url:"profileId,omitempty"`
 }
 
 // ChargebacksList describes how a list of chargebacks will be retrieved by Mollie.
 type ChargebacksList struct {
 	Count    int `json:"count,omitempty"`
 	Embedded struct {
-		Chargebacks []Chargeback
+		Chargebacks []*Chargeback
 	} `json:"_embedded,omitempty"`
 	Links PaginationLinks `json:"_links,omitempty"`
 }
