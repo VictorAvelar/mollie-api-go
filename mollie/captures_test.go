@@ -299,6 +299,7 @@ func TestCapturesService_List(t *testing.T) {
 		ctx     context.Context
 		payment string
 		capture string
+		options *CaptureOptions
 	}
 
 	type key string
@@ -317,12 +318,17 @@ func TestCapturesService_List(t *testing.T) {
 				context.Background(),
 				"tr_WDqYK6vllg",
 				"cpt_4qqhO89gsT",
+				&CaptureOptions{
+					Embed: []EmbedValue{EmbedPayment},
+				},
 			},
 			false,
 			nil,
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(t, r, "GET")
+				testQuery(t, r, "embed=payments")
+
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
@@ -337,6 +343,7 @@ func TestCapturesService_List(t *testing.T) {
 				context.WithValue(context.Background(), key("test"), "test-value"),
 				"tr_WDqYK6vllg",
 				"cpt_4qqhO89gsT",
+				&CaptureOptions{},
 			},
 			true,
 			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
@@ -349,6 +356,7 @@ func TestCapturesService_List(t *testing.T) {
 				context.Background(),
 				"tr_WDqYK6vllg",
 				"cpt_4qqhO89gsT",
+				&CaptureOptions{},
 			},
 			true,
 			errBadBaseURL,
@@ -361,6 +369,7 @@ func TestCapturesService_List(t *testing.T) {
 				context.Background(),
 				"tr_WDqYK6vllg",
 				"cpt_4qqhO89gsT",
+				&CaptureOptions{},
 			},
 			true,
 			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
@@ -384,7 +393,7 @@ func TestCapturesService_List(t *testing.T) {
 				c.handler,
 			)
 
-			res, list, err := tClient.Captures.List(c.args.ctx, c.args.payment)
+			res, list, err := tClient.Captures.List(c.args.ctx, c.args.payment, c.args.options)
 			if c.wantErr {
 				assert.NotNil(t, err)
 				assert.EqualError(t, err, c.err.Error())

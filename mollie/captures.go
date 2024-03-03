@@ -137,10 +137,14 @@ func (cs *CapturesService) Create(ctx context.Context, payment string, capture C
 // List retrieves all captures for a certain payment.
 //
 // See: https://docs.mollie.com/reference/v2/captures-api/list-captures
-func (cs *CapturesService) List(ctx context.Context, payment string) (res *Response, cl *CapturesList, err error) {
+func (cs *CapturesService) List(ctx context.Context, payment string, options *CaptureOptions) (
+	res *Response,
+	cl *CapturesList,
+	err error,
+) {
 	u := fmt.Sprintf("v2/payments/%s/captures", payment)
 
-	res, err = cs.client.get(ctx, u, nil)
+	res, err = cs.client.get(ctx, u, options)
 	if err != nil {
 		return
 	}
