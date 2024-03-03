@@ -100,3 +100,60 @@ const GetCaptureResponse = `{
         }
     }
 }`
+
+// CreateCaptureResponse example.
+const CreateCaptureResponse = `{
+    "resource": "capture",
+    "id": "cpt_mNepDkEtco6ah3QNPUGYH",
+    "mode": "live",
+    "amount": {
+        "value": "35.95",
+        "currency": "EUR"
+    },
+    "paymentId": "tr_WDqYK6vllg",
+    "createdAt": "2018-08-02T09:29:56+00:00",
+    "description": "Capture for cart #12345",
+    "_links": {
+        "self": {
+            "href": "https://api.mollie.com/v2/payments/tr_WDqYK6vllg/captures/cpt_mNepDkEtco6ah3QNPUGYH",
+            "type": "application/hal+json"
+        },
+        "payment": {
+            "href": "https://api.mollie.com/v2/payments/tr_WDqYK6vllg",
+            "type": "application/hal+json"
+        },
+        "documentation": {
+            "href": "https://docs.mollie.com/reference/v2/captures-api/create-capture",
+            "type": "text/html"
+        }
+    }
+}`
+
+// CreateCaptureWithAccessTokenResponse example.
+const CreateCaptureWithAccessTokenResponse = `{
+    "resource": "capture",
+    "id": "cpt_mNepDkEtco6ah3QNPUGYH",
+    "mode": "live",
+    "amount": {
+        "value": "35.95",
+        "currency": "EUR"
+    },
+    "paymentId": "tr_WDqYK6vllg",
+    "createdAt": "2018-08-02T09:29:56+00:00",
+    "description": "Capture for cart #12345",
+    "testmode": true,
+    "_links": {
+        "self": {
+            "href": "https://api.mollie.com/v2/payments/tr_WDqYK6vllg/captures/cpt_mNepDkEtco6ah3QNPUGYH",
+            "type": "application/hal+json"
+        },
+        "payment": {
+            "href": "https://api.mollie.com/v2/payments/tr_WDqYK6vllg",
+            "type": "application/hal+json"
+        },
+        "documentation": {
+            "href": "https://docs.mollie.com/reference/v2/captures-api/create-capture",
+            "type": "text/html"
+        }
+    }
+}`

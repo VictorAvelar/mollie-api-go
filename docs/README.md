@@ -54,11 +54,15 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
   - [func \(be \*BaseError\) Error\(\) string](<#BaseError.Error>)
 - [type BusinessCategory](<#BusinessCategory>)
 - [type Capture](<#Capture>)
+- [type CaptureAccessTokenFields](<#CaptureAccessTokenFields>)
 - [type CaptureLinks](<#CaptureLinks>)
 - [type CaptureMode](<#CaptureMode>)
+- [type CaptureOptions](<#CaptureOptions>)
+- [type CaptureStatus](<#CaptureStatus>)
 - [type CapturesList](<#CapturesList>)
 - [type CapturesService](<#CapturesService>)
-  - [func \(cs \*CapturesService\) Get\(ctx context.Context, payment, capture string\) \(res \*Response, c \*Capture, err error\)](<#CapturesService.Get>)
+  - [func \(cs \*CapturesService\) Create\(ctx context.Context, payment string, capture CreateCapture\) \(res \*Response, c \*Capture, err error\)](<#CapturesService.Create>)
+  - [func \(cs \*CapturesService\) Get\(ctx context.Context, payment, capture string, options \*CaptureOptions\) \(res \*Response, c \*Capture, err error\)](<#CapturesService.Get>)
   - [func \(cs \*CapturesService\) List\(ctx context.Context, payment string\) \(res \*Response, cl \*CapturesList, err error\)](<#CapturesService.List>)
 - [type CardLabel](<#CardLabel>)
 - [type CategoryCode](<#CategoryCode>)
@@ -99,6 +103,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type ContextValue](<#ContextValue>)
 - [type ContextValues](<#ContextValues>)
   - [func \(cv \*ContextValues\) UnmarshalJSON\(data \[\]byte\) error](<#ContextValues.UnmarshalJSON>)
+- [type CreateCapture](<#CreateCapture>)
 - [type CreateMollieConnectPaymentFields](<#CreateMollieConnectPaymentFields>)
 - [type CreatePayment](<#CreatePayment>)
 - [type CreatePaymentAccessTokenFields](<#CreatePaymentAccessTokenFields>)
@@ -987,27 +992,41 @@ const (
 ```
 
 <a name="Capture"></a>
-## type [Capture](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L33-L44>)
+## type [Capture](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L44-L58>)
 
 Capture describes a single capture. Captures are used for payments that have the authorize\-then\-capture flow.
 
 ```go
 type Capture struct {
-    Resource         string       `json:"resource,omitempty"`
-    ID               string       `json:"id,omitempty"`
-    Mode             Mode         `json:"mode,omitempty"`
-    Amount           *Amount      `json:"amount,omitempty"`
-    SettlementAmount *Amount      `json:"settlementAmount,omitempty"`
-    PaymentID        string       `json:"paymentId,omitempty"`
-    ShipmentID       string       `json:"shipmentId,omitempty"`
-    SettlementID     string       `json:"settlementId,omitempty"`
-    CreatedAt        *time.Time   `json:"createdAt,omitempty"`
-    Links            CaptureLinks `json:"_links,omitempty"`
+    Resource         string        `json:"resource,omitempty"`
+    ID               string        `json:"id,omitempty"`
+    Mode             Mode          `json:"mode,omitempty"`
+    Amount           *Amount       `json:"amount,omitempty"`
+    Status           CaptureStatus `json:"status,omitempty"`
+    SettlementAmount *Amount       `json:"settlementAmount,omitempty"`
+    PaymentID        string        `json:"paymentId,omitempty"`
+    ShipmentID       string        `json:"shipmentId,omitempty"`
+    SettlementID     string        `json:"settlementId,omitempty"`
+    CreatedAt        *time.Time    `json:"createdAt,omitempty"`
+    Metadata         any           `json:"metadata,omitempty"`
+    Links            CaptureLinks  `json:"_links,omitempty"`
+    AccessTokenPaymentFields
+}
+```
+
+<a name="CaptureAccessTokenFields"></a>
+## type [CaptureAccessTokenFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L38-L40>)
+
+CaptureAccessTokenFields describes the payload for creating a capture with an access token.
+
+```go
+type CaptureAccessTokenFields struct {
+    Testmode bool `json:"testmode,omitempty"`
 }
 ```
 
 <a name="CaptureLinks"></a>
-## type [CaptureLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L23-L29>)
+## type [CaptureLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L61-L67>)
 
 CaptureLinks contains relevant links for a capture object.
 
@@ -1039,8 +1058,40 @@ const (
 )
 ```
 
+<a name="CaptureOptions"></a>
+## type [CaptureOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L72-L74>)
+
+CaptureOptions describes the query params available to use when retrieving captures.
+
+See: https://docs.mollie.com/reference/v2/captures-api/get-capture#embedding-of-related-resources
+
+```go
+type CaptureOptions struct {
+    Embed []EmbedValue `url:"embed,omitempty"`
+}
+```
+
+<a name="CaptureStatus"></a>
+## type [CaptureStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L20>)
+
+CaptureStatus describes the status of a capture.
+
+```go
+type CaptureStatus string
+```
+
+<a name="CaptureStatusPending"></a>CaptureStatus possible values.
+
+```go
+const (
+    CaptureStatusPending   CaptureStatus = "pending"
+    CaptureStatusSucceeded CaptureStatus = "succeeded"
+    CaptureStatusFailed    CaptureStatus = "failed"
+)
+```
+
 <a name="CapturesList"></a>
-## type [CapturesList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L47-L53>)
+## type [CapturesList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L77-L83>)
 
 CapturesList describes a list of captures.
 
@@ -1055,7 +1106,7 @@ type CapturesList struct {
 ```
 
 <a name="CapturesService"></a>
-## type [CapturesService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L20>)
+## type [CapturesService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L86>)
 
 CapturesService operates over captures resource.
 
@@ -1063,11 +1114,22 @@ CapturesService operates over captures resource.
 type CapturesService service
 ```
 
-<a name="CapturesService.Get"></a>
-### func \(\*CapturesService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L59>)
+<a name="CapturesService.Create"></a>
+### func \(\*CapturesService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L114-L118>)
 
 ```go
-func (cs *CapturesService) Get(ctx context.Context, payment, capture string) (res *Response, c *Capture, err error)
+func (cs *CapturesService) Create(ctx context.Context, payment string, capture CreateCapture) (res *Response, c *Capture, err error)
+```
+
+Create creates a new capture for a payment.
+
+See: https://docs.mollie.com/reference/v2/captures-api/create-capture
+
+<a name="CapturesService.Get"></a>
+### func \(\*CapturesService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L92-L96>)
+
+```go
+func (cs *CapturesService) Get(ctx context.Context, payment, capture string, options *CaptureOptions) (res *Response, c *Capture, err error)
 ```
 
 Get retrieves a single capture by its ID. Note the original payment’s ID is needed as well.
@@ -1075,7 +1137,7 @@ Get retrieves a single capture by its ID. Note the original payment’s ID is ne
 See: https://docs.mollie.com/reference/v2/captures-api/get-capture
 
 <a name="CapturesService.List"></a>
-### func \(\*CapturesService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L77>)
+### func \(\*CapturesService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L140>)
 
 ```go
 func (cs *CapturesService) List(ctx context.Context, payment string) (res *Response, cl *CapturesList, err error)
@@ -1721,6 +1783,20 @@ func (cv *ContextValues) UnmarshalJSON(data []byte) error
 UnmarshalJSON implements the json.Unmarshaler interface on ContextValues.
 
 See: https://github.com/VictorAvelar/mollie-api-go/issues/251
+
+<a name="CreateCapture"></a>
+## type [CreateCapture](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L30-L35>)
+
+CreateCapture describes the payload for creating a capture.
+
+```go
+type CreateCapture struct {
+    Description string  `json:"description,omitempty"`
+    Metadata    any     `json:"metadata,omitempty"`
+    Amount      *Amount `json:"amount,omitempty"`
+    CaptureAccessTokenFields
+}
+```
 
 <a name="CreateMollieConnectPaymentFields"></a>
 ## type [CreateMollieConnectPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L134-L137>)
