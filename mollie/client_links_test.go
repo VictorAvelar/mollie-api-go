@@ -10,13 +10,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateClientLink(t *testing.T) {
+func TestClientLinkService_Create(t *testing.T) {
 	setEnv()
 	defer unsetEnv()
 
 	type args struct {
 		ctx context.Context
-		cd  *ClientDetails
+		cd  CreateClientLink
 	}
 
 	cases := []struct {
@@ -31,7 +31,7 @@ func TestCreateClientLink(t *testing.T) {
 			"create new client link",
 			args{
 				context.Background(),
-				&ClientDetails{},
+				CreateClientLink{},
 			},
 			false,
 			nil,
@@ -50,7 +50,7 @@ func TestCreateClientLink(t *testing.T) {
 			"create client link, an error is returned from the server",
 			args{
 				context.Background(),
-				&ClientDetails{},
+				CreateClientLink{},
 			},
 			true,
 			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
@@ -61,7 +61,7 @@ func TestCreateClientLink(t *testing.T) {
 			"create client link, an error occurs when parsing json",
 			args{
 				context.Background(),
-				&ClientDetails{},
+				CreateClientLink{},
 			},
 			true,
 			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
@@ -72,7 +72,7 @@ func TestCreateClientLink(t *testing.T) {
 			"create client link, invalid url when building request",
 			args{
 				context.Background(),
-				&ClientDetails{},
+				CreateClientLink{},
 			},
 			true,
 			errBadBaseURL,
@@ -91,7 +91,7 @@ func TestCreateClientLink(t *testing.T) {
 			)
 			c.pre()
 
-			res, cb, err := tClient.ClientLinks.CreateClientLink(c.args.ctx, c.args.cd)
+			res, cb, err := tClient.ClientLinks.Create(c.args.ctx, c.args.cd)
 			if c.wantErr {
 				assert.Error(t, err)
 				assert.EqualError(t, err, c.err.Error())
@@ -105,11 +105,14 @@ func TestCreateClientLink(t *testing.T) {
 	}
 }
 
-func TestCreateFinalizeClientLink(t *testing.T) {
+func TestClientLinkService_GetFinalClientLink(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
 	type args struct {
 		ctx        context.Context
 		clientLink string
-		options    *ClientLinkFinalizeOptions
+		options    *ClientLinkAuthorizeOptions
 	}
 	tests := []struct {
 		name              string
@@ -121,43 +124,45 @@ func TestCreateFinalizeClientLink(t *testing.T) {
 			args{
 				context.Background(),
 				"https://my.mollie.com/dashboard/client-link/finalize/csr_vZCnNQsV2UtfXxYifWKWH",
-				&ClientLinkFinalizeOptions{
+				&ClientLinkAuthorizeOptions{
 					ClientID: "app_j9Pakf56Ajta6Y65AkdTtAv",
-					State:    "decafbad",
-					Scope:    "onboarding.read+organization.read+payments.write+payments.read+profiles.write",
+					State:    "unique_string_to_compare",
+					Scope:    []PermissionGrant{OnboardingRead, OnboardingWrite},
 				},
 			},
-			"https://my.mollie.com/dashboard/client-link/finalize/csr_vZCnNQsV2UtfXxYifWKWH?clientID=app_j9Pakf56Ajta6Y65AkdTtAv&scope=onboarding.read%2Borganization.read%2Bpayments.write%2Bpayments.read%2Bprofiles.write&state=decafbad",
+			"https://my.mollie.com/dashboard/client-link/finalize/csr_vZCnNQsV2UtfXxYifWKWH?clientId=app_j9Pakf56Ajta6Y65AkdTtAv&scope=onboarding.read%2Bonbording.write&state=unique_string_to_compare",
 		},
 		{
 			"constructs client link finalize with complex values",
 			args{
 				context.Background(),
 				"https://my.mollie.com/dashboard/client-link/finalize/csr_vZCnNQsV2UtfXxYifWKWH",
-				&ClientLinkFinalizeOptions{
+				&ClientLinkAuthorizeOptions{
 					ClientID: "",
 					State:    "\ns\\s\\s\\s\n",
-					Scope:    "",
+					Scope:    []PermissionGrant{},
 				},
 			},
 			"https://my.mollie.com/dashboard/client-link/finalize/csr_vZCnNQsV2UtfXxYifWKWH?state=%0As%5Cs%5Cs%5Cs%0A",
 		},
 		{
-			"constructs client link finalize with complex values",
+			"constructs client link finalize with no query params",
 			args{
 				context.Background(),
 				"https://my.mollie.com/dashboard/client-link/finalize/csr_vZCnNQsV2UtfXxYifWKWH",
-				&ClientLinkFinalizeOptions{},
+				&ClientLinkAuthorizeOptions{},
 			},
 			"https://my.mollie.com/dashboard/client-link/finalize/csr_vZCnNQsV2UtfXxYifWKWH?",
 		},
 	}
+
+	setup()
+	defer teardown()
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotClientLinkURI := tClient.ClientLinks.CreateFinalizeClientLink(tt.args.ctx, tt.args.clientLink, tt.args.options)
-			if gotClientLinkURI != tt.wantClientLinkURI {
-				t.Errorf("ClientLinksService.CreateFinalizeClientLink() = %v, want %v", gotClientLinkURI, tt.wantClientLinkURI)
-			}
+			gotClientLinkURI := tClient.ClientLinks.GetFinalClientLink(tt.args.ctx, tt.args.clientLink, tt.args.options)
+
+			assert.Equal(t, tt.wantClientLinkURI, gotClientLinkURI)
 		})
 	}
 }

@@ -84,13 +84,12 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
   - [func \(c \*Client\) NewAPIRequest\(ctx context.Context, method string, uri string, body interface\{\}\) \(req \*http.Request, err error\)](<#Client.NewAPIRequest>)
   - [func \(c \*Client\) SetIdempotencyKeyGenerator\(kg idempotency.KeyGenerator\)](<#Client.SetIdempotencyKeyGenerator>)
   - [func \(c \*Client\) WithAuthenticationValue\(k string\) error](<#Client.WithAuthenticationValue>)
-- [type ClientDetails](<#ClientDetails>)
 - [type ClientLink](<#ClientLink>)
-- [type ClientLinkFinalizeOptions](<#ClientLinkFinalizeOptions>)
+- [type ClientLinkAuthorizeOptions](<#ClientLinkAuthorizeOptions>)
 - [type ClientLinkLinks](<#ClientLinkLinks>)
 - [type ClientLinksService](<#ClientLinksService>)
-  - [func \(cls \*ClientLinksService\) CreateClientLink\(ctx context.Context, cd \*ClientDetails\) \(res \*Response, cl \*ClientLink, err error\)](<#ClientLinksService.CreateClientLink>)
-  - [func \(cls \*ClientLinksService\) CreateFinalizeClientLink\(ctx context.Context, clientLink string, options \*ClientLinkFinalizeOptions\) \(clientLinkURI string\)](<#ClientLinksService.CreateFinalizeClientLink>)
+  - [func \(cls \*ClientLinksService\) Create\(ctx context.Context, cd CreateClientLink\) \(res \*Response, cl \*ClientLink, err error\)](<#ClientLinksService.Create>)
+  - [func \(cls \*ClientLinksService\) GetFinalClientLink\(ctx context.Context, clientLink string, options \*ClientLinkAuthorizeOptions\) \(clientLinkURI string\)](<#ClientLinksService.GetFinalClientLink>)
 - [type Commission](<#Commission>)
 - [type Company](<#Company>)
 - [type Config](<#Config>)
@@ -106,6 +105,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type ContextValues](<#ContextValues>)
   - [func \(cv \*ContextValues\) UnmarshalJSON\(data \[\]byte\) error](<#ContextValues.UnmarshalJSON>)
 - [type CreateCapture](<#CreateCapture>)
+- [type CreateClientLink](<#CreateClientLink>)
 - [type CreateMollieConnectPaymentFields](<#CreateMollieConnectPaymentFields>)
 - [type CreatePayment](<#CreatePayment>)
 - [type CreatePaymentAccessTokenFields](<#CreatePaymentAccessTokenFields>)
@@ -1457,23 +1457,8 @@ WithAuthenticationValue offers a convenient setter for any of the valid authenti
 
 Ideally your API key will be provided from and environment variable or a secret management engine. This should only be used when environment variables are "impossible" to be used.
 
-<a name="ClientDetails"></a>
-## type [ClientDetails](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/client_links.go#L17-L23>)
-
-ClientDetails contains information to link a new organization to an OAuth application.
-
-```go
-type ClientDetails struct {
-    Owner              Owner    `json:"owner,omitempty"`
-    Name               string   `json:"name,omitempty"`
-    Address            *Address `json:"address,omitempty"`
-    RegistrationNumber string   `json:"registrationNumber,omitempty"`
-    VATNumber          string   `json:"vatNumber,omitempty"`
-}
-```
-
 <a name="ClientLink"></a>
-## type [ClientLink](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/client_links.go#L33-L37>)
+## type [ClientLink](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/client_links.go#L29-L33>)
 
 ClientLink object with redirect target.
 
@@ -1485,22 +1470,22 @@ type ClientLink struct {
 }
 ```
 
-<a name="ClientLinkFinalizeOptions"></a>
-## type [ClientLinkFinalizeOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/client_links.go#L70-L75>)
+<a name="ClientLinkAuthorizeOptions"></a>
+## type [ClientLinkAuthorizeOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/client_links.go#L70-L75>)
 
-ClientLinkFinalizeOptions subset of the parameters allowed for the Authorize endpoint.
+ClientLinkAuthorizeOptions subset of the parameters allowed for the Authorize endpoint.
 
 ```go
-type ClientLinkFinalizeOptions struct {
-    ClientID       string `url:"clientID,omitempty"`
-    State          string `url:"state,omitempty"`
-    Scope          string `url:"scope,omitempty"`
-    ApprovalPrompt string `url:"approvalPrompt,omitempty"`
+type ClientLinkAuthorizeOptions struct {
+    ClientID       string               `url:"clientId,omitempty"`
+    State          string               `url:"state,omitempty"`
+    Scope          []PermissionGrant    `del:"+"                        url:"scope,omitempty"`
+    ApprovalPrompt ApprovalPromptAction `url:"approvalPrompt,omitempty"`
 }
 ```
 
 <a name="ClientLinkLinks"></a>
-## type [ClientLinkLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/client_links.go#L27-L30>)
+## type [ClientLinkLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/client_links.go#L23-L26>)
 
 ClientLinkLinks describes all the possible links to be returned with a client links response object.
 
@@ -1512,7 +1497,7 @@ type ClientLinkLinks struct {
 ```
 
 <a name="ClientLinksService"></a>
-## type [ClientLinksService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/client_links.go#L13>)
+## type [ClientLinksService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/client_links.go#L37>)
 
 ClientLinksService interacts with the Client Links API to create new organizations for your customers.
 
@@ -1520,25 +1505,25 @@ ClientLinksService interacts with the Client Links API to create new organizatio
 type ClientLinksService service
 ```
 
-<a name="ClientLinksService.CreateClientLink"></a>
-### func \(\*ClientLinksService\) [CreateClientLink](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/client_links.go#L42-L46>)
+<a name="ClientLinksService.Create"></a>
+### func \(\*ClientLinksService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/client_links.go#L42-L46>)
 
 ```go
-func (cls *ClientLinksService) CreateClientLink(ctx context.Context, cd *ClientDetails) (res *Response, cl *ClientLink, err error)
+func (cls *ClientLinksService) Create(ctx context.Context, cd CreateClientLink) (res *Response, cl *ClientLink, err error)
 ```
 
-CreateClientLink based on the provided ClientDetails.
+Create a client link based on the provided CreateClientLink values.
 
 See: https://docs.mollie.com/reference/v2/client-links-api/create-client-link
 
-<a name="ClientLinksService.CreateFinalizeClientLink"></a>
-### func \(\*ClientLinksService\) [CreateFinalizeClientLink](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/client_links.go#L77-L83>)
+<a name="ClientLinksService.GetFinalClientLink"></a>
+### func \(\*ClientLinksService\) [GetFinalClientLink](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/client_links.go#L78-L84>)
 
 ```go
-func (cls *ClientLinksService) CreateFinalizeClientLink(ctx context.Context, clientLink string, options *ClientLinkFinalizeOptions) (clientLinkURI string)
+func (cls *ClientLinksService) GetFinalClientLink(ctx context.Context, clientLink string, options *ClientLinkAuthorizeOptions) (clientLinkURI string)
 ```
 
-
+GetFinalClientLink returns the final client link URI with the provided options.
 
 <a name="Commission"></a>
 ## type [Commission](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/partners.go#L38-L41>)
@@ -1823,6 +1808,21 @@ type CreateCapture struct {
     Metadata    any     `json:"metadata,omitempty"`
     Amount      *Amount `json:"amount,omitempty"`
     CaptureAccessTokenFields
+}
+```
+
+<a name="CreateClientLink"></a>
+## type [CreateClientLink](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/client_links.go#L13-L19>)
+
+CreateClientLink contains information to link a new organization to an OAuth application.
+
+```go
+type CreateClientLink struct {
+    Owner              Owner    `json:"owner,omitempty"`
+    Name               string   `json:"name,omitempty"`
+    Address            *Address `json:"address,omitempty"`
+    RegistrationNumber string   `json:"registrationNumber,omitempty"`
+    VATNumber          string   `json:"vatNumber,omitempty"`
 }
 ```
 
@@ -4251,7 +4251,7 @@ const (
     ShipmentsWrite     PermissionGrant = "shipments.write"
     OrganizationsRead  PermissionGrant = "organizations.read"
     OrganizationsWrite PermissionGrant = "organizations.write"
-    OnboardingRead     PermissionGrant = "onbording.read"
+    OnboardingRead     PermissionGrant = "onboarding.read"
     OnboardingWrite    PermissionGrant = "onbording.write"
 )
 ```

@@ -8,13 +8,9 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
-// ClientLinksService interacts with the Client Links API to create
-// new organizations for your customers.
-type ClientLinksService service
-
-// ClientDetails contains information to link a new organization to an
+// CreateClientLink contains information to link a new organization to an
 // OAuth application.
-type ClientDetails struct {
+type CreateClientLink struct {
 	Owner              Owner    `json:"owner,omitempty"`
 	Name               string   `json:"name,omitempty"`
 	Address            *Address `json:"address,omitempty"`
@@ -36,10 +32,14 @@ type ClientLink struct {
 	Links    ClientLinkLinks `json:"_links,omitempty"`
 }
 
-// CreateClientLink based on the provided ClientDetails.
+// ClientLinksService interacts with the Client Links API to create
+// new organizations for your customers.
+type ClientLinksService service
+
+// Create a client link based on the provided CreateClientLink values.
 //
 // See: https://docs.mollie.com/reference/v2/client-links-api/create-client-link
-func (cls *ClientLinksService) CreateClientLink(ctx context.Context, cd *ClientDetails) (
+func (cls *ClientLinksService) Create(ctx context.Context, cd CreateClientLink) (
 	res *Response,
 	cl *ClientLink,
 	err error,
@@ -66,18 +66,19 @@ const (
 	AutoApproval  ApprovalPromptAction = "auto"
 )
 
-// ClientLinkFinalizeOptions subset of the parameters allowed for the Authorize endpoint.
-type ClientLinkFinalizeOptions struct {
-	ClientID       string `url:"clientID,omitempty"`
-	State          string `url:"state,omitempty"`
-	Scope          string `url:"scope,omitempty"`
-	ApprovalPrompt string `url:"approvalPrompt,omitempty"`
+// ClientLinkAuthorizeOptions subset of the parameters allowed for the Authorize endpoint.
+type ClientLinkAuthorizeOptions struct {
+	ClientID       string               `url:"clientId,omitempty"`
+	State          string               `url:"state,omitempty"`
+	Scope          []PermissionGrant    `del:"+"                        url:"scope,omitempty"`
+	ApprovalPrompt ApprovalPromptAction `url:"approvalPrompt,omitempty"`
 }
 
-func (cls *ClientLinksService) CreateFinalizeClientLink(
+// GetFinalClientLink returns the final client link URI with the provided options.
+func (cls *ClientLinksService) GetFinalClientLink(
 	ctx context.Context,
 	clientLink string,
-	options *ClientLinkFinalizeOptions,
+	options *ClientLinkAuthorizeOptions,
 ) (
 	clientLinkURI string,
 ) {
