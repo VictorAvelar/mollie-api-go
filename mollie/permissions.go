@@ -30,7 +30,7 @@ const (
 	ShipmentsWrite     PermissionGrant = "shipments.write"
 	OrganizationsRead  PermissionGrant = "organizations.read"
 	OrganizationsWrite PermissionGrant = "organizations.write"
-	OnboardingRead     PermissionGrant = "onbording.read"
+	OnboardingRead     PermissionGrant = "onboarding.read"
 	OnboardingWrite    PermissionGrant = "onbording.write"
 )
 
