@@ -347,7 +347,7 @@ func (ps *PaymentsService) Update(ctx context.Context, id string, up UpdatePayme
 type PaymentList struct {
 	Count    int `json:"count,omitempty"`
 	Embedded struct {
-		Payments []Payment
+		Payments []*Payment
 	} `json:"_embedded,omitempty"`
 	Links PaginationLinks `json:"_links,omitempty"`
 }
