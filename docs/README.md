@@ -106,6 +106,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
   - [func \(cv \*ContextValues\) UnmarshalJSON\(data \[\]byte\) error](<#ContextValues.UnmarshalJSON>)
 - [type CreateCapture](<#CreateCapture>)
 - [type CreateClientLink](<#CreateClientLink>)
+- [type CreateCustomer](<#CreateCustomer>)
 - [type CreateMollieConnectPaymentFields](<#CreateMollieConnectPaymentFields>)
 - [type CreatePayment](<#CreatePayment>)
 - [type CreatePaymentAccessTokenFields](<#CreatePaymentAccessTokenFields>)
@@ -117,13 +118,13 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type CustomersList](<#CustomersList>)
 - [type CustomersListOptions](<#CustomersListOptions>)
 - [type CustomersService](<#CustomersService>)
-  - [func \(cs \*CustomersService\) Create\(ctx context.Context, c Customer\) \(res \*Response, cc \*Customer, err error\)](<#CustomersService.Create>)
+  - [func \(cs \*CustomersService\) Create\(ctx context.Context, c CreateCustomer\) \(res \*Response, cc \*Customer, err error\)](<#CustomersService.Create>)
   - [func \(cs \*CustomersService\) CreatePayment\(ctx context.Context, id string, p CreatePayment\) \(res \*Response, pp \*Payment, err error\)](<#CustomersService.CreatePayment>)
   - [func \(cs \*CustomersService\) Delete\(ctx context.Context, id string\) \(res \*Response, err error\)](<#CustomersService.Delete>)
   - [func \(cs \*CustomersService\) Get\(ctx context.Context, id string\) \(res \*Response, c \*Customer, err error\)](<#CustomersService.Get>)
   - [func \(cs \*CustomersService\) GetPayments\(ctx context.Context, id string, options \*CustomersListOptions\) \(res \*Response, pl \*PaymentList, err error\)](<#CustomersService.GetPayments>)
   - [func \(cs \*CustomersService\) List\(ctx context.Context, options \*CustomersListOptions\) \(res \*Response, cl \*CustomersList, err error\)](<#CustomersService.List>)
-  - [func \(cs \*CustomersService\) Update\(ctx context.Context, id string, c Customer\) \(res \*Response, cc \*Customer, err error\)](<#CustomersService.Update>)
+  - [func \(cs \*CustomersService\) Update\(ctx context.Context, id string, c UpdateCustomer\) \(res \*Response, cc \*Customer, err error\)](<#CustomersService.Update>)
 - [type EligibilityReasons](<#EligibilityReasons>)
 - [type EmbedValue](<#EmbedValue>)
 - [type EntityType](<#EntityType>)
@@ -355,6 +356,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type TransferDestination](<#TransferDestination>)
 - [type TransferFrequency](<#TransferFrequency>)
 - [type URL](<#URL>)
+- [type UpdateCustomer](<#UpdateCustomer>)
 - [type UpdatePayment](<#UpdatePayment>)
 - [type UsedGiftCard](<#UsedGiftCard>)
 - [type UserAgentToken](<#UserAgentToken>)
@@ -1826,6 +1828,20 @@ type CreateClientLink struct {
 }
 ```
 
+<a name="CreateCustomer"></a>
+## type [CreateCustomer](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L11-L16>)
+
+CreateCustomer contains the parameters to create a customer.
+
+```go
+type CreateCustomer struct {
+    Name     string `json:"name,omitempty"`
+    Email    string `json:"email,omitempty"`
+    Locale   Locale `json:"locale,omitempty"`
+    Metadata any    `json:"metadata,omitempty"`
+}
+```
+
 <a name="CreateMollieConnectPaymentFields"></a>
 ## type [CreateMollieConnectPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L134-L137>)
 
@@ -1945,7 +1961,7 @@ type CreateShipmentRequest struct {
 ```
 
 <a name="Customer"></a>
-## type [Customer](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L24-L34>)
+## type [Customer](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L37-L47>)
 
 Customer represents buyers.
 
@@ -1957,30 +1973,30 @@ type Customer struct {
     Name      string        `json:"name,omitempty"`
     Email     string        `json:"email,omitempty"`
     Locale    Locale        `json:"locale,omitempty"`
-    Metadata  interface{}   `json:"metadata,omitempty"`
+    Metadata  any           `json:"metadata,omitempty"`
     CreatedAt *time.Time    `json:"createdAt,omitempty"`
     Links     CustomerLinks `json:"_links,omitempty"`
 }
 ```
 
 <a name="CustomerLinks"></a>
-## type [CustomerLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L14-L21>)
+## type [CustomerLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L27-L34>)
 
 CustomerLinks contains the HAL resources for a customer response.
 
 ```go
 type CustomerLinks struct {
     Self          *URL `json:"self,omitempty"`
+    Dashboard     *URL `json:"dashboard,omitempty"`
     Mandates      *URL `json:"mandates,omitempty"`
     Subscriptions *URL `json:"subscriptions,omitempty"`
     Payments      *URL `json:"payments,omitempty"`
     Documentation *URL `json:"documentation,omitempty"`
-    Dashboard     *URL `json:"dashboard,omitempty"`
 }
 ```
 
 <a name="CustomersList"></a>
-## type [CustomersList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L47-L53>)
+## type [CustomersList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L60-L66>)
 
 CustomersList contains a embedded list of customers wrapped in a standard Mollie paginated response.
 
@@ -1988,14 +2004,14 @@ CustomersList contains a embedded list of customers wrapped in a standard Mollie
 type CustomersList struct {
     Count    int `json:"count,omitempty"`
     Embedded struct {
-        Customers []Customer `json:"customers,omitempty"`
+        Customers []*Customer `json:"customers,omitempty"`
     }   `json:"_embedded,omitempty"`
     Links PaginationLinks `json:"links,omitempty"`
 }
 ```
 
 <a name="CustomersListOptions"></a>
-## type [CustomersListOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L37-L43>)
+## type [CustomersListOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L50-L56>)
 
 CustomersListOptions contains valid query parameters for the list customers endpoint.
 
@@ -2010,7 +2026,7 @@ type CustomersListOptions struct {
 ```
 
 <a name="CustomersService"></a>
-## type [CustomersService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L11>)
+## type [CustomersService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L69>)
 
 CustomersService operates over the customer resource.
 
@@ -2019,10 +2035,10 @@ type CustomersService service
 ```
 
 <a name="CustomersService.Create"></a>
-### func \(\*CustomersService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L77>)
+### func \(\*CustomersService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L93>)
 
 ```go
-func (cs *CustomersService) Create(ctx context.Context, c Customer) (res *Response, cc *Customer, err error)
+func (cs *CustomersService) Create(ctx context.Context, c CreateCustomer) (res *Response, cc *Customer, err error)
 ```
 
 Create creates a simple minimal representation of a customer in the Mollie API to use for the Mollie Checkout and Recurring features.
@@ -2030,7 +2046,7 @@ Create creates a simple minimal representation of a customer in the Mollie API t
 See: https://docs.mollie.com/reference/v2/customers-api/create-customer
 
 <a name="CustomersService.CreatePayment"></a>
-### func \(\*CustomersService\) [CreatePayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L173-L177>)
+### func \(\*CustomersService\) [CreatePayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L189-L193>)
 
 ```go
 func (cs *CustomersService) CreatePayment(ctx context.Context, id string, p CreatePayment) (res *Response, pp *Payment, err error)
@@ -2041,7 +2057,7 @@ CreatePayment creates a payment for the customer.
 See: https://docs.mollie.com/reference/v2/customers-api/create-customer-payment
 
 <a name="CustomersService.Delete"></a>
-### func \(\*CustomersService\) [Delete](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L117>)
+### func \(\*CustomersService\) [Delete](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L133>)
 
 ```go
 func (cs *CustomersService) Delete(ctx context.Context, id string) (res *Response, err error)
@@ -2054,7 +2070,7 @@ All mandates and subscriptions created for this customer will be canceled as wel
 See: https://docs.mollie.com/reference/v2/customers-api/delete-customer
 
 <a name="CustomersService.Get"></a>
-### func \(\*CustomersService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L58>)
+### func \(\*CustomersService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L74>)
 
 ```go
 func (cs *CustomersService) Get(ctx context.Context, id string) (res *Response, c *Customer, err error)
@@ -2065,7 +2081,7 @@ Get finds a customer by its ID.
 See: https://docs.mollie.com/reference/v2/customers-api/get-customer
 
 <a name="CustomersService.GetPayments"></a>
-### func \(\*CustomersService\) [GetPayments](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L151-L155>)
+### func \(\*CustomersService\) [GetPayments](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L167-L171>)
 
 ```go
 func (cs *CustomersService) GetPayments(ctx context.Context, id string, options *CustomersListOptions) (res *Response, pl *PaymentList, err error)
@@ -2076,7 +2092,7 @@ GetPayments retrieves all payments linked to the customer.
 See: https://docs.mollie.com/reference/v2/customers-api/list-customer-payments
 
 <a name="CustomersService.List"></a>
-### func \(\*CustomersService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L131-L135>)
+### func \(\*CustomersService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L147-L151>)
 
 ```go
 func (cs *CustomersService) List(ctx context.Context, options *CustomersListOptions) (res *Response, cl *CustomersList, err error)
@@ -2087,10 +2103,10 @@ List retrieves all customers created.
 See: https://docs.mollie.com/reference/v2/customers-api/list-customers
 
 <a name="CustomersService.Update"></a>
-### func \(\*CustomersService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L93-L97>)
+### func \(\*CustomersService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L109-L113>)
 
 ```go
-func (cs *CustomersService) Update(ctx context.Context, id string, c Customer) (res *Response, cc *Customer, err error)
+func (cs *CustomersService) Update(ctx context.Context, id string, c UpdateCustomer) (res *Response, cc *Customer, err error)
 ```
 
 Update an existing customer.
@@ -5543,6 +5559,20 @@ URL in Mollie are commonly represented as objects with an href and type field.
 type URL struct {
     Href string `json:"href,omitempty"`
     Type string `json:"type,omitempty"`
+}
+```
+
+<a name="UpdateCustomer"></a>
+## type [UpdateCustomer](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L19-L24>)
+
+UpdateCustomer contains the parameters to update a customer.
+
+```go
+type UpdateCustomer struct {
+    Name     string `json:"name,omitempty"`
+    Email    string `json:"email,omitempty"`
+    Locale   Locale `json:"locale,omitempty"`
+    Metadata any    `json:"metadata,omitempty"`
 }
 ```
 
