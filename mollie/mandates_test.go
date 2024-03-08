@@ -120,7 +120,7 @@ func TestMandatesService_Create(t *testing.T) {
 
 	type args struct {
 		ctx      context.Context
-		mandate  Mandate
+		mandate  CreateMandate
 		customer string
 	}
 
@@ -136,7 +136,7 @@ func TestMandatesService_Create(t *testing.T) {
 			"create mandates works as expected.",
 			args{
 				context.Background(),
-				Mandate{
+				CreateMandate{
 					Method: PayPal,
 				},
 				"cst_4qqhO89gsT",
@@ -158,7 +158,7 @@ func TestMandatesService_Create(t *testing.T) {
 			"create mandate, an error is returned from the server",
 			args{
 				context.Background(),
-				Mandate{
+				CreateMandate{
 					Method: PayPal,
 				},
 				"cst_4qqhO89gsT",
@@ -172,7 +172,7 @@ func TestMandatesService_Create(t *testing.T) {
 			"create mandate, an error occurs when parsing json",
 			args{
 				context.Background(),
-				Mandate{
+				CreateMandate{
 					Method: PayPal,
 				},
 				"cst_4qqhO89gsT",
@@ -186,7 +186,7 @@ func TestMandatesService_Create(t *testing.T) {
 			"create mandate, invalid url when building request",
 			args{
 				context.Background(),
-				Mandate{
+				CreateMandate{
 					Method: PayPal,
 				},
 				"cst_4qqhO89gsT",
