@@ -63,7 +63,7 @@ type Client struct {
 	Captures       *CapturesService
 	Subscriptions  *SubscriptionsService
 	Customers      *CustomersService
-	Miscellaneous  *MiscellaneousService
+	Wallets        *WalletsService
 	Mandates       *MandatesService
 	Permissions    *PermissionsService
 	Onboarding     *OnboardingService
@@ -299,7 +299,7 @@ func NewClient(baseClient *http.Client, conf *Config) (mollie *Client, err error
 	mollie.Settlements = (*SettlementsService)(&mollie.common)
 	mollie.Subscriptions = (*SubscriptionsService)(&mollie.common)
 	mollie.Customers = (*CustomersService)(&mollie.common)
-	mollie.Miscellaneous = (*MiscellaneousService)(&mollie.common)
+	mollie.Wallets = (*WalletsService)(&mollie.common)
 	mollie.Mandates = (*MandatesService)(&mollie.common)
 	mollie.Permissions = (*PermissionsService)(&mollie.common)
 	mollie.Onboarding = (*OnboardingService)(&mollie.common)
