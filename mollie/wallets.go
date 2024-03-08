@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 )
 
-// MiscellaneousService operates over the resources described
-// in Mollie's miscellaneous API endpoints section.
-type MiscellaneousService service
+// WalletsService operates over the resources described
+// in Mollie's wallets API endpoints section.
+type WalletsService service
 
 // ApplePaymentSession contains information about an Apple pay session.
 type ApplePaymentSession struct {
@@ -31,7 +31,7 @@ type ApplePaymentSessionRequest struct {
 // ApplePaymentSession returns an Apple Payment Session object valid for one transaction.
 //
 // See: https://docs.mollie.com/reference/v2/wallets-api/request-apple-pay-payment-session
-func (ms *MiscellaneousService) ApplePaymentSession(ctx context.Context, asr *ApplePaymentSessionRequest) (
+func (ms *WalletsService) ApplePaymentSession(ctx context.Context, asr *ApplePaymentSessionRequest) (
 	res *Response,
 	aps *ApplePaymentSession,
 	err error,
