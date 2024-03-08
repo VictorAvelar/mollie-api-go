@@ -107,6 +107,8 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type CreateCapture](<#CreateCapture>)
 - [type CreateClientLink](<#CreateClientLink>)
 - [type CreateCustomer](<#CreateCustomer>)
+- [type CreateMandate](<#CreateMandate>)
+- [type CreateMandateAccessTokenFields](<#CreateMandateAccessTokenFields>)
 - [type CreateMollieConnectPaymentFields](<#CreateMollieConnectPaymentFields>)
 - [type CreatePayment](<#CreatePayment>)
 - [type CreatePaymentAccessTokenFields](<#CreatePaymentAccessTokenFields>)
@@ -158,7 +160,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type MandatesList](<#MandatesList>)
 - [type MandatesListOptions](<#MandatesListOptions>)
 - [type MandatesService](<#MandatesService>)
-  - [func \(ms \*MandatesService\) Create\(ctx context.Context, customer string, mandate Mandate\) \(res \*Response, mr \*Mandate, err error\)](<#MandatesService.Create>)
+  - [func \(ms \*MandatesService\) Create\(ctx context.Context, customer string, mandate CreateMandate\) \(res \*Response, mr \*Mandate, err error\)](<#MandatesService.Create>)
   - [func \(ms \*MandatesService\) Get\(ctx context.Context, customer, mandate string\) \(res \*Response, mr \*Mandate, err error\)](<#MandatesService.Get>)
   - [func \(ms \*MandatesService\) List\(ctx context.Context, customer string, options \*MandatesListOptions\) \(res \*Response, ml \*MandatesList, err error\)](<#MandatesService.List>)
   - [func \(ms \*MandatesService\) Revoke\(ctx context.Context, customer, mandate string\) \(res \*Response, err error\)](<#MandatesService.Revoke>)
@@ -1152,7 +1154,7 @@ List retrieves all captures for a certain payment.
 See: https://docs.mollie.com/reference/v2/captures-api/list-captures
 
 <a name="CardLabel"></a>
-## type [CardLabel](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L50>)
+## type [CardLabel](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L68>)
 
 CardLabel Note that not all labels can be processed through Mollie.
 
@@ -1839,6 +1841,36 @@ type CreateCustomer struct {
     Email    string `json:"email,omitempty"`
     Locale   Locale `json:"locale,omitempty"`
     Metadata any    `json:"metadata,omitempty"`
+}
+```
+
+<a name="CreateMandate"></a>
+## type [CreateMandate](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L11-L21>)
+
+CreateMandate contains the parameters to create a mandate.
+
+```go
+type CreateMandate struct {
+    ConsumerName             string        `json:"consumerName,omitempty"`
+    ConsumerAccount          string        `json:"consumerAccount,omitempty"`
+    ConsumerBIC              string        `json:"consumerBic,omitempty"`
+    ConsumerEmail            string        `json:"consumerEmail,omitempty"`
+    MandateReference         string        `json:"mandateReference,omitempty"`
+    PaypalBillingAgreementID string        `json:"paypalBillingAgreementId,omitempty"`
+    SignatureDate            *ShortDate    `json:"signatureDate,omitempty"`
+    Method                   PaymentMethod `json:"method,omitempty"`
+    CreateMandateAccessTokenFields
+}
+```
+
+<a name="CreateMandateAccessTokenFields"></a>
+## type [CreateMandateAccessTokenFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L24-L26>)
+
+CreateMandateAccessTokenFields contains the parameters to create a mandate when using an access token.
+
+```go
+type CreateMandateAccessTokenFields struct {
+    Testmode bool `json:"testmode,omitempty"`
 }
 ```
 
@@ -2590,7 +2622,7 @@ const (
 ```
 
 <a name="Mandate"></a>
-## type [Mandate](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L11-L25>)
+## type [Mandate](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L29-L43>)
 
 Mandate allow you to charge a customer’s credit card or bank account recurrently.
 
@@ -2598,22 +2630,22 @@ Mandate allow you to charge a customer’s credit card or bank account recurrent
 type Mandate struct {
     ID               string         `json:"id,omitempty"`
     Resource         string         `json:"resource,omitempty"`
-    Method           PaymentMethod  `json:"method,omitempty"`
     ConsumerName     string         `json:"consumerName,omitempty"`
     ConsumerAccount  string         `json:"consumerAccount,omitempty"`
     ConsumerBic      string         `json:"consumerBic,omitempty"`
-    SignatureDate    *ShortDate     `json:"signatureDate,omitempty"`
     MandateReference string         `json:"mandateReference,omitempty"`
+    SignatureDate    *ShortDate     `json:"signatureDate,omitempty"`
+    CreatedAt        *time.Time     `json:"createdAt,omitempty"`
     Mode             Mode           `json:"mode,omitempty"`
     Status           MandateStatus  `json:"status,omitempty"`
-    CreatedAt        *time.Time     `json:"createdAt,omitempty"`
+    Method           PaymentMethod  `json:"method,omitempty"`
     Details          MandateDetails `json:"details,omitempty"`
     Links            MandateLinks   `json:"_links,omitempty"`
 }
 ```
 
 <a name="MandateDetails"></a>
-## type [MandateDetails](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L28-L37>)
+## type [MandateDetails](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L46-L55>)
 
 MandateDetails are possible values inside the mandate.details field.
 
@@ -2624,14 +2656,14 @@ type MandateDetails struct {
     ConsumerBic     string     `json:"consumerBic,omitempty"`
     CardHolder      string     `json:"cardHolder,omitempty"`
     CardNumber      string     `json:"cardNumber,omitempty"`
-    CardLabel       CardLabel  `json:"cardLabel,omitempty"`
     CardFingerprint string     `json:"cardFingerprint,omitempty"`
     CardExpiryDate  *ShortDate `json:"cardExpiryDate,omitempty"`
+    CardLabel       CardLabel  `json:"cardLabel,omitempty"`
 }
 ```
 
 <a name="MandateLinks"></a>
-## type [MandateLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L73-L77>)
+## type [MandateLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L91-L95>)
 
 MandateLinks response objects.
 
@@ -2644,7 +2676,7 @@ type MandateLinks struct {
 ```
 
 <a name="MandateStatus"></a>
-## type [MandateStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L40>)
+## type [MandateStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L58>)
 
 MandateStatus for the Mandate object.
 
@@ -2663,7 +2695,7 @@ const (
 ```
 
 <a name="MandatesList"></a>
-## type [MandatesList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L90-L96>)
+## type [MandatesList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L108-L114>)
 
 MandatesList describes how a list of mandates will be retrieved by Mollie.
 
@@ -2671,14 +2703,14 @@ MandatesList describes how a list of mandates will be retrieved by Mollie.
 type MandatesList struct {
     Count    int `json:"count,omitempty"`
     Embedded struct {
-        Mandates []Mandate
+        Mandates []*Mandate
     }   `json:"_embedded,omitempty"`
     Links PaginationLinks `json:"_links,omitempty"`
 }
 ```
 
 <a name="MandatesListOptions"></a>
-## type [MandatesListOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L84-L87>)
+## type [MandatesListOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L102-L105>)
 
 MandatesListOptions contains valid query parameters to filter the List mandates actions.
 
@@ -2686,13 +2718,13 @@ From is a mandate id to offset from \(inclusive\) Limit is the max number of man
 
 ```go
 type MandatesListOptions struct {
-    From  string `url:"from,omitempty"`
     Limit int    `url:"limit,omitempty"`
+    From  string `url:"from,omitempty"`
 }
 ```
 
 <a name="MandatesService"></a>
-## type [MandatesService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L70>)
+## type [MandatesService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L88>)
 
 MandatesService operates over customer mandates endpoints.
 
@@ -2701,10 +2733,10 @@ type MandatesService service
 ```
 
 <a name="MandatesService.Create"></a>
-### func \(\*MandatesService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L103-L107>)
+### func \(\*MandatesService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L121-L125>)
 
 ```go
-func (ms *MandatesService) Create(ctx context.Context, customer string, mandate Mandate) (res *Response, mr *Mandate, err error)
+func (ms *MandatesService) Create(ctx context.Context, customer string, mandate CreateMandate) (res *Response, mr *Mandate, err error)
 ```
 
 Create a mandate for a specific customer.
@@ -2714,7 +2746,7 @@ Mandates allow you to charge a customer’s credit card or bank account recurren
 See: https://docs.mollie.com/reference/v2/mandates-api/create-mandate
 
 <a name="MandatesService.Get"></a>
-### func \(\*MandatesService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L127>)
+### func \(\*MandatesService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L149>)
 
 ```go
 func (ms *MandatesService) Get(ctx context.Context, customer, mandate string) (res *Response, mr *Mandate, err error)
@@ -2725,7 +2757,7 @@ Get retrieves a mandate by its ID and its customer’s ID. The mandate will eith
 See: https://docs.mollie.com/reference/v2/mandates-api/get-mandate
 
 <a name="MandatesService.List"></a>
-### func \(\*MandatesService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L163-L167>)
+### func \(\*MandatesService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L185-L189>)
 
 ```go
 func (ms *MandatesService) List(ctx context.Context, customer string, options *MandatesListOptions) (res *Response, ml *MandatesList, err error)
@@ -2736,7 +2768,7 @@ List retrieves all mandates for the given customerId, ordered from newest to old
 See: https://docs.mollie.com/reference/v2/mandates-api/list-mandates
 
 <a name="MandatesService.Revoke"></a>
-### func \(\*MandatesService\) [Revoke](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L148>)
+### func \(\*MandatesService\) [Revoke](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L170>)
 
 ```go
 func (ms *MandatesService) Revoke(ctx context.Context, customer, mandate string) (res *Response, err error)
