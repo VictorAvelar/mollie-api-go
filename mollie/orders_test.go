@@ -857,7 +857,8 @@ func TestOrdersService_CreateOrderPayment(t *testing.T) {
 				context.Background(),
 				"ord_8wmqcHMN4U",
 				&OrderPayment{
-					CustomerID: "cst_8wmqcHMN4U",
+					CustomerReference: "customer_123",
+					Method:            []PaymentMethod{BankTransfer},
 				},
 			},
 			false,
