@@ -2828,12 +2828,12 @@ Onboarding data for an organization.
 
 ```go
 type Onboarding struct {
+    CanReceivePayments    bool             `json:"canReceivePayments,omitempty"`
+    CanReceiveSettlements bool             `json:"canReceiveSettlements,omitempty"`
     Resource              string           `json:"reference,omitempty"`
     Name                  string           `json:"name,omitempty"`
     SignedUpAt            *time.Time       `json:"signedUpAt,omitempty"`
     Status                OnboardingStatus `json:"status,omitempty"`
-    CanReceivePayments    bool             `json:"canReceivePayments,omitempty"`
-    CanReveiceSettlements bool             `json:"canReceiveSettlements,omitempty"`
     Links                 OnboardingLinks  `json:"_links,omitempty"`
 }
 ```
@@ -2858,10 +2858,10 @@ OnboardingDataOrganization contains data of the organization you want to provide
 ```go
 type OnboardingDataOrganization struct {
     Name               string   `json:"name,omitempty"`
-    Address            *Address `json:"address,omitempty"`
     RegistrationNumber string   `json:"registrationNumber,omitempty"`
     VatNumber          string   `json:"vatNumber,omitempty"`
     VatRegulation      string   `json:"vatRegulation,omitempty"`
+    Address            *Address `json:"address,omitempty"`
 }
 ```
 
