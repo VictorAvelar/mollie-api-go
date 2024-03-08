@@ -335,8 +335,8 @@ type EmbedValue string
 
 // Valid Embed query string value.
 const (
-	EmbedPayment     EmbedValue = "payments"
-	EmbedRefund      EmbedValue = "refunds"
+	EmbedPayments    EmbedValue = "payments"
+	EmbedRefunds     EmbedValue = "refunds"
 	EmbedShipments   EmbedValue = "shipments"
 	EmbedChargebacks EmbedValue = "chargebacks"
 	EmbedCaptures    EmbedValue = "captures"
