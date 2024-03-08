@@ -57,7 +57,7 @@ func TestCapturesService_Get(t *testing.T) {
 				"tr_WDqYK6vllg",
 				"cpt_4qqhO89gsT",
 				&CaptureOptions{
-					Embed: []EmbedValue{EmbedPayment},
+					Embed: []EmbedValue{EmbedPayments},
 				},
 			},
 			false,
@@ -319,7 +319,7 @@ func TestCapturesService_List(t *testing.T) {
 				"tr_WDqYK6vllg",
 				"cpt_4qqhO89gsT",
 				&CaptureOptions{
-					Embed: []EmbedValue{EmbedPayment},
+					Embed: []EmbedValue{EmbedPayments},
 				},
 			},
 			false,
