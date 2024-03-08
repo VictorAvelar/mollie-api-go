@@ -7,32 +7,55 @@ import (
 	"time"
 )
 
+// Local embed value type.
+const (
+	EmbedNestedPaymentDetails EmbedValue = "payments.details.remainderDetails"
+)
+
+// CreateOrder contains the parameters to create an order.
+type CreateOrder struct {
+	ShopperCountryMustMatchTheBillingCountry bool            `json:"shopperCountryMustMatchTheBillingCountry,omitempty"`
+	OrderNumber                              string          `json:"orderNumber,omitempty"`
+	RedirectURL                              string          `json:"redirectUrl,omitempty"`
+	WebhookURL                               string          `json:"webhookUrl,omitempty"`
+	CancelURL                                string          `json:"cancelUrl,omitempty"`
+	Amount                                   *Amount         `json:"amount,omitempty"`
+	BillingAddress                           *OrderAddress   `json:"billingAddress,omitempty"`
+	ShippingAddress                          *OrderAddress   `json:"shippingAddress,omitempty"`
+	ConsumerDateOfBirth                      *ShortDate      `json:"consumerDateOfBirth,omitempty"`
+	Payment                                  *OrderPayment   `json:"payment,omitempty"`
+	ExpiresAt                                *ShortDate      `json:"expiresAt,omitempty"`
+	Lines                                    []OrderLine     `json:"lines,omitempty"`
+	Method                                   []PaymentMethod `json:"method,omitempty"`
+	Locale                                   Locale          `json:"locale,omitempty"`
+	Metadata                                 any             `json:"metadata,omitempty"`
+	OrderAccessTokenFields
+}
+
+// OrderAccessTokenFields contains the fields available to include in an order when using an access token.
+type OrderAccessTokenFields struct {
+	ProfileID string `json:"profileId,omitempty"`
+	Testmode  bool   `json:"testmode,omitempty"`
+}
+
 // Order explain the items that customers need to pay for.
 type Order struct {
-	TestMode                                 bool          `json:"testmode,omitempty"`
 	IsCancelable                             bool          `json:"isCancelable,omitempty"`
 	ShopperCountryMustMatchTheBillingCountry bool          `json:"shopperCountryMustMatchTheBillingCountry,omitempty"`
 	Resource                                 string        `json:"resource,omitempty"`
 	ID                                       string        `json:"id,omitempty"`
 	ProfileID                                string        `json:"profileId,omitempty"`
-	OrderNumber                              string        `json:"orderNumber,omitempty"`
 	RedirectURL                              string        `json:"redirectUrl,omitempty"`
-	WebhookURL                               string        `json:"webhookUrl,omitempty"`
-	Description                              string        `json:"description,omitempty"`
-	Sku                                      string        `json:"sku,omitempty"`
 	CancelURL                                string        `json:"cancelUrl,omitempty"`
-	Metadata                                 interface{}   `json:"metadata,omitempty"`
-	Mode                                     Mode          `json:"mode,omitempty"`
-	Method                                   PaymentMethod `json:"method,omitempty"`
-	Status                                   OrderStatus   `json:"status,omitempty"`
-	Locale                                   Locale        `json:"locale,omitempty"`
-	ShippingAddress                          OrderAddress  `json:"shippingAddress,omitempty"`
-	Links                                    OrderLinks    `json:"_links,omitempty"`
+	WebhookURL                               string        `json:"webhookUrl,omitempty"`
+	OrderNumber                              string        `json:"orderNumber,omitempty"`
+	Lines                                    []*OrderLine  `json:"lines,omitempty"`
 	Amount                                   *Amount       `json:"amount,omitempty"`
 	AmountCaptured                           *Amount       `json:"amountCaptured,omitempty"`
 	AmountRefunded                           *Amount       `json:"amountRefunded,omitempty"`
 	BillingAddress                           *OrderAddress `json:"billingAddress,omitempty"`
 	ConsumerDateOfBirth                      *ShortDate    `json:"consumerDateOfBirth,omitempty"`
+	ShippingAddress                          *OrderAddress `json:"shippingAddress,omitempty"`
 	CreatedAt                                *time.Time    `json:"createdAt,omitempty"`
 	ExpiresAt                                *time.Time    `json:"expiresAt,omitempty"`
 	ExpiredAt                                *time.Time    `json:"expiredAt,omitempty"`
@@ -40,27 +63,46 @@ type Order struct {
 	AuthorizedAt                             *time.Time    `json:"authorizedAt,omitempty"`
 	CanceledAt                               *time.Time    `json:"canceledAt,omitempty"`
 	CompletedAt                              *time.Time    `json:"completedAt,omitempty"`
-	OrderPayment                             *OrderPayment `json:"payment,omitempty"`
-	Lines                                    []*OrderLine  `json:"lines,omitempty"`
+	Method                                   PaymentMethod `json:"method,omitempty"`
+	Mode                                     Mode          `json:"mode,omitempty"`
+	Locale                                   Locale        `json:"locale,omitempty"`
+	Status                                   OrderStatus   `json:"status,omitempty"`
+	Links                                    OrderLinks    `json:"_links,omitempty"`
+	Metadata                                 any           `json:"metadata,omitempty"`
 	Embedded                                 struct {
 		Payments []*Payment `json:"payments,omitempty"`
 		Refunds  []*Refund  `json:"refunds,omitempty"`
 	} `json:"_embedded,omitempty"`
 }
 
-// OrderPayment describes payment specific parameters that can be passed during order creation.
-type OrderPayment struct {
-	ConsumerAccount   string          `json:"consumerAccount,omitempty"`
-	CustomerID        string          `json:"customerId,omitempty"`
-	CustomerReference string          `json:"customerReference,omitempty"`
-	Issuer            string          `json:"issuer,omitempty"`
-	MandateID         string          `json:"mandateId,omitempty"`
-	SequenceType      SequenceType    `json:"sequenceType,omitempty"`
-	VoucherNumber     string          `json:"voucherNumber,omitempty"`
-	VoucherPin        string          `json:"voucherPin,omitempty"`
-	WebhookURL        string          `json:"webhookUrl,omitempty"`
-	ApplicationFee    *ApplicationFee `json:"applicationFee,omitempty"`
-	Method            PaymentMethod   `json:"method,omitempty"`
+// UpdateOrder contains the parameters to update an order.
+type UpdateOrder struct {
+	OrderNumber     string        `json:"orderNumber,omitempty"`
+	RedirectURL     string        `json:"redirectUrl,omitempty"`
+	CancelURL       string        `json:"cancelUrl,omitempty"`
+	WebhookURL      string        `json:"webhookUrl,omitempty"`
+	BillingAddress  *OrderAddress `json:"billingAddress,omitempty"`
+	ShippingAddress *OrderAddress `json:"shippingAddress,omitempty"`
+	OrderAccessTokenFields
+}
+
+// OrderList for containing the response of list orders.
+type OrderList struct {
+	Count    int `json:"count,omitempty"`
+	Embedded struct {
+		Orders []*Order `json:"orders,omitempty"`
+	} `json:"_embedded,omitempty"`
+	Links PaginationLinks `json:"links,omitempty"`
+}
+
+// OrderLinks describes an object with several URL objects
+// relevant to the order.
+// Every URL object will contain an href and a type field.
+type OrderLinks struct {
+	Self          *URL `json:"self,omitempty"`
+	Checkout      *URL `json:"checkout,omitempty"`
+	Documentation *URL `json:"documentation,omitempty"`
+	Dashboard     *URL `json:"dashboard,omitempty"`
 }
 
 // OrderStatus describes the valid order status.
@@ -77,6 +119,31 @@ const (
 	Expired    OrderStatus = "expired"
 )
 
+// OrderPayment describes payment specific parameters that can be passed during order creation.
+type OrderPayment struct {
+	ApplePayPaymentToken string     `json:"applePayPaymentToken,omitempty"`
+	CardToken            string     `json:"cardToken,omitempty"`
+	ConsumerAccount      string     `json:"consumerAccount,omitempty"`
+	CustomerID           string     `json:"customerId,omitempty"`
+	CustomerReference    string     `json:"customerReference,omitempty"`
+	ExtraMerchantData    string     `json:"extraMerchantData,omitempty"`
+	Issuer               string     `json:"issuer,omitempty"`
+	VoucherNumber        string     `json:"voucherNumber,omitempty"`
+	VoucherPin           string     `json:"voucherPin,omitempty"`
+	WebhookURL           string     `json:"webhookUrl,omitempty"`
+	BillingEmail         string     `json:"billingEmail,omitempty"`
+	SessionID            string     `json:"sessionId,omitempty"`
+	TerminalID           string     `json:"terminalId,omitempty"`
+	ConsumerName         string     `json:"consumerName,omitempty"`
+	DueDate              *ShortDate `json:"dueDate,omitempty"`
+	ShippingAddress      *Address   `json:"shippingAddress,omitempty"`
+	BillingAddress       *Address   `json:"billingAddress,omitempty"`
+	Company              *Company   `json:"company,omitempty"`
+	// Only available when using access tokens.
+	ApplicationFee *ApplicationFee `json:"applicationFee,omitempty"`
+	SequenceType   SequenceType    `json:"sequenceType,omitempty"`
+}
+
 // OrderAddress identify both the address and the person the order is billed or shipped to.
 type OrderAddress struct {
 	OrganizationName string      `json:"organizationName,omitempty"`
@@ -84,56 +151,64 @@ type OrderAddress struct {
 	GivenName        string      `json:"givenName,omitempty"`
 	FamilyName       string      `json:"familyName,omitempty"`
 	Email            string      `json:"email,omitempty"`
-	Phone            PhoneNumber `json:"phone,omitempty"`
 	StreetAndNumber  string      `json:"streetAndNumber,omitempty"`
 	StreetAdditional string      `json:"streetAdditional,omitempty"`
 	PostalCode       string      `json:"postalCode,omitempty"`
 	City             string      `json:"city,omitempty"`
 	Region           string      `json:"region,omitempty"`
 	Country          string      `json:"country,omitempty"`
-}
-
-// OrderLinks describes an object with several URL objects
-// relevant to the order.
-// Every URL object will contain an href and a type field.
-type OrderLinks struct {
-	Self          *URL `json:"self,omitempty"`
-	Checkout      *URL `json:"checkout,omitempty"`
-	Documentation *URL `json:"documentation,omitempty"`
-	Dashboard     *URL `json:"dashboard,omitempty"`
+	Phone            PhoneNumber `json:"phone,omitempty"`
 }
 
 // OrderLine contain the actual things the customer bought.
 type OrderLine struct {
-	Resource           string          `json:"resource,omitempty"`
-	ID                 string          `json:"id,omitempty"`
-	OrderID            string          `json:"orderId,omitempty"`
-	ProductType        ProductType     `json:"type,omitempty"`
-	Name               string          `json:"name,omitempty"`
-	Amount             *Amount         `json:"amount,omitempty"`
-	Status             OrderLineStatus `json:"status,omitempty"`
 	IsCancelable       bool            `json:"isCancelable,omitempty"`
 	Quantity           int             `json:"quantity,omitempty"`
 	QuantityShipped    int             `json:"quantityShipped,omitempty"`
-	AmountShipped      *Amount         `json:"amountShipped,omitempty"`
 	QuantityRefunded   int             `json:"quantityRefunded,omitempty"`
-	AmountRefunded     *Amount         `json:"amountRefunded,omitempty"`
 	QuantityCanceled   int             `json:"quantityCanceled,omitempty"`
-	AmountCanceled     *Amount         `json:"amountCanceled,omitempty"`
 	ShippableQuantity  int             `json:"shippableQuantity,omitempty"`
 	RefundableQuantity int             `json:"refundableQuantity,omitempty"`
 	CancelableQuantity int             `json:"cancelableQuantity,omitempty"`
+	Resource           string          `json:"resource,omitempty"`
+	ID                 string          `json:"id,omitempty"`
+	OrderID            string          `json:"orderId,omitempty"`
+	Name               string          `json:"name,omitempty"`
+	VatRate            string          `json:"vatRate,omitempty"`
+	SKU                string          `json:"sku,omitempty"`
+	AmountShipped      *Amount         `json:"amountShipped,omitempty"`
+	AmountRefunded     *Amount         `json:"amountRefunded,omitempty"`
+	AmountCanceled     *Amount         `json:"amountCanceled,omitempty"`
 	UnitPrice          *Amount         `json:"unitPrice,omitempty"`
 	DiscountAmount     *Amount         `json:"discountAmount,omitempty"`
 	TotalAmount        *Amount         `json:"totalAmount,omitempty"`
-	VatRate            string          `json:"vatRate,omitempty"`
 	VatAmount          *Amount         `json:"vatAmount,omitempty"`
-	SKU                string          `json:"sku,omitempty"`
 	CreatedAt          *time.Time      `json:"createdAt,omitempty"`
+	ProductType        ProductKind     `json:"type,omitempty"`
+	Status             OrderLineStatus `json:"status,omitempty"`
 	Links              OrderLineLinks  `json:"_links,omitempty"`
-	ImageURL           string          `json:"imageUrl,omitempty"`
-	ProductURL         string          `json:"productUrl,omitempty"`
-	Metadata           interface{}     `json:"metadata,omitempty"`
+}
+
+// OrderLineLinks describes object with several URL objects relevant to the order line.
+type OrderLineLinks struct {
+	ProductURL *URL `json:"productUrl,omitempty"`
+	ImageURL   *URL `json:"imageUrl,omitempty"`
+}
+
+// UpdateOrderLine contains the parameters to update an order line.
+type UpdateOrderLine struct {
+	Quantity       int     `json:"quantity,omitempty"`
+	Name           string  `json:"name,omitempty"`
+	ImageURL       string  `json:"imageUrl,omitempty"`
+	ProductURL     string  `json:"productUrl,omitempty"`
+	SKU            string  `json:"sku,omitempty"`
+	VATRate        string  `json:"vatRate,omitempty"`
+	UnitPrice      *Amount `json:"unitPrice,omitempty"`
+	DiscountAmount *Amount `json:"discountAmount,omitempty"`
+	TotalAmount    *Amount `json:"totalAmount,omitempty"`
+	VATAmount      *Amount `json:"vatAmount,omitempty"`
+	Metadata       any     `json:"metadata,omitempty"`
+	OrderAccessTokenFields
 }
 
 // OrderLineOperation describes supported operations when managing order lines.
@@ -141,9 +216,9 @@ type OrderLineOperation string
 
 // Supported order lines operation types.
 const (
-	AddOrderLine    OrderLineOperation = "add"
-	UpdateOrderLine OrderLineOperation = "update"
-	CancelOrderLine OrderLineOperation = "cancel"
+	AddOrderLineOperation    OrderLineOperation = "add"
+	UpdateOrderLineOperation OrderLineOperation = "update"
+	CancelOrderLineOperation OrderLineOperation = "cancel"
 )
 
 // OrderLineOperationProductCategory contains the product category.
@@ -165,14 +240,15 @@ type OrderLineOperationData struct {
 	ImageURL       string                            `json:"imageUrl,omitempty"`
 	ProductURL     string                            `json:"productUrl,omitempty"`
 	VATRate        string                            `json:"vatRate,omitempty"`
-	Type           string                            `json:"type,omitempty"`
+	Kind           ProductKind                       `json:"type,omitempty"`
 	Category       OrderLineOperationProductCategory `json:"category,omitempty"`
 	Amount         *Amount                           `json:"amount,omitempty"`
 	UnitPrice      *Amount                           `json:"unitPrice,omitempty"`
 	DiscountAmount *Amount                           `json:"discountAmount,omitempty"`
 	VATAmount      *Amount                           `json:"vatAmount,omitempty"`
 	TotalAmount    *Amount                           `json:"totalAmount,omitempty"`
-	Metadata       interface{}                       `json:"metadata,omitempty"`
+	Metadata       any                               `json:"metadata,omitempty"`
+	OrderAccessTokenFields
 }
 
 // OrderLineChangeInstruction contains details on what needs to be changed when managing order lines.
@@ -186,15 +262,6 @@ type OrderLineOperations struct {
 	Operations []*OrderLineChangeInstruction `json:"operations,omitempty"`
 }
 
-// OrderList for containing the response of list orders.
-type OrderList struct {
-	Count    int `json:"count,omitempty"`
-	Embedded struct {
-		Orders []*Order `json:"orders,omitempty"`
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"links,omitempty"`
-}
-
 // OrderListRefund for containing the response of list orders.
 type OrderListRefund struct {
 	Count    int `json:"count,omitempty"`
@@ -204,18 +271,18 @@ type OrderListRefund struct {
 	Links PaginationLinks `json:"links,omitempty"`
 }
 
-// ProductType describes the type of product bought, for example, a physical or a digital product.
-type ProductType string
+// ProductKind describes the type of product bought, for example, a physical or a digital product.
+type ProductKind string
 
 // Valid product type.
 const (
-	Physical        ProductType = "physical"
-	Discount        ProductType = "discount"
-	Digital         ProductType = "digital"
-	ShippingFee     ProductType = "shipping_fee"
-	StoreCredit     ProductType = "store_credit"
-	GiftCardProduct ProductType = "gift_card"
-	Surcharge       ProductType = "surcharge"
+	PhysicalProduct        ProductKind = "physical"
+	DiscountProduct        ProductKind = "discount"
+	DigitalProduct         ProductKind = "digital"
+	ShippingFeeProduct     ProductKind = "shipping_fee"
+	StoreCreditProduct     ProductKind = "store_credit"
+	GiftCardProductProduct ProductKind = "gift_card"
+	SurchargeProduct       ProductKind = "surcharge"
 )
 
 // OrderLineStatus describes status of the order line.
@@ -231,23 +298,18 @@ const (
 	OrderLineCompleted  OrderLineStatus = "completed"
 )
 
-// OrderLineLinks describes object with several URL objects relevant to the order line.
-type OrderLineLinks struct {
-	ProductURL *URL `json:"productUrl,omitempty"`
-	ImageURL   *URL `json:"imageUrl,omitempty"`
-}
-
 // OrderOptions describes order endpoint valid query string parameters.
 type OrderOptions struct {
-	Embed     []EmbedValue `url:"embed,omitempty"`
 	ProfileID string       `url:"profileId,omitempty"`
+	Embed     []EmbedValue `url:"embed,omitempty"`
 }
 
 // OrderListOptions describes order endpoint valid query string parameters.
 type OrderListOptions struct {
-	ProfileID string `url:"profileId,omitempty"`
-	From      string `url:"from,omitempty"`
 	Limit     int    `url:"limit,omitempty"`
+	From      string `url:"from,omitempty"`
+	Sort      string `url:"sort,omitempty"`
+	ProfileID string `url:"profileId,omitempty"`
 }
 
 // OrderListRefundOptions describes order endpoint valid query string parameters.
@@ -283,13 +345,13 @@ func (ors *OrdersService) Get(ctx context.Context, orID string, opts *OrderOptio
 // Create an order will automatically create the required payment to allow your customer to pay for the order.
 //
 // See https://docs.mollie.com/reference/v2/orders-api/create-order
-func (ors *OrdersService) Create(ctx context.Context, ord Order, opts *OrderOptions) (
+func (ors *OrdersService) Create(ctx context.Context, ord CreateOrder, opts *OrderOptions) (
 	res *Response,
 	order *Order,
 	err error,
 ) {
 	if ors.client.HasAccessToken() && ors.client.config.testing {
-		ord.TestMode = true
+		ord.Testmode = true
 	}
 
 	res, err = ors.client.post(ctx, "v2/orders", ord, opts)
@@ -307,11 +369,15 @@ func (ors *OrdersService) Create(ctx context.Context, ord Order, opts *OrderOpti
 // Update is used to update the billing and/or shipping address of an order.
 //
 // See https://docs.mollie.com/reference/v2/orders-api/update-order
-func (ors *OrdersService) Update(ctx context.Context, orderID string, ord Order) (
+func (ors *OrdersService) Update(ctx context.Context, orderID string, ord UpdateOrder) (
 	res *Response,
 	order *Order,
 	err error,
 ) {
+	if ors.client.HasAccessToken() && ors.client.config.testing {
+		ord.Testmode = true
+	}
+
 	res, err = ors.client.patch(ctx, fmt.Sprintf("v2/orders/%s", orderID), ord, nil)
 	if err != nil {
 		return
@@ -367,12 +433,16 @@ func (ors *OrdersService) UpdateOrderLine(
 	ctx context.Context,
 	orderID string,
 	orderLineID string,
-	orderLine OrderLine) (
+	orderLine UpdateOrderLine) (
 	res *Response,
 	order *Order,
 	err error,
 ) {
 	u := fmt.Sprintf("v2/orders/%s/lines/%s", orderID, orderLineID)
+
+	if ors.client.HasAccessToken() && ors.client.config.testing {
+		orderLine.Testmode = true
+	}
 
 	res, err = ors.client.patch(ctx, u, orderLine, nil)
 	if err != nil {
