@@ -3041,7 +3041,7 @@ type OrderAccessTokenFields struct {
 ```
 
 <a name="OrderAddress"></a>
-## type [OrderAddress](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L148-L161>)
+## type [OrderAddress](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L149-L162>)
 
 OrderAddress identify both the address and the person the order is billed or shipped to.
 
@@ -3063,7 +3063,7 @@ type OrderAddress struct {
 ```
 
 <a name="OrderLine"></a>
-## type [OrderLine](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L164-L190>)
+## type [OrderLine](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L165-L191>)
 
 OrderLine contain the actual things the customer bought.
 
@@ -3098,7 +3098,7 @@ type OrderLine struct {
 ```
 
 <a name="OrderLineChangeInstruction"></a>
-## type [OrderLineChangeInstruction](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L255-L258>)
+## type [OrderLineChangeInstruction](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L256-L259>)
 
 OrderLineChangeInstruction contains details on what needs to be changed when managing order lines.
 
@@ -3110,7 +3110,7 @@ type OrderLineChangeInstruction struct {
 ```
 
 <a name="OrderLineLinks"></a>
-## type [OrderLineLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L193-L196>)
+## type [OrderLineLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L194-L197>)
 
 OrderLineLinks describes object with several URL objects relevant to the order line.
 
@@ -3122,7 +3122,7 @@ type OrderLineLinks struct {
 ```
 
 <a name="OrderLineOperation"></a>
-## type [OrderLineOperation](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L215>)
+## type [OrderLineOperation](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L216>)
 
 OrderLineOperation describes supported operations when managing order lines.
 
@@ -3141,7 +3141,7 @@ const (
 ```
 
 <a name="OrderLineOperationData"></a>
-## type [OrderLineOperationData](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L235-L252>)
+## type [OrderLineOperationData](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L236-L253>)
 
 OrderLineOperationData contains the order line’s details for an update operation.
 
@@ -3167,7 +3167,7 @@ type OrderLineOperationData struct {
 ```
 
 <a name="OrderLineOperationProductCategory"></a>
-## type [OrderLineOperationProductCategory](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L225>)
+## type [OrderLineOperationProductCategory](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L226>)
 
 OrderLineOperationProductCategory contains the product category.
 
@@ -3186,7 +3186,7 @@ const (
 ```
 
 <a name="OrderLineOperations"></a>
-## type [OrderLineOperations](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L261-L263>)
+## type [OrderLineOperations](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L262-L264>)
 
 OrderLineOperations contains the operations to be performed when managing order lines.
 
@@ -3197,7 +3197,7 @@ type OrderLineOperations struct {
 ```
 
 <a name="OrderLineStatus"></a>
-## type [OrderLineStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L289>)
+## type [OrderLineStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L290>)
 
 OrderLineStatus describes status of the order line.
 
@@ -3248,7 +3248,7 @@ type OrderList struct {
 ```
 
 <a name="OrderListOptions"></a>
-## type [OrderListOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L308-L313>)
+## type [OrderListOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L309-L314>)
 
 OrderListOptions describes order endpoint valid query string parameters.
 
@@ -3262,7 +3262,7 @@ type OrderListOptions struct {
 ```
 
 <a name="OrderListRefund"></a>
-## type [OrderListRefund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L266-L272>)
+## type [OrderListRefund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L267-L273>)
 
 OrderListRefund for containing the response of list orders.
 
@@ -3277,7 +3277,7 @@ type OrderListRefund struct {
 ```
 
 <a name="OrderListRefundOptions"></a>
-## type [OrderListRefundOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L316-L320>)
+## type [OrderListRefundOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L317-L321>)
 
 OrderListRefundOptions describes order endpoint valid query string parameters.
 
@@ -3290,7 +3290,7 @@ type OrderListRefundOptions struct {
 ```
 
 <a name="OrderOptions"></a>
-## type [OrderOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L302-L305>)
+## type [OrderOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L303-L306>)
 
 OrderOptions describes order endpoint valid query string parameters.
 
@@ -3302,7 +3302,7 @@ type OrderOptions struct {
 ```
 
 <a name="OrderPayment"></a>
-## type [OrderPayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L123-L145>)
+## type [OrderPayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L123-L146>)
 
 OrderPayment describes payment specific parameters that can be passed during order creation.
 
@@ -3329,6 +3329,7 @@ type OrderPayment struct {
     // Only available when using access tokens.
     ApplicationFee *ApplicationFee `json:"applicationFee,omitempty"`
     SequenceType   SequenceType    `json:"sequenceType,omitempty"`
+    Method         []PaymentMethod `json:"method,omitempty"`
 }
 ```
 
@@ -3356,7 +3357,7 @@ const (
 ```
 
 <a name="OrdersService"></a>
-## type [OrdersService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L323>)
+## type [OrdersService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L324>)
 
 OrdersService instance operates over refund resources.
 
@@ -3365,7 +3366,7 @@ type OrdersService service
 ```
 
 <a name="OrdersService.Cancel"></a>
-### func \(\*OrdersService\) [Cancel](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L396>)
+### func \(\*OrdersService\) [Cancel](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L397>)
 
 ```go
 func (ors *OrdersService) Cancel(ctx context.Context, orderID string) (res *Response, order *Order, err error)
@@ -3376,7 +3377,7 @@ Cancel try to cancel the order that fulfill certain requirements.
 See https://docs.mollie.com/reference/v2/orders-api/cancel-order
 
 <a name="OrdersService.CancelOrderLines"></a>
-### func \(\*OrdersService\) [CancelOrderLines](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L464-L467>)
+### func \(\*OrdersService\) [CancelOrderLines](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L465-L468>)
 
 ```go
 func (ors *OrdersService) CancelOrderLines(ctx context.Context, orderID string, orderLines []OrderLine) (res *Response, err error)
@@ -3387,7 +3388,7 @@ CancelOrderLines can be used to cancel one or more order lines that were previou
 See https://docs.mollie.com/reference/v2/orders-api/cancel-order-lines
 
 <a name="OrdersService.Create"></a>
-### func \(\*OrdersService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L348-L352>)
+### func \(\*OrdersService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L349-L353>)
 
 ```go
 func (ors *OrdersService) Create(ctx context.Context, ord CreateOrder, opts *OrderOptions) (res *Response, order *Order, err error)
@@ -3398,7 +3399,7 @@ Create an order will automatically create the required payment to allow your cus
 See https://docs.mollie.com/reference/v2/orders-api/create-order
 
 <a name="OrdersService.CreateOrderPayment"></a>
-### func \(\*OrdersService\) [CreateOrderPayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L482-L486>)
+### func \(\*OrdersService\) [CreateOrderPayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L483-L487>)
 
 ```go
 func (ors *OrdersService) CreateOrderPayment(ctx context.Context, orderID string, ordPay *OrderPayment) (res *Response, payment *Payment, err error)
@@ -3409,7 +3410,7 @@ CreateOrderPayment can only be created while the status of the order is created,
 See https://docs.mollie.com/reference/v2/orders-api/create-order-payment
 
 <a name="OrdersService.CreateOrderRefund"></a>
-### func \(\*OrdersService\) [CreateOrderRefund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L504-L508>)
+### func \(\*OrdersService\) [CreateOrderRefund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L505-L509>)
 
 ```go
 func (ors *OrdersService) CreateOrderRefund(ctx context.Context, orderID string, order *Order) (res *Response, refund *Refund, err error)
@@ -3420,7 +3421,7 @@ CreateOrderRefund using the Orders API, refunds should be made against the order
 See https://docs.mollie.com/reference/v2/orders-api/create-order-refund
 
 <a name="OrdersService.Get"></a>
-### func \(\*OrdersService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L328-L332>)
+### func \(\*OrdersService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L329-L333>)
 
 ```go
 func (ors *OrdersService) Get(ctx context.Context, orID string, opts *OrderOptions) (res *Response, order *Order, err error)
@@ -3431,7 +3432,7 @@ Get retrieve a single order by its ID.
 See https://docs.mollie.com/reference/v2/orders-api/get-order
 
 <a name="OrdersService.List"></a>
-### func \(\*OrdersService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L412-L416>)
+### func \(\*OrdersService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L413-L417>)
 
 ```go
 func (ors *OrdersService) List(ctx context.Context, opts *OrderListOptions) (res *Response, ordList *OrderList, err error)
@@ -3442,7 +3443,7 @@ List is to retrieve all orders.
 See https://docs.mollie.com/reference/v2/orders-api/list-orders
 
 <a name="OrdersService.ListOrderRefunds"></a>
-### func \(\*OrdersService\) [ListOrderRefunds](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L526-L530>)
+### func \(\*OrdersService\) [ListOrderRefunds](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L527-L531>)
 
 ```go
 func (ors *OrdersService) ListOrderRefunds(ctx context.Context, orderID string, opts *OrderListRefundOptions) (res *Response, orderListRefund *OrderListRefund, err error)
@@ -3453,7 +3454,7 @@ ListOrderRefunds retrieve all order refunds.
 See https://docs.mollie.com/reference/v2/orders-api/list-order-refunds
 
 <a name="OrdersService.ManageOrderLines"></a>
-### func \(\*OrdersService\) [ManageOrderLines](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L548-L552>)
+### func \(\*OrdersService\) [ManageOrderLines](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L549-L553>)
 
 ```go
 func (ors *OrdersService) ManageOrderLines(ctx context.Context, orderID string, operations *OrderLineOperations) (res *Response, order *Order, err error)
@@ -3464,7 +3465,7 @@ ManageOrderLines allows to update, cancel, or add one or more order lines.
 See: https://docs.mollie.com/reference/v2/orders-api/manage-order-lines
 
 <a name="OrdersService.Update"></a>
-### func \(\*OrdersService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L372-L376>)
+### func \(\*OrdersService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L373-L377>)
 
 ```go
 func (ors *OrdersService) Update(ctx context.Context, orderID string, ord UpdateOrder) (res *Response, order *Order, err error)
@@ -3475,7 +3476,7 @@ Update is used to update the billing and/or shipping address of an order.
 See https://docs.mollie.com/reference/v2/orders-api/update-order
 
 <a name="OrdersService.UpdateOrderLine"></a>
-### func \(\*OrdersService\) [UpdateOrderLine](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L432-L440>)
+### func \(\*OrdersService\) [UpdateOrderLine](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L433-L441>)
 
 ```go
 func (ors *OrdersService) UpdateOrderLine(ctx context.Context, orderID string, orderLineID string, orderLine UpdateOrderLine) (res *Response, order *Order, err error)
@@ -4419,7 +4420,7 @@ type PreAuthorizedPaymentFields struct {
 ```
 
 <a name="ProductKind"></a>
-## type [ProductKind](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L275>)
+## type [ProductKind](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L276>)
 
 ProductKind describes the type of product bought, for example, a physical or a digital product.
 
@@ -5660,7 +5661,7 @@ type UpdateOrder struct {
 ```
 
 <a name="UpdateOrderLine"></a>
-## type [UpdateOrderLine](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L199-L212>)
+## type [UpdateOrderLine](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L200-L213>)
 
 UpdateOrderLine contains the parameters to update an order line.
 
