@@ -110,6 +110,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type CreateMandate](<#CreateMandate>)
 - [type CreateMandateAccessTokenFields](<#CreateMandateAccessTokenFields>)
 - [type CreateMollieConnectPaymentFields](<#CreateMollieConnectPaymentFields>)
+- [type CreateOrder](<#CreateOrder>)
 - [type CreatePayment](<#CreatePayment>)
 - [type CreatePaymentAccessTokenFields](<#CreatePaymentAccessTokenFields>)
 - [type CreatePreAuthorizedPaymentFields](<#CreatePreAuthorizedPaymentFields>)
@@ -177,6 +178,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
   - [func \(os \*OnboardingService\) SubmitOnboardingData\(ctx context.Context, d \*OnboardingData\) \(res \*Response, err error\)](<#OnboardingService.SubmitOnboardingData>)
 - [type OnboardingStatus](<#OnboardingStatus>)
 - [type Order](<#Order>)
+- [type OrderAccessTokenFields](<#OrderAccessTokenFields>)
 - [type OrderAddress](<#OrderAddress>)
 - [type OrderLine](<#OrderLine>)
 - [type OrderLineChangeInstruction](<#OrderLineChangeInstruction>)
@@ -197,15 +199,15 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type OrdersService](<#OrdersService>)
   - [func \(ors \*OrdersService\) Cancel\(ctx context.Context, orderID string\) \(res \*Response, order \*Order, err error\)](<#OrdersService.Cancel>)
   - [func \(ors \*OrdersService\) CancelOrderLines\(ctx context.Context, orderID string, orderLines \[\]OrderLine\) \(res \*Response, err error\)](<#OrdersService.CancelOrderLines>)
-  - [func \(ors \*OrdersService\) Create\(ctx context.Context, ord Order, opts \*OrderOptions\) \(res \*Response, order \*Order, err error\)](<#OrdersService.Create>)
+  - [func \(ors \*OrdersService\) Create\(ctx context.Context, ord CreateOrder, opts \*OrderOptions\) \(res \*Response, order \*Order, err error\)](<#OrdersService.Create>)
   - [func \(ors \*OrdersService\) CreateOrderPayment\(ctx context.Context, orderID string, ordPay \*OrderPayment\) \(res \*Response, payment \*Payment, err error\)](<#OrdersService.CreateOrderPayment>)
   - [func \(ors \*OrdersService\) CreateOrderRefund\(ctx context.Context, orderID string, order \*Order\) \(res \*Response, refund \*Refund, err error\)](<#OrdersService.CreateOrderRefund>)
   - [func \(ors \*OrdersService\) Get\(ctx context.Context, orID string, opts \*OrderOptions\) \(res \*Response, order \*Order, err error\)](<#OrdersService.Get>)
   - [func \(ors \*OrdersService\) List\(ctx context.Context, opts \*OrderListOptions\) \(res \*Response, ordList \*OrderList, err error\)](<#OrdersService.List>)
   - [func \(ors \*OrdersService\) ListOrderRefunds\(ctx context.Context, orderID string, opts \*OrderListRefundOptions\) \(res \*Response, orderListRefund \*OrderListRefund, err error\)](<#OrdersService.ListOrderRefunds>)
   - [func \(ors \*OrdersService\) ManageOrderLines\(ctx context.Context, orderID string, operations \*OrderLineOperations\) \(res \*Response, order \*Order, err error\)](<#OrdersService.ManageOrderLines>)
-  - [func \(ors \*OrdersService\) Update\(ctx context.Context, orderID string, ord Order\) \(res \*Response, order \*Order, err error\)](<#OrdersService.Update>)
-  - [func \(ors \*OrdersService\) UpdateOrderLine\(ctx context.Context, orderID string, orderLineID string, orderLine OrderLine\) \(res \*Response, order \*Order, err error\)](<#OrdersService.UpdateOrderLine>)
+  - [func \(ors \*OrdersService\) Update\(ctx context.Context, orderID string, ord UpdateOrder\) \(res \*Response, order \*Order, err error\)](<#OrdersService.Update>)
+  - [func \(ors \*OrdersService\) UpdateOrderLine\(ctx context.Context, orderID string, orderLineID string, orderLine UpdateOrderLine\) \(res \*Response, order \*Order, err error\)](<#OrdersService.UpdateOrderLine>)
 - [type Organization](<#Organization>)
 - [type OrganizationLinks](<#OrganizationLinks>)
 - [type OrganizationPartnerLinks](<#OrganizationPartnerLinks>)
@@ -266,7 +268,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
   - [func \(ps \*PermissionsService\) List\(ctx context.Context\) \(res \*Response, pl \*PermissionsList, err error\)](<#PermissionsService.List>)
 - [type PhoneNumber](<#PhoneNumber>)
 - [type PreAuthorizedPaymentFields](<#PreAuthorizedPaymentFields>)
-- [type ProductType](<#ProductType>)
+- [type ProductKind](<#ProductKind>)
 - [type Profile](<#Profile>)
 - [type ProfileLinks](<#ProfileLinks>)
 - [type ProfileList](<#ProfileList>)
@@ -357,6 +359,8 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type TransferFrequency](<#TransferFrequency>)
 - [type URL](<#URL>)
 - [type UpdateCustomer](<#UpdateCustomer>)
+- [type UpdateOrder](<#UpdateOrder>)
+- [type UpdateOrderLine](<#UpdateOrderLine>)
 - [type UpdatePayment](<#UpdatePayment>)
 - [type UsedGiftCard](<#UsedGiftCard>)
 - [type UserAgentToken](<#UserAgentToken>)
@@ -1888,6 +1892,32 @@ type CreateMollieConnectPaymentFields struct {
 }
 ```
 
+<a name="CreateOrder"></a>
+## type [CreateOrder](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L16-L33>)
+
+CreateOrder contains the parameters to create an order.
+
+```go
+type CreateOrder struct {
+    ShopperCountryMustMatchTheBillingCountry bool            `json:"shopperCountryMustMatchTheBillingCountry,omitempty"`
+    OrderNumber                              string          `json:"orderNumber,omitempty"`
+    RedirectURL                              string          `json:"redirectUrl,omitempty"`
+    WebhookURL                               string          `json:"webhookUrl,omitempty"`
+    CancelURL                                string          `json:"cancelUrl,omitempty"`
+    Amount                                   *Amount         `json:"amount,omitempty"`
+    BillingAddress                           *OrderAddress   `json:"billingAddress,omitempty"`
+    ShippingAddress                          *OrderAddress   `json:"shippingAddress,omitempty"`
+    ConsumerDateOfBirth                      *ShortDate      `json:"consumerDateOfBirth,omitempty"`
+    Payment                                  *OrderPayment   `json:"payment,omitempty"`
+    ExpiresAt                                *ShortDate      `json:"expiresAt,omitempty"`
+    Lines                                    []OrderLine     `json:"lines,omitempty"`
+    Method                                   []PaymentMethod `json:"method,omitempty"`
+    Locale                                   Locale          `json:"locale,omitempty"`
+    Metadata                                 any             `json:"metadata,omitempty"`
+    OrderAccessTokenFields
+}
+```
+
 <a name="CreatePayment"></a>
 ## type [CreatePayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L65-L100>)
 
@@ -2177,15 +2207,23 @@ EmbedValue describes the valid value of embed query string.
 type EmbedValue string
 ```
 
-<a name="EmbedPayment"></a>Valid Embed query string value.
+<a name="EmbedPayments"></a>Valid Embed query string value.
 
 ```go
 const (
-    EmbedPayment     EmbedValue = "payments"
-    EmbedRefund      EmbedValue = "refunds"
+    EmbedPayments    EmbedValue = "payments"
+    EmbedRefunds     EmbedValue = "refunds"
     EmbedShipments   EmbedValue = "shipments"
     EmbedChargebacks EmbedValue = "chargebacks"
     EmbedCaptures    EmbedValue = "captures"
+)
+```
+
+<a name="EmbedNestedPaymentDetails"></a>Local embed value type.
+
+```go
+const (
+    EmbedNestedPaymentDetails EmbedValue = "payments.details.remainderDetails"
 )
 ```
 
@@ -2948,36 +2986,28 @@ const (
 ```
 
 <a name="Order"></a>
-## type [Order](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L11-L49>)
+## type [Order](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L42-L76>)
 
 Order explain the items that customers need to pay for.
 
 ```go
 type Order struct {
-    TestMode                                 bool          `json:"testmode,omitempty"`
     IsCancelable                             bool          `json:"isCancelable,omitempty"`
     ShopperCountryMustMatchTheBillingCountry bool          `json:"shopperCountryMustMatchTheBillingCountry,omitempty"`
     Resource                                 string        `json:"resource,omitempty"`
     ID                                       string        `json:"id,omitempty"`
     ProfileID                                string        `json:"profileId,omitempty"`
-    OrderNumber                              string        `json:"orderNumber,omitempty"`
     RedirectURL                              string        `json:"redirectUrl,omitempty"`
-    WebhookURL                               string        `json:"webhookUrl,omitempty"`
-    Description                              string        `json:"description,omitempty"`
-    Sku                                      string        `json:"sku,omitempty"`
     CancelURL                                string        `json:"cancelUrl,omitempty"`
-    Metadata                                 interface{}   `json:"metadata,omitempty"`
-    Mode                                     Mode          `json:"mode,omitempty"`
-    Method                                   PaymentMethod `json:"method,omitempty"`
-    Status                                   OrderStatus   `json:"status,omitempty"`
-    Locale                                   Locale        `json:"locale,omitempty"`
-    ShippingAddress                          OrderAddress  `json:"shippingAddress,omitempty"`
-    Links                                    OrderLinks    `json:"_links,omitempty"`
+    WebhookURL                               string        `json:"webhookUrl,omitempty"`
+    OrderNumber                              string        `json:"orderNumber,omitempty"`
+    Lines                                    []*OrderLine  `json:"lines,omitempty"`
     Amount                                   *Amount       `json:"amount,omitempty"`
     AmountCaptured                           *Amount       `json:"amountCaptured,omitempty"`
     AmountRefunded                           *Amount       `json:"amountRefunded,omitempty"`
     BillingAddress                           *OrderAddress `json:"billingAddress,omitempty"`
     ConsumerDateOfBirth                      *ShortDate    `json:"consumerDateOfBirth,omitempty"`
+    ShippingAddress                          *OrderAddress `json:"shippingAddress,omitempty"`
     CreatedAt                                *time.Time    `json:"createdAt,omitempty"`
     ExpiresAt                                *time.Time    `json:"expiresAt,omitempty"`
     ExpiredAt                                *time.Time    `json:"expiredAt,omitempty"`
@@ -2985,8 +3015,12 @@ type Order struct {
     AuthorizedAt                             *time.Time    `json:"authorizedAt,omitempty"`
     CanceledAt                               *time.Time    `json:"canceledAt,omitempty"`
     CompletedAt                              *time.Time    `json:"completedAt,omitempty"`
-    OrderPayment                             *OrderPayment `json:"payment,omitempty"`
-    Lines                                    []*OrderLine  `json:"lines,omitempty"`
+    Method                                   PaymentMethod `json:"method,omitempty"`
+    Mode                                     Mode          `json:"mode,omitempty"`
+    Locale                                   Locale        `json:"locale,omitempty"`
+    Status                                   OrderStatus   `json:"status,omitempty"`
+    Links                                    OrderLinks    `json:"_links,omitempty"`
+    Metadata                                 any           `json:"metadata,omitempty"`
     Embedded                                 struct {
         Payments []*Payment `json:"payments,omitempty"`
         Refunds  []*Refund  `json:"refunds,omitempty"`
@@ -2994,8 +3028,20 @@ type Order struct {
 }
 ```
 
+<a name="OrderAccessTokenFields"></a>
+## type [OrderAccessTokenFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L36-L39>)
+
+OrderAccessTokenFields contains the fields available to include in an order when using an access token.
+
+```go
+type OrderAccessTokenFields struct {
+    ProfileID string `json:"profileId,omitempty"`
+    Testmode  bool   `json:"testmode,omitempty"`
+}
+```
+
 <a name="OrderAddress"></a>
-## type [OrderAddress](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L81-L94>)
+## type [OrderAddress](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L148-L161>)
 
 OrderAddress identify both the address and the person the order is billed or shipped to.
 
@@ -3006,57 +3052,53 @@ type OrderAddress struct {
     GivenName        string      `json:"givenName,omitempty"`
     FamilyName       string      `json:"familyName,omitempty"`
     Email            string      `json:"email,omitempty"`
-    Phone            PhoneNumber `json:"phone,omitempty"`
     StreetAndNumber  string      `json:"streetAndNumber,omitempty"`
     StreetAdditional string      `json:"streetAdditional,omitempty"`
     PostalCode       string      `json:"postalCode,omitempty"`
     City             string      `json:"city,omitempty"`
     Region           string      `json:"region,omitempty"`
     Country          string      `json:"country,omitempty"`
+    Phone            PhoneNumber `json:"phone,omitempty"`
 }
 ```
 
 <a name="OrderLine"></a>
-## type [OrderLine](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L107-L137>)
+## type [OrderLine](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L164-L190>)
 
 OrderLine contain the actual things the customer bought.
 
 ```go
 type OrderLine struct {
-    Resource           string          `json:"resource,omitempty"`
-    ID                 string          `json:"id,omitempty"`
-    OrderID            string          `json:"orderId,omitempty"`
-    ProductType        ProductType     `json:"type,omitempty"`
-    Name               string          `json:"name,omitempty"`
-    Amount             *Amount         `json:"amount,omitempty"`
-    Status             OrderLineStatus `json:"status,omitempty"`
     IsCancelable       bool            `json:"isCancelable,omitempty"`
     Quantity           int             `json:"quantity,omitempty"`
     QuantityShipped    int             `json:"quantityShipped,omitempty"`
-    AmountShipped      *Amount         `json:"amountShipped,omitempty"`
     QuantityRefunded   int             `json:"quantityRefunded,omitempty"`
-    AmountRefunded     *Amount         `json:"amountRefunded,omitempty"`
     QuantityCanceled   int             `json:"quantityCanceled,omitempty"`
-    AmountCanceled     *Amount         `json:"amountCanceled,omitempty"`
     ShippableQuantity  int             `json:"shippableQuantity,omitempty"`
     RefundableQuantity int             `json:"refundableQuantity,omitempty"`
     CancelableQuantity int             `json:"cancelableQuantity,omitempty"`
+    Resource           string          `json:"resource,omitempty"`
+    ID                 string          `json:"id,omitempty"`
+    OrderID            string          `json:"orderId,omitempty"`
+    Name               string          `json:"name,omitempty"`
+    VatRate            string          `json:"vatRate,omitempty"`
+    SKU                string          `json:"sku,omitempty"`
+    AmountShipped      *Amount         `json:"amountShipped,omitempty"`
+    AmountRefunded     *Amount         `json:"amountRefunded,omitempty"`
+    AmountCanceled     *Amount         `json:"amountCanceled,omitempty"`
     UnitPrice          *Amount         `json:"unitPrice,omitempty"`
     DiscountAmount     *Amount         `json:"discountAmount,omitempty"`
     TotalAmount        *Amount         `json:"totalAmount,omitempty"`
-    VatRate            string          `json:"vatRate,omitempty"`
     VatAmount          *Amount         `json:"vatAmount,omitempty"`
-    SKU                string          `json:"sku,omitempty"`
     CreatedAt          *time.Time      `json:"createdAt,omitempty"`
+    ProductType        ProductKind     `json:"type,omitempty"`
+    Status             OrderLineStatus `json:"status,omitempty"`
     Links              OrderLineLinks  `json:"_links,omitempty"`
-    ImageURL           string          `json:"imageUrl,omitempty"`
-    ProductURL         string          `json:"productUrl,omitempty"`
-    Metadata           interface{}     `json:"metadata,omitempty"`
 }
 ```
 
 <a name="OrderLineChangeInstruction"></a>
-## type [OrderLineChangeInstruction](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L179-L182>)
+## type [OrderLineChangeInstruction](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L255-L258>)
 
 OrderLineChangeInstruction contains details on what needs to be changed when managing order lines.
 
@@ -3068,7 +3110,7 @@ type OrderLineChangeInstruction struct {
 ```
 
 <a name="OrderLineLinks"></a>
-## type [OrderLineLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L235-L238>)
+## type [OrderLineLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L193-L196>)
 
 OrderLineLinks describes object with several URL objects relevant to the order line.
 
@@ -3080,7 +3122,7 @@ type OrderLineLinks struct {
 ```
 
 <a name="OrderLineOperation"></a>
-## type [OrderLineOperation](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L140>)
+## type [OrderLineOperation](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L215>)
 
 OrderLineOperation describes supported operations when managing order lines.
 
@@ -3088,18 +3130,18 @@ OrderLineOperation describes supported operations when managing order lines.
 type OrderLineOperation string
 ```
 
-<a name="AddOrderLine"></a>Supported order lines operation types.
+<a name="AddOrderLineOperation"></a>Supported order lines operation types.
 
 ```go
 const (
-    AddOrderLine    OrderLineOperation = "add"
-    UpdateOrderLine OrderLineOperation = "update"
-    CancelOrderLine OrderLineOperation = "cancel"
+    AddOrderLineOperation    OrderLineOperation = "add"
+    UpdateOrderLineOperation OrderLineOperation = "update"
+    CancelOrderLineOperation OrderLineOperation = "cancel"
 )
 ```
 
 <a name="OrderLineOperationData"></a>
-## type [OrderLineOperationData](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L160-L176>)
+## type [OrderLineOperationData](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L235-L252>)
 
 OrderLineOperationData contains the order line’s details for an update operation.
 
@@ -3112,19 +3154,20 @@ type OrderLineOperationData struct {
     ImageURL       string                            `json:"imageUrl,omitempty"`
     ProductURL     string                            `json:"productUrl,omitempty"`
     VATRate        string                            `json:"vatRate,omitempty"`
-    Type           string                            `json:"type,omitempty"`
+    Kind           ProductKind                       `json:"type,omitempty"`
     Category       OrderLineOperationProductCategory `json:"category,omitempty"`
     Amount         *Amount                           `json:"amount,omitempty"`
     UnitPrice      *Amount                           `json:"unitPrice,omitempty"`
     DiscountAmount *Amount                           `json:"discountAmount,omitempty"`
     VATAmount      *Amount                           `json:"vatAmount,omitempty"`
     TotalAmount    *Amount                           `json:"totalAmount,omitempty"`
-    Metadata       interface{}                       `json:"metadata,omitempty"`
+    Metadata       any                               `json:"metadata,omitempty"`
+    OrderAccessTokenFields
 }
 ```
 
 <a name="OrderLineOperationProductCategory"></a>
-## type [OrderLineOperationProductCategory](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L150>)
+## type [OrderLineOperationProductCategory](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L225>)
 
 OrderLineOperationProductCategory contains the product category.
 
@@ -3143,7 +3186,7 @@ const (
 ```
 
 <a name="OrderLineOperations"></a>
-## type [OrderLineOperations](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L185-L187>)
+## type [OrderLineOperations](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L261-L263>)
 
 OrderLineOperations contains the operations to be performed when managing order lines.
 
@@ -3154,7 +3197,7 @@ type OrderLineOperations struct {
 ```
 
 <a name="OrderLineStatus"></a>
-## type [OrderLineStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L222>)
+## type [OrderLineStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L289>)
 
 OrderLineStatus describes status of the order line.
 
@@ -3176,7 +3219,7 @@ const (
 ```
 
 <a name="OrderLinks"></a>
-## type [OrderLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L99-L104>)
+## type [OrderLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L101-L106>)
 
 OrderLinks describes an object with several URL objects relevant to the order. Every URL object will contain an href and a type field.
 
@@ -3190,7 +3233,7 @@ type OrderLinks struct {
 ```
 
 <a name="OrderList"></a>
-## type [OrderList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L190-L196>)
+## type [OrderList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L90-L96>)
 
 OrderList for containing the response of list orders.
 
@@ -3205,20 +3248,21 @@ type OrderList struct {
 ```
 
 <a name="OrderListOptions"></a>
-## type [OrderListOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L247-L251>)
+## type [OrderListOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L308-L313>)
 
 OrderListOptions describes order endpoint valid query string parameters.
 
 ```go
 type OrderListOptions struct {
-    ProfileID string `url:"profileId,omitempty"`
-    From      string `url:"from,omitempty"`
     Limit     int    `url:"limit,omitempty"`
+    From      string `url:"from,omitempty"`
+    Sort      string `url:"sort,omitempty"`
+    ProfileID string `url:"profileId,omitempty"`
 }
 ```
 
 <a name="OrderListRefund"></a>
-## type [OrderListRefund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L199-L205>)
+## type [OrderListRefund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L266-L272>)
 
 OrderListRefund for containing the response of list orders.
 
@@ -3233,7 +3277,7 @@ type OrderListRefund struct {
 ```
 
 <a name="OrderListRefundOptions"></a>
-## type [OrderListRefundOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L254-L258>)
+## type [OrderListRefundOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L316-L320>)
 
 OrderListRefundOptions describes order endpoint valid query string parameters.
 
@@ -3246,40 +3290,50 @@ type OrderListRefundOptions struct {
 ```
 
 <a name="OrderOptions"></a>
-## type [OrderOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L241-L244>)
+## type [OrderOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L302-L305>)
 
 OrderOptions describes order endpoint valid query string parameters.
 
 ```go
 type OrderOptions struct {
-    Embed     []EmbedValue `url:"embed,omitempty"`
     ProfileID string       `url:"profileId,omitempty"`
+    Embed     []EmbedValue `url:"embed,omitempty"`
 }
 ```
 
 <a name="OrderPayment"></a>
-## type [OrderPayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L52-L64>)
+## type [OrderPayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L123-L145>)
 
 OrderPayment describes payment specific parameters that can be passed during order creation.
 
 ```go
 type OrderPayment struct {
-    ConsumerAccount   string          `json:"consumerAccount,omitempty"`
-    CustomerID        string          `json:"customerId,omitempty"`
-    CustomerReference string          `json:"customerReference,omitempty"`
-    Issuer            string          `json:"issuer,omitempty"`
-    MandateID         string          `json:"mandateId,omitempty"`
-    SequenceType      SequenceType    `json:"sequenceType,omitempty"`
-    VoucherNumber     string          `json:"voucherNumber,omitempty"`
-    VoucherPin        string          `json:"voucherPin,omitempty"`
-    WebhookURL        string          `json:"webhookUrl,omitempty"`
-    ApplicationFee    *ApplicationFee `json:"applicationFee,omitempty"`
-    Method            PaymentMethod   `json:"method,omitempty"`
+    ApplePayPaymentToken string     `json:"applePayPaymentToken,omitempty"`
+    CardToken            string     `json:"cardToken,omitempty"`
+    ConsumerAccount      string     `json:"consumerAccount,omitempty"`
+    CustomerID           string     `json:"customerId,omitempty"`
+    CustomerReference    string     `json:"customerReference,omitempty"`
+    ExtraMerchantData    string     `json:"extraMerchantData,omitempty"`
+    Issuer               string     `json:"issuer,omitempty"`
+    VoucherNumber        string     `json:"voucherNumber,omitempty"`
+    VoucherPin           string     `json:"voucherPin,omitempty"`
+    WebhookURL           string     `json:"webhookUrl,omitempty"`
+    BillingEmail         string     `json:"billingEmail,omitempty"`
+    SessionID            string     `json:"sessionId,omitempty"`
+    TerminalID           string     `json:"terminalId,omitempty"`
+    ConsumerName         string     `json:"consumerName,omitempty"`
+    DueDate              *ShortDate `json:"dueDate,omitempty"`
+    ShippingAddress      *Address   `json:"shippingAddress,omitempty"`
+    BillingAddress       *Address   `json:"billingAddress,omitempty"`
+    Company              *Company   `json:"company,omitempty"`
+    // Only available when using access tokens.
+    ApplicationFee *ApplicationFee `json:"applicationFee,omitempty"`
+    SequenceType   SequenceType    `json:"sequenceType,omitempty"`
 }
 ```
 
 <a name="OrderStatus"></a>
-## type [OrderStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L67>)
+## type [OrderStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L109>)
 
 OrderStatus describes the valid order status.
 
@@ -3302,7 +3356,7 @@ const (
 ```
 
 <a name="OrdersService"></a>
-## type [OrdersService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L261>)
+## type [OrdersService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L323>)
 
 OrdersService instance operates over refund resources.
 
@@ -3311,7 +3365,7 @@ type OrdersService service
 ```
 
 <a name="OrdersService.Cancel"></a>
-### func \(\*OrdersService\) [Cancel](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L330>)
+### func \(\*OrdersService\) [Cancel](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L396>)
 
 ```go
 func (ors *OrdersService) Cancel(ctx context.Context, orderID string) (res *Response, order *Order, err error)
@@ -3322,7 +3376,7 @@ Cancel try to cancel the order that fulfill certain requirements.
 See https://docs.mollie.com/reference/v2/orders-api/cancel-order
 
 <a name="OrdersService.CancelOrderLines"></a>
-### func \(\*OrdersService\) [CancelOrderLines](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L394-L397>)
+### func \(\*OrdersService\) [CancelOrderLines](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L464-L467>)
 
 ```go
 func (ors *OrdersService) CancelOrderLines(ctx context.Context, orderID string, orderLines []OrderLine) (res *Response, err error)
@@ -3333,10 +3387,10 @@ CancelOrderLines can be used to cancel one or more order lines that were previou
 See https://docs.mollie.com/reference/v2/orders-api/cancel-order-lines
 
 <a name="OrdersService.Create"></a>
-### func \(\*OrdersService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L286-L290>)
+### func \(\*OrdersService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L348-L352>)
 
 ```go
-func (ors *OrdersService) Create(ctx context.Context, ord Order, opts *OrderOptions) (res *Response, order *Order, err error)
+func (ors *OrdersService) Create(ctx context.Context, ord CreateOrder, opts *OrderOptions) (res *Response, order *Order, err error)
 ```
 
 Create an order will automatically create the required payment to allow your customer to pay for the order.
@@ -3344,7 +3398,7 @@ Create an order will automatically create the required payment to allow your cus
 See https://docs.mollie.com/reference/v2/orders-api/create-order
 
 <a name="OrdersService.CreateOrderPayment"></a>
-### func \(\*OrdersService\) [CreateOrderPayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L412-L416>)
+### func \(\*OrdersService\) [CreateOrderPayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L482-L486>)
 
 ```go
 func (ors *OrdersService) CreateOrderPayment(ctx context.Context, orderID string, ordPay *OrderPayment) (res *Response, payment *Payment, err error)
@@ -3355,7 +3409,7 @@ CreateOrderPayment can only be created while the status of the order is created,
 See https://docs.mollie.com/reference/v2/orders-api/create-order-payment
 
 <a name="OrdersService.CreateOrderRefund"></a>
-### func \(\*OrdersService\) [CreateOrderRefund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L434-L438>)
+### func \(\*OrdersService\) [CreateOrderRefund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L504-L508>)
 
 ```go
 func (ors *OrdersService) CreateOrderRefund(ctx context.Context, orderID string, order *Order) (res *Response, refund *Refund, err error)
@@ -3366,7 +3420,7 @@ CreateOrderRefund using the Orders API, refunds should be made against the order
 See https://docs.mollie.com/reference/v2/orders-api/create-order-refund
 
 <a name="OrdersService.Get"></a>
-### func \(\*OrdersService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L266-L270>)
+### func \(\*OrdersService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L328-L332>)
 
 ```go
 func (ors *OrdersService) Get(ctx context.Context, orID string, opts *OrderOptions) (res *Response, order *Order, err error)
@@ -3377,7 +3431,7 @@ Get retrieve a single order by its ID.
 See https://docs.mollie.com/reference/v2/orders-api/get-order
 
 <a name="OrdersService.List"></a>
-### func \(\*OrdersService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L346-L350>)
+### func \(\*OrdersService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L412-L416>)
 
 ```go
 func (ors *OrdersService) List(ctx context.Context, opts *OrderListOptions) (res *Response, ordList *OrderList, err error)
@@ -3388,7 +3442,7 @@ List is to retrieve all orders.
 See https://docs.mollie.com/reference/v2/orders-api/list-orders
 
 <a name="OrdersService.ListOrderRefunds"></a>
-### func \(\*OrdersService\) [ListOrderRefunds](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L456-L460>)
+### func \(\*OrdersService\) [ListOrderRefunds](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L526-L530>)
 
 ```go
 func (ors *OrdersService) ListOrderRefunds(ctx context.Context, orderID string, opts *OrderListRefundOptions) (res *Response, orderListRefund *OrderListRefund, err error)
@@ -3399,7 +3453,7 @@ ListOrderRefunds retrieve all order refunds.
 See https://docs.mollie.com/reference/v2/orders-api/list-order-refunds
 
 <a name="OrdersService.ManageOrderLines"></a>
-### func \(\*OrdersService\) [ManageOrderLines](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L478-L482>)
+### func \(\*OrdersService\) [ManageOrderLines](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L548-L552>)
 
 ```go
 func (ors *OrdersService) ManageOrderLines(ctx context.Context, orderID string, operations *OrderLineOperations) (res *Response, order *Order, err error)
@@ -3410,10 +3464,10 @@ ManageOrderLines allows to update, cancel, or add one or more order lines.
 See: https://docs.mollie.com/reference/v2/orders-api/manage-order-lines
 
 <a name="OrdersService.Update"></a>
-### func \(\*OrdersService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L310-L314>)
+### func \(\*OrdersService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L372-L376>)
 
 ```go
-func (ors *OrdersService) Update(ctx context.Context, orderID string, ord Order) (res *Response, order *Order, err error)
+func (ors *OrdersService) Update(ctx context.Context, orderID string, ord UpdateOrder) (res *Response, order *Order, err error)
 ```
 
 Update is used to update the billing and/or shipping address of an order.
@@ -3421,10 +3475,10 @@ Update is used to update the billing and/or shipping address of an order.
 See https://docs.mollie.com/reference/v2/orders-api/update-order
 
 <a name="OrdersService.UpdateOrderLine"></a>
-### func \(\*OrdersService\) [UpdateOrderLine](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L366-L374>)
+### func \(\*OrdersService\) [UpdateOrderLine](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L432-L440>)
 
 ```go
-func (ors *OrdersService) UpdateOrderLine(ctx context.Context, orderID string, orderLineID string, orderLine OrderLine) (res *Response, order *Order, err error)
+func (ors *OrdersService) UpdateOrderLine(ctx context.Context, orderID string, orderLineID string, orderLine UpdateOrderLine) (res *Response, order *Order, err error)
 ```
 
 UpdateOrderLine can be used to update an order line.
@@ -4364,26 +4418,26 @@ type PreAuthorizedPaymentFields struct {
 }
 ```
 
-<a name="ProductType"></a>
-## type [ProductType](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L208>)
+<a name="ProductKind"></a>
+## type [ProductKind](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L275>)
 
-ProductType describes the type of product bought, for example, a physical or a digital product.
+ProductKind describes the type of product bought, for example, a physical or a digital product.
 
 ```go
-type ProductType string
+type ProductKind string
 ```
 
-<a name="Physical"></a>Valid product type.
+<a name="PhysicalProduct"></a>Valid product type.
 
 ```go
 const (
-    Physical        ProductType = "physical"
-    Discount        ProductType = "discount"
-    Digital         ProductType = "digital"
-    ShippingFee     ProductType = "shipping_fee"
-    StoreCredit     ProductType = "store_credit"
-    GiftCardProduct ProductType = "gift_card"
-    Surcharge       ProductType = "surcharge"
+    PhysicalProduct        ProductKind = "physical"
+    DiscountProduct        ProductKind = "discount"
+    DigitalProduct         ProductKind = "digital"
+    ShippingFeeProduct     ProductKind = "shipping_fee"
+    StoreCreditProduct     ProductKind = "store_credit"
+    GiftCardProductProduct ProductKind = "gift_card"
+    SurchargeProduct       ProductKind = "surcharge"
 )
 ```
 
@@ -5585,6 +5639,45 @@ type UpdateCustomer struct {
     Email    string `json:"email,omitempty"`
     Locale   Locale `json:"locale,omitempty"`
     Metadata any    `json:"metadata,omitempty"`
+}
+```
+
+<a name="UpdateOrder"></a>
+## type [UpdateOrder](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L79-L87>)
+
+UpdateOrder contains the parameters to update an order.
+
+```go
+type UpdateOrder struct {
+    OrderNumber     string        `json:"orderNumber,omitempty"`
+    RedirectURL     string        `json:"redirectUrl,omitempty"`
+    CancelURL       string        `json:"cancelUrl,omitempty"`
+    WebhookURL      string        `json:"webhookUrl,omitempty"`
+    BillingAddress  *OrderAddress `json:"billingAddress,omitempty"`
+    ShippingAddress *OrderAddress `json:"shippingAddress,omitempty"`
+    OrderAccessTokenFields
+}
+```
+
+<a name="UpdateOrderLine"></a>
+## type [UpdateOrderLine](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L199-L212>)
+
+UpdateOrderLine contains the parameters to update an order line.
+
+```go
+type UpdateOrderLine struct {
+    Quantity       int     `json:"quantity,omitempty"`
+    Name           string  `json:"name,omitempty"`
+    ImageURL       string  `json:"imageUrl,omitempty"`
+    ProductURL     string  `json:"productUrl,omitempty"`
+    SKU            string  `json:"sku,omitempty"`
+    VATRate        string  `json:"vatRate,omitempty"`
+    UnitPrice      *Amount `json:"unitPrice,omitempty"`
+    DiscountAmount *Amount `json:"discountAmount,omitempty"`
+    TotalAmount    *Amount `json:"totalAmount,omitempty"`
+    VATAmount      *Amount `json:"vatAmount,omitempty"`
+    Metadata       any     `json:"metadata,omitempty"`
+    OrderAccessTokenFields
 }
 ```
 
