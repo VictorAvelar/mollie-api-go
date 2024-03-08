@@ -142,6 +142,7 @@ type OrderPayment struct {
 	// Only available when using access tokens.
 	ApplicationFee *ApplicationFee `json:"applicationFee,omitempty"`
 	SequenceType   SequenceType    `json:"sequenceType,omitempty"`
+	Method         []PaymentMethod `json:"method,omitempty"`
 }
 
 // OrderAddress identify both the address and the person the order is billed or shipped to.
