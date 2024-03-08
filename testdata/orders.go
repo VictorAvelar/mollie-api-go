@@ -979,8 +979,8 @@ const UpdateOrderlineRequest = `{
 	}
 }`
 
-// UpdateOrderlineResponse example response of update orderline
-const UpdateOrderlineResponse = `{
+// UpdateOrderLineResponse example response of update orderline
+const UpdateOrderLineResponse = `{
 	"resource":"order",
 	"id":"ord_pbjz8x",
 	"profileId":"pfl_URR55HPMGx",
