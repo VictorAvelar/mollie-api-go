@@ -7,50 +7,41 @@ import (
 	"time"
 )
 
-// PartnerClient describes a partner client.
-type PartnerClient struct {
-	Resource              string             `json:"resource,omitempty"`
-	ID                    string             `json:"id,omitempty"`
-	OrganizationCreatedAt *time.Time         `json:"organizationCreatedAt,omitempty"`
-	Commission            Commission         `json:"commission,omitempty"`
-	Links                 PartnerClientLinks `json:"_links,omitempty"`
+// LinkedClient describes a single client, linked to your partner account.
+type LinkedClient struct {
+	Resource              string            `json:"resource,omitempty"`
+	ID                    string            `json:"id,omitempty"`
+	OrganizationCreatedAt *time.Time        `json:"organizationCreatedAt,omitempty"`
+	Links                 LinkedClientLinks `json:"_links,omitempty"`
 }
 
-// PartnerClientList describes a list of partner clients.
-type PartnerClientList struct {
-	Count          int `json:"count,omitempty"`
-	PartnerClients struct {
-		Clients []*PartnerClient `json:"clients,omitempty"`
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"_links,omitempty"`
-}
-
-// PartnerClientLinks contains URL objects relevant to the client.
-type PartnerClientLinks struct {
+// LinkedClientLinks contains URL objects relevant to the client.
+type LinkedClientLinks struct {
 	Self          *URL `json:"self,omitempty"`
 	Organization  *URL `json:"organization,omitempty"`
 	Onboarding    *URL `json:"onboarding,omitempty"`
 	Documentation *URL `json:"documentation,omitempty"`
 }
 
-// Commission describes a partner take from any
-// operation on Mollie's API.
-type Commission struct {
-	Count       int     `json:"count,omitempty"`
-	TotalAmount *Amount `json:"totalAmount,omitempty"`
+// GetLinkedClientOptions contains valid query parameters for the get clients endpoint.
+type GetLinkedClientOptions struct {
+	Embed []EmbedValue `url:"embed,omitempty"`
 }
 
-// GetPartnerClientOptions contains valid query parameters for the get clients endpoint.
-type GetPartnerClientOptions struct {
-	Embed string `url:"embed,omitempty"`
+// LinkedClientList describes a list of partner clients.
+type LinkedClientList struct {
+	Count          int `json:"count,omitempty"`
+	PartnerClients struct {
+		Clients []*LinkedClient `json:"clients,omitempty"`
+	} `json:"_embedded,omitempty"`
+	Links PaginationLinks `json:"_links,omitempty"`
 }
 
-// ListPartnerClientsOptions contains valid query parameters for the list clients endpoint.
-type ListPartnerClientsOptions struct {
-	From  int `url:"from,omitempty"`
-	Limit int `url:"limit,omitempty"`
-	Year  int `url:"year,omitempty"`
-	Month int `url:"month,omitempty"`
+// ListLinkedClientsOptions contains valid query parameters for the list clients endpoint.
+type ListLinkedClientsOptions struct {
+	Limit int          `url:"limit,omitempty"`
+	From  string       `url:"from,omitempty"`
+	Embed []EmbedValue `url:"embed,omitempty"`
 }
 
 // ClientsService operates over the partners API.
@@ -59,9 +50,9 @@ type ClientsService service
 // List retrieves all clients.
 //
 // See: https://docs.mollie.com/reference/v2/partners-api/list-clients
-func (ps *ClientsService) List(ctx context.Context, opts *ListPartnerClientsOptions) (
+func (ps *ClientsService) List(ctx context.Context, opts *ListLinkedClientsOptions) (
 	res *Response,
-	pc *PartnerClientList,
+	pc *LinkedClientList,
 	err error,
 ) {
 	res, err = ps.client.get(ctx, "v2/clients", opts)
@@ -79,9 +70,9 @@ func (ps *ClientsService) List(ctx context.Context, opts *ListPartnerClientsOpti
 // Get retrieves a single client, linked to your partner account, by its ID.
 //
 // See: https://docs.mollie.com/reference/v2/partners-api/get-client
-func (ps *ClientsService) Get(ctx context.Context, id string, opts *GetPartnerClientOptions) (
+func (ps *ClientsService) Get(ctx context.Context, id string, opts *GetLinkedClientOptions) (
 	res *Response,
-	pc *PartnerClient,
+	pc *LinkedClient,
 	err error,
 ) {
 	res, err = ps.client.get(ctx, fmt.Sprintf("v2/clients/%s", id), opts)
