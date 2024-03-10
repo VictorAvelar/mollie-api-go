@@ -10,14 +10,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPartnerService_Get(t *testing.T) {
+func TestClientsService_Get(t *testing.T) {
 	setEnv()
 	defer unsetEnv()
 
 	type args struct {
 		ctx    context.Context
 		client string
-		opts   *GetPartnerClientOptions
+		opts   *GetLinkedClientOptions
 	}
 
 	cases := []struct {
@@ -53,8 +53,8 @@ func TestPartnerService_Get(t *testing.T) {
 			args{
 				context.Background(),
 				"org_1337",
-				&GetPartnerClientOptions{
-					Embed: "organization",
+				&GetLinkedClientOptions{
+					Embed: []EmbedValue{EmbedOrganization},
 				},
 			},
 			false,
@@ -123,21 +123,21 @@ func TestPartnerService_Get(t *testing.T) {
 				assert.EqualError(t, err, c.err.Error())
 			} else {
 				assert.Nil(t, err)
-				assert.IsType(t, &PartnerClient{}, m)
+				assert.IsType(t, &LinkedClient{}, m)
 				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func TestPartnerService_List(t *testing.T) {
+func TestClientService_List(t *testing.T) {
 	setEnv()
 	defer unsetEnv()
 
 	type args struct {
 		ctx    context.Context
 		client string
-		opts   *ListPartnerClientsOptions
+		opts   *ListLinkedClientsOptions
 	}
 
 	cases := []struct {
@@ -173,8 +173,8 @@ func TestPartnerService_List(t *testing.T) {
 			args{
 				context.Background(),
 				"org_1337",
-				&ListPartnerClientsOptions{
-					Year: 2021,
+				&ListLinkedClientsOptions{
+					Embed: []EmbedValue{EmbedOrganization},
 				},
 			},
 			false,
@@ -183,7 +183,7 @@ func TestPartnerService_List(t *testing.T) {
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(t, r, "GET")
-				testQuery(t, r, "year=2021")
+				testQuery(t, r, "embed=organization")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
@@ -243,7 +243,7 @@ func TestPartnerService_List(t *testing.T) {
 				assert.EqualError(t, err, c.err.Error())
 			} else {
 				assert.Nil(t, err)
-				assert.IsType(t, &PartnerClientList{}, m)
+				assert.IsType(t, &LinkedClientList{}, m)
 				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
