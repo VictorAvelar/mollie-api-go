@@ -53,13 +53,13 @@ type ListPartnerClientsOptions struct {
 	Month int `url:"month,omitempty"`
 }
 
-// PartnerService operates over the partners API.
-type PartnerService service
+// ClientsService operates over the partners API.
+type ClientsService service
 
 // List retrieves all clients.
 //
 // See: https://docs.mollie.com/reference/v2/partners-api/list-clients
-func (ps *PartnerService) List(ctx context.Context, opts *ListPartnerClientsOptions) (
+func (ps *ClientsService) List(ctx context.Context, opts *ListPartnerClientsOptions) (
 	res *Response,
 	pc *PartnerClientList,
 	err error,
@@ -79,7 +79,7 @@ func (ps *PartnerService) List(ctx context.Context, opts *ListPartnerClientsOpti
 // Get retrieves a single client, linked to your partner account, by its ID.
 //
 // See: https://docs.mollie.com/reference/v2/partners-api/get-client
-func (ps *PartnerService) Get(ctx context.Context, id string, opts *GetPartnerClientOptions) (
+func (ps *ClientsService) Get(ctx context.Context, id string, opts *GetPartnerClientOptions) (
 	res *Response,
 	pc *PartnerClient,
 	err error,

@@ -117,7 +117,7 @@ func TestPartnerService_Get(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/clients/%s", c.args.client), c.handler)
 
-			res, m, err := tClient.Partners.Get(c.args.ctx, c.args.client, c.args.opts)
+			res, m, err := tClient.Clients.Get(c.args.ctx, c.args.client, c.args.opts)
 			if c.wantErr {
 				assert.NotNil(t, err)
 				assert.EqualError(t, err, c.err.Error())
@@ -237,7 +237,7 @@ func TestPartnerService_List(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/clients", c.handler)
 
-			res, m, err := tClient.Partners.List(c.args.ctx, c.args.opts)
+			res, m, err := tClient.Clients.List(c.args.ctx, c.args.opts)
 			if c.wantErr {
 				assert.NotNil(t, err)
 				assert.EqualError(t, err, c.err.Error())
