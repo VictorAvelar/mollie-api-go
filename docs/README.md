@@ -90,7 +90,9 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type ClientLinksService](<#ClientLinksService>)
   - [func \(cls \*ClientLinksService\) Create\(ctx context.Context, cd CreateClientLink\) \(res \*Response, cl \*ClientLink, err error\)](<#ClientLinksService.Create>)
   - [func \(cls \*ClientLinksService\) GetFinalClientLink\(ctx context.Context, clientLink string, options \*ClientLinkAuthorizeOptions\) \(clientLinkURI string\)](<#ClientLinksService.GetFinalClientLink>)
-- [type Commission](<#Commission>)
+- [type ClientsService](<#ClientsService>)
+  - [func \(ps \*ClientsService\) Get\(ctx context.Context, id string, opts \*GetLinkedClientOptions\) \(res \*Response, pc \*LinkedClient, err error\)](<#ClientsService.Get>)
+  - [func \(ps \*ClientsService\) List\(ctx context.Context, opts \*ListLinkedClientsOptions\) \(res \*Response, pc \*LinkedClientList, err error\)](<#ClientsService.List>)
 - [type Company](<#Company>)
 - [type Config](<#Config>)
   - [func NewAPIConfig\(reqIdem bool\) \*Config](<#NewAPIConfig>)
@@ -134,7 +136,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type ErrorLinks](<#ErrorLinks>)
 - [type FailureReason](<#FailureReason>)
 - [type FeeRegion](<#FeeRegion>)
-- [type GetPartnerClientOptions](<#GetPartnerClientOptions>)
+- [type GetLinkedClientOptions](<#GetLinkedClientOptions>)
 - [type GiftCardEnabled](<#GiftCardEnabled>)
 - [type GiftCardIssuer](<#GiftCardIssuer>)
 - [type GiftCardIssuerStatus](<#GiftCardIssuerStatus>)
@@ -150,7 +152,10 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
   - [func \(is \*InvoicesService\) Get\(ctx context.Context, id string\) \(res \*Response, i \*Invoice, err error\)](<#InvoicesService.Get>)
   - [func \(is \*InvoicesService\) List\(ctx context.Context, options \*InvoicesListOptions\) \(res \*Response, il \*InvoicesList, err error\)](<#InvoicesService.List>)
 - [type LineItem](<#LineItem>)
-- [type ListPartnerClientsOptions](<#ListPartnerClientsOptions>)
+- [type LinkedClient](<#LinkedClient>)
+- [type LinkedClientLinks](<#LinkedClientLinks>)
+- [type LinkedClientList](<#LinkedClientList>)
+- [type ListLinkedClientsOptions](<#ListLinkedClientsOptions>)
 - [type ListPaymentOptions](<#ListPaymentOptions>)
 - [type ListRefundOptions](<#ListRefundOptions>)
 - [type Locale](<#Locale>)
@@ -218,12 +223,6 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
   - [func \(os \*OrganizationsService\) GetPartnerStatus\(ctx context.Context\) \(res \*Response, ops \*OrganizationPartnerStatus, err error\)](<#OrganizationsService.GetPartnerStatus>)
 - [type Owner](<#Owner>)
 - [type PaginationLinks](<#PaginationLinks>)
-- [type PartnerClient](<#PartnerClient>)
-- [type PartnerClientLinks](<#PartnerClientLinks>)
-- [type PartnerClientList](<#PartnerClientList>)
-- [type PartnerService](<#PartnerService>)
-  - [func \(ps \*PartnerService\) Get\(ctx context.Context, id string, opts \*GetPartnerClientOptions\) \(res \*Response, pc \*PartnerClient, err error\)](<#PartnerService.Get>)
-  - [func \(ps \*PartnerService\) List\(ctx context.Context, opts \*ListPartnerClientsOptions\) \(res \*Response, pc \*PartnerClientList, err error\)](<#PartnerService.List>)
 - [type PartnerType](<#PartnerType>)
 - [type Payment](<#Payment>)
 - [type PaymentDestination](<#PaymentDestination>)
@@ -1393,7 +1392,7 @@ type Client struct {
     Permissions    *PermissionsService
     Onboarding     *OnboardingService
     PaymentLinks   *PaymentLinksService
-    Partners       *PartnerService
+    Clients        *ClientsService
     Balances       *BalancesService
     ClientLinks    *ClientLinksService
     Terminals      *TerminalsService
@@ -1533,17 +1532,36 @@ func (cls *ClientLinksService) GetFinalClientLink(ctx context.Context, clientLin
 
 GetFinalClientLink returns the final client link URI with the provided options.
 
-<a name="Commission"></a>
-## type [Commission](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/partners.go#L38-L41>)
+<a name="ClientsService"></a>
+## type [ClientsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/clients.go#L48>)
 
-Commission describes a partner take from any operation on Mollie's API.
+ClientsService operates over the partners API.
 
 ```go
-type Commission struct {
-    Count       int     `json:"count,omitempty"`
-    TotalAmount *Amount `json:"totalAmount,omitempty"`
-}
+type ClientsService service
 ```
+
+<a name="ClientsService.Get"></a>
+### func \(\*ClientsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/clients.go#L73-L77>)
+
+```go
+func (ps *ClientsService) Get(ctx context.Context, id string, opts *GetLinkedClientOptions) (res *Response, pc *LinkedClient, err error)
+```
+
+Get retrieves a single client, linked to your partner account, by its ID.
+
+See: https://docs.mollie.com/reference/v2/partners-api/get-client
+
+<a name="ClientsService.List"></a>
+### func \(\*ClientsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/clients.go#L53-L57>)
+
+```go
+func (ps *ClientsService) List(ctx context.Context, opts *ListLinkedClientsOptions) (res *Response, pc *LinkedClientList, err error)
+```
+
+List retrieves all clients.
+
+See: https://docs.mollie.com/reference/v2/partners-api/list-clients
 
 <a name="Company"></a>
 ## type [Company](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L52-L56>)
@@ -2211,11 +2229,13 @@ type EmbedValue string
 
 ```go
 const (
-    EmbedPayments    EmbedValue = "payments"
-    EmbedRefunds     EmbedValue = "refunds"
-    EmbedShipments   EmbedValue = "shipments"
-    EmbedChargebacks EmbedValue = "chargebacks"
-    EmbedCaptures    EmbedValue = "captures"
+    EmbedPayments     EmbedValue = "payments"
+    EmbedRefunds      EmbedValue = "refunds"
+    EmbedShipments    EmbedValue = "shipments"
+    EmbedChargebacks  EmbedValue = "chargebacks"
+    EmbedCaptures     EmbedValue = "captures"
+    EmbedOrganization EmbedValue = "organization"
+    EmbedOnboarding   EmbedValue = "onboarding"
 )
 ```
 
@@ -2313,14 +2333,14 @@ const (
 )
 ```
 
-<a name="GetPartnerClientOptions"></a>
-## type [GetPartnerClientOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/partners.go#L44-L46>)
+<a name="GetLinkedClientOptions"></a>
+## type [GetLinkedClientOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/clients.go#L27-L29>)
 
-GetPartnerClientOptions contains valid query parameters for the get clients endpoint.
+GetLinkedClientOptions contains valid query parameters for the get clients endpoint.
 
 ```go
-type GetPartnerClientOptions struct {
-    Embed string `url:"embed,omitempty"`
+type GetLinkedClientOptions struct {
+    Embed []EmbedValue `url:"embed,omitempty"`
 }
 ```
 
@@ -2420,7 +2440,7 @@ type GiftCardLinks struct {
 ```
 
 <a name="Image"></a>
-## type [Image](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L352-L356>)
+## type [Image](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L354-L358>)
 
 Image describes a generic image resource retrieved by Mollie.
 
@@ -2576,17 +2596,59 @@ type LineItem struct {
 }
 ```
 
-<a name="ListPartnerClientsOptions"></a>
-## type [ListPartnerClientsOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/partners.go#L49-L54>)
+<a name="LinkedClient"></a>
+## type [LinkedClient](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/clients.go#L11-L16>)
 
-ListPartnerClientsOptions contains valid query parameters for the list clients endpoint.
+LinkedClient describes a single client, linked to your partner account.
 
 ```go
-type ListPartnerClientsOptions struct {
-    From  int `url:"from,omitempty"`
-    Limit int `url:"limit,omitempty"`
-    Year  int `url:"year,omitempty"`
-    Month int `url:"month,omitempty"`
+type LinkedClient struct {
+    Resource              string            `json:"resource,omitempty"`
+    ID                    string            `json:"id,omitempty"`
+    OrganizationCreatedAt *time.Time        `json:"organizationCreatedAt,omitempty"`
+    Links                 LinkedClientLinks `json:"_links,omitempty"`
+}
+```
+
+<a name="LinkedClientLinks"></a>
+## type [LinkedClientLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/clients.go#L19-L24>)
+
+LinkedClientLinks contains URL objects relevant to the client.
+
+```go
+type LinkedClientLinks struct {
+    Self          *URL `json:"self,omitempty"`
+    Organization  *URL `json:"organization,omitempty"`
+    Onboarding    *URL `json:"onboarding,omitempty"`
+    Documentation *URL `json:"documentation,omitempty"`
+}
+```
+
+<a name="LinkedClientList"></a>
+## type [LinkedClientList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/clients.go#L32-L38>)
+
+LinkedClientList describes a list of partner clients.
+
+```go
+type LinkedClientList struct {
+    Count          int `json:"count,omitempty"`
+    PartnerClients struct {
+        Clients []*LinkedClient `json:"clients,omitempty"`
+    }   `json:"_embedded,omitempty"`
+    Links PaginationLinks `json:"_links,omitempty"`
+}
+```
+
+<a name="ListLinkedClientsOptions"></a>
+## type [ListLinkedClientsOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/clients.go#L41-L45>)
+
+ListLinkedClientsOptions contains valid query parameters for the list clients endpoint.
+
+```go
+type ListLinkedClientsOptions struct {
+    Limit int          `url:"limit,omitempty"`
+    From  string       `url:"from,omitempty"`
+    Embed []EmbedValue `url:"embed,omitempty"`
 }
 ```
 
@@ -3595,7 +3657,7 @@ GetPartnerStatus retrieves details about the partner status of the currently aut
 See: https://docs.mollie.com/reference/v2/organizations-api/get-partner
 
 <a name="Owner"></a>
-## type [Owner](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L359-L364>)
+## type [Owner](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L361-L366>)
 
 Personal data of your customer.
 
@@ -3621,81 +3683,6 @@ type PaginationLinks struct {
     Documentation *URL `json:"documentation,omitempty"`
 }
 ```
-
-<a name="PartnerClient"></a>
-## type [PartnerClient](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/partners.go#L11-L17>)
-
-PartnerClient describes a partner client.
-
-```go
-type PartnerClient struct {
-    Resource              string             `json:"resource,omitempty"`
-    ID                    string             `json:"id,omitempty"`
-    OrganizationCreatedAt *time.Time         `json:"organizationCreatedAt,omitempty"`
-    Commission            Commission         `json:"commission,omitempty"`
-    Links                 PartnerClientLinks `json:"_links,omitempty"`
-}
-```
-
-<a name="PartnerClientLinks"></a>
-## type [PartnerClientLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/partners.go#L29-L34>)
-
-PartnerClientLinks contains URL objects relevant to the client.
-
-```go
-type PartnerClientLinks struct {
-    Self          *URL `json:"self,omitempty"`
-    Organization  *URL `json:"organization,omitempty"`
-    Onboarding    *URL `json:"onboarding,omitempty"`
-    Documentation *URL `json:"documentation,omitempty"`
-}
-```
-
-<a name="PartnerClientList"></a>
-## type [PartnerClientList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/partners.go#L20-L26>)
-
-PartnerClientList describes a list of partner clients.
-
-```go
-type PartnerClientList struct {
-    Count          int `json:"count,omitempty"`
-    PartnerClients struct {
-        Clients []*PartnerClient `json:"clients,omitempty"`
-    }   `json:"_embedded,omitempty"`
-    Links PaginationLinks `json:"_links,omitempty"`
-}
-```
-
-<a name="PartnerService"></a>
-## type [PartnerService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/partners.go#L57>)
-
-PartnerService operates over the partners API.
-
-```go
-type PartnerService service
-```
-
-<a name="PartnerService.Get"></a>
-### func \(\*PartnerService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/partners.go#L82-L86>)
-
-```go
-func (ps *PartnerService) Get(ctx context.Context, id string, opts *GetPartnerClientOptions) (res *Response, pc *PartnerClient, err error)
-```
-
-Get retrieves a single client, linked to your partner account, by its ID.
-
-See: https://docs.mollie.com/reference/v2/partners-api/get-client
-
-<a name="PartnerService.List"></a>
-### func \(\*PartnerService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/partners.go#L62-L66>)
-
-```go
-func (ps *PartnerService) List(ctx context.Context, opts *ListPartnerClientsOptions) (res *Response, pc *PartnerClientList, err error)
-```
-
-List retrieves all clients.
-
-See: https://docs.mollie.com/reference/v2/partners-api/list-clients
 
 <a name="PartnerType"></a>
 ## type [PartnerType](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/organizations.go#L40>)
@@ -4668,7 +4655,7 @@ type QRCode struct {
 ```
 
 <a name="Rate"></a>
-## type [Rate](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L346-L349>)
+## type [Rate](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L348-L351>)
 
 Rate describes service rates, further divided into fixed and percentage costs.
 
