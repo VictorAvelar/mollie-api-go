@@ -4279,16 +4279,16 @@ Update can be used to update some details of a created payment.
 See: https://docs.mollie.com/reference/v2/payments-api/update-payment
 
 <a name="Permission"></a>
-## type [Permission](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L39-L45>)
+## type [Permission](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L45-L51>)
 
 Permission represents an action that can be performed by any API actor.
 
 ```go
 type Permission struct {
-    Resource    string          `json:"resource,omitempty"`
-    ID          PermissionGrant `json:"id,omitempty"`
-    Description string          `json:"description,omitempty"`
     Granted     bool            `json:"granted,omitempty"`
+    Resource    string          `json:"resource,omitempty"`
+    Description string          `json:"description,omitempty"`
+    ID          PermissionGrant `json:"id,omitempty"`
     Links       PermissionLinks `json:"_links,omitempty"`
 }
 ```
@@ -4319,6 +4319,7 @@ const (
     ProfilesRead       PermissionGrant = "profiles.read"
     ProfilesWrite      PermissionGrant = "profiles.write"
     InvoicesRead       PermissionGrant = "invoices.read"
+    SettlementsRead    PermissionGrant = "settlements.read"
     OrdersRead         PermissionGrant = "orders.read"
     OrdersWrite        PermissionGrant = "orders.write"
     ShipmentsRead      PermissionGrant = "shipments.read"
@@ -4327,11 +4328,16 @@ const (
     OrganizationsWrite PermissionGrant = "organizations.write"
     OnboardingRead     PermissionGrant = "onboarding.read"
     OnboardingWrite    PermissionGrant = "onbording.write"
+    PaymentLinksRead   PermissionGrant = "payment-links.read"
+    PaymentLinksWrite  PermissionGrant = "payment-links.write"
+    BalancesRead       PermissionGrant = "balances.read"
+    TerminalsRead      PermissionGrant = "terminals.read"
+    TerminalsWrite     PermissionGrant = "terminals.write"
 )
 ```
 
 <a name="PermissionLinks"></a>
-## type [PermissionLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L49-L52>)
+## type [PermissionLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L55-L58>)
 
 PermissionLinks contains URL objects that make reference to an http address related to permissions.
 
@@ -4343,7 +4349,7 @@ type PermissionLinks struct {
 ```
 
 <a name="PermissionsList"></a>
-## type [PermissionsList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L56-L62>)
+## type [PermissionsList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L62-L68>)
 
 PermissionsList lists all the permissions given to an API actor.
 
@@ -4358,7 +4364,7 @@ type PermissionsList struct {
 ```
 
 <a name="PermissionsService"></a>
-## type [PermissionsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L65>)
+## type [PermissionsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L71>)
 
 PermissionsService operates over permission resources.
 
@@ -4367,7 +4373,7 @@ type PermissionsService service
 ```
 
 <a name="PermissionsService.Get"></a>
-### func \(\*PermissionsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L70>)
+### func \(\*PermissionsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L76>)
 
 ```go
 func (ps *PermissionsService) Get(ctx context.Context, id PermissionGrant) (res *Response, p *Permission, err error)
@@ -4378,7 +4384,7 @@ Get returns a permission by its id.
 See: https://docs.mollie.com/reference/v2/permissions-api/get-permission
 
 <a name="PermissionsService.List"></a>
-### func \(\*PermissionsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L87>)
+### func \(\*PermissionsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L93>)
 
 ```go
 func (ps *PermissionsService) List(ctx context.Context) (res *Response, pl *PermissionsList, err error)
