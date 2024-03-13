@@ -5,6 +5,14 @@ import (
 	"encoding/json"
 )
 
+// Wallet describes the wallet types that Mollie supports.
+type Wallet string
+
+// Available wallet types.
+const (
+	ApplePayWallet Wallet = "applepay"
+)
+
 // WalletsService operates over the resources described
 // in Mollie's wallets API endpoints section.
 type WalletsService service
