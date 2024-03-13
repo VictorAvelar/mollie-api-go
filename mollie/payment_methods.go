@@ -44,8 +44,8 @@ type MethodsLinks struct {
 // applicable to a payment method.
 type PaymentMethodPricing struct {
 	Description string    `json:"description,omitempty"`
-	Fixed       *Amount   `json:"fixed,omitempty"`
 	Variable    string    `json:"variable,omitempty"`
+	Fixed       *Amount   `json:"fixed,omitempty"`
 	FeeRegion   FeeRegion `json:"feeRegion,omitempty"`
 }
 
@@ -55,7 +55,7 @@ type PaymentMethodIssuer struct {
 	Resource string `json:"resource,omitempty"`
 	ID       string `json:"id,omitempty"`
 	Name     string `json:"name,omitempty"`
-	Image    Image  `json:"image,omitempty"`
+	Image    *Image `json:"image,omitempty"`
 }
 
 // PaymentMethodsList describes a list of paginated payment methods.
@@ -70,10 +70,10 @@ type PaymentMethodsList struct {
 // PaymentMethodOptions are applicable query string parameters to get methods
 // from mollie's API.
 type PaymentMethodOptions struct {
-	Locale    Locale `url:"locale,omitempty"`
-	Currency  string `url:"currency,omitempty"`
-	ProfileID string `url:"profileId,omitempty"`
-	Include   string `url:"include,omitempty"`
+	Locale    Locale         `url:"locale,omitempty"`
+	Currency  string         `url:"currency,omitempty"`
+	ProfileID string         `url:"profileId,omitempty"`
+	Include   []IncludeValue `url:"include,omitempty"`
 }
 
 // PaymentMethodsListOptions are applicable query string parameters to list methods
@@ -82,12 +82,13 @@ type PaymentMethodOptions struct {
 // It contains list specific options and embeds GetMethodOptions.
 type PaymentMethodsListOptions struct {
 	PaymentMethodOptions
-	SequenceType   SequenceType `url:"sequenceType,omitempty"`
-	AmountCurrency string       `url:"amount[currency],omitempty"`
-	AmountValue    string       `url:"amount[value],omitempty"`
-	Resource       string       `url:"resource,omitempty"`
-	BillingCountry string       `url:"billingCountry,omitempty"`
-	IncludeWallets string       `url:"includeWallets,omitempty"`
+	Resource            string                              `url:"resource,omitempty"`
+	BillingCountry      string                              `url:"billingCountry,omitempty"`
+	Amount              *Amount                             `url:"amount,omitempty"`
+	IncludeWallets      []Wallet                            `url:"includeWallets,omitempty"`
+	OrderLineCategories []OrderLineOperationProductCategory `url:"orderLineCategories,omitempty"`
+	Locale              Locale                              `url:"locale,omitempty"`
+	SequenceType        SequenceType                        `url:"sequenceType,omitempty"`
 }
 
 // PaymentMethodsService operates on methods endpoints.
