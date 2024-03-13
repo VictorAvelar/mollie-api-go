@@ -43,24 +43,24 @@ const (
 	Yourgift                   GiftCardIssuer = "yourgift"
 )
 
-// GiftCardIssuerStatus describes the status of a gift
+// IssuerStatus describes the status of a gift
 // card issuer in your account.
-type GiftCardIssuerStatus string
+type IssuerStatus string
 
 // Valid issuer statuses.
 const (
-	PendingIssuer GiftCardIssuerStatus = "pending-issuer"
-	EnabledIssuer GiftCardIssuerStatus = "enabled"
+	PendingIssuer IssuerStatus = "pending-issuer"
+	EnabledIssuer IssuerStatus = "enabled"
 )
 
 // GiftCardEnabled describes the response of a gift card
 // issuer enable operation.
 type GiftCardEnabled struct {
-	Resource    string               `json:"resource,omitempty"`
-	ID          GiftCardIssuer       `json:"id,omitempty"`
-	Description string               `json:"description,omitempty"`
-	Status      GiftCardIssuerStatus `json:"status,omitempty"`
-	Links       GiftCardLinks        `json:"_links,omitempty"`
+	Resource    string         `json:"resource,omitempty"`
+	ID          GiftCardIssuer `json:"id,omitempty"`
+	Description string         `json:"description,omitempty"`
+	Status      IssuerStatus   `json:"status,omitempty"`
+	Links       GiftCardLinks  `json:"_links,omitempty"`
 }
 
 // GiftCardLinks are links embedded when a gift card is enabled.
