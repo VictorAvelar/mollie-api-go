@@ -9,8 +9,8 @@ import (
 
 // Amount represents a currency and value pair.
 type Amount struct {
-	Currency string `json:"currency,omitempty"`
-	Value    string `json:"value,omitempty"`
+	Currency string `json:"currency,omitempty" url:"currency,omitempty"`
+	Value    string `json:"value,omitempty"    url:"value,omitempty"`
 }
 
 // Address provides a human friendly representation of a geographical space.
@@ -328,6 +328,8 @@ type IncludeValue string
 const (
 	IncludeQrCode           IncludeValue = "details.qrCode"
 	IncludeRemainderDetails IncludeValue = "details.remainderDetails"
+	IncludeIssuers          IncludeValue = "issuers"
+	IncludePricing          IncludeValue = "pricing"
 )
 
 // EmbedValue describes the valid value of embed query string.

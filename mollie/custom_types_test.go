@@ -3,6 +3,7 @@ package mollie
 import (
 	"testing"
 
+	"github.com/google/go-querystring/query"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -68,6 +69,60 @@ func TestContextValues_UnmarshalJSON(t *testing.T) {
 				assert.NoError(t, err)
 				assert.Equal(t, tt.want, cv)
 			}
+		})
+	}
+}
+
+func TestAmount_URLEncodingSimple(t *testing.T) {
+	tests := []struct {
+		name string
+		a    Amount
+		want string
+	}{
+		{
+			name: "Test URL encoding simple.",
+			a: Amount{
+				Value:    "10.00",
+				Currency: "EUR",
+			},
+			want: "currency=EUR&value=10.00",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			v, err := query.Values(tt.a)
+			assert.Nil(t, err)
+			assert.Equal(t, tt.want, v.Encode())
+		})
+	}
+}
+
+func TestAmount_URLEncodingNested(t *testing.T) {
+	tests := []struct {
+		name string
+		a    struct {
+			Amount Amount `url:"amount"`
+		}
+		want string
+	}{
+		{
+			name: "Test URL encoding nested amount in struct.",
+			a: struct {
+				Amount Amount `url:"amount"`
+			}{
+				Amount{
+					Value:    "10.00",
+					Currency: "EUR",
+				},
+			},
+			want: "amount%5Bcurrency%5D=EUR&amount%5Bvalue%5D=10.00",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			v, err := query.Values(tt.a)
+			assert.Nil(t, err)
+			assert.Equal(t, tt.want, v.Encode())
 		})
 	}
 }

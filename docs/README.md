@@ -363,6 +363,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type UpdatePayment](<#UpdatePayment>)
 - [type UsedGiftCard](<#UsedGiftCard>)
 - [type UserAgentToken](<#UserAgentToken>)
+- [type Wallet](<#Wallet>)
 - [type WalletsService](<#WalletsService>)
   - [func \(ms \*WalletsService\) ApplePaymentSession\(ctx context.Context, asr \*ApplePaymentSessionRequest\) \(res \*Response, aps \*ApplePaymentSession, err error\)](<#WalletsService.ApplePaymentSession>)
 
@@ -434,13 +435,13 @@ Amount represents a currency and value pair.
 
 ```go
 type Amount struct {
-    Currency string `json:"currency,omitempty"`
-    Value    string `json:"value,omitempty"`
+    Currency string `json:"currency,omitempty" url:"currency,omitempty"`
+    Value    string `json:"value,omitempty"    url:"value,omitempty"`
 }
 ```
 
 <a name="ApplePaymentSession"></a>
-## type [ApplePaymentSession](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/wallets.go#L13-L22>)
+## type [ApplePaymentSession](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/wallets.go#L21-L30>)
 
 ApplePaymentSession contains information about an Apple pay session.
 
@@ -458,7 +459,7 @@ type ApplePaymentSession struct {
 ```
 
 <a name="ApplePaymentSessionRequest"></a>
-## type [ApplePaymentSessionRequest](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/wallets.go#L26-L29>)
+## type [ApplePaymentSessionRequest](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/wallets.go#L34-L37>)
 
 ApplePaymentSessionRequest contains the body parameters for requesting a valid PaymentSession from Apple.
 
@@ -2217,7 +2218,7 @@ const (
 ```
 
 <a name="EmbedValue"></a>
-## type [EmbedValue](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L334>)
+## type [EmbedValue](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L336>)
 
 EmbedValue describes the valid value of embed query string.
 
@@ -2440,7 +2441,7 @@ type GiftCardLinks struct {
 ```
 
 <a name="Image"></a>
-## type [Image](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L354-L358>)
+## type [Image](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L356-L360>)
 
 Image describes a generic image resource retrieved by Mollie.
 
@@ -2467,6 +2468,8 @@ type IncludeValue string
 const (
     IncludeQrCode           IncludeValue = "details.qrCode"
     IncludeRemainderDetails IncludeValue = "details.remainderDetails"
+    IncludeIssuers          IncludeValue = "issuers"
+    IncludePricing          IncludeValue = "pricing"
 )
 ```
 
@@ -3657,7 +3660,7 @@ GetPartnerStatus retrieves details about the partner status of the currently aut
 See: https://docs.mollie.com/reference/v2/organizations-api/get-partner
 
 <a name="Owner"></a>
-## type [Owner](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L361-L366>)
+## type [Owner](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L363-L368>)
 
 Personal data of your customer.
 
@@ -4054,7 +4057,7 @@ type PaymentMethodIssuer struct {
     Resource string `json:"resource,omitempty"`
     ID       string `json:"id,omitempty"`
     Name     string `json:"name,omitempty"`
-    Image    Image  `json:"image,omitempty"`
+    Image    *Image `json:"image,omitempty"`
 }
 ```
 
@@ -4065,10 +4068,10 @@ PaymentMethodOptions are applicable query string parameters to get methods from 
 
 ```go
 type PaymentMethodOptions struct {
-    Locale    Locale `url:"locale,omitempty"`
-    Currency  string `url:"currency,omitempty"`
-    ProfileID string `url:"profileId,omitempty"`
-    Include   string `url:"include,omitempty"`
+    Locale    Locale         `url:"locale,omitempty"`
+    Currency  string         `url:"currency,omitempty"`
+    ProfileID string         `url:"profileId,omitempty"`
+    Include   []IncludeValue `url:"include,omitempty"`
 }
 ```
 
@@ -4080,8 +4083,8 @@ PaymentMethodPricing contains information about commissions and fees applicable 
 ```go
 type PaymentMethodPricing struct {
     Description string    `json:"description,omitempty"`
-    Fixed       *Amount   `json:"fixed,omitempty"`
     Variable    string    `json:"variable,omitempty"`
+    Fixed       *Amount   `json:"fixed,omitempty"`
     FeeRegion   FeeRegion `json:"feeRegion,omitempty"`
 }
 ```
@@ -4123,7 +4126,7 @@ type PaymentMethodsList struct {
 ```
 
 <a name="PaymentMethodsListOptions"></a>
-## type [PaymentMethodsListOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_methods.go#L83-L91>)
+## type [PaymentMethodsListOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_methods.go#L83-L92>)
 
 PaymentMethodsListOptions are applicable query string parameters to list methods from mollie's API.
 
@@ -4132,17 +4135,18 @@ It contains list specific options and embeds GetMethodOptions.
 ```go
 type PaymentMethodsListOptions struct {
     PaymentMethodOptions
-    SequenceType   SequenceType `url:"sequenceType,omitempty"`
-    AmountCurrency string       `url:"amount[currency],omitempty"`
-    AmountValue    string       `url:"amount[value],omitempty"`
-    Resource       string       `url:"resource,omitempty"`
-    BillingCountry string       `url:"billingCountry,omitempty"`
-    IncludeWallets string       `url:"includeWallets,omitempty"`
+    Resource            string                              `url:"resource,omitempty"`
+    BillingCountry      string                              `url:"billingCountry,omitempty"`
+    Amount              *Amount                             `url:"amount,omitempty"`
+    IncludeWallets      []Wallet                            `url:"includeWallets,omitempty"`
+    OrderLineCategories []OrderLineOperationProductCategory `url:"orderLineCategories,omitempty"`
+    Locale              Locale                              `url:"locale,omitempty"`
+    SequenceType        SequenceType                        `url:"sequenceType,omitempty"`
 }
 ```
 
 <a name="PaymentMethodsService"></a>
-## type [PaymentMethodsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_methods.go#L94>)
+## type [PaymentMethodsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_methods.go#L95>)
 
 PaymentMethodsService operates on methods endpoints.
 
@@ -4151,7 +4155,7 @@ type PaymentMethodsService service
 ```
 
 <a name="PaymentMethodsService.All"></a>
-### func \(\*PaymentMethodsService\) [All](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_methods.go#L123-L127>)
+### func \(\*PaymentMethodsService\) [All](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_methods.go#L124-L128>)
 
 ```go
 func (ms *PaymentMethodsService) All(ctx context.Context, options *PaymentMethodsListOptions) (res *Response, pm *PaymentMethodsList, err error)
@@ -4162,7 +4166,7 @@ All retrieves all the payment methods enabled for your account/organization.
 See: https://docs.mollie.com/reference/v2/methods-api/list-all-methods
 
 <a name="PaymentMethodsService.Get"></a>
-### func \(\*PaymentMethodsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_methods.go#L101-L105>)
+### func \(\*PaymentMethodsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_methods.go#L102-L106>)
 
 ```go
 func (ms *PaymentMethodsService) Get(ctx context.Context, id PaymentMethod, options *PaymentMethodOptions) (res *Response, pmd *PaymentMethodDetails, err error)
@@ -4173,7 +4177,7 @@ Get returns information about the payment method specified by id, it also receiv
 See: https://docs.mollie.com/reference/v2/methods-api/get-method
 
 <a name="PaymentMethodsService.List"></a>
-### func \(\*PaymentMethodsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_methods.go#L136-L140>)
+### func \(\*PaymentMethodsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_methods.go#L137-L141>)
 
 ```go
 func (ms *PaymentMethodsService) List(ctx context.Context, options *PaymentMethodsListOptions) (res *Response, pm *PaymentMethodsList, err error)
@@ -4655,7 +4659,7 @@ type QRCode struct {
 ```
 
 <a name="Rate"></a>
-## type [Rate](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L348-L351>)
+## type [Rate](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L350-L353>)
 
 Rate describes service rates, further divided into fixed and percentage costs.
 
@@ -5720,8 +5724,25 @@ type UserAgentToken struct {
 }
 ```
 
+<a name="Wallet"></a>
+## type [Wallet](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/wallets.go#L9>)
+
+Wallet describes the wallet types that Mollie supports.
+
+```go
+type Wallet string
+```
+
+<a name="ApplePayWallet"></a>Available wallet types.
+
+```go
+const (
+    ApplePayWallet Wallet = "applepay"
+)
+```
+
 <a name="WalletsService"></a>
-## type [WalletsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/wallets.go#L10>)
+## type [WalletsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/wallets.go#L18>)
 
 WalletsService operates over the resources described in Mollie's wallets API endpoints section.
 
@@ -5730,7 +5751,7 @@ type WalletsService service
 ```
 
 <a name="WalletsService.ApplePaymentSession"></a>
-### func \(\*WalletsService\) [ApplePaymentSession](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/wallets.go#L34-L38>)
+### func \(\*WalletsService\) [ApplePaymentSession](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/wallets.go#L42-L46>)
 
 ```go
 func (ms *WalletsService) ApplePaymentSession(ctx context.Context, asr *ApplePaymentSessionRequest) (res *Response, aps *ApplePaymentSession, err error)
