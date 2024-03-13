@@ -18,3 +18,25 @@ const (
 	PluxeeEcoVoucher                VoucherIssuer = "sodexo-ecopass"
 	PluxeeLunchVoucher              VoucherIssuer = "sodexo-lunchpass"
 )
+
+// VoucherEnabled describes the response of a voucher enable operation.
+type VoucherEnabled struct {
+	ID          string            `json:"id,omitempty"`
+	Description string            `json:"description,omitempty"`
+	Status      IssuerStatus      `json:"status,omitempty"`
+	Contractor  VoucherContractor `json:"contractor,omitempty"`
+	Links       VoucherLinks      `json:"_links,omitempty"`
+}
+
+// VoucherLinks are links embedded when a voucher is enabled.
+type VoucherLinks struct {
+	Self          *URL `json:"self,omitempty"`
+	Documentation *URL `json:"documentation,omitempty"`
+}
+
+// VoucherContractor represents a contractor for a voucher.
+type VoucherContractor struct {
+	ID           string `json:"id,omitempty"`
+	Name         string `json:"name,omitempty"`
+	ContractorID string `json:"contractorId,omitempty"`
+}
