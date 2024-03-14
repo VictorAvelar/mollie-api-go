@@ -19,8 +19,8 @@ const (
 	PluxeeLunchVoucher              VoucherIssuer = "sodexo-lunchpass"
 )
 
-// VoucherEnabled describes the response of a voucher enable operation.
-type VoucherEnabled struct {
+// VoucherIssuerEnabled describes the response of a voucher enable operation.
+type VoucherIssuerEnabled struct {
 	ID          string            `json:"id,omitempty"`
 	Description string            `json:"description,omitempty"`
 	Status      IssuerStatus      `json:"status,omitempty"`
