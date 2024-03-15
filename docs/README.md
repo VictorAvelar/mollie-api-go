@@ -161,6 +161,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type LinkedClientList](<#LinkedClientList>)
 - [type ListLinkedClientsOptions](<#ListLinkedClientsOptions>)
 - [type ListPaymentOptions](<#ListPaymentOptions>)
+- [type ListSettlementsOptions](<#ListSettlementsOptions>)
 - [type Locale](<#Locale>)
 - [type Mandate](<#Mandate>)
 - [type MandateDetails](<#MandateDetails>)
@@ -327,14 +328,13 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type SettlementRevenue](<#SettlementRevenue>)
 - [type SettlementStatus](<#SettlementStatus>)
 - [type SettlementsList](<#SettlementsList>)
-- [type SettlementsListOptions](<#SettlementsListOptions>)
 - [type SettlementsService](<#SettlementsService>)
-  - [func \(ss \*SettlementsService\) Get\(ctx context.Context, id string\) \(res \*Response, s \*Settlement, err error\)](<#SettlementsService.Get>)
-  - [func \(ss \*SettlementsService\) GetCaptures\(ctx context.Context, id string, slo \*SettlementsListOptions\) \(res \*Response, cl \*CapturesList, err error\)](<#SettlementsService.GetCaptures>)
-  - [func \(ss \*SettlementsService\) GetChargebacks\(ctx context.Context, id string, slo \*SettlementsListOptions\) \(res \*Response, cl \*ChargebacksList, err error\)](<#SettlementsService.GetChargebacks>)
-  - [func \(ss \*SettlementsService\) GetPayments\(ctx context.Context, id string, slo \*SettlementsListOptions\) \(res \*Response, pl \*PaymentList, err error\)](<#SettlementsService.GetPayments>)
-  - [func \(ss \*SettlementsService\) GetRefunds\(ctx context.Context, id string, slo \*SettlementsListOptions\) \(res \*Response, rl \*RefundsList, err error\)](<#SettlementsService.GetRefunds>)
-  - [func \(ss \*SettlementsService\) List\(ctx context.Context, slo \*SettlementsListOptions\) \(res \*Response, sl \*SettlementsList, err error\)](<#SettlementsService.List>)
+  - [func \(ss \*SettlementsService\) Get\(ctx context.Context, settlement string\) \(res \*Response, s \*Settlement, err error\)](<#SettlementsService.Get>)
+  - [func \(ss \*SettlementsService\) GetCaptures\(ctx context.Context, id string, slo \*ListSettlementsOptions\) \(res \*Response, cl \*CapturesList, err error\)](<#SettlementsService.GetCaptures>)
+  - [func \(ss \*SettlementsService\) GetChargebacks\(ctx context.Context, id string, slo \*ChargebacksListOptions\) \(res \*Response, cl \*ChargebacksList, err error\)](<#SettlementsService.GetChargebacks>)
+  - [func \(ss \*SettlementsService\) GetRefunds\(ctx context.Context, id string, slo \*ListSettlementsOptions\) \(res \*Response, rl \*RefundsList, err error\)](<#SettlementsService.GetRefunds>)
+  - [func \(ss \*SettlementsService\) List\(ctx context.Context, slo \*ListSettlementsOptions\) \(res \*Response, sl \*SettlementsList, err error\)](<#SettlementsService.List>)
+  - [func \(ss \*SettlementsService\) ListPayments\(ctx context.Context, id string, options \*ListPaymentOptions\) \(res \*Response, pl \*PaymentList, err error\)](<#SettlementsService.ListPayments>)
   - [func \(ss \*SettlementsService\) Next\(ctx context.Context\) \(res \*Response, s \*Settlement, err error\)](<#SettlementsService.Next>)
   - [func \(ss \*SettlementsService\) Open\(ctx context.Context\) \(res \*Response, s \*Settlement, err error\)](<#SettlementsService.Open>)
 - [type Shipment](<#Shipment>)
@@ -2749,6 +2749,19 @@ type ListPaymentOptions struct {
 }
 ```
 
+<a name="ListSettlementsOptions"></a>
+## type [ListSettlementsOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L81-L85>)
+
+ListSettlementsOptions contains query parameters for settlement lists.
+
+```go
+type ListSettlementsOptions struct {
+    From  string       `url:"from,omitempty"`
+    Limit int          `url:"limit,omitempty"`
+    Embed []EmbedValue `url:"embed,omitempty"`
+}
+```
+
 <a name="Locale"></a>
 ## type [Locale](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L89>)
 
@@ -4853,8 +4866,8 @@ Rate describes service rates, further divided into fixed and percentage costs.
 
 ```go
 type Rate struct {
-    Fixed    *Amount `json:"fixed,omitempty"`
     Variable string  `json:"variable,omitempty"`
+    Fixed    *Amount `json:"fixed,omitempty"`
 }
 ```
 
@@ -5104,44 +5117,45 @@ const (
 ```
 
 <a name="Settlement"></a>
-## type [Settlement](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L69-L80>)
+## type [Settlement](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L67-L78>)
 
 Settlement contains successful payments, together with refunds, captures and chargebacks into settlements.
 
 ```go
 type Settlement struct {
-    ID        string           `json:"id,omitempty"`
-    Resource  string           `json:"resource,omitempty"`
-    Reference string           `json:"reference,omitempty"`
-    CreatedAt *time.Time       `json:"createdAt,omitempty"`
-    SettledAt *time.Time       `json:"settledAt,omitempty"`
-    Status    SettlementStatus `json:"status,omitempty"`
-    Amount    *Amount          `json:"amount,omitempty"`
-    Periods   SettlementObject `json:"periods,omitempty"`
-    InvoiceID string           `json:"invoiceId,omitempty"`
-    Links     SettlementLinks  `json:"_links,omitempty"`
+    ID        string            `json:"id,omitempty"`
+    Resource  string            `json:"resource,omitempty"`
+    Reference string            `json:"reference,omitempty"`
+    InvoiceID string            `json:"invoiceId,omitempty"`
+    CreatedAt *time.Time        `json:"createdAt,omitempty"`
+    SettledAt *time.Time        `json:"settledAt,omitempty"`
+    Amount    *Amount           `json:"amount,omitempty"`
+    Periods   *SettlementObject `json:"periods,omitempty"`
+    Status    SettlementStatus  `json:"status,omitempty"`
+    Links     SettlementLinks   `json:"_links,omitempty"`
 }
 ```
 
 <a name="SettlementCosts"></a>
-## type [SettlementCosts](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L35-L43>)
+## type [SettlementCosts](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L32-L41>)
 
 SettlementCosts contains information about costs related to a settlement.
 
 ```go
 type SettlementCosts struct {
+    Count       int           `json:"count,omitempty"`
     Description string        `json:"description,omitempty"`
+    InvoiceID   string        `json:"invoiceId,omitempty"`
     AmountNet   *Amount       `json:"amountNet,omitempty"`
     AmountVAT   *Amount       `json:"amountVat,omitempty"`
     AmountGross *Amount       `json:"amountGross,omitempty"`
-    Count       int           `json:"count,omitempty"`
     Rate        *Rate         `json:"rate,omitempty"`
     Method      PaymentMethod `json:"method,omitempty"`
 }
 ```
 
 <a name="SettlementLinks"></a>
-## type [SettlementLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L57-L65>)
+## type [SettlementLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L55-L63>)
 
 SettlementLinks is an object with several URL objects relevant to the settlement.
 
@@ -5158,7 +5172,7 @@ type SettlementLinks struct {
 ```
 
 <a name="SettlementObject"></a>
-## type [SettlementObject](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L54>)
+## type [SettlementObject](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L52>)
 
 SettlementObject nests as describes for settlement periods.
 
@@ -5167,37 +5181,37 @@ type SettlementObject map[string]map[string]SettlementPeriod
 ```
 
 <a name="SettlementPeriod"></a>
-## type [SettlementPeriod](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L46-L51>)
+## type [SettlementPeriod](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L44-L49>)
 
 SettlementPeriod describe the settlement by month in full detail.
 
 ```go
 type SettlementPeriod struct {
-    Revenue          []*SettlementRevenue `json:"revenue,omitempty"`
-    Costs            []*SettlementCosts   `json:"costs,omitempty"`
     InvoiceID        string               `json:"invoiceId,omitempty"`
     InvoiceReference string               `json:"invoiceReference,omitempty"`
+    Revenue          []*SettlementRevenue `json:"revenue,omitempty"`
+    Costs            []*SettlementCosts   `json:"costs,omitempty"`
 }
 ```
 
 <a name="SettlementRevenue"></a>
-## type [SettlementRevenue](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L25-L32>)
+## type [SettlementRevenue](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L22-L29>)
 
 SettlementRevenue objects contain the total revenue for each payment method during this period.
 
 ```go
 type SettlementRevenue struct {
+    Count       int           `json:"count,omitempty"`
     Description string        `json:"description,omitempty"`
     AmountNet   *Amount       `json:"amountNet,omitempty"`
     AmountVAT   *Amount       `json:"amountVat,omitempty"`
     AmountGross *Amount       `json:"amountGross,omitempty"`
-    Count       int           `json:"count,omitempty"`
     Method      PaymentMethod `json:"method,omitempty"`
 }
 ```
 
 <a name="SettlementStatus"></a>
-## type [SettlementStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L14>)
+## type [SettlementStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L11>)
 
 SettlementStatus describes the status of the settlement.
 
@@ -5217,7 +5231,7 @@ const (
 ```
 
 <a name="SettlementsList"></a>
-## type [SettlementsList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L90-L96>)
+## type [SettlementsList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L88-L94>)
 
 SettlementsList describes a list of settlements.
 
@@ -5231,21 +5245,8 @@ type SettlementsList struct {
 }
 ```
 
-<a name="SettlementsListOptions"></a>
-## type [SettlementsListOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L83-L87>)
-
-SettlementsListOptions contains query parameters for settlement lists.
-
-```go
-type SettlementsListOptions struct {
-    From  string     `url:"from,omitempty"`
-    Limit int        `url:"limit,omitempty"`
-    Embed EmbedValue `url:"embed,omitempty"`
-}
-```
-
 <a name="SettlementsService"></a>
-## type [SettlementsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L11>)
+## type [SettlementsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L97>)
 
 SettlementsService operates over settlements resource.
 
@@ -5254,10 +5255,10 @@ type SettlementsService service
 ```
 
 <a name="SettlementsService.Get"></a>
-### func \(\*SettlementsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L101>)
+### func \(\*SettlementsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L102>)
 
 ```go
-func (ss *SettlementsService) Get(ctx context.Context, id string) (res *Response, s *Settlement, err error)
+func (ss *SettlementsService) Get(ctx context.Context, settlement string) (res *Response, s *Settlement, err error)
 ```
 
 Get returns a settlement by its id or the bank reference id
@@ -5265,10 +5266,10 @@ Get returns a settlement by its id or the bank reference id
 See: https://docs.mollie.com/reference/v2/settlements-api/get-settlement
 
 <a name="SettlementsService.GetCaptures"></a>
-### func \(\*SettlementsService\) [GetCaptures](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L203-L207>)
+### func \(\*SettlementsService\) [GetCaptures](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L205-L209>)
 
 ```go
-func (ss *SettlementsService) GetCaptures(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, cl *CapturesList, err error)
+func (ss *SettlementsService) GetCaptures(ctx context.Context, id string, slo *ListSettlementsOptions) (res *Response, cl *CapturesList, err error)
 ```
 
 GetCaptures retrieves all captures included in a settlement.
@@ -5276,32 +5277,21 @@ GetCaptures retrieves all captures included in a settlement.
 See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-captures
 
 <a name="SettlementsService.GetChargebacks"></a>
-### func \(\*SettlementsService\) [GetChargebacks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L183-L187>)
+### func \(\*SettlementsService\) [GetChargebacks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L185-L189>)
 
 ```go
-func (ss *SettlementsService) GetChargebacks(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, cl *ChargebacksList, err error)
+func (ss *SettlementsService) GetChargebacks(ctx context.Context, id string, slo *ChargebacksListOptions) (res *Response, cl *ChargebacksList, err error)
 ```
 
 GetChargebacks retrieves all chargebacks included in a settlement.
 
 See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-chargebacks
 
-<a name="SettlementsService.GetPayments"></a>
-### func \(\*SettlementsService\) [GetPayments](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L143-L147>)
-
-```go
-func (ss *SettlementsService) GetPayments(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, pl *PaymentList, err error)
-```
-
-GetPayments retrieves all payments included in a settlement.
-
-See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-payments
-
 <a name="SettlementsService.GetRefunds"></a>
-### func \(\*SettlementsService\) [GetRefunds](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L163-L167>)
+### func \(\*SettlementsService\) [GetRefunds](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L165-L169>)
 
 ```go
-func (ss *SettlementsService) GetRefunds(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, rl *RefundsList, err error)
+func (ss *SettlementsService) GetRefunds(ctx context.Context, id string, slo *ListSettlementsOptions) (res *Response, rl *RefundsList, err error)
 ```
 
 GetRefunds retrieves all refunds included in a settlement.
@@ -5309,18 +5299,29 @@ GetRefunds retrieves all refunds included in a settlement.
 See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-refunds
 
 <a name="SettlementsService.List"></a>
-### func \(\*SettlementsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L123-L127>)
+### func \(\*SettlementsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L124-L128>)
 
 ```go
-func (ss *SettlementsService) List(ctx context.Context, slo *SettlementsListOptions) (res *Response, sl *SettlementsList, err error)
+func (ss *SettlementsService) List(ctx context.Context, slo *ListSettlementsOptions) (res *Response, sl *SettlementsList, err error)
 ```
 
 List retrieves all settlements, ordered from new to old
 
 See: https://docs.mollie.com/reference/v2/settlements-api/list-settlements
 
+<a name="SettlementsService.ListPayments"></a>
+### func \(\*SettlementsService\) [ListPayments](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L145-L149>)
+
+```go
+func (ss *SettlementsService) ListPayments(ctx context.Context, id string, options *ListPaymentOptions) (res *Response, pl *PaymentList, err error)
+```
+
+ListPayments retrieves all payments included in a settlement. This API is an alias of the List payments.
+
+See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-payments
+
 <a name="SettlementsService.Next"></a>
-### func \(\*SettlementsService\) [Next](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L108>)
+### func \(\*SettlementsService\) [Next](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L109>)
 
 ```go
 func (ss *SettlementsService) Next(ctx context.Context) (res *Response, s *Settlement, err error)
@@ -5331,7 +5332,7 @@ Next retrieves the details of the current settlement that has not yet been paid 
 See: https://docs.mollie.com/reference/v2/settlements-api/get-next-settlement
 
 <a name="SettlementsService.Open"></a>
-### func \(\*SettlementsService\) [Open](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L116>)
+### func \(\*SettlementsService\) [Open](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L117>)
 
 ```go
 func (ss *SettlementsService) Open(ctx context.Context) (res *Response, s *Settlement, err error)
