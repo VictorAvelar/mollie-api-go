@@ -330,11 +330,11 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type SettlementsList](<#SettlementsList>)
 - [type SettlementsService](<#SettlementsService>)
   - [func \(ss \*SettlementsService\) Get\(ctx context.Context, settlement string\) \(res \*Response, s \*Settlement, err error\)](<#SettlementsService.Get>)
-  - [func \(ss \*SettlementsService\) GetCaptures\(ctx context.Context, id string, slo \*ListSettlementsOptions\) \(res \*Response, cl \*CapturesList, err error\)](<#SettlementsService.GetCaptures>)
-  - [func \(ss \*SettlementsService\) GetChargebacks\(ctx context.Context, id string, slo \*ChargebacksListOptions\) \(res \*Response, cl \*ChargebacksList, err error\)](<#SettlementsService.GetChargebacks>)
-  - [func \(ss \*SettlementsService\) GetRefunds\(ctx context.Context, id string, slo \*ListSettlementsOptions\) \(res \*Response, rl \*RefundsList, err error\)](<#SettlementsService.GetRefunds>)
+  - [func \(ss \*SettlementsService\) GetCaptures\(ctx context.Context, settlement string, slo \*ListSettlementsOptions\) \(res \*Response, cl \*CapturesList, err error\)](<#SettlementsService.GetCaptures>)
+  - [func \(ss \*SettlementsService\) GetChargebacks\(ctx context.Context, settlement string, slo \*ChargebacksListOptions\) \(res \*Response, cl \*ChargebacksList, err error\)](<#SettlementsService.GetChargebacks>)
+  - [func \(ss \*SettlementsService\) GetRefunds\(ctx context.Context, settlement string, slo \*ListSettlementsOptions\) \(res \*Response, rl \*RefundsList, err error\)](<#SettlementsService.GetRefunds>)
   - [func \(ss \*SettlementsService\) List\(ctx context.Context, slo \*ListSettlementsOptions\) \(res \*Response, sl \*SettlementsList, err error\)](<#SettlementsService.List>)
-  - [func \(ss \*SettlementsService\) ListPayments\(ctx context.Context, id string, options \*ListPaymentOptions\) \(res \*Response, pl \*PaymentList, err error\)](<#SettlementsService.ListPayments>)
+  - [func \(ss \*SettlementsService\) ListPayments\(ctx context.Context, settlement string, options \*ListPaymentOptions\) \(res \*Response, pl \*PaymentList, err error\)](<#SettlementsService.ListPayments>)
   - [func \(ss \*SettlementsService\) Next\(ctx context.Context\) \(res \*Response, s \*Settlement, err error\)](<#SettlementsService.Next>)
   - [func \(ss \*SettlementsService\) Open\(ctx context.Context\) \(res \*Response, s \*Settlement, err error\)](<#SettlementsService.Open>)
 - [type Shipment](<#Shipment>)
@@ -5269,7 +5269,7 @@ See: https://docs.mollie.com/reference/v2/settlements-api/get-settlement
 ### func \(\*SettlementsService\) [GetCaptures](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L205-L209>)
 
 ```go
-func (ss *SettlementsService) GetCaptures(ctx context.Context, id string, slo *ListSettlementsOptions) (res *Response, cl *CapturesList, err error)
+func (ss *SettlementsService) GetCaptures(ctx context.Context, settlement string, slo *ListSettlementsOptions) (res *Response, cl *CapturesList, err error)
 ```
 
 GetCaptures retrieves all captures included in a settlement.
@@ -5280,7 +5280,7 @@ See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-captur
 ### func \(\*SettlementsService\) [GetChargebacks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L185-L189>)
 
 ```go
-func (ss *SettlementsService) GetChargebacks(ctx context.Context, id string, slo *ChargebacksListOptions) (res *Response, cl *ChargebacksList, err error)
+func (ss *SettlementsService) GetChargebacks(ctx context.Context, settlement string, slo *ChargebacksListOptions) (res *Response, cl *ChargebacksList, err error)
 ```
 
 GetChargebacks retrieves all chargebacks included in a settlement.
@@ -5291,7 +5291,7 @@ See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-charge
 ### func \(\*SettlementsService\) [GetRefunds](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L165-L169>)
 
 ```go
-func (ss *SettlementsService) GetRefunds(ctx context.Context, id string, slo *ListSettlementsOptions) (res *Response, rl *RefundsList, err error)
+func (ss *SettlementsService) GetRefunds(ctx context.Context, settlement string, slo *ListSettlementsOptions) (res *Response, rl *RefundsList, err error)
 ```
 
 GetRefunds retrieves all refunds included in a settlement.
@@ -5313,7 +5313,7 @@ See: https://docs.mollie.com/reference/v2/settlements-api/list-settlements
 ### func \(\*SettlementsService\) [ListPayments](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L145-L149>)
 
 ```go
-func (ss *SettlementsService) ListPayments(ctx context.Context, id string, options *ListPaymentOptions) (res *Response, pl *PaymentList, err error)
+func (ss *SettlementsService) ListPayments(ctx context.Context, settlement string, options *ListPaymentOptions) (res *Response, pl *PaymentList, err error)
 ```
 
 ListPayments retrieves all payments included in a settlement. This API is an alias of the List payments.
