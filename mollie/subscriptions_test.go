@@ -113,7 +113,7 @@ func TestSubscriptionsService_Create(t *testing.T) {
 	type args struct {
 		ctx          context.Context
 		customer     string
-		subscription *Subscription
+		subscription CreateSubscription
 	}
 	cases := []struct {
 		name    string
@@ -128,7 +128,7 @@ func TestSubscriptionsService_Create(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_stTC2WHAuS",
-				&Subscription{
+				CreateSubscription{
 					Amount: &Amount{
 						Currency: "EUR",
 						Value:    "100.00",
@@ -154,7 +154,7 @@ func TestSubscriptionsService_Create(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_stTC2WHAuS",
-				&Subscription{
+				CreateSubscription{
 					Amount: &Amount{
 						Currency: "EUR",
 						Value:    "100.00",
@@ -181,7 +181,7 @@ func TestSubscriptionsService_Create(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_stTC2WHAuS",
-				&Subscription{
+				CreateSubscription{
 					Amount: &Amount{
 						Currency: "EUR",
 						Value:    "100.00",
@@ -199,7 +199,7 @@ func TestSubscriptionsService_Create(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_stTC2WHAuS",
-				&Subscription{
+				CreateSubscription{
 					Amount: &Amount{
 						Currency: "EUR",
 						Value:    "100.00",
@@ -217,7 +217,7 @@ func TestSubscriptionsService_Create(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_stTC2WHAuS",
-				&Subscription{
+				CreateSubscription{
 					Amount: &Amount{
 						Currency: "EUR",
 						Value:    "100.00",
@@ -261,7 +261,7 @@ func TestSubscriptionsService_Update(t *testing.T) {
 		ctx          context.Context
 		customer     string
 		sid          string
-		subscription *Subscription
+		subscription UpdateSubscription
 	}
 	cases := []struct {
 		name    string
@@ -277,7 +277,7 @@ func TestSubscriptionsService_Update(t *testing.T) {
 				context.Background(),
 				"cst_stTC2WHAuS",
 				"sub_rVKGtNd6s3",
-				&Subscription{
+				UpdateSubscription{
 					Amount: &Amount{
 						Currency: "EUR",
 						Value:    "100.00",
@@ -304,7 +304,7 @@ func TestSubscriptionsService_Update(t *testing.T) {
 				context.Background(),
 				"cst_stTC2WHAuS",
 				"sub_rVKGtNd6s3",
-				&Subscription{
+				UpdateSubscription{
 					Amount: &Amount{
 						Currency: "EUR",
 						Value:    "100.00",
@@ -332,7 +332,7 @@ func TestSubscriptionsService_Update(t *testing.T) {
 				context.Background(),
 				"cst_stTC2WHAuS",
 				"sub_rVKGtNd6s3",
-				&Subscription{
+				UpdateSubscription{
 					Amount: &Amount{
 						Currency: "EUR",
 						Value:    "100.00",
@@ -351,7 +351,7 @@ func TestSubscriptionsService_Update(t *testing.T) {
 				context.Background(),
 				"cst_stTC2WHAuS",
 				"sub_rVKGtNd6s3",
-				&Subscription{
+				UpdateSubscription{
 					Amount: &Amount{
 						Currency: "EUR",
 						Value:    "100.00",
@@ -370,7 +370,7 @@ func TestSubscriptionsService_Update(t *testing.T) {
 				context.Background(),
 				"cst_stTC2WHAuS",
 				"sub_rVKGtNd6s3",
-				&Subscription{
+				UpdateSubscription{
 					Amount: &Amount{
 						Currency: "EUR",
 						Value:    "100.00",
@@ -406,7 +406,7 @@ func TestSubscriptionsService_Update(t *testing.T) {
 	}
 }
 
-func TestSubscriptionsService_Delete(t *testing.T) {
+func TestSubscriptionsService_Cancel(t *testing.T) {
 	setEnv()
 	defer unsetEnv()
 
@@ -510,7 +510,7 @@ func TestSubscriptionsService_Delete(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/subscriptions/%s", c.args.customer, c.args.sid), c.handler)
 
-			res, m, err := tClient.Subscriptions.Delete(c.args.ctx, c.args.customer, c.args.sid)
+			res, m, err := tClient.Subscriptions.Cancel(c.args.ctx, c.args.customer, c.args.sid)
 			if c.wantErr {
 				assert.NotNil(t, err)
 				assert.EqualError(t, err, c.err.Error())
@@ -530,7 +530,7 @@ func TestSubscriptionsService_List(t *testing.T) {
 	type args struct {
 		ctx      context.Context
 		customer string
-		options  *SubscriptionListOptions
+		options  *ListSubscriptionsOptions
 	}
 	cases := []struct {
 		name    string
@@ -565,7 +565,7 @@ func TestSubscriptionsService_List(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_stTC2WHAuS",
-				&SubscriptionListOptions{
+				&ListSubscriptionsOptions{
 					Limit: 10,
 				},
 			},
@@ -635,7 +635,7 @@ func TestSubscriptionsService_List(t *testing.T) {
 				assert.EqualError(t, err, c.err.Error())
 			} else {
 				assert.Nil(t, err)
-				assert.IsType(t, &SubscriptionList{}, m)
+				assert.IsType(t, &SubscriptionsList{}, m)
 				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
@@ -648,7 +648,7 @@ func TestSubscriptionsService_All(t *testing.T) {
 
 	type args struct {
 		ctx     context.Context
-		options *SubscriptionListOptions
+		options *ListSubscriptionsOptions
 	}
 	cases := []struct {
 		name    string
@@ -681,7 +681,7 @@ func TestSubscriptionsService_All(t *testing.T) {
 			"list subscriptions with options works as expected.",
 			args{
 				context.Background(),
-				&SubscriptionListOptions{
+				&ListSubscriptionsOptions{
 					Limit: 10,
 				},
 			},
@@ -748,7 +748,7 @@ func TestSubscriptionsService_All(t *testing.T) {
 				assert.EqualError(t, err, c.err.Error())
 			} else {
 				assert.Nil(t, err)
-				assert.IsType(t, &SubscriptionList{}, m)
+				assert.IsType(t, &SubscriptionsList{}, m)
 				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
@@ -763,7 +763,7 @@ func TestSubscriptionsService_GetPayments(t *testing.T) {
 		ctx          context.Context
 		customer     string
 		subscription string
-		options      *SubscriptionListOptions
+		options      *ListSubscriptionsOptions
 	}
 	cases := []struct {
 		name    string
@@ -800,7 +800,7 @@ func TestSubscriptionsService_GetPayments(t *testing.T) {
 				context.Background(),
 				"cst_stTC2WHAuS",
 				"sub_rVKGtNd6s3",
-				&SubscriptionListOptions{
+				&ListSubscriptionsOptions{
 					Limit: 10,
 				},
 			},
@@ -867,7 +867,7 @@ func TestSubscriptionsService_GetPayments(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/customers/%s/subscriptions/%s/payments", c.args.customer, c.args.subscription), c.handler)
 
-			res, m, err := tClient.Subscriptions.GetPayments(c.args.ctx, c.args.customer, c.args.subscription, c.args.options)
+			res, m, err := tClient.Subscriptions.ListPayments(c.args.ctx, c.args.customer, c.args.subscription, c.args.options)
 			if c.wantErr {
 				assert.NotNil(t, err)
 				assert.EqualError(t, err, c.err.Error())
