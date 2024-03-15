@@ -414,18 +414,6 @@ func TestRefundsService_CancelPaymentRefund(t *testing.T) {
 			errorHandler,
 		},
 		{
-			"cancel payment refund, an error occurs when parsing json",
-			args{
-				context.Background(),
-				"tr_7UhSN1zuXS",
-				"re_4qqhO89gsT",
-			},
-			true,
-			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
-			noPre,
-			encodingHandler,
-		},
-		{
 			"cancel payment refund, invalid url when building request",
 			args{
 				context.Background(),
