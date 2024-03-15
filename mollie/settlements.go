@@ -142,12 +142,12 @@ func (ss *SettlementsService) List(ctx context.Context, slo *ListSettlementsOpti
 // This API is an alias of the List payments.
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-payments
-func (ss *SettlementsService) ListPayments(ctx context.Context, id string, options *ListPaymentOptions) (
+func (ss *SettlementsService) ListPayments(ctx context.Context, settlement string, options *ListPaymentOptions) (
 	res *Response,
 	pl *PaymentList,
 	err error,
 ) {
-	res, err = ss.list(ctx, id, "payments", options)
+	res, err = ss.list(ctx, settlement, "payments", options)
 	if err != nil {
 		return
 	}
@@ -162,12 +162,12 @@ func (ss *SettlementsService) ListPayments(ctx context.Context, id string, optio
 // GetRefunds retrieves all refunds included in a settlement.
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-refunds
-func (ss *SettlementsService) GetRefunds(ctx context.Context, id string, slo *ListSettlementsOptions) (
+func (ss *SettlementsService) GetRefunds(ctx context.Context, settlement string, slo *ListSettlementsOptions) (
 	res *Response,
 	rl *RefundsList,
 	err error,
 ) {
-	res, err = ss.list(ctx, id, "refunds", slo)
+	res, err = ss.list(ctx, settlement, "refunds", slo)
 	if err != nil {
 		return
 	}
@@ -182,12 +182,12 @@ func (ss *SettlementsService) GetRefunds(ctx context.Context, id string, slo *Li
 // GetChargebacks retrieves all chargebacks included in a settlement.
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-chargebacks
-func (ss *SettlementsService) GetChargebacks(ctx context.Context, id string, slo *ChargebacksListOptions) (
+func (ss *SettlementsService) GetChargebacks(ctx context.Context, settlement string, slo *ChargebacksListOptions) (
 	res *Response,
 	cl *ChargebacksList,
 	err error,
 ) {
-	res, err = ss.list(ctx, id, "chargebacks", slo)
+	res, err = ss.list(ctx, settlement, "chargebacks", slo)
 	if err != nil {
 		return
 	}
@@ -202,12 +202,12 @@ func (ss *SettlementsService) GetChargebacks(ctx context.Context, id string, slo
 // GetCaptures retrieves all captures included in a settlement.
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-captures
-func (ss *SettlementsService) GetCaptures(ctx context.Context, id string, slo *ListSettlementsOptions) (
+func (ss *SettlementsService) GetCaptures(ctx context.Context, settlement string, slo *ListSettlementsOptions) (
 	res *Response,
 	cl *CapturesList,
 	err error,
 ) {
-	res, err = ss.list(ctx, id, "captures", slo)
+	res, err = ss.list(ctx, settlement, "captures", slo)
 	if err != nil {
 		return
 	}
@@ -232,14 +232,14 @@ func (ss *SettlementsService) get(ctx context.Context, element string) (res *Res
 	return
 }
 
-func (ss *SettlementsService) list(ctx context.Context, id string, category string, opts any) (
+func (ss *SettlementsService) list(ctx context.Context, settlement string, category string, opts any) (
 	res *Response,
 	err error,
 ) {
 	uri := "v2/settlements"
 
-	if id != "" {
-		uri = fmt.Sprintf("%s/%s", uri, id)
+	if settlement != "" {
+		uri = fmt.Sprintf("%s/%s", uri, settlement)
 
 		if category != "" {
 			uri = fmt.Sprintf("%s/%s", uri, category)
