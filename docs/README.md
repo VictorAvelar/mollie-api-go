@@ -121,6 +121,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type CreatePreAuthorizedPaymentFields](<#CreatePreAuthorizedPaymentFields>)
 - [type CreateRecurrentPaymentFields](<#CreateRecurrentPaymentFields>)
 - [type CreateShipmentRequest](<#CreateShipmentRequest>)
+- [type CreateSubscription](<#CreateSubscription>)
 - [type Customer](<#Customer>)
 - [type CustomerLinks](<#CustomerLinks>)
 - [type CustomersList](<#CustomersList>)
@@ -162,6 +163,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type ListLinkedClientsOptions](<#ListLinkedClientsOptions>)
 - [type ListPaymentOptions](<#ListPaymentOptions>)
 - [type ListSettlementsOptions](<#ListSettlementsOptions>)
+- [type ListSubscriptionsOptions](<#ListSubscriptionsOptions>)
 - [type Locale](<#Locale>)
 - [type Mandate](<#Mandate>)
 - [type MandateDetails](<#MandateDetails>)
@@ -350,18 +352,18 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
   - [func \(d \*ShortDate\) MarshalJSON\(\) \(\[\]byte, error\)](<#ShortDate.MarshalJSON>)
   - [func \(d \*ShortDate\) UnmarshalJSON\(b \[\]byte\) error](<#ShortDate.UnmarshalJSON>)
 - [type Subscription](<#Subscription>)
+- [type SubscriptionAccessTokenFields](<#SubscriptionAccessTokenFields>)
 - [type SubscriptionLinks](<#SubscriptionLinks>)
-- [type SubscriptionList](<#SubscriptionList>)
-- [type SubscriptionListOptions](<#SubscriptionListOptions>)
 - [type SubscriptionStatus](<#SubscriptionStatus>)
+- [type SubscriptionsList](<#SubscriptionsList>)
 - [type SubscriptionsService](<#SubscriptionsService>)
-  - [func \(ss \*SubscriptionsService\) All\(ctx context.Context, opts \*SubscriptionListOptions\) \(res \*Response, sl \*SubscriptionList, err error\)](<#SubscriptionsService.All>)
-  - [func \(ss \*SubscriptionsService\) Create\(ctx context.Context, cID string, sc \*Subscription\) \(res \*Response, s \*Subscription, err error\)](<#SubscriptionsService.Create>)
-  - [func \(ss \*SubscriptionsService\) Delete\(ctx context.Context, cID, sID string\) \(res \*Response, s \*Subscription, err error\)](<#SubscriptionsService.Delete>)
-  - [func \(ss \*SubscriptionsService\) Get\(ctx context.Context, cID, sID string\) \(res \*Response, s \*Subscription, err error\)](<#SubscriptionsService.Get>)
-  - [func \(ss \*SubscriptionsService\) GetPayments\(ctx context.Context, cID, sID string, opts \*SubscriptionListOptions\) \(res \*Response, sl \*PaymentList, err error\)](<#SubscriptionsService.GetPayments>)
-  - [func \(ss \*SubscriptionsService\) List\(ctx context.Context, cID string, opts \*SubscriptionListOptions\) \(res \*Response, sl \*SubscriptionList, err error\)](<#SubscriptionsService.List>)
-  - [func \(ss \*SubscriptionsService\) Update\(ctx context.Context, cID, sID string, sc \*Subscription\) \(res \*Response, s \*Subscription, err error\)](<#SubscriptionsService.Update>)
+  - [func \(ss \*SubscriptionsService\) All\(ctx context.Context, opts \*ListSubscriptionsOptions\) \(res \*Response, sl \*SubscriptionsList, err error\)](<#SubscriptionsService.All>)
+  - [func \(ss \*SubscriptionsService\) Cancel\(ctx context.Context, customer, subscription string\) \(res \*Response, s \*Subscription, err error\)](<#SubscriptionsService.Cancel>)
+  - [func \(ss \*SubscriptionsService\) Create\(ctx context.Context, customer string, sc CreateSubscription\) \(res \*Response, s \*Subscription, err error\)](<#SubscriptionsService.Create>)
+  - [func \(ss \*SubscriptionsService\) Get\(ctx context.Context, customer, subscription string\) \(res \*Response, s \*Subscription, err error\)](<#SubscriptionsService.Get>)
+  - [func \(ss \*SubscriptionsService\) List\(ctx context.Context, customer string, opts \*ListSubscriptionsOptions\) \(res \*Response, sl \*SubscriptionsList, err error\)](<#SubscriptionsService.List>)
+  - [func \(ss \*SubscriptionsService\) ListPayments\(ctx context.Context, customer, subscription string, opts \*ListSubscriptionsOptions\) \(res \*Response, sl \*PaymentList, err error\)](<#SubscriptionsService.ListPayments>)
+  - [func \(ss \*SubscriptionsService\) Update\(ctx context.Context, customer, subscription string, sc UpdateSubscription\) \(res \*Response, s \*Subscription, err error\)](<#SubscriptionsService.Update>)
 - [type Subtotal](<#Subtotal>)
 - [type Terminal](<#Terminal>)
 - [type TerminalList](<#TerminalList>)
@@ -378,6 +380,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type UpdateOrder](<#UpdateOrder>)
 - [type UpdateOrderLine](<#UpdateOrderLine>)
 - [type UpdatePayment](<#UpdatePayment>)
+- [type UpdateSubscription](<#UpdateSubscription>)
 - [type UsedGiftCard](<#UsedGiftCard>)
 - [type UserAgentToken](<#UserAgentToken>)
 - [type VoucherContractor](<#VoucherContractor>)
@@ -2109,6 +2112,26 @@ type CreateShipmentRequest struct {
 }
 ```
 
+<a name="CreateSubscription"></a>
+## type [CreateSubscription](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L23-L34>)
+
+CreateSubscription contains the fields that are required to create a subscription.
+
+```go
+type CreateSubscription struct {
+    Times       int           `json:"times,omitempty"`
+    Interval    string        `json:"interval,omitempty"`
+    Description string        `json:"description,omitempty"`
+    MandateID   string        `json:"mandateId,omitempty"`
+    WebhookURL  string        `json:"webhookUrl,omitempty"`
+    Amount      *Amount       `json:"amount,omitempty"`
+    StartDate   *ShortDate    `json:"startDate,omitempty"`
+    Method      PaymentMethod `json:"method,omitempty"`
+    Metadata    any           `json:"metadata,omitempty"`
+    SubscriptionAccessTokenFields
+}
+```
+
 <a name="Customer"></a>
 ## type [Customer](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L37-L47>)
 
@@ -2759,6 +2782,20 @@ type ListSettlementsOptions struct {
     From  string       `url:"from,omitempty"`
     Limit int          `url:"limit,omitempty"`
     Embed []EmbedValue `url:"embed,omitempty"`
+}
+```
+
+<a name="ListSubscriptionsOptions"></a>
+## type [ListSubscriptionsOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L99-L104>)
+
+ListSubscriptionsOptions holds query string parameters valid for subscription lists.
+
+```go
+type ListSubscriptionsOptions struct {
+    Testmode  bool   `url:"testmode,omitempty"`
+    Limit     int    `url:"limit,omitempty"`
+    From      string `url:"from,omitempty"`
+    ProfileID string `url:"profileId,omitempty"`
 }
 ```
 
@@ -5484,37 +5521,49 @@ func (d *ShortDate) UnmarshalJSON(b []byte) error
 UnmarshalJSON overrides the default unmarshal action for the Date struct, as we need links to be pointers to the time.Time struct.
 
 <a name="Subscription"></a>
-## type [Subscription](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L34-L55>)
+## type [Subscription](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L67-L87>)
 
 Subscription contains information about a customer subscription.
 
 ```go
 type Subscription struct {
-    Resource        string             `json:"resource,omitempty"`
-    ID              string             `json:"id,omitempty"`
-    MandateID       string             `json:"mandateId,omitempty"`
-    Mode            Mode               `json:"mode,omitempty"`
-    CreatedAT       *time.Time         `json:"createdAt,omitempty"`
-    Status          SubscriptionStatus `json:"status,omitempty"`
-    Amount          *Amount            `json:"amount,omitempty"`
     Times           int                `json:"times,omitempty"`
     TimesRemaining  int                `json:"timesRemaining,omitempty"`
+    Resource        string             `json:"resource,omitempty"`
+    ID              string             `json:"id,omitempty"`
     Interval        string             `json:"interval,omitempty"`
+    Description     string             `json:"description,omitempty"`
+    MandateID       string             `json:"mandateId,omitempty"`
+    WebhookURL      string             `json:"webhookUrl,omitempty"`
+    Amount          *Amount            `json:"amount,omitempty"`
+    ApplicationFee  *ApplicationFee    `json:"applicationFee,omitempty"`
     StartDate       *ShortDate         `json:"startDate,omitempty"`
     NextPaymentDate *ShortDate         `json:"nextPaymentDate,omitempty"`
-    Description     string             `json:"description,omitempty"`
-    Method          PaymentMethod      `json:"method,omitempty"`
+    CreatedAT       *time.Time         `json:"createdAt,omitempty"`
     CanceledAt      *time.Time         `json:"canceledAt,omitempty"`
-    WebhookURL      string             `json:"webhookUrl,omitempty"`
-    Metadata        interface{}        `json:"metadata,omitempty"`
-    ApplicationFee  *ApplicationFee    `json:"applicationFee,omitempty"`
-    TestMode        bool               `json:"testmode,omitempty"`
+    Mode            Mode               `json:"mode,omitempty"`
+    Status          SubscriptionStatus `json:"status,omitempty"`
+    Method          PaymentMethod      `json:"method,omitempty"`
+    Metadata        any                `json:"metadata,omitempty"`
     Links           SubscriptionLinks  `json:"_links,omitempty"`
 }
 ```
 
+<a name="SubscriptionAccessTokenFields"></a>
+## type [SubscriptionAccessTokenFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L37-L41>)
+
+SubscriptionAccessTokenFields contains the fields that are available when using an access token.
+
+```go
+type SubscriptionAccessTokenFields struct {
+    Testmode       bool            `json:"testmode,omitempty"`
+    ProfileID      string          `json:"profileId,omitempty"`
+    ApplicationFee *ApplicationFee `json:"applicationFee,omitempty"`
+}
+```
+
 <a name="SubscriptionLinks"></a>
-## type [SubscriptionLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L26-L31>)
+## type [SubscriptionLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L58-L64>)
 
 SubscriptionLinks contains several URL objects relevant to the subscription.
 
@@ -5522,41 +5571,14 @@ SubscriptionLinks contains several URL objects relevant to the subscription.
 type SubscriptionLinks struct {
     Self          *URL `json:"self,omitempty"`
     Customer      *URL `json:"customer,omitempty"`
+    Profile       *URL `json:"profile,omitempty"`
     Payments      *URL `json:"payments,omitempty"`
     Documentation *URL `json:"documentation,omitempty"`
 }
 ```
 
-<a name="SubscriptionList"></a>
-## type [SubscriptionList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L58-L64>)
-
-SubscriptionList describes the response for subscription list endpoints.
-
-```go
-type SubscriptionList struct {
-    Count    int `json:"count,omitempty"`
-    Embedded struct {
-        Subscriptions []*Subscription
-    }   `json:"_embedded,omitempty"`
-    Links PaginationLinks `json:"_links,omitempty"`
-}
-```
-
-<a name="SubscriptionListOptions"></a>
-## type [SubscriptionListOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L67-L71>)
-
-SubscriptionListOptions holds query string parameters valid for subscription lists.
-
-```go
-type SubscriptionListOptions struct {
-    From      string `url:"from,omitempty"`
-    Limit     int    `url:"limit,omitempty"`
-    ProfileID string `url:"profileId,omitempty"`
-}
-```
-
 <a name="SubscriptionStatus"></a>
-## type [SubscriptionStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L14>)
+## type [SubscriptionStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L11>)
 
 SubscriptionStatus contains references to valid subscription statuses.
 
@@ -5576,8 +5598,23 @@ const (
 )
 ```
 
+<a name="SubscriptionsList"></a>
+## type [SubscriptionsList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L90-L96>)
+
+SubscriptionsList describes the response for subscription list endpoints.
+
+```go
+type SubscriptionsList struct {
+    Count    int `json:"count,omitempty"`
+    Embedded struct {
+        Subscriptions []*Subscription
+    }   `json:"_embedded,omitempty"`
+    Links PaginationLinks `json:"_links,omitempty"`
+}
+```
+
 <a name="SubscriptionsService"></a>
-## type [SubscriptionsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L11>)
+## type [SubscriptionsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L107>)
 
 SubscriptionsService operates over subscriptions resource.
 
@@ -5586,76 +5623,76 @@ type SubscriptionsService service
 ```
 
 <a name="SubscriptionsService.All"></a>
-### func \(\*SubscriptionsService\) [All](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L166-L170>)
+### func \(\*SubscriptionsService\) [All](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L206-L210>)
 
 ```go
-func (ss *SubscriptionsService) All(ctx context.Context, opts *SubscriptionListOptions) (res *Response, sl *SubscriptionList, err error)
+func (ss *SubscriptionsService) All(ctx context.Context, opts *ListSubscriptionsOptions) (res *Response, sl *SubscriptionsList, err error)
 ```
 
 All retrieves all subscriptions, ordered from newest to oldest. By using an API key all the subscriptions created with the current website profile will be returned. In the case of an OAuth Access Token relies the website profile on the profileId field
 
 See: https://docs.mollie.com/reference/v2/subscriptions-api/list-all-subscriptions
 
-<a name="SubscriptionsService.Create"></a>
-### func \(\*SubscriptionsService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L94-L98>)
+<a name="SubscriptionsService.Cancel"></a>
+### func \(\*SubscriptionsService\) [Cancel](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L182-L186>)
 
 ```go
-func (ss *SubscriptionsService) Create(ctx context.Context, cID string, sc *Subscription) (res *Response, s *Subscription, err error)
+func (ss *SubscriptionsService) Cancel(ctx context.Context, customer, subscription string) (res *Response, s *Subscription, err error)
+```
+
+Cancel cancels a subscription.
+
+See: https://docs.mollie.com/reference/v2/subscriptions-api/cancel-subscription
+
+<a name="SubscriptionsService.Create"></a>
+### func \(\*SubscriptionsService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L134-L138>)
+
+```go
+func (ss *SubscriptionsService) Create(ctx context.Context, customer string, sc CreateSubscription) (res *Response, s *Subscription, err error)
 ```
 
 Create stores a new subscription for a given customer
 
 See: https://docs.mollie.com/reference/v2/subscriptions-api/create-subscription
 
-<a name="SubscriptionsService.Delete"></a>
-### func \(\*SubscriptionsService\) [Delete](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L142-L146>)
-
-```go
-func (ss *SubscriptionsService) Delete(ctx context.Context, cID, sID string) (res *Response, s *Subscription, err error)
-```
-
-Delete cancels a subscription
-
-See: https://docs.mollie.com/reference/v2/subscriptions-api/cancel-subscription
-
 <a name="SubscriptionsService.Get"></a>
-### func \(\*SubscriptionsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L76>)
+### func \(\*SubscriptionsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L112-L116>)
 
 ```go
-func (ss *SubscriptionsService) Get(ctx context.Context, cID, sID string) (res *Response, s *Subscription, err error)
+func (ss *SubscriptionsService) Get(ctx context.Context, customer, subscription string) (res *Response, s *Subscription, err error)
 ```
 
 Get retrieves a customer's subscription
 
 See: https://docs.mollie.com/reference/v2/subscriptions-api/get-subscription
 
-<a name="SubscriptionsService.GetPayments"></a>
-### func \(\*SubscriptionsService\) [GetPayments](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L210-L214>)
-
-```go
-func (ss *SubscriptionsService) GetPayments(ctx context.Context, cID, sID string, opts *SubscriptionListOptions) (res *Response, sl *PaymentList, err error)
-```
-
-GetPayments retrieves all payments of a specific subscriptions of a customer
-
-See: https://docs.mollie.com/reference/v2/subscriptions-api/list-subscriptions-payments
-
 <a name="SubscriptionsService.List"></a>
-### func \(\*SubscriptionsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L188-L192>)
+### func \(\*SubscriptionsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L228-L232>)
 
 ```go
-func (ss *SubscriptionsService) List(ctx context.Context, cID string, opts *SubscriptionListOptions) (res *Response, sl *SubscriptionList, err error)
+func (ss *SubscriptionsService) List(ctx context.Context, customer string, opts *ListSubscriptionsOptions) (res *Response, sl *SubscriptionsList, err error)
 ```
 
 List retrieves all subscriptions of a customer
 
 See: https://docs.mollie.com/reference/v2/subscriptions-api/list-subscriptions
 
-<a name="SubscriptionsService.Update"></a>
-### func \(\*SubscriptionsService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L120-L124>)
+<a name="SubscriptionsService.ListPayments"></a>
+### func \(\*SubscriptionsService\) [ListPayments](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L250-L258>)
 
 ```go
-func (ss *SubscriptionsService) Update(ctx context.Context, cID, sID string, sc *Subscription) (res *Response, s *Subscription, err error)
+func (ss *SubscriptionsService) ListPayments(ctx context.Context, customer, subscription string, opts *ListSubscriptionsOptions) (res *Response, sl *PaymentList, err error)
+```
+
+ListPayments retrieves all payments of a specific subscriptions of a customer
+
+See: https://docs.mollie.com/reference/v2/subscriptions-api/list-subscriptions-payments
+
+<a name="SubscriptionsService.Update"></a>
+### func \(\*SubscriptionsService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L160-L164>)
+
+```go
+func (ss *SubscriptionsService) Update(ctx context.Context, customer, subscription string, sc UpdateSubscription) (res *Response, s *Subscription, err error)
 ```
 
 Update changes fields on a subscription object
@@ -5934,6 +5971,26 @@ type UpdatePayment struct {
     BillingEmail string     `json:"billingEmail,omitempty"`
     DueDate      *ShortDate `json:"dueDate,omitempty"`
     Issuer       string     `json:"issuer,omitempty"`
+}
+```
+
+<a name="UpdateSubscription"></a>
+## type [UpdateSubscription](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L44-L55>)
+
+UpdateSubscription contains the fields that are required to create a subscription.
+
+```go
+type UpdateSubscription struct {
+    Times       int           `json:"times,omitempty"`
+    Interval    string        `json:"interval,omitempty"`
+    Description string        `json:"description,omitempty"`
+    MandateID   string        `json:"mandateId,omitempty"`
+    WebhookURL  string        `json:"webhookUrl,omitempty"`
+    Amount      *Amount       `json:"amount,omitempty"`
+    StartDate   *ShortDate    `json:"startDate,omitempty"`
+    Method      PaymentMethod `json:"method,omitempty"`
+    Metadata    any           `json:"metadata,omitempty"`
+    SubscriptionAccessTokenFields
 }
 ```
 
