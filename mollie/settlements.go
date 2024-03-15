@@ -162,7 +162,7 @@ func (ss *SettlementsService) GetPayments(ctx context.Context, id string, slo *S
 // See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-refunds
 func (ss *SettlementsService) GetRefunds(ctx context.Context, id string, slo *SettlementsListOptions) (
 	res *Response,
-	rl *RefundList,
+	rl *RefundsList,
 	err error,
 ) {
 	res, err = ss.list(ctx, id, "refunds", slo)

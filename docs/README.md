@@ -114,8 +114,10 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type CreateMollieConnectPaymentFields](<#CreateMollieConnectPaymentFields>)
 - [type CreateOrUpdateProfile](<#CreateOrUpdateProfile>)
 - [type CreateOrder](<#CreateOrder>)
+- [type CreateOrderRefund](<#CreateOrderRefund>)
 - [type CreatePayment](<#CreatePayment>)
 - [type CreatePaymentAccessTokenFields](<#CreatePaymentAccessTokenFields>)
+- [type CreatePaymentRefund](<#CreatePaymentRefund>)
 - [type CreatePreAuthorizedPaymentFields](<#CreatePreAuthorizedPaymentFields>)
 - [type CreateRecurrentPaymentFields](<#CreateRecurrentPaymentFields>)
 - [type CreateShipmentRequest](<#CreateShipmentRequest>)
@@ -159,7 +161,6 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type LinkedClientList](<#LinkedClientList>)
 - [type ListLinkedClientsOptions](<#ListLinkedClientsOptions>)
 - [type ListPaymentOptions](<#ListPaymentOptions>)
-- [type ListRefundOptions](<#ListRefundOptions>)
 - [type Locale](<#Locale>)
 - [type Mandate](<#Mandate>)
 - [type MandateDetails](<#MandateDetails>)
@@ -202,6 +203,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type OrderListRefundOptions](<#OrderListRefundOptions>)
 - [type OrderOptions](<#OrderOptions>)
 - [type OrderPayment](<#OrderPayment>)
+- [type OrderRefundLine](<#OrderRefundLine>)
 - [type OrderStatus](<#OrderStatus>)
 - [type OrdersService](<#OrdersService>)
   - [func \(ors \*OrdersService\) Cancel\(ctx context.Context, orderID string\) \(res \*Response, order \*Order, err error\)](<#OrdersService.Cancel>)
@@ -253,6 +255,9 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
   - [func \(ms \*PaymentMethodsService\) Get\(ctx context.Context, id PaymentMethod, options \*PaymentMethodOptions\) \(res \*Response, pmd \*PaymentMethodDetails, err error\)](<#PaymentMethodsService.Get>)
   - [func \(ms \*PaymentMethodsService\) List\(ctx context.Context, options \*PaymentMethodsListOptions\) \(res \*Response, pm \*PaymentMethodsList, err error\)](<#PaymentMethodsService.List>)
 - [type PaymentOptions](<#PaymentOptions>)
+- [type PaymentRefundAccessTokenFields](<#PaymentRefundAccessTokenFields>)
+- [type PaymentRefundMollieConnectFields](<#PaymentRefundMollieConnectFields>)
+- [type PaymentRefundOptions](<#PaymentRefundOptions>)
 - [type PaymentRouting](<#PaymentRouting>)
 - [type PaymentsService](<#PaymentsService>)
   - [func \(ps \*PaymentsService\) Cancel\(ctx context.Context, id string\) \(res \*Response, p \*Payment, err error\)](<#PaymentsService.Cancel>)
@@ -299,16 +304,20 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type RecurrentPaymentFields](<#RecurrentPaymentFields>)
 - [type Refund](<#Refund>)
 - [type RefundLinks](<#RefundLinks>)
-- [type RefundList](<#RefundList>)
-- [type RefundOptions](<#RefundOptions>)
 - [type RefundStatus](<#RefundStatus>)
+- [type RefundsList](<#RefundsList>)
+- [type RefundsListOptions](<#RefundsListOptions>)
 - [type RefundsService](<#RefundsService>)
-  - [func \(rs \*RefundsService\) Cancel\(ctx context.Context, paymentID, refundID string\) \(res \*Response, err error\)](<#RefundsService.Cancel>)
-  - [func \(rs \*RefundsService\) Create\(ctx context.Context, paymentID string, re Refund, options \*RefundOptions\) \(res \*Response, rf \*Refund, err error\)](<#RefundsService.Create>)
-  - [func \(rs \*RefundsService\) Get\(ctx context.Context, paymentID, refundID string, opts \*RefundOptions\) \(res \*Response, refund \*Refund, err error\)](<#RefundsService.Get>)
-  - [func \(rs \*RefundsService\) ListRefund\(ctx context.Context, opts \*ListRefundOptions\) \(res \*Response, rl \*RefundList, err error\)](<#RefundsService.ListRefund>)
-  - [func \(rs \*RefundsService\) ListRefundPayment\(ctx context.Context, paymentID string, opts \*ListRefundOptions\) \(res \*Response, rl \*RefundList, err error\)](<#RefundsService.ListRefundPayment>)
+  - [func \(rs \*RefundsService\) CancelPaymentRefund\(ctx context.Context, paymentID, refundID string\) \(res \*Response, err error\)](<#RefundsService.CancelPaymentRefund>)
+  - [func \(rs \*RefundsService\) CreateOrderRefund\(ctx context.Context, orderID string, r CreateOrderRefund\) \(res \*Response, rf \*Refund, err error\)](<#RefundsService.CreateOrderRefund>)
+  - [func \(rs \*RefundsService\) CreatePaymentRefund\(ctx context.Context, paymentID string, re CreatePaymentRefund, options \*PaymentRefundOptions\) \(res \*Response, rf \*Refund, err error\)](<#RefundsService.CreatePaymentRefund>)
+  - [func \(rs \*RefundsService\) GetPaymentRefund\(ctx context.Context, paymentID, refundID string, opts \*PaymentRefundOptions\) \(res \*Response, refund \*Refund, err error\)](<#RefundsService.GetPaymentRefund>)
+  - [func \(rs \*RefundsService\) List\(ctx context.Context, opts \*RefundsListOptions\) \(res \*Response, rl \*RefundsList, err error\)](<#RefundsService.List>)
+  - [func \(rs \*RefundsService\) ListOrderRefunds\(ctx context.Context, orderID string, opts \*RefundsListOptions\) \(res \*Response, rl \*RefundsList, err error\)](<#RefundsService.ListOrderRefunds>)
+  - [func \(rs \*RefundsService\) ListPaymentRefunds\(ctx context.Context, paymentID string, opts \*RefundsListOptions\) \(res \*Response, rl \*RefundsList, err error\)](<#RefundsService.ListPaymentRefunds>)
 - [type Response](<#Response>)
+- [type RoutingReversal](<#RoutingReversal>)
+- [type RoutingSource](<#RoutingSource>)
 - [type SequenceType](<#SequenceType>)
 - [type Settlement](<#Settlement>)
 - [type SettlementCosts](<#SettlementCosts>)
@@ -324,7 +333,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
   - [func \(ss \*SettlementsService\) GetCaptures\(ctx context.Context, id string, slo \*SettlementsListOptions\) \(res \*Response, cl \*CapturesList, err error\)](<#SettlementsService.GetCaptures>)
   - [func \(ss \*SettlementsService\) GetChargebacks\(ctx context.Context, id string, slo \*SettlementsListOptions\) \(res \*Response, cl \*ChargebacksList, err error\)](<#SettlementsService.GetChargebacks>)
   - [func \(ss \*SettlementsService\) GetPayments\(ctx context.Context, id string, slo \*SettlementsListOptions\) \(res \*Response, pl \*PaymentList, err error\)](<#SettlementsService.GetPayments>)
-  - [func \(ss \*SettlementsService\) GetRefunds\(ctx context.Context, id string, slo \*SettlementsListOptions\) \(res \*Response, rl \*RefundList, err error\)](<#SettlementsService.GetRefunds>)
+  - [func \(ss \*SettlementsService\) GetRefunds\(ctx context.Context, id string, slo \*SettlementsListOptions\) \(res \*Response, rl \*RefundsList, err error\)](<#SettlementsService.GetRefunds>)
   - [func \(ss \*SettlementsService\) List\(ctx context.Context, slo \*SettlementsListOptions\) \(res \*Response, sl \*SettlementsList, err error\)](<#SettlementsService.List>)
   - [func \(ss \*SettlementsService\) Next\(ctx context.Context\) \(res \*Response, s \*Settlement, err error\)](<#SettlementsService.Next>)
   - [func \(ss \*SettlementsService\) Open\(ctx context.Context\) \(res \*Response, s \*Settlement, err error\)](<#SettlementsService.Open>)
@@ -1967,6 +1976,20 @@ type CreateOrder struct {
 }
 ```
 
+<a name="CreateOrderRefund"></a>
+## type [CreateOrderRefund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L20-L25>)
+
+CreateOrderRefund describes the payload to create a refund associated to an order.
+
+```go
+type CreateOrderRefund struct {
+    Description string             `json:"description,omitempty"`
+    Metadata    any                `json:"metadata,omitempty"`
+    Lines       []*OrderRefundLine `json:"lines,omitempty"`
+    PaymentRefundAccessTokenFields
+}
+```
+
 <a name="CreatePayment"></a>
 ## type [CreatePayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L66-L101>)
 
@@ -2026,6 +2049,21 @@ See: https://docs.mollie.com/reference/v2/payments-api/create-payment#access-tok
 type CreatePaymentAccessTokenFields struct {
     ProfileID string `json:"profileId,omitempty"`
     Testmode  bool   `json:"testmode,omitempty"`
+}
+```
+
+<a name="CreatePaymentRefund"></a>
+## type [CreatePaymentRefund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L11-L17>)
+
+CreatePaymentRefund describes the payload to create a refund associated to a payment.
+
+```go
+type CreatePaymentRefund struct {
+    Description string  `json:"description,omitempty"`
+    Metadata    any     `json:"metadata,omitempty"`
+    Amount      *Amount `json:"amount,omitempty"`
+    PaymentRefundAccessTokenFields
+    PaymentRefundMollieConnectFields
 }
 ```
 
@@ -2708,22 +2746,6 @@ type ListPaymentOptions struct {
     Embed     []EmbedValue   `url:"embed,omitempty"`
     ProfileID string         `url:"profileId,omitempty"`
     From      string         `url:"from,omitempty"`
-}
-```
-
-<a name="ListRefundOptions"></a>
-## type [ListRefundOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L69-L74>)
-
-ListRefundOptions describes list refund endpoint valid query string parameters.
-
-See: https://docs.mollie.com/reference/v2/refunds-api/list-refunds.
-
-```go
-type ListRefundOptions struct {
-    From      string     `url:"from,omitempty"`
-    Limit     int        `url:"limit,omitempty"`
-    ProfileID string     `url:"profileId,omitempty"`
-    Embed     EmbedValue `url:"embed,omitempty"`
 }
 ```
 
@@ -3436,6 +3458,19 @@ type OrderPayment struct {
     ApplicationFee *ApplicationFee `json:"applicationFee,omitempty"`
     SequenceType   SequenceType    `json:"sequenceType,omitempty"`
     Method         []PaymentMethod `json:"method,omitempty"`
+}
+```
+
+<a name="OrderRefundLine"></a>
+## type [OrderRefundLine](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L28-L32>)
+
+OrderRefundLine describes the payload to create a refund associated to an order line.
+
+```go
+type OrderRefundLine struct {
+    Quantity int     `json:"quantity,omitempty"`
+    ID       string  `json:"id,omitempty"`
+    Amount   *Amount `json:"amount,omitempty"`
 }
 ```
 
@@ -4245,6 +4280,40 @@ type PaymentOptions struct {
 }
 ```
 
+<a name="PaymentRefundAccessTokenFields"></a>
+## type [PaymentRefundAccessTokenFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L35-L37>)
+
+PaymentRefundAccessTokenFields describes the access token available fields for a refund.
+
+```go
+type PaymentRefundAccessTokenFields struct {
+    Testmode bool `json:"testmode,omitempty"`
+}
+```
+
+<a name="PaymentRefundMollieConnectFields"></a>
+## type [PaymentRefundMollieConnectFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L40-L43>)
+
+PaymentRefundMollieConnectFields describes the Mollie Connect available fields for a refund.
+
+```go
+type PaymentRefundMollieConnectFields struct {
+    ReverseRouting   bool               `json:"reverseRouting,omitempty"`
+    RoutingReversals []*RoutingReversal `json:"routingReversals,omitempty"`
+}
+```
+
+<a name="PaymentRefundOptions"></a>
+## type [PaymentRefundOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L108-L110>)
+
+PaymentRefundOptions describes payment refund endpoint valid query string parameters.
+
+```go
+type PaymentRefundOptions struct {
+    Embed []EmbedValue `url:"embed,omitempty"`
+}
+```
+
 <a name="PaymentRouting"></a>
 ## type [PaymentRouting](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L47-L51>)
 
@@ -4804,7 +4873,7 @@ type RecurrentPaymentFields struct {
 ```
 
 <a name="Refund"></a>
-## type [Refund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L11-L26>)
+## type [Refund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L58-L74>)
 
 Refund describe a refund for a certain payment.
 
@@ -4812,23 +4881,24 @@ Refund describe a refund for a certain payment.
 type Refund struct {
     Resource         string       `json:"resource,omitempty"`
     ID               string       `json:"id,omitempty"`
-    Amount           *Amount      `json:"amount,omitempty"`
     SettlementID     string       `json:"settlementId,omitempty"`
-    SettlementAmount *Amount      `json:"settlementAmount,omitempty"`
     Description      string       `json:"description,omitempty"`
-    Metadata         interface{}  `json:"metadata,omitempty"`
-    Status           RefundStatus `json:"status,omitempty"`
-    Lines            []*OrderLine `json:"lines,omitempty"`
     PaymentID        string       `json:"paymentId,omitempty"`
     OrderID          string       `json:"orderId,omitempty"`
+    Amount           *Amount      `json:"amount,omitempty"`
+    SettlementAmount *Amount      `json:"settlementAmount,omitempty"`
     CreatedAt        *time.Time   `json:"createdAt,omitempty"`
-    TestMode         bool         `json:"testmode,omitempty"`
+    Lines            []*OrderLine `json:"lines,omitempty"`
+    Metadata         any          `json:"metadata,omitempty"`
+    Status           RefundStatus `json:"status,omitempty"`
     Links            RefundLinks  `json:"_links,omitempty"`
+    PaymentRefundAccessTokenFields
+    PaymentRefundMollieConnectFields
 }
 ```
 
 <a name="RefundLinks"></a>
-## type [RefundLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L51-L57>)
+## type [RefundLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L99-L105>)
 
 RefundLinks describes all the possible links to be returned with a Refund object.
 
@@ -4842,36 +4912,8 @@ type RefundLinks struct {
 }
 ```
 
-<a name="RefundList"></a>
-## type [RefundList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L29-L35>)
-
-RefundList describes how a list of refunds will be retrieved by Mollie.
-
-```go
-type RefundList struct {
-    Count    int `json:"count,omitempty"`
-    Embedded struct {
-        Refunds []*Refund
-    }   `json:"_embedded,omitempty"`
-    Links PaginationLinks `json:"_links,omitempty"`
-}
-```
-
-<a name="RefundOptions"></a>
-## type [RefundOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L62-L64>)
-
-RefundOptions describes refund endpoint valid query string parameters.
-
-See: https://docs.mollie.com/reference/v2/refunds-api/get-refund.
-
-```go
-type RefundOptions struct {
-    Embed EmbedValue `url:"embed,omitempty"`
-}
-```
-
 <a name="RefundStatus"></a>
-## type [RefundStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L38>)
+## type [RefundStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L86>)
 
 RefundStatus describes the status of the refund.
 
@@ -4891,8 +4933,37 @@ const (
 )
 ```
 
+<a name="RefundsList"></a>
+## type [RefundsList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L77-L83>)
+
+RefundsList describes how a list of refunds will be retrieved by Mollie.
+
+```go
+type RefundsList struct {
+    Count    int `json:"count,omitempty"`
+    Embedded struct {
+        Refunds []*Refund
+    }   `json:"_embedded,omitempty"`
+    Links PaginationLinks `json:"_links,omitempty"`
+}
+```
+
+<a name="RefundsListOptions"></a>
+## type [RefundsListOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L113-L118>)
+
+RefundsListOptions describes payment and order refunds list endpoint valid query string parameters.
+
+```go
+type RefundsListOptions struct {
+    Limit     int          `url:"limit,omitempty"`
+    From      string       `url:"from,omitempty"`
+    ProfileID string       `url:"profileId,omitempty"`
+    Embed     []EmbedValue `url:"embed,omitempty"`
+}
+```
+
 <a name="RefundsService"></a>
-## type [RefundsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L77>)
+## type [RefundsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L121>)
 
 RefundsService instance operates over refund resources.
 
@@ -4900,58 +4971,82 @@ RefundsService instance operates over refund resources.
 type RefundsService service
 ```
 
-<a name="RefundsService.Cancel"></a>
-### func \(\*RefundsService\) [Cancel](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L130>)
+<a name="RefundsService.CancelPaymentRefund"></a>
+### func \(\*RefundsService\) [CancelPaymentRefund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L229-L231>)
 
 ```go
-func (rs *RefundsService) Cancel(ctx context.Context, paymentID, refundID string) (res *Response, err error)
+func (rs *RefundsService) CancelPaymentRefund(ctx context.Context, paymentID, refundID string) (res *Response, err error)
 ```
 
-Cancel try to cancel the refund request. The refund can only be canceled while the refund’s status is either queued or pending. See https://docs.mollie.com/reference/v2/refunds-api/cancel-refund
+CancelPaymentRefund cancels a refund for a specific payment.
 
-<a name="RefundsService.Create"></a>
-### func \(\*RefundsService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L104-L108>)
+See https://docs.mollie.com/reference/v2/refunds-api/cancel-payment-refund
+
+<a name="RefundsService.CreateOrderRefund"></a>
+### func \(\*RefundsService\) [CreateOrderRefund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L238-L246>)
 
 ```go
-func (rs *RefundsService) Create(ctx context.Context, paymentID string, re Refund, options *RefundOptions) (res *Response, rf *Refund, err error)
+func (rs *RefundsService) CreateOrderRefund(ctx context.Context, orderID string, r CreateOrderRefund) (res *Response, rf *Refund, err error)
+```
+
+CreateOrderRefund creates a refund for a specific order.
+
+See https://docs.mollie.com/reference/v2/refunds-api/create-order-refund
+
+<a name="RefundsService.CreatePaymentRefund"></a>
+### func \(\*RefundsService\) [CreatePaymentRefund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L198-L207>)
+
+```go
+func (rs *RefundsService) CreatePaymentRefund(ctx context.Context, paymentID string, re CreatePaymentRefund, options *PaymentRefundOptions) (res *Response, rf *Refund, err error)
 ```
 
 Create a refund payment request.
 
-See https://docs.mollie.com/reference/v2/refunds-api/create-refund.
+See https://docs.mollie.com/reference/v2/refunds-api/create-payment-refund
 
-<a name="RefundsService.Get"></a>
-### func \(\*RefundsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L82-L86>)
-
-```go
-func (rs *RefundsService) Get(ctx context.Context, paymentID, refundID string, opts *RefundOptions) (res *Response, refund *Refund, err error)
-```
-
-Get retrieve a single refund by its ID.
-
-If you do not know the original payment’s ID, you can use the List payment refunds endpoint.
-
-<a name="RefundsService.ListRefund"></a>
-### func \(\*RefundsService\) [ListRefund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L144-L148>)
+<a name="RefundsService.GetPaymentRefund"></a>
+### func \(\*RefundsService\) [GetPaymentRefund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L146-L154>)
 
 ```go
-func (rs *RefundsService) ListRefund(ctx context.Context, opts *ListRefundOptions) (res *Response, rl *RefundList, err error)
+func (rs *RefundsService) GetPaymentRefund(ctx context.Context, paymentID, refundID string, opts *PaymentRefundOptions) (res *Response, refund *Refund, err error)
 ```
 
-ListRefund calls the top level https://api.mollie.com/v2/refunds.
+GetPaymentRefund retrieves a specific refund for a specific payment.
+
+See: https://docs.mollie.com/reference/v2/refunds-api/get-payment-refund
+
+<a name="RefundsService.List"></a>
+### func \(\*RefundsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L126-L130>)
+
+```go
+func (rs *RefundsService) List(ctx context.Context, opts *RefundsListOptions) (res *Response, rl *RefundsList, err error)
+```
+
+List retrieves all refunds.
 
 See https://docs.mollie.com/reference/v2/refunds-api/list-refunds.
 
-<a name="RefundsService.ListRefundPayment"></a>
-### func \(\*RefundsService\) [ListRefundPayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L159-L163>)
+<a name="RefundsService.ListOrderRefunds"></a>
+### func \(\*RefundsService\) [ListOrderRefunds](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L268-L276>)
 
 ```go
-func (rs *RefundsService) ListRefundPayment(ctx context.Context, paymentID string, opts *ListRefundOptions) (res *Response, rl *RefundList, err error)
+func (rs *RefundsService) ListOrderRefunds(ctx context.Context, orderID string, opts *RefundsListOptions) (res *Response, rl *RefundsList, err error)
 ```
 
-ListRefundPayment calls the payment\-specific https://api.mollie.com/v2/payments/*paymentId*/refunds.
+ListOrderRefunds retrieves all refunds for a specific order.
 
-Only refunds for that specific payment are returned. See: https://docs.mollie.com/reference/v2/refunds-api/list-refunds
+See https://docs.mollie.com/reference/v2/refunds-api/list-order-refunds
+
+<a name="RefundsService.ListPaymentRefunds"></a>
+### func \(\*RefundsService\) [ListPaymentRefunds](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L172-L180>)
+
+```go
+func (rs *RefundsService) ListPaymentRefunds(ctx context.Context, paymentID string, opts *RefundsListOptions) (res *Response, rl *RefundsList, err error)
+```
+
+ListPaymentRefunds retrieves all refunds for a specific payment.
+
+See: https://docs.mollie.com/reference/v2/refunds-api/list-payment-refunds
 
 <a name="Response"></a>
 ## type [Response](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L350-L353>)
@@ -4962,6 +5057,30 @@ Response is a Mollie API response. This wraps the standard http.Response returne
 type Response struct {
     *http.Response
     // contains filtered or unexported fields
+}
+```
+
+<a name="RoutingReversal"></a>
+## type [RoutingReversal](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L46-L49>)
+
+RoutingReversal describes the payload to be sent to the reverse routing endpoint.
+
+```go
+type RoutingReversal struct {
+    Amount *Amount `json:"amount,omitempty"`
+    Source string  `json:"source,omitempty"`
+}
+```
+
+<a name="RoutingSource"></a>
+## type [RoutingSource](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L52-L55>)
+
+RoutingSource describes the source of the routing.
+
+```go
+type RoutingSource struct {
+    Type           string `json:"type,omitempty"`
+    OrganizationID string `json:"organizationId,omitempty"`
 }
 ```
 
@@ -5182,7 +5301,7 @@ See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-paymen
 ### func \(\*SettlementsService\) [GetRefunds](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L163-L167>)
 
 ```go
-func (ss *SettlementsService) GetRefunds(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, rl *RefundList, err error)
+func (ss *SettlementsService) GetRefunds(ctx context.Context, id string, slo *SettlementsListOptions) (res *Response, rl *RefundsList, err error)
 ```
 
 GetRefunds retrieves all refunds included in a settlement.

@@ -10,16 +10,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRefundsService_Get(t *testing.T) {
-	setEnv()
-	defer unsetEnv()
-
+func TestRefundsService_CreatePaymentRefund(t *testing.T) {
 	type args struct {
-		ctx     context.Context
-		payment string
-		refund  string
-		options *RefundOptions
+		ctx       context.Context
+		paymentID string
+		re        CreatePaymentRefund
+		options   *PaymentRefundOptions
 	}
+
 	cases := []struct {
 		name    string
 		args    args
@@ -29,177 +27,54 @@ func TestRefundsService_Get(t *testing.T) {
 		handler http.HandlerFunc
 	}{
 		{
-			"get refund works as expected.",
+			"create payment refund works as expected",
 			args{
 				context.Background(),
-				"tr_WDqYK6vllg",
-				"re_4qqhO89gsT",
-				&RefundOptions{
-					Embed: "profile",
+				"tr_7UhSN1zuXS",
+				CreatePaymentRefund{
+					Amount: &Amount{
+						Value:    "5.00",
+						Currency: "EUR",
+					},
 				},
+				&PaymentRefundOptions{},
 			},
 			false,
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(t, r, "GET")
-				testQuery(t, r, "embed=profile")
-
-				if _, ok := r.Header[AuthHeader]; !ok {
-					w.WriteHeader(http.StatusUnauthorized)
-				}
-				_, _ = w.Write([]byte(testdata.GetRefundResponse))
+				w.WriteHeader(http.StatusCreated)
+				w.Write([]byte(testdata.CreatePaymentRefundResponse))
 			},
 		},
 		{
-			"get refund, an error is returned from the server",
+			"create payment refund works as expected with access tokens",
 			args{
 				context.Background(),
-				"tr_WDqYK6vllg",
-				"re_4qqhO89gsT",
-				nil,
-			},
-			true,
-			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
-			noPre,
-			errorHandler,
-		},
-		{
-			"get refund, an error occurs when parsing json",
-			args{
-				context.Background(),
-				"tr_WDqYK6vllg",
-				"re_4qqhO89gsT",
-				nil,
-			},
-			true,
-			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
-			noPre,
-			encodingHandler,
-		},
-		{
-			"get refund, invalid url when building request",
-			args{
-				context.Background(),
-				"tr_WDqYK6vllg",
-				"re_4qqhO89gsT",
-				nil,
-			},
-			true,
-			errBadBaseURL,
-			crashSrv,
-			errorHandler,
-		},
-	}
-
-	for _, c := range cases {
-		setup()
-		defer teardown()
-
-		t.Run(c.name, func(t *testing.T) {
-			c.pre()
-			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s/refunds/%s", c.args.payment, c.args.refund), c.handler)
-
-			res, m, err := tClient.Refunds.Get(c.args.ctx, c.args.payment, c.args.refund, c.args.options)
-			if c.wantErr {
-				assert.NotNil(t, err)
-				assert.EqualError(t, err, c.err.Error())
-			} else {
-				assert.Nil(t, err)
-				assert.IsType(t, &Refund{}, m)
-				assert.IsType(t, &http.Response{}, res.Response)
-			}
-		})
-	}
-}
-
-func TestRefundsService_Create(t *testing.T) {
-	setEnv()
-	defer unsetEnv()
-
-	type args struct {
-		ctx     context.Context
-		payment string
-		refund  Refund
-		options *RefundOptions
-	}
-	cases := []struct {
-		name    string
-		args    args
-		wantErr bool
-		err     error
-		pre     func()
-		handler http.HandlerFunc
-	}{
-		{
-			"create refund works as expected.",
-			args{
-				context.Background(),
-				"tr_WDqYK6vllg",
-				Refund{
+				"tr_7UhSN1zuXS",
+				CreatePaymentRefund{
 					Amount: &Amount{
-						Currency: "USD",
-						Value:    "100.00",
+						Value:    "5.00",
+						Currency: "EUR",
 					},
 				},
-				&RefundOptions{
-					Embed: "profile",
-				},
-			},
-			false,
-			nil,
-			noPre,
-			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(t, r, "POST")
-				testQuery(t, r, "embed=profile")
-
-				if _, ok := r.Header[AuthHeader]; !ok {
-					w.WriteHeader(http.StatusUnauthorized)
-				}
-				_, _ = w.Write([]byte(testdata.GetRefundResponse))
-			},
-		},
-		{
-			"create refund with access token works as expected.",
-			args{
-				context.Background(),
-				"tr_WDqYK6vllg",
-				Refund{
-					Amount: &Amount{
-						Currency: "USD",
-						Value:    "100.00",
-					},
-				},
-				nil,
+				&PaymentRefundOptions{},
 			},
 			false,
 			nil,
 			setAccessToken,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(t, r, AuthHeader, "Bearer access_token_test")
-				testMethod(t, r, "POST")
-				testQuery(t, r, "testmode=true")
-
-				if _, ok := r.Header[AuthHeader]; !ok {
-					w.WriteHeader(http.StatusUnauthorized)
-				}
-				_, _ = w.Write([]byte(testdata.GetRefundResponse))
+				w.WriteHeader(http.StatusCreated)
+				w.Write([]byte(testdata.CreatePaymentRefundResponse))
 			},
 		},
 		{
-			"create refund, an error is returned from the server",
+			"create payment refund, an error is returned from the server",
 			args{
 				context.Background(),
-				"tr_WDqYK6vllg",
-				Refund{
-					Amount: &Amount{
-						Currency: "USD",
-						Value:    "100.00",
-					},
-				},
-				nil,
+				"tr_7UhSN1zuXS",
+				CreatePaymentRefund{},
+				&PaymentRefundOptions{},
 			},
 			true,
 			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
@@ -207,17 +82,12 @@ func TestRefundsService_Create(t *testing.T) {
 			errorHandler,
 		},
 		{
-			"create refund, an error occurs when parsing json",
+			"create payment refund, an error occurs when parsing json",
 			args{
 				context.Background(),
-				"tr_WDqYK6vllg",
-				Refund{
-					Amount: &Amount{
-						Currency: "USD",
-						Value:    "100.00",
-					},
-				},
-				nil,
+				"tr_7UhSN1zuXS",
+				CreatePaymentRefund{},
+				&PaymentRefundOptions{},
 			},
 			true,
 			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
@@ -225,17 +95,12 @@ func TestRefundsService_Create(t *testing.T) {
 			encodingHandler,
 		},
 		{
-			"create refund, invalid url when building request",
+			"get settlement refunds, invalid url when building request",
 			args{
 				context.Background(),
-				"tr_WDqYK6vllg",
-				Refund{
-					Amount: &Amount{
-						Currency: "USD",
-						Value:    "100.00",
-					},
-				},
-				nil,
+				"tr_7UhSN1zuXS",
+				CreatePaymentRefund{},
+				&PaymentRefundOptions{},
 			},
 			true,
 			errBadBaseURL,
@@ -247,33 +112,36 @@ func TestRefundsService_Create(t *testing.T) {
 	for _, c := range cases {
 		setup()
 		defer teardown()
-
 		t.Run(c.name, func(t *testing.T) {
 			c.pre()
-			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s/refunds", c.args.payment), c.handler)
+			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s/refunds", c.args.paymentID), c.handler)
 
-			res, m, err := tClient.Refunds.Create(c.args.ctx, c.args.payment, c.args.refund, c.args.options)
+			res, ref, err := tClient.Refunds.CreatePaymentRefund(
+				c.args.ctx,
+				c.args.paymentID,
+				c.args.re,
+				c.args.options,
+			)
 			if c.wantErr {
 				assert.NotNil(t, err)
 				assert.EqualError(t, err, c.err.Error())
 			} else {
 				assert.Nil(t, err)
-				assert.IsType(t, &Refund{}, m)
+				assert.IsType(t, &Refund{}, ref)
 				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
 	}
 }
 
-func TestRefundsService_Cancel(t *testing.T) {
-	setEnv()
-	defer unsetEnv()
-
+func TestRefundsService_GetPaymentRefund(t *testing.T) {
 	type args struct {
-		ctx     context.Context
-		payment string
-		refund  string
+		ctx       context.Context
+		paymentID string
+		refundID  string
+		opts      *PaymentRefundOptions
 	}
+
 	cases := []struct {
 		name    string
 		args    args
@@ -283,30 +151,261 @@ func TestRefundsService_Cancel(t *testing.T) {
 		handler http.HandlerFunc
 	}{
 		{
-			"get settlement works as expected.",
+			"get payment refund works as expected",
 			args{
 				context.Background(),
-				"tr_WDqYK6vllg",
+				"tr_7UhSN1zuXS",
+				"re_4qqhO89gsT",
+				&PaymentRefundOptions{},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(testdata.GetPaymentRefundResponse))
+			},
+		},
+		{
+			"get payment refund works as expected with access tokens",
+			args{
+				context.Background(),
+				"tr_7UhSN1zuXS",
+				"re_4qqhO89gsT",
+				&PaymentRefundOptions{},
+			},
+			false,
+			nil,
+			setAccessToken,
+			func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(testdata.GetPaymentRefundResponse))
+			},
+		},
+		{
+			"get payment refund, an error is returned from the server",
+			args{
+				context.Background(),
+				"tr_7UhSN1zuXS",
+				"re_4qqhO89gsT",
+				&PaymentRefundOptions{},
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"get payment refund, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"tr_7UhSN1zuXS",
+				"re_4qqhO89gsT",
+				&PaymentRefundOptions{},
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"get payment refund, invalid url when building request",
+			args{
+				context.Background(),
+				"tr_7UhSN1zuXS",
+				"re_4qqhO89gsT",
+				&PaymentRefundOptions{},
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+		t.Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(
+				fmt.Sprintf("/v2/payments/%s/refunds/%s", c.args.paymentID, c.args.refundID),
+				c.handler,
+			)
+
+			res, ref, err := tClient.Refunds.GetPaymentRefund(
+				c.args.ctx,
+				c.args.paymentID,
+				c.args.refundID,
+				c.args.opts,
+			)
+			if c.wantErr {
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
+			} else {
+				assert.Nil(t, err)
+				assert.IsType(t, &Refund{}, ref)
+				assert.IsType(t, &http.Response{}, res.Response)
+			}
+		})
+	}
+}
+
+func TestRefundsService_ListPaymentRefunds(t *testing.T) {
+	type args struct {
+		ctx       context.Context
+		paymentID string
+		opts      *RefundsListOptions
+	}
+
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"list payment refunds works as expected",
+			args{
+				context.Background(),
+				"tr_7UhSN1zuXS",
+				&RefundsListOptions{},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(testdata.ListPaymentRefundsResponse))
+			},
+		},
+		{
+			"list payment refunds works as expected with access tokens",
+			args{
+				context.Background(),
+				"tr_7UhSN1zuXS",
+				&RefundsListOptions{},
+			},
+			false,
+			nil,
+			setAccessToken,
+			func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(testdata.ListPaymentRefundsResponse))
+			},
+		},
+		{
+			"list payment refunds, an error is returned from the server",
+			args{
+				context.Background(),
+				"tr_7UhSN1zuXS",
+				&RefundsListOptions{},
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"list payment refunds, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"tr_7UhSN1zuXS",
+				&RefundsListOptions{},
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"list payment refunds, invalid url when building request",
+			args{
+				context.Background(),
+				"tr_7UhSN1zuXS",
+				&RefundsListOptions{},
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+		t.Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s/refunds", c.args.paymentID), c.handler)
+
+			res, rl, err := tClient.Refunds.ListPaymentRefunds(
+				c.args.ctx,
+				c.args.paymentID,
+				c.args.opts,
+			)
+			if c.wantErr {
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
+			} else {
+				assert.Nil(t, err)
+				assert.IsType(t, &RefundsList{}, rl)
+				assert.IsType(t, &http.Response{}, res.Response)
+			}
+		})
+	}
+}
+
+func TestRefundsService_CancelPaymentRefund(t *testing.T) {
+	type args struct {
+		ctx       context.Context
+		paymentID string
+		refundID  string
+	}
+
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"cancel payment refund works as expected",
+			args{
+				context.Background(),
+				"tr_7UhSN1zuXS",
 				"re_4qqhO89gsT",
 			},
 			false,
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(t, r, "DELETE")
-
-				if _, ok := r.Header[AuthHeader]; !ok {
-					w.WriteHeader(http.StatusUnauthorized)
-				}
-				w.WriteHeader(http.StatusOK)
+				w.WriteHeader(http.StatusNoContent)
 			},
 		},
 		{
-			"get settlement, an error is returned from the server",
+			"cancel payment refund works as expected with access tokens",
 			args{
 				context.Background(),
-				"tr_WDqYK6vllg",
+				"tr_7UhSN1zuXS",
+				"re_4qqhO89gsT",
+			},
+			false,
+			nil,
+			setAccessToken,
+			func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(http.StatusNoContent)
+			},
+		},
+		{
+			"cancel payment refund, an error is returned from the server",
+			args{
+				context.Background(),
+				"tr_7UhSN1zuXS",
 				"re_4qqhO89gsT",
 			},
 			true,
@@ -315,10 +414,10 @@ func TestRefundsService_Cancel(t *testing.T) {
 			errorHandler,
 		},
 		{
-			"get settlement, invalid url when building request",
+			"cancel payment refund, invalid url when building request",
 			args{
 				context.Background(),
-				"tr_WDqYK6vllg",
+				"tr_7UhSN1zuXS",
 				"re_4qqhO89gsT",
 			},
 			true,
@@ -331,17 +430,253 @@ func TestRefundsService_Cancel(t *testing.T) {
 	for _, c := range cases {
 		setup()
 		defer teardown()
-
 		t.Run(c.name, func(t *testing.T) {
 			c.pre()
-			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s/refunds/%s", c.args.payment, c.args.refund), c.handler)
+			tMux.HandleFunc(
+				fmt.Sprintf("/v2/payments/%s/refunds/%s", c.args.paymentID, c.args.refundID),
+				c.handler,
+			)
 
-			res, err := tClient.Refunds.Cancel(c.args.ctx, c.args.payment, c.args.refund)
+			res, err := tClient.Refunds.CancelPaymentRefund(
+				c.args.ctx,
+				c.args.paymentID,
+				c.args.refundID,
+			)
 			if c.wantErr {
 				assert.NotNil(t, err)
 				assert.EqualError(t, err, c.err.Error())
 			} else {
 				assert.Nil(t, err)
+				assert.IsType(t, &http.Response{}, res.Response)
+			}
+		})
+	}
+}
+
+func TestRefundsService_CreateOrderRefund(t *testing.T) {
+	type args struct {
+		ctx     context.Context
+		orderID string
+		r       CreateOrderRefund
+	}
+
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"create order refund works as expected",
+			args{
+				context.Background(),
+				"ord_8wmqcHMN4U",
+				CreateOrderRefund{
+					Lines: []*OrderRefundLine{
+						{
+							ID:       "odl_dgtxyl",
+							Quantity: 1,
+							Amount:   &Amount{Value: "5.00", Currency: "EUR"},
+						},
+					},
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(http.StatusCreated)
+				w.Write([]byte(testdata.CreateOrderRefundResponse))
+			},
+		},
+		{
+			"create order refund works as expected with access tokens",
+			args{
+				context.Background(),
+				"ord_8wmqcHMN4U",
+				CreateOrderRefund{
+					Lines: []*OrderRefundLine{
+						{
+							ID:       "odl_dgtxyl",
+							Quantity: 1,
+							Amount:   &Amount{Value: "5.00", Currency: "EUR"},
+						},
+					},
+				},
+			},
+			false,
+			nil,
+			setAccessToken,
+			func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(http.StatusCreated)
+				w.Write([]byte(testdata.CreateOrderRefundResponse))
+			},
+		},
+		{
+			"create order refund, an error is returned from the server",
+			args{
+				context.Background(),
+				"ord_8wmqcHMN4U",
+				CreateOrderRefund{},
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"create order refund, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"ord_8wmqcHMN4U",
+				CreateOrderRefund{},
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"create order refund, invalid url when building request",
+			args{
+				context.Background(),
+				"ord_8wmqcHMN4U",
+				CreateOrderRefund{},
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+		t.Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/refunds", c.args.orderID), c.handler)
+
+			res, ref, err := tClient.Refunds.CreateOrderRefund(
+				c.args.ctx,
+				c.args.orderID,
+				c.args.r,
+			)
+			if c.wantErr {
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
+			} else {
+				assert.Nil(t, err)
+				assert.IsType(t, &Refund{}, ref)
+				assert.IsType(t, &http.Response{}, res.Response)
+			}
+		})
+	}
+}
+
+func TestRefundsService_ListOrderRefunds(t *testing.T) {
+	type args struct {
+		ctx     context.Context
+		orderID string
+		opts    *RefundsListOptions
+	}
+
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"list order refunds works as expected",
+			args{
+				context.Background(),
+				"ord_8wmqcHMN4U",
+				&RefundsListOptions{},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(testdata.ListOrderRefundsResponse))
+			},
+		},
+		{
+			"list order refunds works as expected with access tokens",
+			args{
+				context.Background(),
+				"ord_8wmqcHMN4U",
+				&RefundsListOptions{},
+			},
+			false,
+			nil,
+			setAccessToken,
+			func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(testdata.ListOrderRefundsResponse))
+			},
+		},
+		{
+			"list order refunds, an error is returned from the server",
+			args{
+				context.Background(),
+				"ord_8wmqcHMN4U",
+				&RefundsListOptions{},
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"list order refunds, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"ord_8wmqcHMN4U",
+				&RefundsListOptions{},
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"list order refunds, invalid url when building request",
+			args{
+				context.Background(),
+				"ord_8wmqcHMN4U",
+				&RefundsListOptions{},
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+		t.Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/refunds", c.args.orderID), c.handler)
+
+			res, rl, err := tClient.Refunds.ListOrderRefunds(
+				c.args.ctx,
+				c.args.orderID,
+				c.args.opts,
+			)
+			if c.wantErr {
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
+			} else {
+				assert.Nil(t, err)
+				assert.IsType(t, &RefundsList{}, rl)
 				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
@@ -349,14 +684,11 @@ func TestRefundsService_Cancel(t *testing.T) {
 }
 
 func TestRefundsService_List(t *testing.T) {
-	setEnv()
-	defer unsetEnv()
-
 	type args struct {
-		ctx     context.Context
-		payment string
-		options *ListRefundOptions
+		ctx  context.Context
+		opts *RefundsListOptions
 	}
+
 	cases := []struct {
 		name    string
 		args    args
@@ -366,34 +698,38 @@ func TestRefundsService_List(t *testing.T) {
 		handler http.HandlerFunc
 	}{
 		{
-			"list refund works as expected.",
+			"list refunds works as expected",
 			args{
 				context.Background(),
-				"tr_WDqYK6vllg",
-				&ListRefundOptions{
-					Limit: 10,
-				},
+				&RefundsListOptions{},
 			},
 			false,
 			nil,
 			noPre,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(t, r, "GET")
-				testQuery(t, r, "limit=10")
-
-				if _, ok := r.Header[AuthHeader]; !ok {
-					w.WriteHeader(http.StatusUnauthorized)
-				}
-				_, _ = w.Write([]byte(testdata.GetRefundListResponse))
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(testdata.ListRefundsResponse))
 			},
 		},
 		{
-			"list refund, an error is returned from the server",
+			"list refunds works as expected with access tokens",
 			args{
 				context.Background(),
-				"tr_WDqYK6vllg",
-				nil,
+				&RefundsListOptions{},
+			},
+			false,
+			nil,
+			setAccessToken,
+			func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(testdata.ListRefundsResponse))
+			},
+		},
+		{
+			"list refunds, an error is returned from the server",
+			args{
+				context.Background(),
+				&RefundsListOptions{},
 			},
 			true,
 			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
@@ -401,11 +737,10 @@ func TestRefundsService_List(t *testing.T) {
 			errorHandler,
 		},
 		{
-			"list refund, an error occurs when parsing json",
+			"list refunds, an error occurs when parsing json",
 			args{
 				context.Background(),
-				"tr_WDqYK6vllg",
-				nil,
+				&RefundsListOptions{},
 			},
 			true,
 			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
@@ -413,11 +748,10 @@ func TestRefundsService_List(t *testing.T) {
 			encodingHandler,
 		},
 		{
-			"list refund, invalid url when building request",
+			"list refunds, invalid url when building request",
 			args{
 				context.Background(),
-				"tr_WDqYK6vllg",
-				nil,
+				&RefundsListOptions{},
 			},
 			true,
 			errBadBaseURL,
@@ -429,122 +763,20 @@ func TestRefundsService_List(t *testing.T) {
 	for _, c := range cases {
 		setup()
 		defer teardown()
-
 		t.Run(c.name, func(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/refunds", c.handler)
 
-			res, m, err := tClient.Refunds.ListRefund(c.args.ctx, c.args.options)
+			res, rl, err := tClient.Refunds.List(
+				c.args.ctx,
+				c.args.opts,
+			)
 			if c.wantErr {
 				assert.NotNil(t, err)
-				assert.EqualError(t, err, c.err.Error())
+				assert.EqualError(t, err, c.err.Error(), "error message does not match")
 			} else {
 				assert.Nil(t, err)
-				assert.IsType(t, &RefundList{}, m)
-				assert.IsType(t, &http.Response{}, res.Response)
-			}
-		})
-	}
-}
-
-func TestRefundsService_ListPaynents(t *testing.T) {
-	setEnv()
-	defer unsetEnv()
-
-	type args struct {
-		ctx     context.Context
-		payment string
-		refund  string
-		options *ListRefundOptions
-	}
-	cases := []struct {
-		name    string
-		args    args
-		wantErr bool
-		err     error
-		pre     func()
-		handler http.HandlerFunc
-	}{
-		{
-			"get refund works as expected.",
-			args{
-				context.Background(),
-				"tr_WDqYK6vllg",
-				"re_4qqhO89gsT",
-				&ListRefundOptions{
-					Limit: 10,
-				},
-			},
-			false,
-			nil,
-			noPre,
-			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
-				testMethod(t, r, "GET")
-				testQuery(t, r, "limit=10")
-
-				if _, ok := r.Header[AuthHeader]; !ok {
-					w.WriteHeader(http.StatusUnauthorized)
-				}
-				_, _ = w.Write([]byte(testdata.GetRefundListResponse))
-			},
-		},
-		{
-			"get refund, an error is returned from the server",
-			args{
-				context.Background(),
-				"tr_WDqYK6vllg",
-				"re_4qqhO89gsT",
-				nil,
-			},
-			true,
-			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
-			noPre,
-			errorHandler,
-		},
-		{
-			"get refund, an error occurs when parsing json",
-			args{
-				context.Background(),
-				"tr_WDqYK6vllg",
-				"re_4qqhO89gsT",
-				nil,
-			},
-			true,
-			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
-			noPre,
-			encodingHandler,
-		},
-		{
-			"get refund, invalid url when building request",
-			args{
-				context.Background(),
-				"tr_WDqYK6vllg",
-				"re_4qqhO89gsT",
-				nil,
-			},
-			true,
-			errBadBaseURL,
-			crashSrv,
-			errorHandler,
-		},
-	}
-
-	for _, c := range cases {
-		setup()
-		defer teardown()
-
-		t.Run(c.name, func(t *testing.T) {
-			c.pre()
-			tMux.HandleFunc(fmt.Sprintf("/v2/payments/%s/refunds", c.args.payment), c.handler)
-
-			res, m, err := tClient.Refunds.ListRefundPayment(c.args.ctx, c.args.payment, c.args.options)
-			if c.wantErr {
-				assert.NotNil(t, err)
-				assert.EqualError(t, err, c.err.Error())
-			} else {
-				assert.Nil(t, err)
-				assert.IsType(t, &RefundList{}, m)
+				assert.IsType(t, &RefundsList{}, rl)
 				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
