@@ -348,8 +348,8 @@ const (
 
 // Rate describes service rates, further divided into fixed and percentage costs.
 type Rate struct {
-	Fixed    *Amount `json:"fixed,omitempty"`
 	Variable string  `json:"variable,omitempty"`
+	Fixed    *Amount `json:"fixed,omitempty"`
 }
 
 // Image describes a generic image resource retrieved by Mollie.
