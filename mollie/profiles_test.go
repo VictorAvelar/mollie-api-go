@@ -301,7 +301,7 @@ func TestProfilesService_Create(t *testing.T) {
 
 	type args struct {
 		ctx     context.Context
-		profile *Profile
+		profile CreateOrUpdateProfile
 	}
 	cases := []struct {
 		name    string
@@ -315,7 +315,7 @@ func TestProfilesService_Create(t *testing.T) {
 			"create profile works as expected.",
 			args{
 				context.Background(),
-				&Profile{
+				CreateOrUpdateProfile{
 					Name: "testing name",
 				},
 			},
@@ -339,7 +339,7 @@ func TestProfilesService_Create(t *testing.T) {
 			"create profile, an error is returned from the server",
 			args{
 				context.Background(),
-				&Profile{},
+				CreateOrUpdateProfile{},
 			},
 			true,
 			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
@@ -350,7 +350,7 @@ func TestProfilesService_Create(t *testing.T) {
 			"create profile, an error occurs when parsing json",
 			args{
 				context.Background(),
-				&Profile{},
+				CreateOrUpdateProfile{},
 			},
 			true,
 			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
@@ -361,7 +361,7 @@ func TestProfilesService_Create(t *testing.T) {
 			"create profile, invalid url when building request",
 			args{
 				context.Background(),
-				&Profile{},
+				CreateOrUpdateProfile{},
 			},
 			true,
 			errBadBaseURL,
@@ -398,7 +398,7 @@ func TestProfilesService_Update(t *testing.T) {
 	type args struct {
 		ctx       context.Context
 		profileID string
-		profile   *Profile
+		profile   CreateOrUpdateProfile
 	}
 	cases := []struct {
 		name    string
@@ -413,7 +413,7 @@ func TestProfilesService_Update(t *testing.T) {
 			args{
 				context.Background(),
 				"pfl_v9hTwCvYqw",
-				&Profile{
+				CreateOrUpdateProfile{
 					Name: "testing name",
 				},
 			},
@@ -438,7 +438,7 @@ func TestProfilesService_Update(t *testing.T) {
 			args{
 				context.Background(),
 				"pfl_v9hTwCvYqw",
-				&Profile{},
+				CreateOrUpdateProfile{},
 			},
 			true,
 			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
@@ -450,7 +450,7 @@ func TestProfilesService_Update(t *testing.T) {
 			args{
 				context.Background(),
 				"pfl_v9hTwCvYqw",
-				&Profile{},
+				CreateOrUpdateProfile{},
 			},
 			true,
 			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
@@ -462,7 +462,7 @@ func TestProfilesService_Update(t *testing.T) {
 			args{
 				context.Background(),
 				"pfl_v9hTwCvYqw",
-				&Profile{},
+				CreateOrUpdateProfile{},
 			},
 			true,
 			errBadBaseURL,
@@ -1118,6 +1118,378 @@ func TestProfilesService_DisableGiftCardIssuerForCurrent(t *testing.T) {
 			} else {
 				assert.Nil(t, err)
 				assert.IsType(t, &http.Response{}, res.Response)
+			}
+		})
+	}
+}
+
+func TestProfilesService_EnableVoucherIssuer(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
+	type args struct {
+		ctx     context.Context
+		profile string
+		issuer  VoucherIssuer
+		vi      *EnableVoucherIssuer
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"enable voucher issuer for profile works as expected using an access key.",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				PluxeeEcoVoucher,
+				nil,
+			},
+			false,
+			nil,
+			setAccessToken,
+			func(w http.ResponseWriter, r *http.Request) {
+				testMethod(t, r, "POST")
+				_, _ = w.Write([]byte(testdata.EnableVoucherIssuerResponse))
+			},
+		},
+		{
+			"enable voucher issuer for profile an error is returned from the server.",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				PluxeeEcoVoucher,
+				nil,
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			setAccessToken,
+			errorHandler,
+		},
+		{
+			"enable voucher issuer for profile an error occurs when parsing json.",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				PluxeeEcoVoucher,
+				nil,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			setAccessToken,
+			encodingHandler,
+		},
+		{
+			"enable voucher issuer for profile invalid url when building request.",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				PluxeeEcoVoucher,
+				nil,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		t.Run(c.name, func(t *testing.T) {
+			c.pre()
+
+			if tClient.HasAccessToken() {
+				tMux.HandleFunc(
+					fmt.Sprintf("/v2/profiles/%s/methods/voucher/issuers/%s",
+						c.args.profile,
+						c.args.issuer,
+					),
+					c.handler,
+				)
+			} else {
+				tMux.HandleFunc(
+					fmt.Sprintf("/v2/profiles/me/methods/voucher/issuers/%s",
+						c.args.issuer,
+					),
+					c.handler,
+				)
+			}
+
+			res, m, err := tClient.Profiles.EnableVoucherIssuer(c.args.ctx, c.args.profile, c.args.issuer, c.args.vi)
+			if c.wantErr {
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
+			} else {
+				assert.Nil(t, err)
+				assert.IsType(t, &VoucherIssuerEnabled{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
+			}
+		})
+	}
+}
+
+func TestProfileService_DisableVoucherIssuer(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
+	type args struct {
+		ctx     context.Context
+		profile string
+		issuer  VoucherIssuer
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"disable voucher issuer for profile works as expected.",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				PluxeeEcoVoucher,
+			},
+			false,
+			nil,
+			func() {
+				tClient.WithAuthenticationValue("access_X12b31ggg23")
+			},
+			func(w http.ResponseWriter, r *http.Request) {
+				testMethod(t, r, "DELETE")
+				w.WriteHeader(http.StatusNoContent)
+			},
+		},
+		{
+			"disable voucher issuer for profile an error is returned from the server.",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				PluxeeEcoVoucher,
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"disable voucher issuer for profile invalid url when building request.",
+			args{
+				context.Background(),
+				"pfl_v9hTwCvYqw",
+				PluxeeEcoVoucher,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		t.Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(
+				fmt.Sprintf("/v2/profiles/%s/methods/voucher/issuers/%s",
+					c.args.profile,
+					c.args.issuer,
+				),
+				c.handler,
+			)
+
+			res, err := tClient.Profiles.DisableVoucherIssuer(c.args.ctx, c.args.profile, c.args.issuer)
+			if c.wantErr {
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
+			} else {
+				assert.Nil(t, err)
+				assert.IsType(t, &http.Response{}, res.Response)
+				assert.Equal(t, http.StatusNoContent, res.StatusCode)
+			}
+		})
+	}
+}
+
+func TestProfileService_EnableVoucherIssuerForCurrent(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
+	type args struct {
+		ctx    context.Context
+		issuer VoucherIssuer
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"enable voucher issuer for current profile works as expected.",
+			args{
+				context.Background(),
+				PluxeeEcoVoucher,
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testMethod(t, r, "POST")
+				w.WriteHeader(http.StatusCreated)
+				_, _ = w.Write([]byte(testdata.EnableVoucherIssuerResponse))
+			},
+		},
+		{
+			"enable voucher issuer for current profile an error is returned from the server.",
+			args{
+				context.Background(),
+				PluxeeEcoVoucher,
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"enable voucher issuer for current profile an error occurs when parsing json.",
+			args{
+				context.Background(),
+				PluxeeEcoVoucher,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"enable voucher issuer for current profile invalid url when building request.",
+			args{
+				context.Background(),
+				PluxeeEcoVoucher,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		t.Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(
+				fmt.Sprintf("/v2/profiles/me/methods/voucher/issuers/%s",
+					c.args.issuer,
+				),
+				c.handler,
+			)
+
+			res, vi, err := tClient.Profiles.EnableVoucherIssuerForCurrent(c.args.ctx, c.args.issuer)
+			if c.wantErr {
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
+			} else {
+				assert.Nil(t, err)
+				assert.IsType(t, &http.Response{}, res.Response)
+				assert.IsType(t, &VoucherIssuerEnabled{}, vi)
+				assert.Equal(t, http.StatusCreated, res.StatusCode)
+			}
+		})
+	}
+}
+
+func TestProfileService_DisableVoucherIssuerForCurrent(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
+	type args struct {
+		ctx    context.Context
+		issuer VoucherIssuer
+	}
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"disable voucher issuer for current profile works as expected.",
+			args{
+				context.Background(),
+				PluxeeEcoVoucher,
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testMethod(t, r, "DELETE")
+				w.WriteHeader(http.StatusNoContent)
+			},
+		},
+		{
+			"disable voucher issuer for current profile an error is returned from the server.",
+			args{
+				context.Background(),
+				PluxeeEcoVoucher,
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"disable voucher issuer for current profile invalid url when building request.",
+			args{
+				context.Background(),
+				PluxeeEcoVoucher,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		t.Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(
+				fmt.Sprintf("/v2/profiles/me/methods/voucher/issuers/%s",
+					c.args.issuer,
+				),
+				c.handler,
+			)
+
+			res, err := tClient.Profiles.DisableVoucherIssuerForCurrent(c.args.ctx, c.args.issuer)
+			if c.wantErr {
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
+			} else {
+				assert.Nil(t, err)
+				assert.IsType(t, &http.Response{}, res.Response)
+				assert.Equal(t, http.StatusNoContent, res.StatusCode)
 			}
 		})
 	}

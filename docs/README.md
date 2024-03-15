@@ -112,6 +112,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type CreateMandate](<#CreateMandate>)
 - [type CreateMandateAccessTokenFields](<#CreateMandateAccessTokenFields>)
 - [type CreateMollieConnectPaymentFields](<#CreateMollieConnectPaymentFields>)
+- [type CreateOrUpdateProfile](<#CreateOrUpdateProfile>)
 - [type CreateOrder](<#CreateOrder>)
 - [type CreatePayment](<#CreatePayment>)
 - [type CreatePaymentAccessTokenFields](<#CreatePaymentAccessTokenFields>)
@@ -132,6 +133,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
   - [func \(cs \*CustomersService\) Update\(ctx context.Context, id string, c UpdateCustomer\) \(res \*Response, cc \*Customer, err error\)](<#CustomersService.Update>)
 - [type EligibilityReasons](<#EligibilityReasons>)
 - [type EmbedValue](<#EmbedValue>)
+- [type EnableVoucherIssuer](<#EnableVoucherIssuer>)
 - [type EntityType](<#EntityType>)
 - [type ErrorLinks](<#ErrorLinks>)
 - [type FailureReason](<#FailureReason>)
@@ -139,7 +141,6 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type GetLinkedClientOptions](<#GetLinkedClientOptions>)
 - [type GiftCardEnabled](<#GiftCardEnabled>)
 - [type GiftCardIssuer](<#GiftCardIssuer>)
-- [type GiftCardIssuerStatus](<#GiftCardIssuerStatus>)
 - [type GiftCardLinks](<#GiftCardLinks>)
 - [type Image](<#Image>)
 - [type IncludeValue](<#IncludeValue>)
@@ -151,6 +152,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type InvoicesService](<#InvoicesService>)
   - [func \(is \*InvoicesService\) Get\(ctx context.Context, id string\) \(res \*Response, i \*Invoice, err error\)](<#InvoicesService.Get>)
   - [func \(is \*InvoicesService\) List\(ctx context.Context, options \*InvoicesListOptions\) \(res \*Response, il \*InvoicesList, err error\)](<#InvoicesService.List>)
+- [type IssuerStatus](<#IssuerStatus>)
 - [type LineItem](<#LineItem>)
 - [type LinkedClient](<#LinkedClient>)
 - [type LinkedClientLinks](<#LinkedClientLinks>)
@@ -272,20 +274,26 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type ProfileLinks](<#ProfileLinks>)
 - [type ProfileList](<#ProfileList>)
 - [type ProfileListOptions](<#ProfileListOptions>)
+- [type ProfileReview](<#ProfileReview>)
+- [type ProfileReviewStatus](<#ProfileReviewStatus>)
 - [type ProfileStatus](<#ProfileStatus>)
 - [type ProfilesService](<#ProfilesService>)
-  - [func \(ps \*ProfilesService\) Create\(ctx context.Context, np \*Profile\) \(res \*Response, p \*Profile, err error\)](<#ProfilesService.Create>)
+  - [func \(ps \*ProfilesService\) Create\(ctx context.Context, np CreateOrUpdateProfile\) \(res \*Response, p \*Profile, err error\)](<#ProfilesService.Create>)
   - [func \(ps \*ProfilesService\) Current\(ctx context.Context\) \(res \*Response, p \*Profile, err error\)](<#ProfilesService.Current>)
   - [func \(ps \*ProfilesService\) Delete\(ctx context.Context, id string\) \(res \*Response, err error\)](<#ProfilesService.Delete>)
   - [func \(ps \*ProfilesService\) DisableGiftCardIssuer\(ctx context.Context, profileID string, issuer GiftCardIssuer\) \(res \*Response, err error\)](<#ProfilesService.DisableGiftCardIssuer>)
   - [func \(ps \*ProfilesService\) DisableGiftCardIssuerForCurrent\(ctx context.Context, issuer GiftCardIssuer\) \(res \*Response, err error\)](<#ProfilesService.DisableGiftCardIssuerForCurrent>)
   - [func \(ps \*ProfilesService\) DisablePaymentMethod\(ctx context.Context, id string, pm PaymentMethod\) \(res \*Response, err error\)](<#ProfilesService.DisablePaymentMethod>)
+  - [func \(ps \*ProfilesService\) DisableVoucherIssuer\(ctx context.Context, profileID string, issuer VoucherIssuer\) \(res \*Response, err error\)](<#ProfilesService.DisableVoucherIssuer>)
+  - [func \(ps \*ProfilesService\) DisableVoucherIssuerForCurrent\(ctx context.Context, issuer VoucherIssuer\) \(res \*Response, err error\)](<#ProfilesService.DisableVoucherIssuerForCurrent>)
   - [func \(ps \*ProfilesService\) EnableGiftCardIssuer\(ctx context.Context, profileID string, issuer GiftCardIssuer\) \(res \*Response, gc \*GiftCardEnabled, err error\)](<#ProfilesService.EnableGiftCardIssuer>)
   - [func \(ps \*ProfilesService\) EnableGiftCardIssuerForCurrent\(ctx context.Context, issuer GiftCardIssuer\) \(res \*Response, gc \*GiftCardEnabled, err error\)](<#ProfilesService.EnableGiftCardIssuerForCurrent>)
   - [func \(ps \*ProfilesService\) EnablePaymentMethod\(ctx context.Context, id string, pm PaymentMethod\) \(res \*Response, pmi \*PaymentMethodDetails, err error\)](<#ProfilesService.EnablePaymentMethod>)
+  - [func \(ps \*ProfilesService\) EnableVoucherIssuer\(ctx context.Context, profileID string, issuer VoucherIssuer, vi \*EnableVoucherIssuer\) \(res \*Response, vc \*VoucherIssuerEnabled, err error\)](<#ProfilesService.EnableVoucherIssuer>)
+  - [func \(ps \*ProfilesService\) EnableVoucherIssuerForCurrent\(ctx context.Context, issuer VoucherIssuer\) \(res \*Response, vc \*VoucherIssuerEnabled, err error\)](<#ProfilesService.EnableVoucherIssuerForCurrent>)
   - [func \(ps \*ProfilesService\) Get\(ctx context.Context, id string\) \(res \*Response, p \*Profile, err error\)](<#ProfilesService.Get>)
   - [func \(ps \*ProfilesService\) List\(ctx context.Context, opts \*ProfileListOptions\) \(res \*Response, pl \*ProfileList, err error\)](<#ProfilesService.List>)
-  - [func \(ps \*ProfilesService\) Update\(ctx context.Context, id string, up \*Profile\) \(res \*Response, p \*Profile, err error\)](<#ProfilesService.Update>)
+  - [func \(ps \*ProfilesService\) Update\(ctx context.Context, id string, up CreateOrUpdateProfile\) \(res \*Response, p \*Profile, err error\)](<#ProfilesService.Update>)
 - [type QRCode](<#QRCode>)
 - [type Rate](<#Rate>)
 - [type RecurrentPaymentFields](<#RecurrentPaymentFields>)
@@ -363,6 +371,10 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type UpdatePayment](<#UpdatePayment>)
 - [type UsedGiftCard](<#UsedGiftCard>)
 - [type UserAgentToken](<#UserAgentToken>)
+- [type VoucherContractor](<#VoucherContractor>)
+- [type VoucherIssuer](<#VoucherIssuer>)
+- [type VoucherIssuerEnabled](<#VoucherIssuerEnabled>)
+- [type VoucherLinks](<#VoucherLinks>)
 - [type Wallet](<#Wallet>)
 - [type WalletsService](<#WalletsService>)
   - [func \(ms \*WalletsService\) ApplePaymentSession\(ctx context.Context, asr \*ApplePaymentSessionRequest\) \(res \*Response, aps \*ApplePaymentSession, err error\)](<#WalletsService.ApplePaymentSession>)
@@ -396,7 +408,7 @@ func CheckResponse(r *Response) error
 CheckResponse checks the API response for errors, and returns them if present. A response is considered an error if it has a status code outside the 200 range. API error responses are expected to have either no response body, or a JSON response body.
 
 <a name="AccessTokenPaymentFields"></a>
-## type [AccessTokenPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L224-L226>)
+## type [AccessTokenPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L225-L227>)
 
 AccessTokenPaymentFields describes the fields specific to payments created using an access token.
 
@@ -1898,7 +1910,7 @@ type CreateMandateAccessTokenFields struct {
 ```
 
 <a name="CreateMollieConnectPaymentFields"></a>
-## type [CreateMollieConnectPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L134-L137>)
+## type [CreateMollieConnectPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L135-L138>)
 
 CreateMollieConnectPaymentFields describes the fields to be sent to the Mollie API when creating a new payment using Mollie Connect.
 
@@ -1908,6 +1920,24 @@ See: https://docs.mollie.com/reference/v2/payments-api/create-payment#mollie-con
 type CreateMollieConnectPaymentFields struct {
     ApplicationFee *ApplicationFee   `json:"applicationFee,omitempty"`
     Routing        []*PaymentRouting `json:"routing,omitempty"`
+}
+```
+
+<a name="CreateOrUpdateProfile"></a>
+## type [CreateOrUpdateProfile](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L22-L31>)
+
+CreateOrUpdateProfile describes the parameters to create or update a profile.
+
+```go
+type CreateOrUpdateProfile struct {
+    Name             string           `json:"name,omitempty"`
+    Website          string           `json:"website,omitempty"`
+    Email            string           `json:"email,omitempty"`
+    Description      string           `json:"description,omitempty"`
+    Phone            PhoneNumber      `json:"phone,omitempty"`
+    BusinessCategory BusinessCategory `json:"businessCategory,omitempty"`
+    CategoryCode     CategoryCode     `json:"categoryCode,omitempty"`
+    Mode             Mode             `json:"mode,omitempty"`
 }
 ```
 
@@ -1938,7 +1968,7 @@ type CreateOrder struct {
 ```
 
 <a name="CreatePayment"></a>
-## type [CreatePayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L65-L100>)
+## type [CreatePayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L66-L101>)
 
 CreatePayment describes the payload to be sent to the Mollie API when creating or updating a new payment.
 
@@ -1986,7 +2016,7 @@ type CreatePayment struct {
 ```
 
 <a name="CreatePaymentAccessTokenFields"></a>
-## type [CreatePaymentAccessTokenFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L125-L128>)
+## type [CreatePaymentAccessTokenFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L126-L129>)
 
 CreatePaymentAccessTokenFields describes the fields to be sent to the Mollie API when creating a new payment using an access token.
 
@@ -2000,7 +2030,7 @@ type CreatePaymentAccessTokenFields struct {
 ```
 
 <a name="CreatePreAuthorizedPaymentFields"></a>
-## type [CreatePreAuthorizedPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L116-L119>)
+## type [CreatePreAuthorizedPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L117-L120>)
 
 CreatePreAuthorizedPaymentFields describes the fields to be sent to the Mollie API when creating a new pre\-authorized payment.
 
@@ -2014,7 +2044,7 @@ type CreatePreAuthorizedPaymentFields struct {
 ```
 
 <a name="CreateRecurrentPaymentFields"></a>
-## type [CreateRecurrentPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L106-L110>)
+## type [CreateRecurrentPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L107-L111>)
 
 CreateRecurrentPaymentFields describes the fields to be sent to the Mollie API when creating a new recurrent payment.
 
@@ -2248,6 +2278,17 @@ const (
 )
 ```
 
+<a name="EnableVoucherIssuer"></a>
+## type [EnableVoucherIssuer](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L96-L98>)
+
+EnableVoucherIssuer describes the parameters to enable a voucher issuer.
+
+```go
+type EnableVoucherIssuer struct {
+    ContractID string `json:"contractId,omitempty"`
+}
+```
+
 <a name="EntityType"></a>
 ## type [EntityType](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L35>)
 
@@ -2352,11 +2393,11 @@ GiftCardEnabled describes the response of a gift card issuer enable operation.
 
 ```go
 type GiftCardEnabled struct {
-    Resource    string               `json:"resource,omitempty"`
-    ID          GiftCardIssuer       `json:"id,omitempty"`
-    Description string               `json:"description,omitempty"`
-    Status      GiftCardIssuerStatus `json:"status,omitempty"`
-    Links       GiftCardLinks        `json:"_links,omitempty"`
+    Resource    string         `json:"resource,omitempty"`
+    ID          GiftCardIssuer `json:"id,omitempty"`
+    Description string         `json:"description,omitempty"`
+    Status      IssuerStatus   `json:"status,omitempty"`
+    Links       GiftCardLinks  `json:"_links,omitempty"`
 }
 ```
 
@@ -2407,24 +2448,6 @@ const (
     Webshopgiftcard            GiftCardIssuer = "webshopgiftcard"
     Wijncadeukaart             GiftCardIssuer = "wijncadeaukaart"
     Yourgift                   GiftCardIssuer = "yourgift"
-)
-```
-
-<a name="GiftCardIssuerStatus"></a>
-## type [GiftCardIssuerStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/gift_cards.go#L48>)
-
-GiftCardIssuerStatus describes the status of a gift card issuer in your account.
-
-```go
-type GiftCardIssuerStatus string
-```
-
-<a name="PendingIssuer"></a>Valid issuer statuses.
-
-```go
-const (
-    PendingIssuer GiftCardIssuerStatus = "pending-issuer"
-    EnabledIssuer GiftCardIssuerStatus = "enabled"
 )
 ```
 
@@ -2584,6 +2607,24 @@ func (is *InvoicesService) List(ctx context.Context, options *InvoicesListOption
 
 List retrieves a list of invoices associated with your account/organization.
 
+<a name="IssuerStatus"></a>
+## type [IssuerStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/gift_cards.go#L48>)
+
+IssuerStatus describes the status of a gift card issuer in your account.
+
+```go
+type IssuerStatus string
+```
+
+<a name="PendingIssuer"></a>Valid issuer statuses.
+
+```go
+const (
+    PendingIssuer IssuerStatus = "pending-issuer"
+    EnabledIssuer IssuerStatus = "enabled"
+)
+```
+
 <a name="LineItem"></a>
 ## type [LineItem](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/invoices.go#L37-L43>)
 
@@ -2656,7 +2697,7 @@ type ListLinkedClientsOptions struct {
 ```
 
 <a name="ListPaymentOptions"></a>
-## type [ListPaymentOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L257-L263>)
+## type [ListPaymentOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L258-L264>)
 
 ListPaymentOptions describes list payments endpoint valid query string parameters.
 
@@ -2914,7 +2955,7 @@ const (
 ```
 
 <a name="MollieConnectPaymentFields"></a>
-## type [MollieConnectPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L219-L221>)
+## type [MollieConnectPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L220-L222>)
 
 MollieConnectPaymentFields describes the fields specific to Mollie Connect payments.
 
@@ -3707,7 +3748,7 @@ const (
 ```
 
 <a name="Payment"></a>
-## type [Payment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L161-L201>)
+## type [Payment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L162-L202>)
 
 Payment describes a transaction between a customer and a merchant.
 
@@ -3756,7 +3797,7 @@ type Payment struct {
 ```
 
 <a name="PaymentDestination"></a>
-## type [PaymentDestination](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L53-L56>)
+## type [PaymentDestination](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L54-L57>)
 
 PaymentDestination describes the destination of a payment.
 
@@ -3897,7 +3938,7 @@ type PaymentLinkOptions struct {
 ```
 
 <a name="PaymentLinks"></a>
-## type [PaymentLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L230-L246>)
+## type [PaymentLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L231-L247>)
 
 PaymentLinks describes all the possible links to be returned with a payment object.
 
@@ -3979,7 +4020,7 @@ List retrieves all payments links created with the current website profile, orde
 See: https://docs.mollie.com/reference/v2/payment-links-api/list-payment-links
 
 <a name="PaymentList"></a>
-## type [PaymentList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L347-L353>)
+## type [PaymentList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L348-L354>)
 
 PaymentList describes how a list of payments will be retrieved by Mollie.
 
@@ -4024,6 +4065,7 @@ const (
     PaySafeCard    PaymentMethod = "paysafecard"
     PRZelewy24     PaymentMethod = "przelewy24"
     Sofort         PaymentMethod = "sofort"
+    Voucher        PaymentMethod = "voucher"
 )
 ```
 
@@ -4190,7 +4232,7 @@ The results are not paginated.
 See: https://docs.mollie.com/reference/v2/methods-api/list-methods
 
 <a name="PaymentOptions"></a>
-## type [PaymentOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L251-L254>)
+## type [PaymentOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L252-L255>)
 
 PaymentOptions describes payments endpoint valid query string parameters.
 
@@ -4204,7 +4246,7 @@ type PaymentOptions struct {
 ```
 
 <a name="PaymentRouting"></a>
-## type [PaymentRouting](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L46-L50>)
+## type [PaymentRouting](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L47-L51>)
 
 PaymentRouting describes the routing of a payment.
 
@@ -4217,7 +4259,7 @@ type PaymentRouting struct {
 ```
 
 <a name="PaymentsService"></a>
-## type [PaymentsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L266>)
+## type [PaymentsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L267>)
 
 PaymentsService instance operates over payment resources.
 
@@ -4226,7 +4268,7 @@ type PaymentsService service
 ```
 
 <a name="PaymentsService.Cancel"></a>
-### func \(\*PaymentsService\) [Cancel](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L313>)
+### func \(\*PaymentsService\) [Cancel](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L314>)
 
 ```go
 func (ps *PaymentsService) Cancel(ctx context.Context, id string) (res *Response, p *Payment, err error)
@@ -4237,7 +4279,7 @@ Cancel removes a payment \(if possible\) from your Mollie account.
 See: https://docs.mollie.com/reference/v2/payments-api/cancel-payment
 
 <a name="PaymentsService.Create"></a>
-### func \(\*PaymentsService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L289-L293>)
+### func \(\*PaymentsService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L290-L294>)
 
 ```go
 func (ps *PaymentsService) Create(ctx context.Context, p CreatePayment, opts *PaymentOptions) (res *Response, np *Payment, err error)
@@ -4248,7 +4290,7 @@ Create stores a new payment object attached to your Mollie account.
 See: https://docs.mollie.com/reference/v2/payments-api/create-payment#
 
 <a name="PaymentsService.Get"></a>
-### func \(\*PaymentsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L269-L273>)
+### func \(\*PaymentsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L270-L274>)
 
 ```go
 func (ps *PaymentsService) Get(ctx context.Context, id string, opts *PaymentOptions) (res *Response, p *Payment, err error)
@@ -4257,7 +4299,7 @@ func (ps *PaymentsService) Get(ctx context.Context, id string, opts *PaymentOpti
 Get retrieves a single payment object by its payment token.
 
 <a name="PaymentsService.List"></a>
-### func \(\*PaymentsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L358-L362>)
+### func \(\*PaymentsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L359-L363>)
 
 ```go
 func (ps *PaymentsService) List(ctx context.Context, opts *ListPaymentOptions) (res *Response, pl *PaymentList, err error)
@@ -4268,7 +4310,7 @@ List retrieves a list of payments associated with your account/organization.
 See: https://docs.mollie.com/reference/v2/payments-api/list-payments
 
 <a name="PaymentsService.Update"></a>
-### func \(\*PaymentsService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L329-L333>)
+### func \(\*PaymentsService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L330-L334>)
 
 ```go
 func (ps *PaymentsService) Update(ctx context.Context, id string, up UpdatePayment) (res *Response, p *Payment, err error)
@@ -4404,7 +4446,7 @@ type PhoneNumber string
 ```
 
 <a name="PreAuthorizedPaymentFields"></a>
-## type [PreAuthorizedPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L212-L216>)
+## type [PreAuthorizedPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L213-L217>)
 
 PreAuthorizedPaymentFields describes the fields specific to pre\-authorized payments.
 
@@ -4440,48 +4482,50 @@ const (
 ```
 
 <a name="Profile"></a>
-## type [Profile](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L23-L38>)
+## type [Profile](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L35-L51>)
 
 Profile will usually reflect the trademark or brand name of the profile’s website or application.
 
 ```go
 type Profile struct {
-    ID               string           `json:"id,omitempty"`
-    BusinessCategory BusinessCategory `json:"businessCategory,omitempty"`
-    CreatedAt        *time.Time       `json:"createdAt,omitempty"`
-    Email            string           `json:"email,omitempty"`
-    Mode             Mode             `json:"mode,omitempty"`
-    Name             string           `json:"name,omitempty"`
-    Phone            PhoneNumber      `json:"phone,omitempty"`
-    Resource         string           `json:"resource,omitempty"`
-    Review           struct {
-        Status string `json:"status,omitempty"`
-    }   `json:"review,omitempty"`
-    Status  ProfileStatus `json:"status,omitempty"`
-    Website string        `json:"website,omitempty"`
-    Links   ProfileLinks  `json:"_links,omitempty"`
+    Resource            string           `json:"resource,omitempty"`
+    ID                  string           `json:"id,omitempty"`
+    Name                string           `json:"name,omitempty"`
+    Website             string           `json:"website,omitempty"`
+    Description         string           `json:"description,omitempty"`
+    CountriesOfActivity []string         `json:"countriesOfActivity,omitempty"`
+    Email               string           `json:"email,omitempty"`
+    Phone               PhoneNumber      `json:"phone,omitempty"`
+    Mode                Mode             `json:"mode,omitempty"`
+    BusinessCategory    BusinessCategory `json:"businessCategory,omitempty"`
+    CategoryCode        CategoryCode     `json:"categoryCode,omitempty"`
+    Status              ProfileStatus    `json:"status,omitempty"`
+    Review              ProfileReview    `json:"review,omitempty"`
+    CreatedAt           *time.Time       `json:"createdAt,omitempty"`
+    Links               ProfileLinks     `json:"_links,omitempty"`
 }
 ```
 
 <a name="ProfileLinks"></a>
-## type [ProfileLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L42-L50>)
+## type [ProfileLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L69-L78>)
 
 ProfileLinks contains URL's to relevant information related to a profile.
 
 ```go
 type ProfileLinks struct {
     Self               *URL `json:"self,omitempty"`
+    Dashboard          *URL `json:"dashboard,omitempty"`
     Chargebacks        *URL `json:"chargebacks,omitempty"`
     Methods            *URL `json:"methods,omitempty"`
+    Payments           *URL `json:"payments,omitempty"`
     Refunds            *URL `json:"refunds,omitempty"`
     CheckoutPreviewURL *URL `json:"checkoutPreviewUrl,omitempty"`
     Documentation      *URL `json:"documentation,omitempty"`
-    Dashboard          *URL `json:"dashboard,omitempty"`
 }
 ```
 
 <a name="ProfileList"></a>
-## type [ProfileList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L59-L65>)
+## type [ProfileList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L87-L93>)
 
 ProfileList contains a list of profiles for your account.
 
@@ -4496,15 +4540,44 @@ type ProfileList struct {
 ```
 
 <a name="ProfileListOptions"></a>
-## type [ProfileListOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L53-L56>)
+## type [ProfileListOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L81-L84>)
 
 ProfileListOptions are optional query string parameters for the list profiles request.
 
 ```go
 type ProfileListOptions struct {
+    Limit int    `url:"limit,omitempty"`
     From  string `url:"from,omitempty"`
-    Limit uint   `url:"limit,omitempty"`
 }
+```
+
+<a name="ProfileReview"></a>
+## type [ProfileReview](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L54-L56>)
+
+ProfileReview contains the status of the profile review.
+
+```go
+type ProfileReview struct {
+    Status ProfileReviewStatus `json:"status,omitempty"`
+}
+```
+
+<a name="ProfileReviewStatus"></a>
+## type [ProfileReviewStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L59>)
+
+ProfileReviewStatus determines whether the profile is able to receive live payments.
+
+```go
+type ProfileReviewStatus string
+```
+
+<a name="ReviewStatusPending"></a>Possible profile review statuses.
+
+```go
+const (
+    ReviewStatusPending  ProfileReviewStatus = "pending"
+    ReviewStatusRejected ProfileReviewStatus = "rejected"
+)
 ```
 
 <a name="ProfileStatus"></a>
@@ -4527,7 +4600,7 @@ const (
 ```
 
 <a name="ProfilesService"></a>
-## type [ProfilesService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L68>)
+## type [ProfilesService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L101>)
 
 ProfilesService operates over profile resource.
 
@@ -4536,16 +4609,16 @@ type ProfilesService service
 ```
 
 <a name="ProfilesService.Create"></a>
-### func \(\*ProfilesService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L113>)
+### func \(\*ProfilesService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L146-L150>)
 
 ```go
-func (ps *ProfilesService) Create(ctx context.Context, np *Profile) (res *Response, p *Profile, err error)
+func (ps *ProfilesService) Create(ctx context.Context, np CreateOrUpdateProfile) (res *Response, p *Profile, err error)
 ```
 
 Create stores a new profile in your Mollie account.
 
 <a name="ProfilesService.Current"></a>
-### func \(\*ProfilesService\) [Current](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L95>)
+### func \(\*ProfilesService\) [Current](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L128>)
 
 ```go
 func (ps *ProfilesService) Current(ctx context.Context) (res *Response, p *Profile, err error)
@@ -4554,7 +4627,7 @@ func (ps *ProfilesService) Current(ctx context.Context) (res *Response, p *Profi
 Current returns the profile belonging to the API key. This method only works when using API keys.
 
 <a name="ProfilesService.Delete"></a>
-### func \(\*ProfilesService\) [Delete](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L142>)
+### func \(\*ProfilesService\) [Delete](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L183>)
 
 ```go
 func (ps *ProfilesService) Delete(ctx context.Context, id string) (res *Response, err error)
@@ -4563,29 +4636,29 @@ func (ps *ProfilesService) Delete(ctx context.Context, id string) (res *Response
 Delete enables profile deletions, rendering the profile unavailable for further API calls and transactions.
 
 <a name="ProfilesService.DisableGiftCardIssuer"></a>
-### func \(\*ProfilesService\) [DisableGiftCardIssuer](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L209-L212>)
+### func \(\*ProfilesService\) [DisableGiftCardIssuer](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L250-L253>)
 
 ```go
 func (ps *ProfilesService) DisableGiftCardIssuer(ctx context.Context, profileID string, issuer GiftCardIssuer) (res *Response, err error)
 ```
 
-DisableGiftCardIssuer deactivates the requested gift card issuer for the provided profile id.
+DisableGiftCardIssuer deactivates the requested gift card issuer for the provided profile id when using Organization tokens or App Access tokens.
 
 See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
 
 <a name="ProfilesService.DisableGiftCardIssuerForCurrent"></a>
-### func \(\*ProfilesService\) [DisableGiftCardIssuerForCurrent](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L246-L249>)
+### func \(\*ProfilesService\) [DisableGiftCardIssuerForCurrent](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L287-L290>)
 
 ```go
 func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(ctx context.Context, issuer GiftCardIssuer) (res *Response, err error)
 ```
 
-DisableGiftCardIssuerForCurrent deactivates the specified issuer for the current profile \(token owner\).
+DisableGiftCardIssuerForCurrent deactivates the specified issuer for the current profile when using API tokens.
 
 See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
 
 <a name="ProfilesService.DisablePaymentMethod"></a>
-### func \(\*ProfilesService\) [DisablePaymentMethod](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L172-L175>)
+### func \(\*ProfilesService\) [DisablePaymentMethod](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L213-L216>)
 
 ```go
 func (ps *ProfilesService) DisablePaymentMethod(ctx context.Context, id string, pm PaymentMethod) (res *Response, err error)
@@ -4593,30 +4666,50 @@ func (ps *ProfilesService) DisablePaymentMethod(ctx context.Context, id string, 
 
 DisablePaymentMethod disables a payment method on a specific or authenticated profile. If you're using API tokens for authentication, pass "me" as id.
 
+<a name="ProfilesService.DisableVoucherIssuer"></a>
+### func \(\*ProfilesService\) [DisableVoucherIssuer](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L329-L332>)
+
+```go
+func (ps *ProfilesService) DisableVoucherIssuer(ctx context.Context, profileID string, issuer VoucherIssuer) (res *Response, err error)
+```
+
+DisableVoucherIssuer deactivates the requested voucher issuer for the provided profile id when using Organization tokens or App Access tokens.
+
+See: https://docs.mollie.com/reference/v2/profiles-api/disable-voucher-issuer
+
+<a name="ProfilesService.DisableVoucherIssuerForCurrent"></a>
+### func \(\*ProfilesService\) [DisableVoucherIssuerForCurrent](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L362-L365>)
+
+```go
+func (ps *ProfilesService) DisableVoucherIssuerForCurrent(ctx context.Context, issuer VoucherIssuer) (res *Response, err error)
+```
+
+DisableVoucherIssuerForCurrent deactivates the specified issuer for the current profile when using API tokens.
+
 <a name="ProfilesService.EnableGiftCardIssuer"></a>
-### func \(\*ProfilesService\) [EnableGiftCardIssuer](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L188-L192>)
+### func \(\*ProfilesService\) [EnableGiftCardIssuer](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L229-L233>)
 
 ```go
 func (ps *ProfilesService) EnableGiftCardIssuer(ctx context.Context, profileID string, issuer GiftCardIssuer) (res *Response, gc *GiftCardEnabled, err error)
 ```
 
-EnableGiftCardIssuer activates the requested gift card issuer for the provided profile id.
+EnableGiftCardIssuer activates the requested gift card issuer for the provided profile id when using Organization tokens or App Access tokens.
 
 See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
 
 <a name="ProfilesService.EnableGiftCardIssuerForCurrent"></a>
-### func \(\*ProfilesService\) [EnableGiftCardIssuerForCurrent](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L225-L229>)
+### func \(\*ProfilesService\) [EnableGiftCardIssuerForCurrent](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L266-L270>)
 
 ```go
 func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(ctx context.Context, issuer GiftCardIssuer) (res *Response, gc *GiftCardEnabled, err error)
 ```
 
-EnableGiftCardIssuerForCurrent activates the specified issuer for the current profile \(token owner\).
+EnableGiftCardIssuerForCurrent activates the specified issuer for the current profile when using API tokens.
 
 See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
 
 <a name="ProfilesService.EnablePaymentMethod"></a>
-### func \(\*ProfilesService\) [EnablePaymentMethod](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L153-L157>)
+### func \(\*ProfilesService\) [EnablePaymentMethod](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L194-L198>)
 
 ```go
 func (ps *ProfilesService) EnablePaymentMethod(ctx context.Context, id string, pm PaymentMethod) (res *Response, pmi *PaymentMethodDetails, err error)
@@ -4624,8 +4717,28 @@ func (ps *ProfilesService) EnablePaymentMethod(ctx context.Context, id string, p
 
 EnablePaymentMethod enables a payment method on a specific or authenticated profile. If you're using API tokens for authentication, pass "me" as id.
 
+<a name="ProfilesService.EnableVoucherIssuer"></a>
+### func \(\*ProfilesService\) [EnableVoucherIssuer](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L303-L312>)
+
+```go
+func (ps *ProfilesService) EnableVoucherIssuer(ctx context.Context, profileID string, issuer VoucherIssuer, vi *EnableVoucherIssuer) (res *Response, vc *VoucherIssuerEnabled, err error)
+```
+
+EnableVoucherIssuer activates the requested voucher issuer for the provided profile id when using Organization tokens or App Access tokens.
+
+See: https://docs.mollie.com/reference/v2/profiles-api/enable-voucher-issuer
+
+<a name="ProfilesService.EnableVoucherIssuerForCurrent"></a>
+### func \(\*ProfilesService\) [EnableVoucherIssuerForCurrent](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L343-L347>)
+
+```go
+func (ps *ProfilesService) EnableVoucherIssuerForCurrent(ctx context.Context, issuer VoucherIssuer) (res *Response, vc *VoucherIssuerEnabled, err error)
+```
+
+EnableVoucherIssuerForCurrent activates the specified issuer for the current profile when using API tokens.
+
 <a name="ProfilesService.Get"></a>
-### func \(\*ProfilesService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L89>)
+### func \(\*ProfilesService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L122>)
 
 ```go
 func (ps *ProfilesService) Get(ctx context.Context, id string) (res *Response, p *Profile, err error)
@@ -4634,7 +4747,7 @@ func (ps *ProfilesService) Get(ctx context.Context, id string) (res *Response, p
 Get retrieves the a profile by ID.
 
 <a name="ProfilesService.List"></a>
-### func \(\*ProfilesService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L71-L75>)
+### func \(\*ProfilesService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L104-L108>)
 
 ```go
 func (ps *ProfilesService) List(ctx context.Context, opts *ProfileListOptions) (res *Response, pl *ProfileList, err error)
@@ -4643,10 +4756,10 @@ func (ps *ProfilesService) List(ctx context.Context, opts *ProfileListOptions) (
 List returns all the profiles for the authenticated account.
 
 <a name="ProfilesService.Update"></a>
-### func \(\*ProfilesService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L127>)
+### func \(\*ProfilesService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L164-L168>)
 
 ```go
-func (ps *ProfilesService) Update(ctx context.Context, id string, up *Profile) (res *Response, p *Profile, err error)
+func (ps *ProfilesService) Update(ctx context.Context, id string, up CreateOrUpdateProfile) (res *Response, p *Profile, err error)
 ```
 
 Update allows you to perform mutations on a profile.
@@ -4677,7 +4790,7 @@ type Rate struct {
 ```
 
 <a name="RecurrentPaymentFields"></a>
-## type [RecurrentPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L204-L209>)
+## type [RecurrentPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L205-L210>)
 
 RecurrentPaymentFields describes the fields specific to recurrent payments.
 
@@ -4853,7 +4966,7 @@ type Response struct {
 ```
 
 <a name="SequenceType"></a>
-## type [SequenceType](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L36>)
+## type [SequenceType](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L37>)
 
 SequenceType indicates which type of payment this is in a recurring sequence.
 
@@ -5680,7 +5793,7 @@ type UpdateOrderLine struct {
 ```
 
 <a name="UpdatePayment"></a>
-## type [UpdatePayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L144-L158>)
+## type [UpdatePayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L145-L159>)
 
 UpdatePayment describes the payload to be sent to the Mollie API when updating a payment.
 
@@ -5727,6 +5840,74 @@ type UserAgentToken struct {
     Token    string
     StartsAt *time.Time
     EndsAt   *time.Time
+}
+```
+
+<a name="VoucherContractor"></a>
+## type [VoucherContractor](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/vouchers.go#L38-L42>)
+
+VoucherContractor represents a contractor for a voucher.
+
+```go
+type VoucherContractor struct {
+    ID           string `json:"id,omitempty"`
+    Name         string `json:"name,omitempty"`
+    ContractorID string `json:"contractorId,omitempty"`
+}
+```
+
+<a name="VoucherIssuer"></a>
+## type [VoucherIssuer](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/vouchers.go#L4>)
+
+VoucherIssuer represents the issuer of a voucher.
+
+```go
+type VoucherIssuer string
+```
+
+<a name="EdenredBelgiumCadeauVoucher"></a>List of known voucher issuers.
+
+```go
+const (
+    EdenredBelgiumCadeauVoucher     VoucherIssuer = "edenred-belgium-cadeau"
+    EdenredBelgiumEcoVoucher        VoucherIssuer = "edenred-belgium-eco"
+    EdenredBelgiumMealVoucher       VoucherIssuer = "edenred-belgium-meal"
+    EdenredBelgiumSportsVoucher     VoucherIssuer = "edenred-belgium-sports"
+    EdenredBelgiumAdditionalVoucher VoucherIssuer = "edenred-belgium-additional"
+    EdenredBelgiumConsumeVoucher    VoucherIssuer = "edenred-belgium-consume"
+    MonizzeCadeauVoucher            VoucherIssuer = "monizze-cadeau"
+    MonizzeEcoVoucher               VoucherIssuer = "monizze-eco"
+    MonizzeMealVoucher              VoucherIssuer = "monizze-meal"
+    PluxeeCadeauVoucher             VoucherIssuer = "sodexo-cadeau"
+    PluxeeEcoVoucher                VoucherIssuer = "sodexo-ecopass"
+    PluxeeLunchVoucher              VoucherIssuer = "sodexo-lunchpass"
+)
+```
+
+<a name="VoucherIssuerEnabled"></a>
+## type [VoucherIssuerEnabled](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/vouchers.go#L23-L29>)
+
+VoucherIssuerEnabled describes the response of a voucher enable operation.
+
+```go
+type VoucherIssuerEnabled struct {
+    ID          string            `json:"id,omitempty"`
+    Description string            `json:"description,omitempty"`
+    Status      IssuerStatus      `json:"status,omitempty"`
+    Contractor  VoucherContractor `json:"contractor,omitempty"`
+    Links       VoucherLinks      `json:"_links,omitempty"`
+}
+```
+
+<a name="VoucherLinks"></a>
+## type [VoucherLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/vouchers.go#L32-L35>)
+
+VoucherLinks are links embedded when a voucher is enabled.
+
+```go
+type VoucherLinks struct {
+    Self          *URL `json:"self,omitempty"`
+    Documentation *URL `json:"documentation,omitempty"`
 }
 ```
 

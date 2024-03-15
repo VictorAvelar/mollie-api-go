@@ -30,6 +30,7 @@ const (
 	PaySafeCard    PaymentMethod = "paysafecard"
 	PRZelewy24     PaymentMethod = "przelewy24"
 	Sofort         PaymentMethod = "sofort"
+	Voucher        PaymentMethod = "voucher"
 )
 
 // SequenceType indicates which type of payment this is in a recurring sequence.
