@@ -735,7 +735,7 @@ func TestSettlementsService_GetRefunds(t *testing.T) {
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
-				_, _ = w.Write([]byte(testdata.GetRefundListResponse))
+				_, _ = w.Write([]byte(testdata.ListRefundsResponse))
 			},
 		},
 		{
@@ -796,7 +796,7 @@ func TestSettlementsService_GetRefunds(t *testing.T) {
 				assert.EqualError(t, err, c.err.Error())
 			} else {
 				assert.Nil(t, err)
-				assert.IsType(t, &RefundList{}, m)
+				assert.IsType(t, &RefundsList{}, m)
 				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
