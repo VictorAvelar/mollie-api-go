@@ -77,14 +77,14 @@ type ProfileLinks struct {
 	Documentation      *URL `json:"documentation,omitempty"`
 }
 
-// ProfileListOptions are optional query string parameters for the list profiles request.
-type ProfileListOptions struct {
+// ListProfilesOptions are optional query string parameters for the list profiles request.
+type ListProfilesOptions struct {
 	Limit int    `url:"limit,omitempty"`
 	From  string `url:"from,omitempty"`
 }
 
-// ProfileList contains a list of profiles for your account.
-type ProfileList struct {
+// ProfilesList contains a list of profiles for your account.
+type ProfilesList struct {
 	Count    int `json:"count,omitempty"`
 	Embedded struct {
 		Profiles []*Profile `json:"profiles,omitempty"`
@@ -101,9 +101,9 @@ type EnableVoucherIssuer struct {
 type ProfilesService service
 
 // List returns all the profiles for the authenticated account.
-func (ps *ProfilesService) List(ctx context.Context, opts *ProfileListOptions) (
+func (ps *ProfilesService) List(ctx context.Context, opts *ListProfilesOptions) (
 	res *Response,
-	pl *ProfileList,
+	pl *ProfilesList,
 	err error,
 ) {
 	res, err = ps.client.get(ctx, "v2/profiles", opts)

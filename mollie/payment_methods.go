@@ -76,11 +76,11 @@ type PaymentMethodOptions struct {
 	Include   []IncludeValue `url:"include,omitempty"`
 }
 
-// PaymentMethodsListOptions are applicable query string parameters to list methods
+// ListPaymentMethodsOptions are applicable query string parameters to list methods
 // from mollie's API.
 //
 // It contains list specific options and embeds GetMethodOptions.
-type PaymentMethodsListOptions struct {
+type ListPaymentMethodsOptions struct {
 	PaymentMethodOptions
 	Resource            string                              `url:"resource,omitempty"`
 	BillingCountry      string                              `url:"billingCountry,omitempty"`
@@ -121,7 +121,7 @@ func (ms *PaymentMethodsService) Get(ctx context.Context, id PaymentMethod, opti
 // All retrieves all the payment methods enabled for your account/organization.
 //
 // See: https://docs.mollie.com/reference/v2/methods-api/list-all-methods
-func (ms *PaymentMethodsService) All(ctx context.Context, options *PaymentMethodsListOptions) (
+func (ms *PaymentMethodsService) All(ctx context.Context, options *ListPaymentMethodsOptions) (
 	res *Response,
 	pm *PaymentMethodsList,
 	err error,
@@ -134,7 +134,7 @@ func (ms *PaymentMethodsService) All(ctx context.Context, options *PaymentMethod
 // The results are not paginated.
 //
 // See: https://docs.mollie.com/reference/v2/methods-api/list-methods
-func (ms *PaymentMethodsService) List(ctx context.Context, options *PaymentMethodsListOptions) (
+func (ms *PaymentMethodsService) List(ctx context.Context, options *ListPaymentMethodsOptions) (
 	res *Response,
 	pm *PaymentMethodsList,
 	err error,

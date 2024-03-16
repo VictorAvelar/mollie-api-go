@@ -208,7 +208,7 @@ func TestBalancesService_List(t *testing.T) {
 
 	type args struct {
 		ctx     context.Context
-		options *BalanceListOptions
+		options *ListBalancesOptions
 	}
 
 	cases := []struct {
@@ -515,7 +515,7 @@ func TestBalancesService_ListBalanceTransactions(t *testing.T) {
 	type args struct {
 		ctx     context.Context
 		balance string
-		options *BalanceTransactionsListOptions
+		options *ListBalanceTransactionsOptions
 	}
 
 	cases := []struct {
@@ -619,7 +619,7 @@ func TestBalancesService_ListPrimaryBalanceTransactions(t *testing.T) {
 
 	type args struct {
 		ctx     context.Context
-		options *BalanceTransactionsListOptions
+		options *ListBalanceTransactionsOptions
 	}
 
 	cases := []struct {

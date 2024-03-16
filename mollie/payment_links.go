@@ -43,9 +43,9 @@ type PaymentLinkLinks struct {
 // PaymentLinkOptions represents query string parameters to modify
 // the payment links requests.
 type PaymentLinkOptions struct {
+	Limit     int    `url:"limit,omitempty"`
 	ProfileID string `url:"profileId,omitempty"`
 	From      string `url:"from,omitempty"`
-	Limit     int    `url:"limit,omitempty"`
 }
 
 // PaymentLinksList retrieves a list of payment links for the active

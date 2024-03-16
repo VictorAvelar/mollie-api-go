@@ -94,12 +94,12 @@ type MandateLinks struct {
 	Documentation *URL `json:"documentation,omitempty"`
 }
 
-// MandatesListOptions contains valid query parameters
+// ListMandatesOptions contains valid query parameters
 // to filter the List mandates actions.
 //
 // From is a mandate id to offset from (inclusive)
 // Limit is the max number of mandates to retrieve.
-type MandatesListOptions struct {
+type ListMandatesOptions struct {
 	Limit int    `url:"limit,omitempty"`
 	From  string `url:"from,omitempty"`
 }
@@ -182,7 +182,7 @@ func (ms *MandatesService) Revoke(ctx context.Context, customer, mandate string)
 // ordered from newest to oldest.
 //
 // See: https://docs.mollie.com/reference/v2/mandates-api/list-mandates
-func (ms *MandatesService) List(ctx context.Context, customer string, options *MandatesListOptions) (
+func (ms *MandatesService) List(ctx context.Context, customer string, options *ListMandatesOptions) (
 	res *Response,
 	ml *MandatesList,
 	err error,

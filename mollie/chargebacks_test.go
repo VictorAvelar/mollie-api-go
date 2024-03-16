@@ -137,7 +137,7 @@ func TestChargebacksService_List(t *testing.T) {
 
 	type args struct {
 		ctx     context.Context
-		options *ChargebacksListOptions
+		options *ListChargebacksOptions
 	}
 
 	noPre := func() {}
@@ -173,7 +173,7 @@ func TestChargebacksService_List(t *testing.T) {
 			"list chargebacks with options",
 			args{
 				context.Background(),
-				&ChargebacksListOptions{
+				&ListChargebacksOptions{
 					ProfileID: "pfl_QkEhN94Ba",
 				},
 			},
@@ -253,7 +253,7 @@ func TestChargebacksService_ListForPayment(t *testing.T) {
 	type args struct {
 		ctx     context.Context
 		payment string
-		options *ChargebacksListOptions
+		options *ListChargebacksOptions
 	}
 
 	cases := []struct {
@@ -289,7 +289,7 @@ func TestChargebacksService_ListForPayment(t *testing.T) {
 			args{
 				context.Background(),
 				"tr_WDqYK6vllg",
-				&ChargebacksListOptions{
+				&ListChargebacksOptions{
 					ProfileID: "pfl_QkEhN94Ba",
 				},
 			},

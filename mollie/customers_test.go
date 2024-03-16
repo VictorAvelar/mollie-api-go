@@ -302,7 +302,7 @@ func TestCustomersService_List(t *testing.T) {
 	defer unsetEnv()
 	type args struct {
 		ctx     context.Context
-		options *CustomersListOptions
+		options *ListCustomersOptions
 	}
 
 	cases := []struct {
@@ -319,7 +319,7 @@ func TestCustomersService_List(t *testing.T) {
 			http.StatusAccepted,
 			args{
 				context.Background(),
-				&CustomersListOptions{
+				&ListCustomersOptions{
 					SequenceType: OneOffSequence,
 				},
 			},
@@ -373,7 +373,7 @@ func TestCustomersService_List(t *testing.T) {
 			http.StatusInternalServerError,
 			args{
 				context.Background(),
-				&CustomersListOptions{
+				&ListCustomersOptions{
 					SequenceType: OneOffSequence,
 				},
 			},
@@ -387,7 +387,7 @@ func TestCustomersService_List(t *testing.T) {
 			http.StatusInternalServerError,
 			args{
 				context.Background(),
-				&CustomersListOptions{
+				&ListCustomersOptions{
 					SequenceType: OneOffSequence,
 				},
 			},
@@ -506,7 +506,7 @@ func TestCustomerService_GetPayments(t *testing.T) {
 	type args struct {
 		ctx      context.Context
 		customer string
-		options  *CustomersListOptions
+		options  *ListCustomersOptions
 	}
 
 	cases := []struct {
@@ -542,7 +542,7 @@ func TestCustomerService_GetPayments(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_kEn1PlbGa",
-				&CustomersListOptions{Limit: 100},
+				&ListCustomersOptions{Limit: 100},
 			},
 			false,
 			nil,
@@ -562,7 +562,7 @@ func TestCustomerService_GetPayments(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_kEn1PlbGa",
-				&CustomersListOptions{SequenceType: RecurringSequence},
+				&ListCustomersOptions{SequenceType: RecurringSequence},
 			},
 			true,
 			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),

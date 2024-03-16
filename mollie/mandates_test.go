@@ -324,7 +324,7 @@ func TestMandatesService_List(t *testing.T) {
 
 	type args struct {
 		ctx      context.Context
-		options  *MandatesListOptions
+		options  *ListMandatesOptions
 		customer string
 	}
 
@@ -359,7 +359,7 @@ func TestMandatesService_List(t *testing.T) {
 			"list mandates with options works as expected.",
 			args{
 				context.Background(),
-				&MandatesListOptions{
+				&ListMandatesOptions{
 					Limit: 10,
 				},
 				"cst_4qqhO89gsT",

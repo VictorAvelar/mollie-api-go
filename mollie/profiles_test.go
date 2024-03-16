@@ -183,7 +183,7 @@ func TestProfilesService_List(t *testing.T) {
 
 	type args struct {
 		ctx     context.Context
-		options *ProfileListOptions
+		options *ListProfilesOptions
 	}
 	cases := []struct {
 		name    string
@@ -197,7 +197,7 @@ func TestProfilesService_List(t *testing.T) {
 			"list profiles works as expected.",
 			args{
 				context.Background(),
-				&ProfileListOptions{},
+				&ListProfilesOptions{},
 			},
 			false,
 			nil,
@@ -219,7 +219,7 @@ func TestProfilesService_List(t *testing.T) {
 			"list profiles with options, works as expected.",
 			args{
 				context.Background(),
-				&ProfileListOptions{
+				&ListProfilesOptions{
 					Limit: 100,
 				},
 			},
@@ -243,7 +243,7 @@ func TestProfilesService_List(t *testing.T) {
 			"list profiles, an error is returned from the server",
 			args{
 				context.Background(),
-				&ProfileListOptions{},
+				&ListProfilesOptions{},
 			},
 			true,
 			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
@@ -254,7 +254,7 @@ func TestProfilesService_List(t *testing.T) {
 			"list profiles, an error occurs when parsing json",
 			args{
 				context.Background(),
-				&ProfileListOptions{},
+				&ListProfilesOptions{},
 			},
 			true,
 			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
@@ -265,7 +265,7 @@ func TestProfilesService_List(t *testing.T) {
 			"list profiles, invalid url when building request",
 			args{
 				context.Background(),
-				&ProfileListOptions{},
+				&ListProfilesOptions{},
 			},
 			true,
 			errBadBaseURL,
@@ -288,7 +288,7 @@ func TestProfilesService_List(t *testing.T) {
 				assert.EqualError(t, err, c.err.Error())
 			} else {
 				assert.Nil(t, err)
-				assert.IsType(t, &ProfileList{}, m)
+				assert.IsType(t, &ProfilesList{}, m)
 				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})

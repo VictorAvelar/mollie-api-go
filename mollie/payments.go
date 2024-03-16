@@ -254,8 +254,8 @@ type PaymentOptions struct {
 	Embed   []EmbedValue   `url:"embed,omitempty"`
 }
 
-// ListPaymentOptions describes list payments endpoint valid query string parameters.
-type ListPaymentOptions struct {
+// ListPaymentsOptions describes list payments endpoint valid query string parameters.
+type ListPaymentsOptions struct {
 	Limit     int            `url:"limit,omitempty"`
 	Include   []IncludeValue `url:"include,omitempty"`
 	Embed     []EmbedValue   `url:"embed,omitempty"`
@@ -356,7 +356,7 @@ type PaymentList struct {
 // List retrieves a list of payments associated with your account/organization.
 //
 // See: https://docs.mollie.com/reference/v2/payments-api/list-payments
-func (ps *PaymentsService) List(ctx context.Context, opts *ListPaymentOptions) (
+func (ps *PaymentsService) List(ctx context.Context, opts *ListPaymentsOptions) (
 	res *Response,
 	pl *PaymentList,
 	err error,

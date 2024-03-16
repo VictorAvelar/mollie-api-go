@@ -46,8 +46,8 @@ type Customer struct {
 	Links     CustomerLinks `json:"_links,omitempty"`
 }
 
-// CustomersListOptions contains valid query parameters for the list customers endpoint.
-type CustomersListOptions struct {
+// ListCustomersOptions contains valid query parameters for the list customers endpoint.
+type ListCustomersOptions struct {
 	From         string       `url:"from,omitempty"`
 	Limit        int          `url:"limit,omitempty"`
 	ProfileID    string       `url:"profileId,omitempty"`
@@ -144,7 +144,7 @@ func (cs *CustomersService) Delete(ctx context.Context, id string) (res *Respons
 // List retrieves all customers created.
 //
 // See: https://docs.mollie.com/reference/v2/customers-api/list-customers
-func (cs *CustomersService) List(ctx context.Context, options *CustomersListOptions) (
+func (cs *CustomersService) List(ctx context.Context, options *ListCustomersOptions) (
 	res *Response,
 	cl *CustomersList,
 	err error,
@@ -164,7 +164,7 @@ func (cs *CustomersService) List(ctx context.Context, options *CustomersListOpti
 // GetPayments retrieves all payments linked to the customer.
 //
 // See: https://docs.mollie.com/reference/v2/customers-api/list-customer-payments
-func (cs *CustomersService) GetPayments(ctx context.Context, id string, options *CustomersListOptions) (
+func (cs *CustomersService) GetPayments(ctx context.Context, id string, options *ListCustomersOptions) (
 	res *Response,
 	pl *PaymentList,
 	err error,

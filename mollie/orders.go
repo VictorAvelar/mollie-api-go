@@ -86,8 +86,8 @@ type UpdateOrder struct {
 	OrderAccessTokenFields
 }
 
-// OrderList for containing the response of list orders.
-type OrderList struct {
+// OrdersList for containing the response of list orders.
+type OrdersList struct {
 	Count    int `json:"count,omitempty"`
 	Embedded struct {
 		Orders []*Order `json:"orders,omitempty"`
@@ -263,8 +263,8 @@ type OrderLineOperations struct {
 	Operations []*OrderLineChangeInstruction `json:"operations,omitempty"`
 }
 
-// OrderListRefund for containing the response of list orders.
-type OrderListRefund struct {
+// OrderRefundsList for containing the response of list orders.
+type OrderRefundsList struct {
 	Count    int `json:"count,omitempty"`
 	Embedded struct {
 		Refunds []*Refund `json:"refund,omitempty"`
@@ -305,16 +305,16 @@ type OrderOptions struct {
 	Embed     []EmbedValue `url:"embed,omitempty"`
 }
 
-// OrderListOptions describes order endpoint valid query string parameters.
-type OrderListOptions struct {
+// ListOrdersOptions describes order endpoint valid query string parameters.
+type ListOrdersOptions struct {
 	Limit     int    `url:"limit,omitempty"`
 	From      string `url:"from,omitempty"`
 	Sort      string `url:"sort,omitempty"`
 	ProfileID string `url:"profileId,omitempty"`
 }
 
-// OrderListRefundOptions describes order endpoint valid query string parameters.
-type OrderListRefundOptions struct {
+// ListOrderRefundsOptions describes order endpoint valid query string parameters.
+type ListOrderRefundsOptions struct {
 	From  string     `url:"from,omitempty"`
 	Limit int        `url:"limit,omitempty"`
 	Embed EmbedValue `url:"embed,omitempty"`
@@ -410,9 +410,9 @@ func (ors *OrdersService) Cancel(ctx context.Context, orderID string) (res *Resp
 // List is to retrieve all orders.
 //
 // See https://docs.mollie.com/reference/v2/orders-api/list-orders
-func (ors *OrdersService) List(ctx context.Context, opts *OrderListOptions) (
+func (ors *OrdersService) List(ctx context.Context, opts *ListOrdersOptions) (
 	res *Response,
-	ordList *OrderList,
+	ordList *OrdersList,
 	err error,
 ) {
 	res, err = ors.client.get(ctx, "v2/orders", opts)
@@ -524,9 +524,9 @@ func (ors *OrdersService) CreateOrderRefund(ctx context.Context, orderID string,
 // ListOrderRefunds retrieve all order refunds.
 //
 // See https://docs.mollie.com/reference/v2/orders-api/list-order-refunds
-func (ors *OrdersService) ListOrderRefunds(ctx context.Context, orderID string, opts *OrderListRefundOptions) (
+func (ors *OrdersService) ListOrderRefunds(ctx context.Context, orderID string, opts *ListOrderRefundsOptions) (
 	res *Response,
-	orderListRefund *OrderListRefund,
+	orderListRefund *OrderRefundsList,
 	err error,
 ) {
 	u := fmt.Sprintf("v2/orders/%s/refunds", orderID)

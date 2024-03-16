@@ -142,7 +142,7 @@ func (ss *SettlementsService) List(ctx context.Context, slo *ListSettlementsOpti
 // This API is an alias of the List payments.
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-payments
-func (ss *SettlementsService) ListPayments(ctx context.Context, settlement string, options *ListPaymentOptions) (
+func (ss *SettlementsService) ListPayments(ctx context.Context, settlement string, options *ListPaymentsOptions) (
 	res *Response,
 	pl *PaymentList,
 	err error,
@@ -182,7 +182,7 @@ func (ss *SettlementsService) GetRefunds(ctx context.Context, settlement string,
 // GetChargebacks retrieves all chargebacks included in a settlement.
 //
 // See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-chargebacks
-func (ss *SettlementsService) GetChargebacks(ctx context.Context, settlement string, slo *ChargebacksListOptions) (
+func (ss *SettlementsService) GetChargebacks(ctx context.Context, settlement string, slo *ListChargebacksOptions) (
 	res *Response,
 	cl *ChargebacksList,
 	err error,

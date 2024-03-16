@@ -115,7 +115,7 @@ func TestPaymentsService_List(t *testing.T) {
 
 	type args struct {
 		ctx     context.Context
-		options *ListPaymentOptions
+		options *ListPaymentsOptions
 	}
 	cases := []struct {
 		name    string
@@ -129,7 +129,7 @@ func TestPaymentsService_List(t *testing.T) {
 			"get payments works as expected.",
 			args{
 				context.Background(),
-				&ListPaymentOptions{
+				&ListPaymentsOptions{
 					From: "tr_12o93213",
 				},
 			},
