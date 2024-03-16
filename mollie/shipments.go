@@ -7,8 +7,17 @@ import (
 	"time"
 )
 
-// ShipmentsService operates on shipments endpoints.
-type ShipmentsService service
+// CreateShipment contains information required to create a new shipment.
+type CreateShipment struct {
+	Lines    []*OrderLine      `json:"lines,omitempty"`
+	Tracking *ShipmentTracking `json:"tracking,omitempty"`
+	ShipmentAccessTokenFields
+}
+
+// ShipmentAccessTokenFields describes the fields available when using an access token.
+type ShipmentAccessTokenFields struct {
+	Testmode bool `json:"testmode,omitempty"`
+}
 
 // Shipment contains information about a user service/product delivery and
 // is used in the figurative sense here.
@@ -17,11 +26,17 @@ type Shipment struct {
 	Resource  string            `json:"resource,omitempty"`
 	ID        string            `json:"id,omitempty"`
 	OrderID   string            `json:"orderId,omitempty"`
-	TestMode  bool              `json:"testmode,omitempty"`
 	CreatedAt *time.Time        `json:"createdAt,omitempty"`
 	Tracking  *ShipmentTracking `json:"tracking,omitempty"`
 	Lines     []*OrderLine      `json:"lines,omitempty"`
 	Links     ShipmentLinks     `json:"_links,omitempty"`
+	ShipmentAccessTokenFields
+}
+
+// UpdateShipment contains information required to update a shipment.
+type UpdateShipment struct {
+	Tracking *ShipmentTracking `json:"tracking,omitempty"`
+	ShipmentAccessTokenFields
 }
 
 // ShipmentTracking contains shipment tracking details.
@@ -39,11 +54,27 @@ type ShipmentLinks struct {
 	Documentation *URL `json:"documentation,omitempty"`
 }
 
+// ShipmentsList describes how a list of payments will be retrieved by Mollie.
+type ShipmentsList struct {
+	Count    int `json:"count,omitempty"`
+	Embedded struct {
+		Shipments []Shipment
+	} `json:"_embedded,omitempty"`
+	Links PaginationLinks `json:"_links,omitempty"`
+}
+
+// ShipmentsService operates on shipments endpoints.
+type ShipmentsService service
+
 // Get retrieves a single shipment and the order lines shipped by a shipment’s ID.
 //
 // See: https://docs.mollie.com/reference/v2/shipments-api/get-shipment#
-func (ss *ShipmentsService) Get(ctx context.Context, oID string, sID string) (res *Response, s *Shipment, err error) {
-	u := fmt.Sprintf("v2/orders/%s/shipments/%s", oID, sID)
+func (ss *ShipmentsService) Get(ctx context.Context, order string, shipment string) (
+	res *Response,
+	s *Shipment,
+	err error,
+) {
+	u := fmt.Sprintf("v2/orders/%s/shipments/%s", order, shipment)
 
 	res, err = ss.client.get(ctx, u, nil)
 	if err != nil {
@@ -57,25 +88,18 @@ func (ss *ShipmentsService) Get(ctx context.Context, oID string, sID string) (re
 	return
 }
 
-// CreateShipmentRequest defines information required to create a new shipment.
-type CreateShipmentRequest struct {
-	Lines    []OrderLine      `json:"lines,omitempty"`
-	Tracking ShipmentTracking `json:"tracking,omitempty"`
-	TestMode bool             `json:"testmode,omitempty"`
-}
-
 // Create can be used to ship order lines.
 //
 // See: https://docs.mollie.com/reference/v2/shipments-api/create-shipment
-func (ss *ShipmentsService) Create(ctx context.Context, oID string, cs CreateShipmentRequest) (
+func (ss *ShipmentsService) Create(ctx context.Context, order string, cs CreateShipment) (
 	res *Response,
 	s *Shipment,
 	err error,
 ) {
-	uri := fmt.Sprintf("v2/orders/%s/shipments", oID)
+	uri := fmt.Sprintf("v2/orders/%s/shipments", order)
 
 	if ss.client.HasAccessToken() && ss.client.config.testing {
-		cs.TestMode = true
+		cs.Testmode = true
 	}
 
 	res, err = ss.client.post(ctx, uri, cs, nil)
@@ -90,20 +114,11 @@ func (ss *ShipmentsService) Create(ctx context.Context, oID string, cs CreateShi
 	return
 }
 
-// ShipmentsList describes how a list of payments will be retrieved by Mollie.
-type ShipmentsList struct {
-	Count    int `json:"count,omitempty"`
-	Embedded struct {
-		Shipments []Shipment
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"_links,omitempty"`
-}
-
 // List retrieves all shipments for an order.
 //
 // See: https://docs.mollie.com/reference/v2/shipments-api/list-shipments
-func (ss *ShipmentsService) List(ctx context.Context, oID string) (res *Response, sl *ShipmentsList, err error) {
-	u := fmt.Sprintf("v2/orders/%s/shipments", oID)
+func (ss *ShipmentsService) List(ctx context.Context, order string) (res *Response, sl *ShipmentsList, err error) {
+	u := fmt.Sprintf("v2/orders/%s/shipments", order)
 
 	res, err = ss.client.get(ctx, u, nil)
 	if err != nil {
@@ -120,14 +135,14 @@ func (ss *ShipmentsService) List(ctx context.Context, oID string) (res *Response
 // Update can be used to update the tracking information of a shipment
 //
 // See: https://docs.mollie.com/reference/v2/shipments-api/update-shipment
-func (ss *ShipmentsService) Update(ctx context.Context, oID string, sID string, st ShipmentTracking) (
+func (ss *ShipmentsService) Update(ctx context.Context, order string, shipment string, us UpdateShipment) (
 	res *Response,
 	s *Shipment,
 	err error,
 ) {
-	u := fmt.Sprintf("v2/orders/%s/shipments/%s", oID, sID)
+	u := fmt.Sprintf("v2/orders/%s/shipments/%s", order, shipment)
 
-	res, err = ss.client.patch(ctx, u, st, nil)
+	res, err = ss.client.patch(ctx, u, us, nil)
 	if err != nil {
 		return
 	}
