@@ -156,7 +156,7 @@ func TestTerminalsService_List(t *testing.T) {
 			testdata.GetTerminalResponse,
 			setAccessToken,
 			func(w http.ResponseWriter, r *http.Request) {
-				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testHeader(t, r, AuthHeader, "Bearer access_token_test")
 				testMethod(t, r, "GET")
 
 				if _, ok := r.Header[AuthHeader]; !ok {
