@@ -255,7 +255,7 @@ func TestRefundsService_ListPaymentRefunds(t *testing.T) {
 	type args struct {
 		ctx       context.Context
 		paymentID string
-		opts      *RefundsListOptions
+		opts      *ListRefundsOptions
 	}
 
 	cases := []struct {
@@ -271,7 +271,7 @@ func TestRefundsService_ListPaymentRefunds(t *testing.T) {
 			args{
 				context.Background(),
 				"tr_7UhSN1zuXS",
-				&RefundsListOptions{},
+				&ListRefundsOptions{},
 			},
 			false,
 			nil,
@@ -286,7 +286,7 @@ func TestRefundsService_ListPaymentRefunds(t *testing.T) {
 			args{
 				context.Background(),
 				"tr_7UhSN1zuXS",
-				&RefundsListOptions{},
+				&ListRefundsOptions{},
 			},
 			false,
 			nil,
@@ -301,7 +301,7 @@ func TestRefundsService_ListPaymentRefunds(t *testing.T) {
 			args{
 				context.Background(),
 				"tr_7UhSN1zuXS",
-				&RefundsListOptions{},
+				&ListRefundsOptions{},
 			},
 			true,
 			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
@@ -313,7 +313,7 @@ func TestRefundsService_ListPaymentRefunds(t *testing.T) {
 			args{
 				context.Background(),
 				"tr_7UhSN1zuXS",
-				&RefundsListOptions{},
+				&ListRefundsOptions{},
 			},
 			true,
 			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
@@ -325,7 +325,7 @@ func TestRefundsService_ListPaymentRefunds(t *testing.T) {
 			args{
 				context.Background(),
 				"tr_7UhSN1zuXS",
-				&RefundsListOptions{},
+				&ListRefundsOptions{},
 			},
 			true,
 			errBadBaseURL,
@@ -580,7 +580,7 @@ func TestRefundsService_ListOrderRefunds(t *testing.T) {
 	type args struct {
 		ctx     context.Context
 		orderID string
-		opts    *RefundsListOptions
+		opts    *ListRefundsOptions
 	}
 
 	cases := []struct {
@@ -596,7 +596,7 @@ func TestRefundsService_ListOrderRefunds(t *testing.T) {
 			args{
 				context.Background(),
 				"ord_8wmqcHMN4U",
-				&RefundsListOptions{},
+				&ListRefundsOptions{},
 			},
 			false,
 			nil,
@@ -611,7 +611,7 @@ func TestRefundsService_ListOrderRefunds(t *testing.T) {
 			args{
 				context.Background(),
 				"ord_8wmqcHMN4U",
-				&RefundsListOptions{},
+				&ListRefundsOptions{},
 			},
 			false,
 			nil,
@@ -626,7 +626,7 @@ func TestRefundsService_ListOrderRefunds(t *testing.T) {
 			args{
 				context.Background(),
 				"ord_8wmqcHMN4U",
-				&RefundsListOptions{},
+				&ListRefundsOptions{},
 			},
 			true,
 			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
@@ -638,7 +638,7 @@ func TestRefundsService_ListOrderRefunds(t *testing.T) {
 			args{
 				context.Background(),
 				"ord_8wmqcHMN4U",
-				&RefundsListOptions{},
+				&ListRefundsOptions{},
 			},
 			true,
 			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
@@ -650,7 +650,7 @@ func TestRefundsService_ListOrderRefunds(t *testing.T) {
 			args{
 				context.Background(),
 				"ord_8wmqcHMN4U",
-				&RefundsListOptions{},
+				&ListRefundsOptions{},
 			},
 			true,
 			errBadBaseURL,
@@ -686,7 +686,7 @@ func TestRefundsService_ListOrderRefunds(t *testing.T) {
 func TestRefundsService_List(t *testing.T) {
 	type args struct {
 		ctx  context.Context
-		opts *RefundsListOptions
+		opts *ListRefundsOptions
 	}
 
 	cases := []struct {
@@ -701,7 +701,7 @@ func TestRefundsService_List(t *testing.T) {
 			"list refunds works as expected",
 			args{
 				context.Background(),
-				&RefundsListOptions{},
+				&ListRefundsOptions{},
 			},
 			false,
 			nil,
@@ -715,7 +715,7 @@ func TestRefundsService_List(t *testing.T) {
 			"list refunds works as expected with access tokens",
 			args{
 				context.Background(),
-				&RefundsListOptions{},
+				&ListRefundsOptions{},
 			},
 			false,
 			nil,
@@ -729,7 +729,7 @@ func TestRefundsService_List(t *testing.T) {
 			"list refunds, an error is returned from the server",
 			args{
 				context.Background(),
-				&RefundsListOptions{},
+				&ListRefundsOptions{},
 			},
 			true,
 			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
@@ -740,7 +740,7 @@ func TestRefundsService_List(t *testing.T) {
 			"list refunds, an error occurs when parsing json",
 			args{
 				context.Background(),
-				&RefundsListOptions{},
+				&ListRefundsOptions{},
 			},
 			true,
 			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
@@ -751,7 +751,7 @@ func TestRefundsService_List(t *testing.T) {
 			"list refunds, invalid url when building request",
 			args{
 				context.Background(),
-				&RefundsListOptions{},
+				&ListRefundsOptions{},
 			},
 			true,
 			errBadBaseURL,

@@ -16,7 +16,7 @@ func TestMethodsService_List(t *testing.T) {
 
 	type args struct {
 		ctx     context.Context
-		options *PaymentMethodsListOptions
+		options *ListPaymentMethodsOptions
 	}
 
 	cases := []struct {
@@ -50,7 +50,7 @@ func TestMethodsService_List(t *testing.T) {
 			"list methods with options works as expected.",
 			args{
 				context.Background(),
-				&PaymentMethodsListOptions{
+				&ListPaymentMethodsOptions{
 					Amount: &Amount{
 						Value:    "100.00",
 						Currency: "EUR",
@@ -133,7 +133,7 @@ func TestMethodsService_All(t *testing.T) {
 
 	type args struct {
 		ctx     context.Context
-		options *PaymentMethodsListOptions
+		options *ListPaymentMethodsOptions
 	}
 
 	cases := []struct {
@@ -167,7 +167,7 @@ func TestMethodsService_All(t *testing.T) {
 			"list methods with options works as expected.",
 			args{
 				context.Background(),
-				&PaymentMethodsListOptions{
+				&ListPaymentMethodsOptions{
 					Amount: &Amount{
 						Value:    "100.00",
 						Currency: "EUR",

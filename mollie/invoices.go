@@ -50,8 +50,8 @@ type InvoiceLinks struct {
 	Documentation *URL `json:"documentation,omitempty"`
 }
 
-// InvoicesListOptions describes list invoices endpoint valid query string parameters.
-type InvoicesListOptions struct {
+// ListInvoicesOptions describes list invoices endpoint valid query string parameters.
+type ListInvoicesOptions struct {
 	Limit     int64  `url:"limit,omitempty"`
 	Reference string `url:"reference,omitempty"`
 	Year      string `url:"year,omitempty"`
@@ -87,7 +87,7 @@ func (is *InvoicesService) Get(ctx context.Context, id string) (res *Response, i
 }
 
 // List retrieves a list of invoices associated with your account/organization.
-func (is *InvoicesService) List(ctx context.Context, options *InvoicesListOptions) (
+func (is *InvoicesService) List(ctx context.Context, options *ListInvoicesOptions) (
 	res *Response,
 	il *InvoicesList,
 	err error,

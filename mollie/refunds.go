@@ -109,8 +109,8 @@ type PaymentRefundOptions struct {
 	Embed []EmbedValue `url:"embed,omitempty"`
 }
 
-// RefundsListOptions describes payment and order refunds list endpoint valid query string parameters.
-type RefundsListOptions struct {
+// ListRefundsOptions describes payment and order refunds list endpoint valid query string parameters.
+type ListRefundsOptions struct {
 	Limit     int          `url:"limit,omitempty"`
 	From      string       `url:"from,omitempty"`
 	ProfileID string       `url:"profileId,omitempty"`
@@ -123,7 +123,7 @@ type RefundsService service
 // List retrieves all refunds.
 //
 // See https://docs.mollie.com/reference/v2/refunds-api/list-refunds.
-func (rs *RefundsService) List(ctx context.Context, opts *RefundsListOptions) (
+func (rs *RefundsService) List(ctx context.Context, opts *ListRefundsOptions) (
 	res *Response,
 	rl *RefundsList,
 	err error,
@@ -172,7 +172,7 @@ func (rs *RefundsService) GetPaymentRefund(
 func (rs *RefundsService) ListPaymentRefunds(
 	ctx context.Context,
 	paymentID string,
-	opts *RefundsListOptions,
+	opts *ListRefundsOptions,
 ) (
 	res *Response,
 	rl *RefundsList,
@@ -268,7 +268,7 @@ func (rs *RefundsService) CreateOrderRefund(
 func (rs *RefundsService) ListOrderRefunds(
 	ctx context.Context,
 	orderID string,
-	opts *RefundsListOptions,
+	opts *ListRefundsOptions,
 ) (
 	res *Response,
 	rl *RefundsList,

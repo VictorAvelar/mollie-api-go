@@ -116,7 +116,7 @@ func TestOrdersService_List(t *testing.T) {
 	type args struct {
 		ctx     context.Context
 		order   string
-		options *OrderListOptions
+		options *ListOrdersOptions
 	}
 	cases := []struct {
 		name    string
@@ -131,7 +131,7 @@ func TestOrdersService_List(t *testing.T) {
 			args{
 				context.Background(),
 				"ord_kEn1PlbGa",
-				&OrderListOptions{
+				&ListOrdersOptions{
 					ProfileID: "pfl_1236h213bv1",
 				},
 			},
@@ -201,7 +201,7 @@ func TestOrdersService_List(t *testing.T) {
 				assert.EqualError(t, err, c.err.Error())
 			} else {
 				assert.Nil(t, err)
-				assert.IsType(t, &OrderList{}, m)
+				assert.IsType(t, &OrdersList{}, m)
 				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})
@@ -1076,7 +1076,7 @@ func TestOrdersService_ListOrderRefund(t *testing.T) {
 	type args struct {
 		ctx     context.Context
 		order   *Order
-		options *OrderListRefundOptions
+		options *ListOrderRefundsOptions
 	}
 	cases := []struct {
 		name    string
@@ -1091,7 +1091,7 @@ func TestOrdersService_ListOrderRefund(t *testing.T) {
 			args{
 				context.Background(),
 				&Order{ID: "ord_8wmqcHMN4U"},
-				&OrderListRefundOptions{Limit: 100},
+				&ListOrderRefundsOptions{Limit: 100},
 			},
 			false,
 			nil,
@@ -1181,7 +1181,7 @@ func TestOrdersService_ListOrderRefund(t *testing.T) {
 				assert.EqualError(t, err, c.err.Error())
 			} else {
 				assert.Nil(t, err)
-				assert.IsType(t, &OrderListRefund{}, m)
+				assert.IsType(t, &OrderRefundsList{}, m)
 				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})

@@ -7,16 +7,6 @@ import (
 	"time"
 )
 
-// BalancesService allows you to retrieve real-time as well as historical
-// information about your Mollie balance.
-//
-// Works with Organization access tokens and App access tokens.
-//
-// The API is in **BETA** so be careful and expect changes.
-//
-// See: https://docs.mollie.com/reference/v2/balances-api/overview
-type BalancesService service
-
 // BalanceStatus reflects whether a balance is operational or not.
 type BalanceStatus string
 
@@ -83,9 +73,9 @@ type BalancesList struct {
 	Links PaginationLinks `json:"_links,omitempty"`
 }
 
-// BalanceListOptions contains valid query parameters
+// ListBalancesOptions contains valid query parameters
 // for the list balances endpoint.
-type BalanceListOptions struct {
+type ListBalancesOptions struct {
 	Currency string `url:"currency,omitempty"`
 	From     string `url:"from,omitempty"`
 	Limit    int    `url:"limit,omitempty"`
@@ -217,12 +207,20 @@ type BalanceTransactionsList struct {
 	Links PaginationLinks `json:"_links,omitempty"`
 }
 
-// BalanceTransactionsListOptions are valid query parameters for list
+// ListBalanceTransactionsOptions are valid query parameters for list
 // balance transactions requests.
-type BalanceTransactionsListOptions struct {
+type ListBalanceTransactionsOptions struct {
 	From  string `url:"from,omitempty"`
 	Limit int    `url:"limit,omitempty"`
 }
+
+// BalancesService allows you to retrieve real-time as well as historical
+// information about your Mollie balance.
+//
+// Works with Organization access tokens and App access tokens.
+//
+// See: https://docs.mollie.com/reference/v2/balances-api/overview
+type BalancesService service
 
 // GetBalance retrieves a balance by its id.
 //
@@ -245,7 +243,7 @@ func (bs *BalancesService) Primary(ctx context.Context) (res *Response, b *Balan
 // balance, ordered from newest to oldest.
 //
 // See: https://docs.mollie.com/reference/v2/balances-api/list-balances
-func (bs *BalancesService) List(ctx context.Context, options *BalanceListOptions) (
+func (bs *BalancesService) List(ctx context.Context, options *ListBalancesOptions) (
 	res *Response,
 	bl *BalancesList,
 	err error,
@@ -282,7 +280,7 @@ func (bs *BalancesService) GetPrimaryReport(ctx context.Context, options *Balanc
 func (bs *BalancesService) GetTransactionsList(
 	ctx context.Context,
 	balance string,
-	options *BalanceTransactionsListOptions,
+	options *ListBalanceTransactionsOptions,
 ) (
 	res *Response,
 	btl *BalanceTransactionsList,
@@ -295,7 +293,7 @@ func (bs *BalancesService) GetTransactionsList(
 // primary balance of the account.
 //
 // See: https://docs.mollie.com/reference/v2/balances-api/list-primary-balance-transactions
-func (bs *BalancesService) GetPrimaryTransactionsList(ctx context.Context, options *BalanceTransactionsListOptions) (
+func (bs *BalancesService) GetPrimaryTransactionsList(ctx context.Context, options *ListBalanceTransactionsOptions) (
 	res *Response,
 	btl *BalanceTransactionsList,
 	err error,
@@ -357,7 +355,7 @@ func (bs *BalancesService) getReport(
 func (bs *BalancesService) listTransactions(
 	ctx context.Context,
 	balance string,
-	options *BalanceTransactionsListOptions,
+	options *ListBalanceTransactionsOptions,
 ) (res *Response, btl *BalanceTransactionsList, err error) {
 	u := fmt.Sprintf("v2/balances/%s/transactions", balance)
 

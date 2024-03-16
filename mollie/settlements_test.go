@@ -390,7 +390,7 @@ func TestSettlementsService_GetPayments(t *testing.T) {
 	type args struct {
 		ctx        context.Context
 		settlement string
-		options    *ListPaymentOptions
+		options    *ListPaymentsOptions
 	}
 	cases := []struct {
 		name    string
@@ -405,7 +405,7 @@ func TestSettlementsService_GetPayments(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&ListPaymentOptions{
+				&ListPaymentsOptions{
 					Limit: 10,
 				},
 			},
@@ -428,7 +428,7 @@ func TestSettlementsService_GetPayments(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&ListPaymentOptions{
+				&ListPaymentsOptions{
 					Limit: 10,
 				},
 			},
@@ -442,7 +442,7 @@ func TestSettlementsService_GetPayments(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&ListPaymentOptions{
+				&ListPaymentsOptions{
 					Limit: 10,
 				},
 			},
@@ -456,7 +456,7 @@ func TestSettlementsService_GetPayments(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&ListPaymentOptions{
+				&ListPaymentsOptions{
 					Limit: 10,
 				},
 			},
@@ -600,7 +600,7 @@ func TestSettlementsService_GetChargebacks(t *testing.T) {
 	type args struct {
 		ctx        context.Context
 		settlement string
-		options    *ChargebacksListOptions
+		options    *ListChargebacksOptions
 	}
 	cases := []struct {
 		name    string
@@ -615,7 +615,7 @@ func TestSettlementsService_GetChargebacks(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&ChargebacksListOptions{
+				&ListChargebacksOptions{
 					Limit: 10,
 				},
 			},
@@ -638,7 +638,7 @@ func TestSettlementsService_GetChargebacks(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&ChargebacksListOptions{
+				&ListChargebacksOptions{
 					Limit: 10,
 				},
 			},
@@ -652,7 +652,7 @@ func TestSettlementsService_GetChargebacks(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&ChargebacksListOptions{
+				&ListChargebacksOptions{
 					Limit: 10,
 				},
 			},
@@ -666,7 +666,7 @@ func TestSettlementsService_GetChargebacks(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&ChargebacksListOptions{
+				&ListChargebacksOptions{
 					Limit: 10,
 				},
 			},

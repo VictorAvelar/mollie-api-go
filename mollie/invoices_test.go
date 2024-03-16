@@ -19,7 +19,7 @@ func TestInvoicesService_Get(t *testing.T) {
 	type args struct {
 		ctx     context.Context
 		invoice string
-		options *InvoicesListOptions
+		options *ListInvoicesOptions
 	}
 
 	cases := []struct {
@@ -117,7 +117,7 @@ func TestInvoicesService_List(t *testing.T) {
 	type args struct {
 		ctx     context.Context
 		invoice string
-		options *InvoicesListOptions
+		options *ListInvoicesOptions
 	}
 
 	cases := []struct {
@@ -154,7 +154,7 @@ func TestInvoicesService_List(t *testing.T) {
 			args{
 				context.Background(),
 				"inv_xBEbP9rvAq",
-				&InvoicesListOptions{
+				&ListInvoicesOptions{
 					Year: strconv.Itoa(time.Now().Year()),
 				},
 			},

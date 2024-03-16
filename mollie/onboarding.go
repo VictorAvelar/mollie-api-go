@@ -18,9 +18,6 @@ const (
 	CompletedOnboardingStatus OnboardingStatus = "completed"
 )
 
-// OnboardingService operates over the onboarding API.
-type OnboardingService service
-
 // OnboardingLinks contains URL objects relevant to the onboarding status.
 type OnboardingLinks struct {
 	Self          *URL `json:"self,omitempty"`
@@ -38,22 +35,6 @@ type Onboarding struct {
 	SignedUpAt            *time.Time       `json:"signedUpAt,omitempty"`
 	Status                OnboardingStatus `json:"status,omitempty"`
 	Links                 OnboardingLinks  `json:"_links,omitempty"`
-}
-
-// GetOnboardingStatus gets the status of onboarding of the authenticated organization.
-//
-// See: https://docs.mollie.com/reference/v2/onboarding-api/get-onboarding-status
-func (os *OnboardingService) GetOnboardingStatus(ctx context.Context) (res *Response, o *Onboarding, err error) {
-	res, err = os.client.get(ctx, onboardingURLPath, nil)
-	if err != nil {
-		return
-	}
-
-	if err = json.Unmarshal(res.content, &o); err != nil {
-		return
-	}
-
-	return
 }
 
 // OnboardingData request possible values.
@@ -86,6 +67,25 @@ type OnboardingDataProfile struct {
 type OnboardingData struct {
 	Organization OnboardingDataOrganization `json:"organization,omitempty"`
 	Profile      OnboardingDataProfile      `json:"profile,omitempty"`
+}
+
+// OnboardingService operates over the onboarding API.
+type OnboardingService service
+
+// GetOnboardingStatus gets the status of onboarding of the authenticated organization.
+//
+// See: https://docs.mollie.com/reference/v2/onboarding-api/get-onboarding-status
+func (os *OnboardingService) GetOnboardingStatus(ctx context.Context) (res *Response, o *Onboarding, err error) {
+	res, err = os.client.get(ctx, onboardingURLPath, nil)
+	if err != nil {
+		return
+	}
+
+	if err = json.Unmarshal(res.content, &o); err != nil {
+		return
+	}
+
+	return
 }
 
 // SubmitOnboardingData sends data that will be prefilled in the merchant’s onboarding.

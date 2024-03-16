@@ -48,8 +48,8 @@ type ChargebackOptions struct {
 	Embed   []EmbedValue   `url:"embed,omitempty"`
 }
 
-// ChargebacksListOptions describes list chargebacks endpoint valid query string parameters.
-type ChargebacksListOptions struct {
+// ListChargebacksOptions describes list chargebacks endpoint valid query string parameters.
+type ListChargebacksOptions struct {
 	From      string         `url:"from,omitempty"`
 	Limit     int            `url:"limit,omitempty"`
 	Include   []IncludeValue `url:"include,omitempty"`
@@ -95,7 +95,7 @@ func (cs *ChargebacksService) Get(ctx context.Context, payment, chargeback strin
 // List retrieves a list of chargebacks associated with your account/organization.
 //
 // See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
-func (cs *ChargebacksService) List(ctx context.Context, options *ChargebacksListOptions) (
+func (cs *ChargebacksService) List(ctx context.Context, options *ListChargebacksOptions) (
 	res *Response,
 	cl *ChargebacksList,
 	err error,
@@ -106,7 +106,7 @@ func (cs *ChargebacksService) List(ctx context.Context, options *ChargebacksList
 // ListForPayment retrieves a list of chargebacks associated with a single payment.
 //
 // See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
-func (cs *ChargebacksService) ListForPayment(ctx context.Context, payment string, options *ChargebacksListOptions) (
+func (cs *ChargebacksService) ListForPayment(ctx context.Context, payment string, options *ListChargebacksOptions) (
 	res *Response,
 	cl *ChargebacksList,
 	err error,
