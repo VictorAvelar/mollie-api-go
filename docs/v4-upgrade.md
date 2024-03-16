@@ -6,11 +6,13 @@
 - `pagination` package has moved from the`mollie` directory to the `pkg` directory.
 - `connect` package has moved from the `mollie` directory to the `pkg` directory.
 - root namespace is not `github.com/VictorAvelar/mollie-api-go/v4/`.
-- Changes for payments resource
-  - Added `CreatePayment` type to use when creating a payment.
-  - Added `UpdatePayment` type to use when updating a payment.
-  - Ensured `Payment` object (used for read operations) contains all the available fields.
-  - Created types specific for fields that are conditional given the payment values, both to create new payments and to list existing payments.
+- Changes in all resources:
+  - Data structures to describe request content in create, update and get operations are no longer the same, e.g. for `payments` there is a `CreatePayment` struct, a `UpdatePayment` struct and a `Payment` struct. This enables future extensions and modifications without having to check for cross request compatibility.
+  - Data structures that describe available url parameters are consistently names `List{ResourceName}Options`.
+  - Data structures that describe lists responses are consistently named as follows: e.g. for payments: `PaymentsList`
+- API aliases now use the parent objects, e.g. for settlements when listing payments the options passed to the request are using the `ListPaymentsOptions` object and not a local object.
+- All resources were checked for API consistency and parity, optional resources with custom types are now pointers to ensure proper json encoding and decoding to avoid issues as the one mentioned un #271
+- All resources embed a struct containing all the fields specific to access tokens, following this pattern the same happens for fields specific to Mollie connect
 
 ## Other changes
 
@@ -18,4 +20,5 @@
 - Improvements for devcontainer files
 - Major versions of multiple github actions updated
 - Base `Dockerfile` using Go 1.22.x
-- Tests related to payments were update to use the new types.
+- Tests were update to use the new types.
+- Test coverage was slightly improved.
