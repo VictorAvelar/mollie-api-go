@@ -113,7 +113,7 @@ func TestTerminalsService_List(t *testing.T) {
 
 	type args struct {
 		ctx     context.Context
-		options *TerminalListOptions
+		options *ListTerminalsOptions
 	}
 
 	cases := []struct {
@@ -129,12 +129,32 @@ func TestTerminalsService_List(t *testing.T) {
 			"list terminals correctly",
 			args{
 				context.Background(),
-				&TerminalListOptions{},
+				&ListTerminalsOptions{},
 			},
 			false,
 			nil,
 			testdata.GetTerminalResponse,
 			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.ListTerminalsResponse))
+			},
+		},
+		{
+			"list terminals correctly with an access token",
+			args{
+				context.Background(),
+				&ListTerminalsOptions{},
+			},
+			false,
+			nil,
+			testdata.GetTerminalResponse,
+			setAccessToken,
 			func(w http.ResponseWriter, r *http.Request) {
 				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
 				testMethod(t, r, "GET")
