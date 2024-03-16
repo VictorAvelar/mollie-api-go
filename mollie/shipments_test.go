@@ -209,7 +209,7 @@ func TestShipmentsService_Create(t *testing.T) {
 	type args struct {
 		ctx      context.Context
 		order    string
-		shipment CreateShipmentRequest
+		shipment CreateShipment
 	}
 	cases := []struct {
 		name    string
@@ -224,8 +224,12 @@ func TestShipmentsService_Create(t *testing.T) {
 			args{
 				context.Background(),
 				"ord_kEn1PlbGa",
-				CreateShipmentRequest{
-					TestMode: true,
+				CreateShipment{
+					Tracking: &ShipmentTracking{
+						Carrier: "fedex",
+						Code:    "3wmsgCJN4U",
+						URL:     "https://www.example.fedex.com/apps/fedextrack/?tracknumbers=3wmsgCJN4U",
+					},
 				},
 			},
 			false,
@@ -246,8 +250,12 @@ func TestShipmentsService_Create(t *testing.T) {
 			args{
 				context.Background(),
 				"ord_kEn1PlbGa",
-				CreateShipmentRequest{
-					TestMode: true,
+				CreateShipment{
+					Tracking: &ShipmentTracking{
+						Carrier: "fedex",
+						Code:    "3wmsgCJN4U",
+						URL:     "https://www.example.fedex.com/apps/fedextrack/?tracknumbers=3wmsgCJN4U",
+					},
 				},
 			},
 			false,
@@ -269,9 +277,7 @@ func TestShipmentsService_Create(t *testing.T) {
 			args{
 				context.Background(),
 				"ord_kEn1PlbGa",
-				CreateShipmentRequest{
-					TestMode: true,
-				},
+				CreateShipment{},
 			},
 			true,
 			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
@@ -283,9 +289,7 @@ func TestShipmentsService_Create(t *testing.T) {
 			args{
 				context.Background(),
 				"ord_kEn1PlbGa",
-				CreateShipmentRequest{
-					TestMode: true,
-				},
+				CreateShipment{},
 			},
 			true,
 			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
@@ -297,9 +301,7 @@ func TestShipmentsService_Create(t *testing.T) {
 			args{
 				context.Background(),
 				"ord_kEn1PlbGa",
-				CreateShipmentRequest{
-					TestMode: true,
-				},
+				CreateShipment{},
 			},
 			true,
 			errBadBaseURL,
@@ -337,7 +339,7 @@ func TestShipmentsService_Update(t *testing.T) {
 		ctx      context.Context
 		order    string
 		shipment string
-		st       ShipmentTracking
+		st       UpdateShipment
 	}
 	cases := []struct {
 		name    string
@@ -353,8 +355,12 @@ func TestShipmentsService_Update(t *testing.T) {
 				context.Background(),
 				"ord_kEn1PlbGa",
 				"shp_3wmsgCJN4U",
-				ShipmentTracking{
-					Carrier: "fedex",
+				UpdateShipment{
+					Tracking: &ShipmentTracking{
+						Carrier: "dhl",
+						Code:    "3wmsgCJN4U",
+						URL:     "https://www.example.dhl.com/apps/dhltrack/?tracknumbers=3wmsgCJN4U",
+					},
 				},
 			},
 			false,
@@ -376,8 +382,12 @@ func TestShipmentsService_Update(t *testing.T) {
 				context.Background(),
 				"ord_kEn1PlbGa",
 				"shp_3wmsgCJN4U",
-				ShipmentTracking{
-					Carrier: "fedex",
+				UpdateShipment{
+					Tracking: &ShipmentTracking{
+						Carrier: "dhl",
+						Code:    "3wmsgCJN4U",
+						URL:     "https://www.example.dhl.com/apps/dhltrack/?tracknumbers=3wmsgCJN4U",
+					},
 				},
 			},
 			false,
@@ -400,9 +410,7 @@ func TestShipmentsService_Update(t *testing.T) {
 				context.Background(),
 				"ord_kEn1PlbGa",
 				"shp_3wmsgCJN4U",
-				ShipmentTracking{
-					Carrier: "fedex",
-				},
+				UpdateShipment{},
 			},
 			true,
 			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
@@ -415,9 +423,7 @@ func TestShipmentsService_Update(t *testing.T) {
 				context.Background(),
 				"ord_kEn1PlbGa",
 				"shp_3wmsgCJN4U",
-				ShipmentTracking{
-					Carrier: "fedex",
-				},
+				UpdateShipment{},
 			},
 			true,
 			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
@@ -430,9 +436,7 @@ func TestShipmentsService_Update(t *testing.T) {
 				context.Background(),
 				"ord_kEn1PlbGa",
 				"shp_3wmsgCJN4U",
-				ShipmentTracking{
-					Carrier: "fedex",
-				},
+				UpdateShipment{},
 			},
 			true,
 			errBadBaseURL,

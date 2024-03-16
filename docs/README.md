@@ -120,7 +120,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type CreatePaymentRefund](<#CreatePaymentRefund>)
 - [type CreatePreAuthorizedPaymentFields](<#CreatePreAuthorizedPaymentFields>)
 - [type CreateRecurrentPaymentFields](<#CreateRecurrentPaymentFields>)
-- [type CreateShipmentRequest](<#CreateShipmentRequest>)
+- [type CreateShipment](<#CreateShipment>)
 - [type CreateSubscription](<#CreateSubscription>)
 - [type Customer](<#Customer>)
 - [type CustomerLinks](<#CustomerLinks>)
@@ -341,14 +341,15 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
   - [func \(ss \*SettlementsService\) Next\(ctx context.Context\) \(res \*Response, s \*Settlement, err error\)](<#SettlementsService.Next>)
   - [func \(ss \*SettlementsService\) Open\(ctx context.Context\) \(res \*Response, s \*Settlement, err error\)](<#SettlementsService.Open>)
 - [type Shipment](<#Shipment>)
+- [type ShipmentAccessTokenFields](<#ShipmentAccessTokenFields>)
 - [type ShipmentLinks](<#ShipmentLinks>)
 - [type ShipmentTracking](<#ShipmentTracking>)
 - [type ShipmentsList](<#ShipmentsList>)
 - [type ShipmentsService](<#ShipmentsService>)
-  - [func \(ss \*ShipmentsService\) Create\(ctx context.Context, oID string, cs CreateShipmentRequest\) \(res \*Response, s \*Shipment, err error\)](<#ShipmentsService.Create>)
-  - [func \(ss \*ShipmentsService\) Get\(ctx context.Context, oID string, sID string\) \(res \*Response, s \*Shipment, err error\)](<#ShipmentsService.Get>)
-  - [func \(ss \*ShipmentsService\) List\(ctx context.Context, oID string\) \(res \*Response, sl \*ShipmentsList, err error\)](<#ShipmentsService.List>)
-  - [func \(ss \*ShipmentsService\) Update\(ctx context.Context, oID string, sID string, st ShipmentTracking\) \(res \*Response, s \*Shipment, err error\)](<#ShipmentsService.Update>)
+  - [func \(ss \*ShipmentsService\) Create\(ctx context.Context, order string, cs CreateShipment\) \(res \*Response, s \*Shipment, err error\)](<#ShipmentsService.Create>)
+  - [func \(ss \*ShipmentsService\) Get\(ctx context.Context, order string, shipment string\) \(res \*Response, s \*Shipment, err error\)](<#ShipmentsService.Get>)
+  - [func \(ss \*ShipmentsService\) List\(ctx context.Context, order string\) \(res \*Response, sl \*ShipmentsList, err error\)](<#ShipmentsService.List>)
+  - [func \(ss \*ShipmentsService\) Update\(ctx context.Context, order string, shipment string, us UpdateShipment\) \(res \*Response, s \*Shipment, err error\)](<#ShipmentsService.Update>)
 - [type ShortDate](<#ShortDate>)
   - [func \(d \*ShortDate\) MarshalJSON\(\) \(\[\]byte, error\)](<#ShortDate.MarshalJSON>)
   - [func \(d \*ShortDate\) UnmarshalJSON\(b \[\]byte\) error](<#ShortDate.UnmarshalJSON>)
@@ -380,6 +381,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type UpdateOrder](<#UpdateOrder>)
 - [type UpdateOrderLine](<#UpdateOrderLine>)
 - [type UpdatePayment](<#UpdatePayment>)
+- [type UpdateShipment](<#UpdateShipment>)
 - [type UpdateSubscription](<#UpdateSubscription>)
 - [type UsedGiftCard](<#UsedGiftCard>)
 - [type UserAgentToken](<#UserAgentToken>)
@@ -2099,16 +2101,16 @@ type CreateRecurrentPaymentFields struct {
 }
 ```
 
-<a name="CreateShipmentRequest"></a>
-## type [CreateShipmentRequest](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L61-L65>)
+<a name="CreateShipment"></a>
+## type [CreateShipment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L11-L15>)
 
-CreateShipmentRequest defines information required to create a new shipment.
+CreateShipment contains information required to create a new shipment.
 
 ```go
-type CreateShipmentRequest struct {
-    Lines    []OrderLine      `json:"lines,omitempty"`
-    Tracking ShipmentTracking `json:"tracking,omitempty"`
-    TestMode bool             `json:"testmode,omitempty"`
+type CreateShipment struct {
+    Lines    []*OrderLine      `json:"lines,omitempty"`
+    Tracking *ShipmentTracking `json:"tracking,omitempty"`
+    ShipmentAccessTokenFields
 }
 ```
 
@@ -5396,7 +5398,7 @@ Open retrieves the details of the open balance of the organization. This will re
 See: https://docs.mollie.com/reference/v2/settlements-api/get-open-settlement
 
 <a name="Shipment"></a>
-## type [Shipment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L16-L25>)
+## type [Shipment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L25-L34>)
 
 Shipment contains information about a user service/product delivery and is used in the figurative sense here. It can also mean that a service was provided or digital content was delivered.
 
@@ -5405,16 +5407,27 @@ type Shipment struct {
     Resource  string            `json:"resource,omitempty"`
     ID        string            `json:"id,omitempty"`
     OrderID   string            `json:"orderId,omitempty"`
-    TestMode  bool              `json:"testmode,omitempty"`
     CreatedAt *time.Time        `json:"createdAt,omitempty"`
     Tracking  *ShipmentTracking `json:"tracking,omitempty"`
     Lines     []*OrderLine      `json:"lines,omitempty"`
     Links     ShipmentLinks     `json:"_links,omitempty"`
+    ShipmentAccessTokenFields
+}
+```
+
+<a name="ShipmentAccessTokenFields"></a>
+## type [ShipmentAccessTokenFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L18-L20>)
+
+ShipmentAccessTokenFields describes the fields available when using an access token.
+
+```go
+type ShipmentAccessTokenFields struct {
+    Testmode bool `json:"testmode,omitempty"`
 }
 ```
 
 <a name="ShipmentLinks"></a>
-## type [ShipmentLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L36-L40>)
+## type [ShipmentLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L51-L55>)
 
 ShipmentLinks contains URL objects with shipment relevant information for the user.
 
@@ -5427,7 +5440,7 @@ type ShipmentLinks struct {
 ```
 
 <a name="ShipmentTracking"></a>
-## type [ShipmentTracking](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L28-L32>)
+## type [ShipmentTracking](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L43-L47>)
 
 ShipmentTracking contains shipment tracking details.
 
@@ -5440,7 +5453,7 @@ type ShipmentTracking struct {
 ```
 
 <a name="ShipmentsList"></a>
-## type [ShipmentsList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L94-L100>)
+## type [ShipmentsList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L58-L64>)
 
 ShipmentsList describes how a list of payments will be retrieved by Mollie.
 
@@ -5455,7 +5468,7 @@ type ShipmentsList struct {
 ```
 
 <a name="ShipmentsService"></a>
-## type [ShipmentsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L11>)
+## type [ShipmentsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L67>)
 
 ShipmentsService operates on shipments endpoints.
 
@@ -5464,10 +5477,10 @@ type ShipmentsService service
 ```
 
 <a name="ShipmentsService.Create"></a>
-### func \(\*ShipmentsService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L70-L74>)
+### func \(\*ShipmentsService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L94-L98>)
 
 ```go
-func (ss *ShipmentsService) Create(ctx context.Context, oID string, cs CreateShipmentRequest) (res *Response, s *Shipment, err error)
+func (ss *ShipmentsService) Create(ctx context.Context, order string, cs CreateShipment) (res *Response, s *Shipment, err error)
 ```
 
 Create can be used to ship order lines.
@@ -5475,10 +5488,10 @@ Create can be used to ship order lines.
 See: https://docs.mollie.com/reference/v2/shipments-api/create-shipment
 
 <a name="ShipmentsService.Get"></a>
-### func \(\*ShipmentsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L45>)
+### func \(\*ShipmentsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L72-L76>)
 
 ```go
-func (ss *ShipmentsService) Get(ctx context.Context, oID string, sID string) (res *Response, s *Shipment, err error)
+func (ss *ShipmentsService) Get(ctx context.Context, order string, shipment string) (res *Response, s *Shipment, err error)
 ```
 
 Get retrieves a single shipment and the order lines shipped by a shipment’s ID.
@@ -5486,10 +5499,10 @@ Get retrieves a single shipment and the order lines shipped by a shipment’s ID
 See: https://docs.mollie.com/reference/v2/shipments-api/get-shipment#
 
 <a name="ShipmentsService.List"></a>
-### func \(\*ShipmentsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L105>)
+### func \(\*ShipmentsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L120>)
 
 ```go
-func (ss *ShipmentsService) List(ctx context.Context, oID string) (res *Response, sl *ShipmentsList, err error)
+func (ss *ShipmentsService) List(ctx context.Context, order string) (res *Response, sl *ShipmentsList, err error)
 ```
 
 List retrieves all shipments for an order.
@@ -5497,10 +5510,10 @@ List retrieves all shipments for an order.
 See: https://docs.mollie.com/reference/v2/shipments-api/list-shipments
 
 <a name="ShipmentsService.Update"></a>
-### func \(\*ShipmentsService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L123-L127>)
+### func \(\*ShipmentsService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L138-L142>)
 
 ```go
-func (ss *ShipmentsService) Update(ctx context.Context, oID string, sID string, st ShipmentTracking) (res *Response, s *Shipment, err error)
+func (ss *ShipmentsService) Update(ctx context.Context, order string, shipment string, us UpdateShipment) (res *Response, s *Shipment, err error)
 ```
 
 Update can be used to update the tracking information of a shipment
@@ -5971,6 +5984,18 @@ type UpdatePayment struct {
     BillingEmail string     `json:"billingEmail,omitempty"`
     DueDate      *ShortDate `json:"dueDate,omitempty"`
     Issuer       string     `json:"issuer,omitempty"`
+}
+```
+
+<a name="UpdateShipment"></a>
+## type [UpdateShipment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L37-L40>)
+
+UpdateShipment contains information required to update a shipment.
+
+```go
+type UpdateShipment struct {
+    Tracking *ShipmentTracking `json:"tracking,omitempty"`
+    ShipmentAccessTokenFields
 }
 ```
 
