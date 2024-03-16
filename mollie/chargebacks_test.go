@@ -37,7 +37,7 @@ func TestChargebacksService_Get(t *testing.T) {
 				"tr_WDqYK6vllg",
 				"chb_n9z0tp",
 				&ChargebackOptions{
-					Include: "details.qrCode",
+					Include: []IncludeValue{IncludeQrCode},
 				},
 			},
 			false,
@@ -60,7 +60,7 @@ func TestChargebacksService_Get(t *testing.T) {
 				"tr_WDqYK6vllg",
 				"chb_n9z0tp",
 				&ChargebackOptions{
-					Include: "details.qrCode",
+					Include: []IncludeValue{IncludeQrCode},
 				},
 			},
 			true,
@@ -75,7 +75,7 @@ func TestChargebacksService_Get(t *testing.T) {
 				"tr_WDqYK6vllg",
 				"chb_n9z0tp",
 				&ChargebackOptions{
-					Include: "details.qrCode",
+					Include: []IncludeValue{IncludeQrCode},
 				},
 			},
 			true,
@@ -93,7 +93,7 @@ func TestChargebacksService_Get(t *testing.T) {
 				"tr_WDqYK6vllg",
 				"chb_n9z0tp",
 				&ChargebackOptions{
-					Include: "details.qrCode",
+					Include: []IncludeValue{IncludeQrCode},
 				},
 			},
 			true,

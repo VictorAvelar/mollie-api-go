@@ -7,19 +7,37 @@ import (
 	"time"
 )
 
+// CreateMandate contains the parameters to create a mandate.
+type CreateMandate struct {
+	ConsumerName             string        `json:"consumerName,omitempty"`
+	ConsumerAccount          string        `json:"consumerAccount,omitempty"`
+	ConsumerBIC              string        `json:"consumerBic,omitempty"`
+	ConsumerEmail            string        `json:"consumerEmail,omitempty"`
+	MandateReference         string        `json:"mandateReference,omitempty"`
+	PaypalBillingAgreementID string        `json:"paypalBillingAgreementId,omitempty"`
+	SignatureDate            *ShortDate    `json:"signatureDate,omitempty"`
+	Method                   PaymentMethod `json:"method,omitempty"`
+	CreateMandateAccessTokenFields
+}
+
+// CreateMandateAccessTokenFields contains the parameters to create a mandate when using an  access token.
+type CreateMandateAccessTokenFields struct {
+	Testmode bool `json:"testmode,omitempty"`
+}
+
 // Mandate allow you to charge a customer’s credit card or bank account recurrently.
 type Mandate struct {
 	ID               string         `json:"id,omitempty"`
 	Resource         string         `json:"resource,omitempty"`
-	Method           PaymentMethod  `json:"method,omitempty"`
 	ConsumerName     string         `json:"consumerName,omitempty"`
 	ConsumerAccount  string         `json:"consumerAccount,omitempty"`
 	ConsumerBic      string         `json:"consumerBic,omitempty"`
-	SignatureDate    *ShortDate     `json:"signatureDate,omitempty"`
 	MandateReference string         `json:"mandateReference,omitempty"`
+	SignatureDate    *ShortDate     `json:"signatureDate,omitempty"`
+	CreatedAt        *time.Time     `json:"createdAt,omitempty"`
 	Mode             Mode           `json:"mode,omitempty"`
 	Status           MandateStatus  `json:"status,omitempty"`
-	CreatedAt        *time.Time     `json:"createdAt,omitempty"`
+	Method           PaymentMethod  `json:"method,omitempty"`
 	Details          MandateDetails `json:"details,omitempty"`
 	Links            MandateLinks   `json:"_links,omitempty"`
 }
@@ -31,9 +49,9 @@ type MandateDetails struct {
 	ConsumerBic     string     `json:"consumerBic,omitempty"`
 	CardHolder      string     `json:"cardHolder,omitempty"`
 	CardNumber      string     `json:"cardNumber,omitempty"`
-	CardLabel       CardLabel  `json:"cardLabel,omitempty"`
 	CardFingerprint string     `json:"cardFingerprint,omitempty"`
 	CardExpiryDate  *ShortDate `json:"cardExpiryDate,omitempty"`
+	CardLabel       CardLabel  `json:"cardLabel,omitempty"`
 }
 
 // MandateStatus for the Mandate object.
@@ -82,15 +100,15 @@ type MandateLinks struct {
 // From is a mandate id to offset from (inclusive)
 // Limit is the max number of mandates to retrieve.
 type MandatesListOptions struct {
-	From  string `url:"from,omitempty"`
 	Limit int    `url:"limit,omitempty"`
+	From  string `url:"from,omitempty"`
 }
 
 // MandatesList describes how a list of mandates will be retrieved by Mollie.
 type MandatesList struct {
 	Count    int `json:"count,omitempty"`
 	Embedded struct {
-		Mandates []Mandate
+		Mandates []*Mandate
 	} `json:"_embedded,omitempty"`
 	Links PaginationLinks `json:"_links,omitempty"`
 }
@@ -100,12 +118,16 @@ type MandatesList struct {
 // Mandates allow you to charge a customer’s credit card or bank account recurrently.
 //
 // See: https://docs.mollie.com/reference/v2/mandates-api/create-mandate
-func (ms *MandatesService) Create(ctx context.Context, customer string, mandate Mandate) (
+func (ms *MandatesService) Create(ctx context.Context, customer string, mandate CreateMandate) (
 	res *Response,
 	mr *Mandate,
 	err error,
 ) {
 	u := fmt.Sprintf("v2/customers/%s/mandates", customer)
+
+	if ms.client.HasAccessToken() && ms.client.config.testing {
+		mandate.Testmode = true
+	}
 
 	res, err = ms.client.post(ctx, u, mandate, nil)
 	if err != nil {

@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-const onboardingTarget = "v2/onboarding/me"
+const onboardingURLPath = "v2/onboarding/me"
 
 // OnboardingStatus describes status of the organization’s onboarding process.
 type OnboardingStatus string
@@ -31,12 +31,12 @@ type OnboardingLinks struct {
 
 // Onboarding data for an organization.
 type Onboarding struct {
+	CanReceivePayments    bool             `json:"canReceivePayments,omitempty"`
+	CanReceiveSettlements bool             `json:"canReceiveSettlements,omitempty"`
 	Resource              string           `json:"reference,omitempty"`
 	Name                  string           `json:"name,omitempty"`
 	SignedUpAt            *time.Time       `json:"signedUpAt,omitempty"`
 	Status                OnboardingStatus `json:"status,omitempty"`
-	CanReceivePayments    bool             `json:"canReceivePayments,omitempty"`
-	CanReveiceSettlements bool             `json:"canReceiveSettlements,omitempty"`
 	Links                 OnboardingLinks  `json:"_links,omitempty"`
 }
 
@@ -44,7 +44,7 @@ type Onboarding struct {
 //
 // See: https://docs.mollie.com/reference/v2/onboarding-api/get-onboarding-status
 func (os *OnboardingService) GetOnboardingStatus(ctx context.Context) (res *Response, o *Onboarding, err error) {
-	res, err = os.client.get(ctx, onboardingTarget, nil)
+	res, err = os.client.get(ctx, onboardingURLPath, nil)
 	if err != nil {
 		return
 	}
@@ -66,10 +66,10 @@ func (os *OnboardingService) GetOnboardingStatus(ctx context.Context) (res *Resp
 // OnboardingDataOrganization contains data of the organization you want to provide.
 type OnboardingDataOrganization struct {
 	Name               string   `json:"name,omitempty"`
-	Address            *Address `json:"address,omitempty"`
 	RegistrationNumber string   `json:"registrationNumber,omitempty"`
 	VatNumber          string   `json:"vatNumber,omitempty"`
 	VatRegulation      string   `json:"vatRegulation,omitempty"`
+	Address            *Address `json:"address,omitempty"`
 }
 
 // OnboardingDataProfile contains data of the payment profile you want to provide.
@@ -96,7 +96,7 @@ type OnboardingData struct {
 //
 // See: https://docs.mollie.com/reference/v2/onboarding-api/submit-onboarding-data
 func (os *OnboardingService) SubmitOnboardingData(ctx context.Context, d *OnboardingData) (res *Response, err error) {
-	res, err = os.client.post(ctx, onboardingTarget, d, nil)
+	res, err = os.client.post(ctx, onboardingURLPath, d, nil)
 	if err != nil {
 		return
 	}

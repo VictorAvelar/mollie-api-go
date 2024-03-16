@@ -289,7 +289,7 @@ func TestSettlementsService_List(t *testing.T) {
 
 	type args struct {
 		ctx     context.Context
-		options *SettlementsListOptions
+		options *ListSettlementsOptions
 	}
 	cases := []struct {
 		name    string
@@ -303,7 +303,7 @@ func TestSettlementsService_List(t *testing.T) {
 			"list shipment works as expected.",
 			args{
 				context.Background(),
-				&SettlementsListOptions{
+				&ListSettlementsOptions{
 					Limit: 40,
 				},
 			},
@@ -325,7 +325,7 @@ func TestSettlementsService_List(t *testing.T) {
 			"list shipment, an error is returned from the server",
 			args{
 				context.Background(),
-				&SettlementsListOptions{
+				&ListSettlementsOptions{
 					Limit: 40,
 				},
 			},
@@ -338,7 +338,7 @@ func TestSettlementsService_List(t *testing.T) {
 			"list shipment, an error occurs when parsing json",
 			args{
 				context.Background(),
-				&SettlementsListOptions{
+				&ListSettlementsOptions{
 					Limit: 40,
 				},
 			},
@@ -351,7 +351,7 @@ func TestSettlementsService_List(t *testing.T) {
 			"list shipment, invalid url when building request",
 			args{
 				context.Background(),
-				&SettlementsListOptions{
+				&ListSettlementsOptions{
 					Limit: 40,
 				},
 			},
@@ -390,7 +390,7 @@ func TestSettlementsService_GetPayments(t *testing.T) {
 	type args struct {
 		ctx        context.Context
 		settlement string
-		options    *SettlementsListOptions
+		options    *ListPaymentOptions
 	}
 	cases := []struct {
 		name    string
@@ -405,7 +405,7 @@ func TestSettlementsService_GetPayments(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&SettlementsListOptions{
+				&ListPaymentOptions{
 					Limit: 10,
 				},
 			},
@@ -428,7 +428,7 @@ func TestSettlementsService_GetPayments(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&SettlementsListOptions{
+				&ListPaymentOptions{
 					Limit: 10,
 				},
 			},
@@ -442,7 +442,7 @@ func TestSettlementsService_GetPayments(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&SettlementsListOptions{
+				&ListPaymentOptions{
 					Limit: 10,
 				},
 			},
@@ -456,7 +456,7 @@ func TestSettlementsService_GetPayments(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&SettlementsListOptions{
+				&ListPaymentOptions{
 					Limit: 10,
 				},
 			},
@@ -475,7 +475,7 @@ func TestSettlementsService_GetPayments(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc(fmt.Sprintf("/v2/settlements/%s/payments", c.args.settlement), c.handler)
 
-			res, m, err := tClient.Settlements.GetPayments(c.args.ctx, c.args.settlement, c.args.options)
+			res, m, err := tClient.Settlements.ListPayments(c.args.ctx, c.args.settlement, c.args.options)
 			if c.wantErr {
 				assert.NotNil(t, err)
 				assert.EqualError(t, err, c.err.Error())
@@ -495,7 +495,7 @@ func TestSettlementsService_GetCaptures(t *testing.T) {
 	type args struct {
 		ctx        context.Context
 		settlement string
-		options    *SettlementsListOptions
+		options    *ListSettlementsOptions
 	}
 	cases := []struct {
 		name    string
@@ -510,7 +510,7 @@ func TestSettlementsService_GetCaptures(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&SettlementsListOptions{
+				&ListSettlementsOptions{
 					Limit: 10,
 				},
 			},
@@ -533,7 +533,7 @@ func TestSettlementsService_GetCaptures(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&SettlementsListOptions{
+				&ListSettlementsOptions{
 					Limit: 10,
 				},
 			},
@@ -547,7 +547,7 @@ func TestSettlementsService_GetCaptures(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&SettlementsListOptions{
+				&ListSettlementsOptions{
 					Limit: 10,
 				},
 			},
@@ -561,7 +561,7 @@ func TestSettlementsService_GetCaptures(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&SettlementsListOptions{
+				&ListSettlementsOptions{
 					Limit: 10,
 				},
 			},
@@ -600,7 +600,7 @@ func TestSettlementsService_GetChargebacks(t *testing.T) {
 	type args struct {
 		ctx        context.Context
 		settlement string
-		options    *SettlementsListOptions
+		options    *ChargebacksListOptions
 	}
 	cases := []struct {
 		name    string
@@ -615,7 +615,7 @@ func TestSettlementsService_GetChargebacks(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&SettlementsListOptions{
+				&ChargebacksListOptions{
 					Limit: 10,
 				},
 			},
@@ -638,7 +638,7 @@ func TestSettlementsService_GetChargebacks(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&SettlementsListOptions{
+				&ChargebacksListOptions{
 					Limit: 10,
 				},
 			},
@@ -652,7 +652,7 @@ func TestSettlementsService_GetChargebacks(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&SettlementsListOptions{
+				&ChargebacksListOptions{
 					Limit: 10,
 				},
 			},
@@ -666,7 +666,7 @@ func TestSettlementsService_GetChargebacks(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&SettlementsListOptions{
+				&ChargebacksListOptions{
 					Limit: 10,
 				},
 			},
@@ -705,7 +705,7 @@ func TestSettlementsService_GetRefunds(t *testing.T) {
 	type args struct {
 		ctx        context.Context
 		settlement string
-		options    *SettlementsListOptions
+		options    *ListSettlementsOptions
 	}
 	cases := []struct {
 		name    string
@@ -720,7 +720,7 @@ func TestSettlementsService_GetRefunds(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&SettlementsListOptions{
+				&ListSettlementsOptions{
 					Limit: 10,
 				},
 			},
@@ -735,7 +735,7 @@ func TestSettlementsService_GetRefunds(t *testing.T) {
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
-				_, _ = w.Write([]byte(testdata.GetRefundListResponse))
+				_, _ = w.Write([]byte(testdata.ListRefundsResponse))
 			},
 		},
 		{
@@ -743,7 +743,7 @@ func TestSettlementsService_GetRefunds(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&SettlementsListOptions{
+				&ListSettlementsOptions{
 					Limit: 10,
 				},
 			},
@@ -757,7 +757,7 @@ func TestSettlementsService_GetRefunds(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&SettlementsListOptions{
+				&ListSettlementsOptions{
 					Limit: 10,
 				},
 			},
@@ -771,7 +771,7 @@ func TestSettlementsService_GetRefunds(t *testing.T) {
 			args{
 				context.Background(),
 				"stl_jDk30akdN",
-				&SettlementsListOptions{
+				&ListSettlementsOptions{
 					Limit: 10,
 				},
 			},
@@ -796,7 +796,7 @@ func TestSettlementsService_GetRefunds(t *testing.T) {
 				assert.EqualError(t, err, c.err.Error())
 			} else {
 				assert.Nil(t, err)
-				assert.IsType(t, &RefundList{}, m)
+				assert.IsType(t, &RefundsList{}, m)
 				assert.IsType(t, &http.Response{}, res.Response)
 			}
 		})

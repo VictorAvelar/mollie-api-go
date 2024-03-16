@@ -7,9 +7,6 @@ import (
 	"time"
 )
 
-// TerminalsService operates over terminals resource.
-type TerminalsService service
-
 // TerminalStatus is the status of the terminal, which is a read-only value determined by Mollie.
 type TerminalStatus string
 
@@ -25,7 +22,6 @@ type Terminal struct {
 	ID           string          `json:"id,omitempty"`
 	Resource     string          `json:"resource,omitempty"`
 	ProfileID    string          `json:"profileID,omitempty"`
-	Status       TerminalStatus  `json:"status,omitempty"`
 	Brand        string          `json:"brand,omitempty"`
 	Model        string          `json:"model,omitempty"`
 	SerialNumber string          `json:"serialNumber,omitempty"`
@@ -33,8 +29,31 @@ type Terminal struct {
 	Description  string          `json:"description,omitempty"`
 	CreatedAt    *time.Time      `json:"createdAt,omitempty"`
 	UpdatedAt    *time.Time      `json:"updatedAt,omitempty"`
+	Status       TerminalStatus  `json:"status,omitempty"`
 	Links        PaginationLinks `json:"_links,omitempty"`
 }
+
+// ListTerminalsOptions holds query string parameters valid for terminals lists.
+//
+// ProfileID and TestMode are valid only when using access tokens.
+type ListTerminalsOptions struct {
+	Testmode  bool   `url:"testMode,omitempty"`
+	Limit     int    `url:"limit,omitempty"`
+	From      string `url:"from,omitempty"`
+	ProfileID string `url:"profileID,omitempty"`
+}
+
+// TerminalList describes the response for terminals list endpoints.
+type TerminalList struct {
+	Count    int `json:"count,omitempty"`
+	Embedded struct {
+		Terminals []*Terminal `json:"terminals,omitempty"`
+	} `json:"_embedded,omitempty"`
+	Links PaginationLinks `json:"_links,omitempty"`
+}
+
+// TerminalsService operates over terminals resource.
+type TerminalsService service
 
 // Get terminal retrieves a single terminal object by its terminal ID.
 func (ts *TerminalsService) Get(ctx context.Context, id string) (res *Response, t *Terminal, err error) {
@@ -50,33 +69,14 @@ func (ts *TerminalsService) Get(ctx context.Context, id string) (res *Response, 
 	return
 }
 
-// TerminalListOptions holds query string parameters valid for terminals lists.
-//
-// ProfileID and TestMode are valid only when using access tokens.
-type TerminalListOptions struct {
-	From      string `url:"from,omitempty"`
-	Limit     int    `url:"limit,omitempty"`
-	ProfileID string `url:"profileID,omitempty"`
-	TestMode  bool   `url:"testMode,omitempty"`
-}
-
-// TerminalList describes the response for terminals list endpoints.
-type TerminalList struct {
-	Count    int `json:"count,omitempty"`
-	Embedded struct {
-		Terminals []*Terminal `json:"terminals,omitempty"`
-	} `json:"_embedded,omitempty"`
-	Links PaginationLinks `json:"_links,omitempty"`
-}
-
 // List retrieves a list of terminals symbolizing the physical devices to receive payments.
-func (ts *TerminalsService) List(ctx context.Context, options *TerminalListOptions) (
+func (ts *TerminalsService) List(ctx context.Context, options *ListTerminalsOptions) (
 	res *Response,
 	tl *TerminalList,
 	err error,
 ) {
 	if ts.client.HasAccessToken() && ts.client.config.testing {
-		options.TestMode = true
+		options.Testmode = true
 	}
 
 	res, err = ts.client.get(ctx, "v2/terminals", options)

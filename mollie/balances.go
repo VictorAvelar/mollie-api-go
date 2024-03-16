@@ -208,9 +208,6 @@ const (
 	PlatformPaymentChargeback              TransactionType = "platform-payment-chargeback"
 )
 
-// ContextValues is a map of TransactionType to ContextValue.
-type ContextValues map[TransactionType]ContextValue
-
 // BalanceTransactionsList contains an array of embedded transactions.
 type BalanceTransactionsList struct {
 	Count    int `json:"count,omitempty"`

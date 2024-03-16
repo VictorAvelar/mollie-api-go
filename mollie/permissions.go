@@ -24,23 +24,29 @@ const (
 	ProfilesRead       PermissionGrant = "profiles.read"
 	ProfilesWrite      PermissionGrant = "profiles.write"
 	InvoicesRead       PermissionGrant = "invoices.read"
+	SettlementsRead    PermissionGrant = "settlements.read"
 	OrdersRead         PermissionGrant = "orders.read"
 	OrdersWrite        PermissionGrant = "orders.write"
 	ShipmentsRead      PermissionGrant = "shipments.read"
 	ShipmentsWrite     PermissionGrant = "shipments.write"
 	OrganizationsRead  PermissionGrant = "organizations.read"
 	OrganizationsWrite PermissionGrant = "organizations.write"
-	OnboardingRead     PermissionGrant = "onbording.read"
+	OnboardingRead     PermissionGrant = "onboarding.read"
 	OnboardingWrite    PermissionGrant = "onbording.write"
+	PaymentLinksRead   PermissionGrant = "payment-links.read"
+	PaymentLinksWrite  PermissionGrant = "payment-links.write"
+	BalancesRead       PermissionGrant = "balances.read"
+	TerminalsRead      PermissionGrant = "terminals.read"
+	TerminalsWrite     PermissionGrant = "terminals.write"
 )
 
 // Permission represents an action that
 // can be performed by any API actor.
 type Permission struct {
-	Resource    string          `json:"resource,omitempty"`
-	ID          PermissionGrant `json:"id,omitempty"`
-	Description string          `json:"description,omitempty"`
 	Granted     bool            `json:"granted,omitempty"`
+	Resource    string          `json:"resource,omitempty"`
+	Description string          `json:"description,omitempty"`
+	ID          PermissionGrant `json:"id,omitempty"`
 	Links       PermissionLinks `json:"_links,omitempty"`
 }
 

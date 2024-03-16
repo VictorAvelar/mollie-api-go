@@ -18,41 +18,69 @@ const (
 	StatusBlocked    ProfileStatus = "blocked"
 )
 
+// CreateOrUpdateProfile describes the parameters to create or update a profile.
+type CreateOrUpdateProfile struct {
+	Name             string           `json:"name,omitempty"`
+	Website          string           `json:"website,omitempty"`
+	Email            string           `json:"email,omitempty"`
+	Description      string           `json:"description,omitempty"`
+	Phone            PhoneNumber      `json:"phone,omitempty"`
+	BusinessCategory BusinessCategory `json:"businessCategory,omitempty"`
+	CategoryCode     CategoryCode     `json:"categoryCode,omitempty"`
+	Mode             Mode             `json:"mode,omitempty"`
+}
+
 // Profile will usually reflect the trademark or brand name
 // of the profile’s website or application.
 type Profile struct {
-	ID               string           `json:"id,omitempty"`
-	BusinessCategory BusinessCategory `json:"businessCategory,omitempty"`
-	CreatedAt        *time.Time       `json:"createdAt,omitempty"`
-	Email            string           `json:"email,omitempty"`
-	Mode             Mode             `json:"mode,omitempty"`
-	Name             string           `json:"name,omitempty"`
-	Phone            PhoneNumber      `json:"phone,omitempty"`
-	Resource         string           `json:"resource,omitempty"`
-	Review           struct {
-		Status string `json:"status,omitempty"`
-	} `json:"review,omitempty"`
-	Status  ProfileStatus `json:"status,omitempty"`
-	Website string        `json:"website,omitempty"`
-	Links   ProfileLinks  `json:"_links,omitempty"`
+	Resource            string           `json:"resource,omitempty"`
+	ID                  string           `json:"id,omitempty"`
+	Name                string           `json:"name,omitempty"`
+	Website             string           `json:"website,omitempty"`
+	Description         string           `json:"description,omitempty"`
+	CountriesOfActivity []string         `json:"countriesOfActivity,omitempty"`
+	Email               string           `json:"email,omitempty"`
+	Phone               PhoneNumber      `json:"phone,omitempty"`
+	Mode                Mode             `json:"mode,omitempty"`
+	BusinessCategory    BusinessCategory `json:"businessCategory,omitempty"`
+	CategoryCode        CategoryCode     `json:"categoryCode,omitempty"`
+	Status              ProfileStatus    `json:"status,omitempty"`
+	Review              ProfileReview    `json:"review,omitempty"`
+	CreatedAt           *time.Time       `json:"createdAt,omitempty"`
+	Links               ProfileLinks     `json:"_links,omitempty"`
 }
+
+// ProfileReview contains the status of the profile review.
+type ProfileReview struct {
+	Status ProfileReviewStatus `json:"status,omitempty"`
+}
+
+// ProfileReviewStatus determines whether the profile is able to receive live payments.
+type ProfileReviewStatus string
+
+// Possible profile review statuses.
+const (
+	ReviewStatusPending  ProfileReviewStatus = "pending"
+	ReviewStatusRejected ProfileReviewStatus = "rejected"
+)
 
 // ProfileLinks contains URL's to relevant information related to
 // a profile.
 type ProfileLinks struct {
 	Self               *URL `json:"self,omitempty"`
+	Dashboard          *URL `json:"dashboard,omitempty"`
 	Chargebacks        *URL `json:"chargebacks,omitempty"`
 	Methods            *URL `json:"methods,omitempty"`
+	Payments           *URL `json:"payments,omitempty"`
 	Refunds            *URL `json:"refunds,omitempty"`
 	CheckoutPreviewURL *URL `json:"checkoutPreviewUrl,omitempty"`
 	Documentation      *URL `json:"documentation,omitempty"`
-	Dashboard          *URL `json:"dashboard,omitempty"`
 }
 
 // ProfileListOptions are optional query string parameters for the list profiles request.
 type ProfileListOptions struct {
+	Limit int    `url:"limit,omitempty"`
 	From  string `url:"from,omitempty"`
-	Limit uint   `url:"limit,omitempty"`
 }
 
 // ProfileList contains a list of profiles for your account.
@@ -62,6 +90,11 @@ type ProfileList struct {
 		Profiles []*Profile `json:"profiles,omitempty"`
 	} `json:"_embedded,omitempty"`
 	Links PaginationLinks `json:"_links,omitempty"`
+}
+
+// EnableVoucherIssuer describes the parameters to enable a voucher issuer.
+type EnableVoucherIssuer struct {
+	ContractID string `json:"contractId,omitempty"`
 }
 
 // ProfilesService operates over profile resource.
@@ -110,7 +143,11 @@ func (ps *ProfilesService) get(ctx context.Context, id string) (res *Response, p
 }
 
 // Create stores a new profile in your Mollie account.
-func (ps *ProfilesService) Create(ctx context.Context, np *Profile) (res *Response, p *Profile, err error) {
+func (ps *ProfilesService) Create(ctx context.Context, np CreateOrUpdateProfile) (
+	res *Response,
+	p *Profile,
+	err error,
+) {
 	res, err = ps.client.post(ctx, "v2/profiles", np, nil)
 	if err != nil {
 		return
@@ -124,7 +161,11 @@ func (ps *ProfilesService) Create(ctx context.Context, np *Profile) (res *Respon
 }
 
 // Update allows you to perform mutations on a profile.
-func (ps *ProfilesService) Update(ctx context.Context, id string, up *Profile) (res *Response, p *Profile, err error) {
+func (ps *ProfilesService) Update(ctx context.Context, id string, up CreateOrUpdateProfile) (
+	res *Response,
+	p *Profile,
+	err error,
+) {
 	res, err = ps.client.patch(ctx, fmt.Sprintf("v2/profiles/%s", id), up, nil)
 	if err != nil {
 		return
@@ -182,7 +223,7 @@ func (ps *ProfilesService) DisablePaymentMethod(ctx context.Context, id string, 
 }
 
 // EnableGiftCardIssuer activates the requested gift card issuer for the provided
-// profile id.
+// profile id when using Organization tokens or App Access tokens.
 //
 // See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
 func (ps *ProfilesService) EnableGiftCardIssuer(ctx context.Context, profileID string, issuer GiftCardIssuer) (
@@ -203,7 +244,7 @@ func (ps *ProfilesService) EnableGiftCardIssuer(ctx context.Context, profileID s
 }
 
 // DisableGiftCardIssuer deactivates the requested gift card issuer for the provided
-// profile id.
+// profile id when using Organization tokens or App Access tokens.
 //
 // See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
 func (ps *ProfilesService) DisableGiftCardIssuer(ctx context.Context, profileID string, issuer GiftCardIssuer) (
@@ -219,7 +260,7 @@ func (ps *ProfilesService) DisableGiftCardIssuer(ctx context.Context, profileID 
 }
 
 // EnableGiftCardIssuerForCurrent activates the specified issuer for the
-// current profile (token owner).
+// current profile when using API tokens.
 //
 // See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
 func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(ctx context.Context, issuer GiftCardIssuer) (
@@ -240,7 +281,7 @@ func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(ctx context.Context, i
 }
 
 // DisableGiftCardIssuerForCurrent deactivates the specified issuer for the
-// current profile (token owner).
+// current profile when using API tokens.
 //
 // See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
 func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(ctx context.Context, issuer GiftCardIssuer) (
@@ -248,6 +289,81 @@ func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(ctx context.Context, 
 	err error,
 ) {
 	res, err = ps.toggleGiftCardIssuerStatus(ctx, "me", http.MethodDelete, issuer)
+	if err != nil {
+		return
+	}
+
+	return
+}
+
+// EnableVoucherIssuer activates the requested voucher issuer for the provided
+// profile id when using Organization tokens or App Access tokens.
+//
+// See: https://docs.mollie.com/reference/v2/profiles-api/enable-voucher-issuer
+func (ps *ProfilesService) EnableVoucherIssuer(
+	ctx context.Context,
+	profileID string,
+	issuer VoucherIssuer,
+	vi *EnableVoucherIssuer,
+) (
+	res *Response,
+	vc *VoucherIssuerEnabled,
+	err error,
+) {
+	res, err = ps.toggleVoucherIssuerStatus(ctx, profileID, http.MethodPost, issuer)
+	if err != nil {
+		return
+	}
+
+	if err = json.Unmarshal(res.content, &vc); err != nil {
+		return
+	}
+
+	return
+}
+
+// DisableVoucherIssuer deactivates the requested voucher issuer for the provided
+// profile id when using Organization tokens or App Access tokens.
+//
+// See: https://docs.mollie.com/reference/v2/profiles-api/disable-voucher-issuer
+func (ps *ProfilesService) DisableVoucherIssuer(ctx context.Context, profileID string, issuer VoucherIssuer) (
+	res *Response,
+	err error,
+) {
+	res, err = ps.toggleVoucherIssuerStatus(ctx, profileID, http.MethodDelete, issuer)
+	if err != nil {
+		return
+	}
+
+	return
+}
+
+// EnableVoucherIssuerForCurrent activates the specified issuer for the
+// current profile when using API tokens.
+func (ps *ProfilesService) EnableVoucherIssuerForCurrent(ctx context.Context, issuer VoucherIssuer) (
+	res *Response,
+	vc *VoucherIssuerEnabled,
+	err error,
+) {
+	res, err = ps.toggleVoucherIssuerStatus(ctx, "me", http.MethodPost, issuer)
+	if err != nil {
+		return
+	}
+
+	if err = json.Unmarshal(res.content, &vc); err != nil {
+		return
+	}
+
+	return
+}
+
+// DisableVoucherIssuerForCurrent deactivates the specified issuer for the
+// current profile when using API tokens.
+func (ps *ProfilesService) DisableVoucherIssuerForCurrent(ctx context.Context, issuer VoucherIssuer) (
+	res *Response,
+	err error,
+) {
+	res, err = ps.toggleVoucherIssuerStatus(ctx, "me", http.MethodDelete, issuer)
 	if err != nil {
 		return
 	}
@@ -264,6 +380,30 @@ func (ps *ProfilesService) toggleGiftCardIssuerStatus(
 	err error,
 ) {
 	u := fmt.Sprintf("v2/profiles/%s/methods/giftcard/issuers/%s", profile, issuer)
+
+	switch method {
+	case http.MethodDelete:
+		r, err = ps.client.delete(ctx, u, nil)
+	case http.MethodPost:
+		r, err = ps.client.post(ctx, u, nil, nil)
+	}
+
+	if err != nil {
+		return
+	}
+
+	return
+}
+
+func (ps *ProfilesService) toggleVoucherIssuerStatus(
+	ctx context.Context,
+	profile string,
+	method string,
+	issuer VoucherIssuer) (
+	r *Response,
+	err error,
+) {
+	u := fmt.Sprintf("v2/profiles/%s/methods/voucher/issuers/%s", profile, issuer)
 
 	switch method {
 	case http.MethodDelete:

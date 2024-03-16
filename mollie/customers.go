@@ -7,17 +7,30 @@ import (
 	"time"
 )
 
-// CustomersService operates over the customer resource.
-type CustomersService service
+// CreateCustomer contains the parameters to create a customer.
+type CreateCustomer struct {
+	Name     string `json:"name,omitempty"`
+	Email    string `json:"email,omitempty"`
+	Locale   Locale `json:"locale,omitempty"`
+	Metadata any    `json:"metadata,omitempty"`
+}
+
+// UpdateCustomer contains the parameters to update a customer.
+type UpdateCustomer struct {
+	Name     string `json:"name,omitempty"`
+	Email    string `json:"email,omitempty"`
+	Locale   Locale `json:"locale,omitempty"`
+	Metadata any    `json:"metadata,omitempty"`
+}
 
 // CustomerLinks contains the HAL resources for a customer response.
 type CustomerLinks struct {
 	Self          *URL `json:"self,omitempty"`
+	Dashboard     *URL `json:"dashboard,omitempty"`
 	Mandates      *URL `json:"mandates,omitempty"`
 	Subscriptions *URL `json:"subscriptions,omitempty"`
 	Payments      *URL `json:"payments,omitempty"`
 	Documentation *URL `json:"documentation,omitempty"`
-	Dashboard     *URL `json:"dashboard,omitempty"`
 }
 
 // Customer represents buyers.
@@ -28,7 +41,7 @@ type Customer struct {
 	Name      string        `json:"name,omitempty"`
 	Email     string        `json:"email,omitempty"`
 	Locale    Locale        `json:"locale,omitempty"`
-	Metadata  interface{}   `json:"metadata,omitempty"`
+	Metadata  any           `json:"metadata,omitempty"`
 	CreatedAt *time.Time    `json:"createdAt,omitempty"`
 	Links     CustomerLinks `json:"_links,omitempty"`
 }
@@ -47,10 +60,13 @@ type CustomersListOptions struct {
 type CustomersList struct {
 	Count    int `json:"count,omitempty"`
 	Embedded struct {
-		Customers []Customer `json:"customers,omitempty"`
+		Customers []*Customer `json:"customers,omitempty"`
 	} `json:"_embedded,omitempty"`
 	Links PaginationLinks `json:"links,omitempty"`
 }
+
+// CustomersService operates over the customer resource.
+type CustomersService service
 
 // Get finds a customer by its ID.
 //
@@ -74,7 +90,7 @@ func (cs *CustomersService) Get(ctx context.Context, id string) (res *Response, 
 // to use for the Mollie Checkout and Recurring features.
 //
 // See: https://docs.mollie.com/reference/v2/customers-api/create-customer
-func (cs *CustomersService) Create(ctx context.Context, c Customer) (res *Response, cc *Customer, err error) {
+func (cs *CustomersService) Create(ctx context.Context, c CreateCustomer) (res *Response, cc *Customer, err error) {
 	res, err = cs.client.post(ctx, "v2/customers", c, nil)
 	if err != nil {
 		return
@@ -90,7 +106,7 @@ func (cs *CustomersService) Create(ctx context.Context, c Customer) (res *Respon
 // Update an existing customer.
 //
 // See: https://docs.mollie.com/reference/v2/customers-api/update-customer
-func (cs *CustomersService) Update(ctx context.Context, id string, c Customer) (
+func (cs *CustomersService) Update(ctx context.Context, id string, c UpdateCustomer) (
 	res *Response,
 	cc *Customer,
 	err error,
@@ -170,7 +186,7 @@ func (cs *CustomersService) GetPayments(ctx context.Context, id string, options 
 // CreatePayment creates a payment for the customer.
 //
 // See: https://docs.mollie.com/reference/v2/customers-api/create-customer-payment
-func (cs *CustomersService) CreatePayment(ctx context.Context, id string, p Payment) (
+func (cs *CustomersService) CreatePayment(ctx context.Context, id string, p CreatePayment) (
 	res *Response,
 	pp *Payment,
 	err error,

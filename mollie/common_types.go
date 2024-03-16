@@ -9,8 +9,8 @@ import (
 
 // Amount represents a currency and value pair.
 type Amount struct {
-	Currency string `json:"currency,omitempty"`
-	Value    string `json:"value,omitempty"`
+	Currency string `json:"currency,omitempty" url:"currency,omitempty"`
+	Value    string `json:"value,omitempty"    url:"value,omitempty"`
 }
 
 // Address provides a human friendly representation of a geographical space.
@@ -321,21 +321,35 @@ const (
 	TestMode Mode = "test"
 )
 
+// IncludeValue is a valid value for the Include query string parameter.
+type IncludeValue string
+
+// Supported Include values.
+const (
+	IncludeQrCode           IncludeValue = "details.qrCode"
+	IncludeRemainderDetails IncludeValue = "details.remainderDetails"
+	IncludeIssuers          IncludeValue = "issuers"
+	IncludePricing          IncludeValue = "pricing"
+)
+
 // EmbedValue describes the valid value of embed query string.
 type EmbedValue string
 
 // Valid Embed query string value.
 const (
-	EmbedPayment     EmbedValue = "payments"
-	EmbedRefund      EmbedValue = "refunds"
-	EmbedShipments   EmbedValue = "shipments"
-	EmbedChargebacks EmbedValue = "chargebacks"
+	EmbedPayments     EmbedValue = "payments"
+	EmbedRefunds      EmbedValue = "refunds"
+	EmbedShipments    EmbedValue = "shipments"
+	EmbedChargebacks  EmbedValue = "chargebacks"
+	EmbedCaptures     EmbedValue = "captures"
+	EmbedOrganization EmbedValue = "organization"
+	EmbedOnboarding   EmbedValue = "onboarding"
 )
 
 // Rate describes service rates, further divided into fixed and percentage costs.
 type Rate struct {
-	Fixed    *Amount `json:"fixed,omitempty"`
 	Variable string  `json:"variable,omitempty"`
+	Fixed    *Amount `json:"fixed,omitempty"`
 }
 
 // Image describes a generic image resource retrieved by Mollie.

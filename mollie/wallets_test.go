@@ -91,7 +91,7 @@ func TestMiscellaneousService_ApplePaymentSession(t *testing.T) {
 			c.pre()
 			tMux.HandleFunc("/v2/wallets/applepay/sessions", c.handler)
 
-			res, m, err := tClient.Miscellaneous.ApplePaymentSession(c.args.ctx, c.args.appleSess)
+			res, m, err := tClient.Wallets.ApplePaymentSession(c.args.ctx, c.args.appleSess)
 			if c.wantErr {
 				assert.NotNil(t, err)
 				assert.EqualError(t, err, c.err.Error())

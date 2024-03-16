@@ -106,7 +106,7 @@ func TestCustomersService_Create(t *testing.T) {
 	defer unsetEnv()
 	type args struct {
 		ctx      context.Context
-		customer Customer
+		customer CreateCustomer
 	}
 
 	cases := []struct {
@@ -123,7 +123,7 @@ func TestCustomersService_Create(t *testing.T) {
 			http.StatusAccepted,
 			args{
 				context.Background(),
-				Customer{Locale: German},
+				CreateCustomer{Locale: German},
 			},
 			false,
 			nil,
@@ -143,7 +143,7 @@ func TestCustomersService_Create(t *testing.T) {
 			http.StatusInternalServerError,
 			args{
 				context.Background(),
-				Customer{},
+				CreateCustomer{},
 			},
 			true,
 			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
@@ -155,7 +155,7 @@ func TestCustomersService_Create(t *testing.T) {
 			http.StatusInternalServerError,
 			args{
 				context.Background(),
-				Customer{},
+				CreateCustomer{},
 			},
 			true,
 			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
@@ -167,7 +167,7 @@ func TestCustomersService_Create(t *testing.T) {
 			http.StatusInternalServerError,
 			args{
 				context.Background(),
-				Customer{},
+				CreateCustomer{},
 			},
 			true,
 			errBadBaseURL,
@@ -203,7 +203,7 @@ func TestCustomersService_Update(t *testing.T) {
 	type args struct {
 		ctx        context.Context
 		customerID string
-		customer   Customer
+		customer   UpdateCustomer
 	}
 
 	cases := []struct {
@@ -221,7 +221,7 @@ func TestCustomersService_Update(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_kEn1PlbGa",
-				Customer{Locale: French},
+				UpdateCustomer{Locale: French},
 			},
 			false,
 			nil,
@@ -242,7 +242,7 @@ func TestCustomersService_Update(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_kEn1PlbGa",
-				Customer{},
+				UpdateCustomer{},
 			},
 			true,
 			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
@@ -255,7 +255,7 @@ func TestCustomersService_Update(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_kEn1PlbGa",
-				Customer{},
+				UpdateCustomer{},
 			},
 			true,
 			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
@@ -268,7 +268,7 @@ func TestCustomersService_Update(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_kEn1PlbGa",
-				Customer{},
+				UpdateCustomer{},
 			},
 			true,
 			errBadBaseURL,
@@ -621,7 +621,7 @@ func TestCustomerService_CreatePayment(t *testing.T) {
 	type args struct {
 		ctx      context.Context
 		customer string
-		payment  Payment
+		payment  CreatePayment
 	}
 
 	cases := []struct {
@@ -637,7 +637,11 @@ func TestCustomerService_CreatePayment(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_kEn1PlbGa",
-				Payment{TestMode: true},
+				CreatePayment{
+					CreatePaymentAccessTokenFields: CreatePaymentAccessTokenFields{
+						Testmode: true,
+					},
+				},
 			},
 			false,
 			nil,
@@ -657,7 +661,11 @@ func TestCustomerService_CreatePayment(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_kEn1PlbGa",
-				Payment{TestMode: true},
+				CreatePayment{
+					CreatePaymentAccessTokenFields: CreatePaymentAccessTokenFields{
+						Testmode: true,
+					},
+				},
 			},
 			true,
 			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
@@ -669,7 +677,11 @@ func TestCustomerService_CreatePayment(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_kEn1PlbGa",
-				Payment{TestMode: true},
+				CreatePayment{
+					CreatePaymentAccessTokenFields: CreatePaymentAccessTokenFields{
+						Testmode: true,
+					},
+				},
 			},
 			true,
 			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
@@ -681,7 +693,11 @@ func TestCustomerService_CreatePayment(t *testing.T) {
 			args{
 				context.Background(),
 				"cst_kEn1PlbGa",
-				Payment{TestMode: true},
+				CreatePayment{
+					CreatePaymentAccessTokenFields: CreatePaymentAccessTokenFields{
+						Testmode: true,
+					},
+				},
 			},
 			true,
 			errBadBaseURL,

@@ -214,7 +214,7 @@ func TestOrdersService_Create(t *testing.T) {
 
 	type args struct {
 		ctx     context.Context
-		order   Order
+		order   CreateOrder
 		options *OrderOptions
 	}
 	cases := []struct {
@@ -229,8 +229,8 @@ func TestOrdersService_Create(t *testing.T) {
 			"create orders works as expected.",
 			args{
 				context.Background(),
-				Order{
-					Method: PayPal,
+				CreateOrder{
+					Method: []PaymentMethod{PayPal},
 				},
 				&OrderOptions{},
 			},
@@ -251,8 +251,8 @@ func TestOrdersService_Create(t *testing.T) {
 			"create orders works as expected.",
 			args{
 				context.Background(),
-				Order{
-					Method: PayPal,
+				CreateOrder{
+					Method: []PaymentMethod{PayPal},
 				},
 				&OrderOptions{},
 			},
@@ -275,8 +275,8 @@ func TestOrdersService_Create(t *testing.T) {
 			"create orders, an error is returned from the server",
 			args{
 				context.Background(),
-				Order{
-					Method: PayPal,
+				CreateOrder{
+					Method: []PaymentMethod{PayPal},
 				},
 				nil,
 			},
@@ -289,8 +289,8 @@ func TestOrdersService_Create(t *testing.T) {
 			"create orders, an error occurs when parsing json",
 			args{
 				context.Background(),
-				Order{
-					Method: PayPal,
+				CreateOrder{
+					Method: []PaymentMethod{PayPal},
 				},
 				nil,
 			},
@@ -303,8 +303,8 @@ func TestOrdersService_Create(t *testing.T) {
 			"create orders, invalid url when building request",
 			args{
 				context.Background(),
-				Order{
-					Method: PayPal,
+				CreateOrder{
+					Method: []PaymentMethod{PayPal},
 				},
 				nil,
 			},
@@ -342,7 +342,7 @@ func TestOrdersService_Update(t *testing.T) {
 
 	type args struct {
 		ctx     context.Context
-		order   Order
+		order   UpdateOrder
 		options *OrderOptions
 	}
 	cases := []struct {
@@ -357,9 +357,8 @@ func TestOrdersService_Update(t *testing.T) {
 			"update orders works as expected.",
 			args{
 				context.Background(),
-				Order{
-					Method: PayPal,
-					ID:     "ord_kEn1PlbGa",
+				UpdateOrder{
+					OrderNumber: "ord_kEn1PlbGa",
 				},
 				&OrderOptions{},
 			},
@@ -380,9 +379,7 @@ func TestOrdersService_Update(t *testing.T) {
 			"update orders works as expected.",
 			args{
 				context.Background(),
-				Order{
-					Method: PayPal,
-				},
+				UpdateOrder{},
 				&OrderOptions{},
 			},
 			false,
@@ -404,9 +401,7 @@ func TestOrdersService_Update(t *testing.T) {
 			"update orders, an error is returned from the server",
 			args{
 				context.Background(),
-				Order{
-					Method: PayPal,
-				},
+				UpdateOrder{},
 				nil,
 			},
 			true,
@@ -418,9 +413,7 @@ func TestOrdersService_Update(t *testing.T) {
 			"update orders, an error occurs when parsing json",
 			args{
 				context.Background(),
-				Order{
-					Method: PayPal,
-				},
+				UpdateOrder{},
 				nil,
 			},
 			true,
@@ -432,9 +425,7 @@ func TestOrdersService_Update(t *testing.T) {
 			"update orders, invalid url when building request",
 			args{
 				context.Background(),
-				Order{
-					Method: PayPal,
-				},
+				UpdateOrder{},
 				nil,
 			},
 			true,
@@ -450,9 +441,9 @@ func TestOrdersService_Update(t *testing.T) {
 
 		t.Run(c.name, func(t *testing.T) {
 			c.pre()
-			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s", c.args.order.ID), c.handler)
+			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s", c.args.order.OrderNumber), c.handler)
 
-			res, m, err := tClient.Orders.Update(c.args.ctx, c.args.order.ID, c.args.order)
+			res, m, err := tClient.Orders.Update(c.args.ctx, c.args.order.OrderNumber, c.args.order)
 			if c.wantErr {
 				assert.NotNil(t, err)
 				assert.EqualError(t, err, c.err.Error())
@@ -599,9 +590,10 @@ func TestOrdersService_UpdateOrderLine(t *testing.T) {
 	defer unsetEnv()
 
 	type args struct {
-		ctx   context.Context
-		order string
-		line  OrderLine
+		ctx       context.Context
+		order     string
+		orderLine string
+		line      UpdateOrderLine
 	}
 	cases := []struct {
 		name    string
@@ -616,9 +608,9 @@ func TestOrdersService_UpdateOrderLine(t *testing.T) {
 			args{
 				context.Background(),
 				"ord_kEn1PlbGa",
-				OrderLine{
-					ID:     "odl_dgtxyl",
-					Status: OrderLinePaid,
+				"odl_dgtxyl",
+				UpdateOrderLine{
+					Name: "new order line",
 				},
 			},
 			false,
@@ -631,7 +623,7 @@ func TestOrdersService_UpdateOrderLine(t *testing.T) {
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
-				_, _ = w.Write([]byte(testdata.UpdateOrderlineResponse))
+				_, _ = w.Write([]byte(testdata.UpdateOrderLineResponse))
 			},
 		},
 		{
@@ -639,9 +631,9 @@ func TestOrdersService_UpdateOrderLine(t *testing.T) {
 			args{
 				context.Background(),
 				"ord_kEn1PlbGa",
-				OrderLine{
-					ID:     "odl_dgtxyl",
-					Status: OrderLinePaid,
+				"odl_dgtxyl",
+				UpdateOrderLine{
+					Name: "new order line",
 				},
 			},
 			false,
@@ -656,7 +648,7 @@ func TestOrdersService_UpdateOrderLine(t *testing.T) {
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
-				_, _ = w.Write([]byte(testdata.UpdateOrderlineResponse))
+				_, _ = w.Write([]byte(testdata.UpdateOrderLineResponse))
 			},
 		},
 		{
@@ -664,10 +656,8 @@ func TestOrdersService_UpdateOrderLine(t *testing.T) {
 			args{
 				context.Background(),
 				"ord_kEn1PlbGa",
-				OrderLine{
-					ID:     "odl_dgtxyl",
-					Status: OrderLinePaid,
-				},
+				"odl_dgtxyl",
+				UpdateOrderLine{},
 			},
 			true,
 			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
@@ -679,10 +669,8 @@ func TestOrdersService_UpdateOrderLine(t *testing.T) {
 			args{
 				context.Background(),
 				"ord_kEn1PlbGa",
-				OrderLine{
-					ID:     "odl_dgtxyl",
-					Status: OrderLinePaid,
-				},
+				"odl_dgtxyl",
+				UpdateOrderLine{},
 			},
 			true,
 			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
@@ -694,10 +682,8 @@ func TestOrdersService_UpdateOrderLine(t *testing.T) {
 			args{
 				context.Background(),
 				"ord_kEn1PlbGa",
-				OrderLine{
-					ID:     "odl_dgtxyl",
-					Status: OrderLinePaid,
-				},
+				"odl_dgtxyl",
+				UpdateOrderLine{},
 			},
 			true,
 			errBadBaseURL,
@@ -712,9 +698,9 @@ func TestOrdersService_UpdateOrderLine(t *testing.T) {
 
 		t.Run(c.name, func(t *testing.T) {
 			c.pre()
-			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/lines/%s", c.args.order, c.args.line.ID), c.handler)
+			tMux.HandleFunc(fmt.Sprintf("/v2/orders/%s/lines/%s", c.args.order, c.args.orderLine), c.handler)
 
-			res, m, err := tClient.Orders.UpdateOrderLine(c.args.ctx, c.args.order, c.args.line.ID, c.args.line)
+			res, m, err := tClient.Orders.UpdateOrderLine(c.args.ctx, c.args.order, c.args.orderLine, c.args.line)
 			if c.wantErr {
 				assert.NotNil(t, err)
 				assert.EqualError(t, err, c.err.Error())
@@ -764,7 +750,7 @@ func TestOrdersService_CancelOrderLine(t *testing.T) {
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
-				_, _ = w.Write([]byte(testdata.UpdateOrderlineResponse))
+				_, _ = w.Write([]byte(testdata.UpdateOrderLineResponse))
 			},
 		},
 		{
@@ -789,7 +775,7 @@ func TestOrdersService_CancelOrderLine(t *testing.T) {
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
-				_, _ = w.Write([]byte(testdata.UpdateOrderlineResponse))
+				_, _ = w.Write([]byte(testdata.UpdateOrderLineResponse))
 			},
 		},
 		{
@@ -871,8 +857,8 @@ func TestOrdersService_CreateOrderPayment(t *testing.T) {
 				context.Background(),
 				"ord_8wmqcHMN4U",
 				&OrderPayment{
-					Method: PayPal,
-					Issuer: "tr_asdajnasd",
+					CustomerReference: "customer_123",
+					Method:            []PaymentMethod{BankTransfer},
 				},
 			},
 			false,
@@ -894,8 +880,7 @@ func TestOrdersService_CreateOrderPayment(t *testing.T) {
 				context.Background(),
 				"ord_8wmqcHMN4U",
 				&OrderPayment{
-					Method: PayPal,
-					Issuer: "tr_asdajnasd",
+					TerminalID: "term_12312312",
 				},
 			},
 			false,
@@ -1228,7 +1213,7 @@ func TestOrdersService_ManageOrderLines(t *testing.T) {
 				&OrderLineOperations{
 					Operations: []*OrderLineChangeInstruction{
 						{
-							Operation: AddOrderLine,
+							Operation: AddOrderLineOperation,
 							Data: &OrderLineOperationData{
 								ID:   "odl_1.1l9vx0",
 								Name: "new order line",
@@ -1258,7 +1243,7 @@ func TestOrdersService_ManageOrderLines(t *testing.T) {
 				&OrderLineOperations{
 					Operations: []*OrderLineChangeInstruction{
 						{
-							Operation: AddOrderLine,
+							Operation: AddOrderLineOperation,
 							Data: &OrderLineOperationData{
 								ID:   "odl_1.1l9vx0",
 								Name: "new order line",
@@ -1279,7 +1264,7 @@ func TestOrdersService_ManageOrderLines(t *testing.T) {
 				if _, ok := r.Header[AuthHeader]; !ok {
 					w.WriteHeader(http.StatusUnauthorized)
 				}
-				_, _ = w.Write([]byte(testdata.UpdateOrderlineResponse))
+				_, _ = w.Write([]byte(testdata.UpdateOrderLineResponse))
 			},
 		},
 		{
@@ -1290,7 +1275,7 @@ func TestOrdersService_ManageOrderLines(t *testing.T) {
 				&OrderLineOperations{
 					Operations: []*OrderLineChangeInstruction{
 						{
-							Operation: AddOrderLine,
+							Operation: AddOrderLineOperation,
 							Data: &OrderLineOperationData{
 								ID:   "odl_1.1l9vx0",
 								Name: "new order line",
@@ -1312,7 +1297,7 @@ func TestOrdersService_ManageOrderLines(t *testing.T) {
 				&OrderLineOperations{
 					Operations: []*OrderLineChangeInstruction{
 						{
-							Operation: AddOrderLine,
+							Operation: AddOrderLineOperation,
 							Data: &OrderLineOperationData{
 								ID:   "odl_1.1l9vx0",
 								Name: "new order line",
@@ -1334,7 +1319,7 @@ func TestOrdersService_ManageOrderLines(t *testing.T) {
 				&OrderLineOperations{
 					Operations: []*OrderLineChangeInstruction{
 						{
-							Operation: AddOrderLine,
+							Operation: AddOrderLineOperation,
 							Data: &OrderLineOperationData{
 								ID:   "odl_1.1l9vx0",
 								Name: "new order line",

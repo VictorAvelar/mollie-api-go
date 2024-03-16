@@ -51,8 +51,10 @@ func TestMethodsService_List(t *testing.T) {
 			args{
 				context.Background(),
 				&PaymentMethodsListOptions{
-					AmountCurrency: "EUR",
-					AmountValue:    "100.00",
+					Amount: &Amount{
+						Value:    "100.00",
+						Currency: "EUR",
+					},
 				},
 			},
 			false,
@@ -166,8 +168,10 @@ func TestMethodsService_All(t *testing.T) {
 			args{
 				context.Background(),
 				&PaymentMethodsListOptions{
-					AmountCurrency: "EUR",
-					AmountValue:    "100.00",
+					Amount: &Amount{
+						Value:    "100.00",
+						Currency: "EUR",
+					},
 				},
 			},
 			false,
