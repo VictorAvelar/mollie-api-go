@@ -164,6 +164,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type ListPaymentOptions](<#ListPaymentOptions>)
 - [type ListSettlementsOptions](<#ListSettlementsOptions>)
 - [type ListSubscriptionsOptions](<#ListSubscriptionsOptions>)
+- [type ListTerminalsOptions](<#ListTerminalsOptions>)
 - [type Locale](<#Locale>)
 - [type Mandate](<#Mandate>)
 - [type MandateDetails](<#MandateDetails>)
@@ -367,11 +368,10 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type Subtotal](<#Subtotal>)
 - [type Terminal](<#Terminal>)
 - [type TerminalList](<#TerminalList>)
-- [type TerminalListOptions](<#TerminalListOptions>)
 - [type TerminalStatus](<#TerminalStatus>)
 - [type TerminalsService](<#TerminalsService>)
   - [func \(ts \*TerminalsService\) Get\(ctx context.Context, id string\) \(res \*Response, t \*Terminal, err error\)](<#TerminalsService.Get>)
-  - [func \(ts \*TerminalsService\) List\(ctx context.Context, options \*TerminalListOptions\) \(res \*Response, tl \*TerminalList, err error\)](<#TerminalsService.List>)
+  - [func \(ts \*TerminalsService\) List\(ctx context.Context, options \*ListTerminalsOptions\) \(res \*Response, tl \*TerminalList, err error\)](<#TerminalsService.List>)
 - [type TransactionType](<#TransactionType>)
 - [type TransferDestination](<#TransferDestination>)
 - [type TransferFrequency](<#TransferFrequency>)
@@ -2796,6 +2796,22 @@ type ListSubscriptionsOptions struct {
     Limit     int    `url:"limit,omitempty"`
     From      string `url:"from,omitempty"`
     ProfileID string `url:"profileId,omitempty"`
+}
+```
+
+<a name="ListTerminalsOptions"></a>
+## type [ListTerminalsOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/terminals.go#L39-L44>)
+
+ListTerminalsOptions holds query string parameters valid for terminals lists.
+
+ProfileID and TestMode are valid only when using access tokens.
+
+```go
+type ListTerminalsOptions struct {
+    Testmode  bool   `url:"testMode,omitempty"`
+    Limit     int    `url:"limit,omitempty"`
+    From      string `url:"from,omitempty"`
+    ProfileID string `url:"profileID,omitempty"`
 }
 ```
 
@@ -5714,7 +5730,7 @@ type Subtotal struct {
 ```
 
 <a name="Terminal"></a>
-## type [Terminal](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/terminals.go#L24-L37>)
+## type [Terminal](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/terminals.go#L21-L34>)
 
 Terminal symbolizes a physical device to receive payments.
 
@@ -5723,7 +5739,6 @@ type Terminal struct {
     ID           string          `json:"id,omitempty"`
     Resource     string          `json:"resource,omitempty"`
     ProfileID    string          `json:"profileID,omitempty"`
-    Status       TerminalStatus  `json:"status,omitempty"`
     Brand        string          `json:"brand,omitempty"`
     Model        string          `json:"model,omitempty"`
     SerialNumber string          `json:"serialNumber,omitempty"`
@@ -5731,12 +5746,13 @@ type Terminal struct {
     Description  string          `json:"description,omitempty"`
     CreatedAt    *time.Time      `json:"createdAt,omitempty"`
     UpdatedAt    *time.Time      `json:"updatedAt,omitempty"`
+    Status       TerminalStatus  `json:"status,omitempty"`
     Links        PaginationLinks `json:"_links,omitempty"`
 }
 ```
 
 <a name="TerminalList"></a>
-## type [TerminalList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/terminals.go#L64-L70>)
+## type [TerminalList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/terminals.go#L47-L53>)
 
 TerminalList describes the response for terminals list endpoints.
 
@@ -5750,24 +5766,8 @@ type TerminalList struct {
 }
 ```
 
-<a name="TerminalListOptions"></a>
-## type [TerminalListOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/terminals.go#L56-L61>)
-
-TerminalListOptions holds query string parameters valid for terminals lists.
-
-ProfileID and TestMode are valid only when using access tokens.
-
-```go
-type TerminalListOptions struct {
-    From      string `url:"from,omitempty"`
-    Limit     int    `url:"limit,omitempty"`
-    ProfileID string `url:"profileID,omitempty"`
-    TestMode  bool   `url:"testMode,omitempty"`
-}
-```
-
 <a name="TerminalStatus"></a>
-## type [TerminalStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/terminals.go#L14>)
+## type [TerminalStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/terminals.go#L11>)
 
 TerminalStatus is the status of the terminal, which is a read\-only value determined by Mollie.
 
@@ -5786,7 +5786,7 @@ const (
 ```
 
 <a name="TerminalsService"></a>
-## type [TerminalsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/terminals.go#L11>)
+## type [TerminalsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/terminals.go#L56>)
 
 TerminalsService operates over terminals resource.
 
@@ -5795,7 +5795,7 @@ type TerminalsService service
 ```
 
 <a name="TerminalsService.Get"></a>
-### func \(\*TerminalsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/terminals.go#L40>)
+### func \(\*TerminalsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/terminals.go#L59>)
 
 ```go
 func (ts *TerminalsService) Get(ctx context.Context, id string) (res *Response, t *Terminal, err error)
@@ -5807,7 +5807,7 @@ Get terminal retrieves a single terminal object by its terminal ID.
 ### func \(\*TerminalsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/terminals.go#L73-L77>)
 
 ```go
-func (ts *TerminalsService) List(ctx context.Context, options *TerminalListOptions) (res *Response, tl *TerminalList, err error)
+func (ts *TerminalsService) List(ctx context.Context, options *ListTerminalsOptions) (res *Response, tl *TerminalList, err error)
 ```
 
 List retrieves a list of terminals symbolizing the physical devices to receive payments.
