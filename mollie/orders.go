@@ -379,7 +379,7 @@ func (ors *OrdersService) Update(ctx context.Context, orderID string, ord Update
 		ord.Testmode = true
 	}
 
-	res, err = ors.client.patch(ctx, fmt.Sprintf("v2/orders/%s", orderID), ord, nil)
+	res, err = ors.client.patch(ctx, fmt.Sprintf("v2/orders/%s", orderID), ord)
 	if err != nil {
 		return
 	}
@@ -395,7 +395,7 @@ func (ors *OrdersService) Update(ctx context.Context, orderID string, ord Update
 //
 // See https://docs.mollie.com/reference/v2/orders-api/cancel-order
 func (ors *OrdersService) Cancel(ctx context.Context, orderID string) (res *Response, order *Order, err error) {
-	res, err = ors.client.delete(ctx, fmt.Sprintf("v2/orders/%s", orderID), nil)
+	res, err = ors.client.delete(ctx, fmt.Sprintf("v2/orders/%s", orderID))
 	if err != nil {
 		return
 	}
@@ -445,7 +445,7 @@ func (ors *OrdersService) UpdateOrderLine(
 		orderLine.Testmode = true
 	}
 
-	res, err = ors.client.patch(ctx, u, orderLine, nil)
+	res, err = ors.client.patch(ctx, u, orderLine)
 	if err != nil {
 		return
 	}
@@ -468,7 +468,7 @@ func (ors *OrdersService) CancelOrderLines(ctx context.Context, orderID string, 
 ) {
 	u := fmt.Sprintf("v2/orders/%s/lines", orderID)
 
-	res, err = ors.client.delete(ctx, u, nil)
+	res, err = ors.client.delete(ctx, u)
 	if err != nil {
 		return
 	}
@@ -553,7 +553,7 @@ func (ors *OrdersService) ManageOrderLines(ctx context.Context, orderID string, 
 ) {
 	u := fmt.Sprintf("v2/orders/%s/lines", orderID)
 
-	res, err = ors.client.patch(ctx, u, operations, nil)
+	res, err = ors.client.patch(ctx, u, operations)
 	if err != nil {
 		return
 	}
