@@ -413,7 +413,7 @@ const (
 ```
 
 <a name="CheckResponse"></a>
-## func [CheckResponse](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L376>)
+## func [CheckResponse](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L366>)
 
 ```go
 func CheckResponse(r *Response) error
@@ -1386,7 +1386,7 @@ type Client struct {
 ```
 
 <a name="NewClient"></a>
-### func [NewClient](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L268>)
+### func [NewClient](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L258>)
 
 ```go
 func NewClient(baseClient *http.Client, conf *Config) (mollie *Client, err error)
@@ -1399,7 +1399,7 @@ NewClient will lookup the environment for values to assign to the API token \(\`
 You can also set the token values programmatically by using the Client WithAPIKey and WithOrganizationKey functions.
 
 <a name="Client.Do"></a>
-### func \(\*Client\) [Do](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L238>)
+### func \(\*Client\) [Do](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L228>)
 
 ```go
 func (c *Client) Do(req *http.Request) (*Response, error)
@@ -1408,7 +1408,7 @@ func (c *Client) Do(req *http.Request) (*Response, error)
 Do sends an API request and returns the API response or returned as an error if an API error has occurred.
 
 <a name="Client.HasAccessToken"></a>
-### func \(\*Client\) [HasAccessToken](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L164>)
+### func \(\*Client\) [HasAccessToken](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L154>)
 
 ```go
 func (c *Client) HasAccessToken() bool
@@ -1419,7 +1419,7 @@ HasAccessToken will return true when the provided authentication token complies 
 See: https://github.com/VictorAvelar/mollie-api-go/issues/123
 
 <a name="Client.NewAPIRequest"></a>
-### func \(\*Client\) [NewAPIRequest](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L177-L180>)
+### func \(\*Client\) [NewAPIRequest](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L167-L170>)
 
 ```go
 func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, body interface{}) (req *http.Request, err error)
@@ -1430,7 +1430,7 @@ NewAPIRequest is a wrapper around the http.NewRequest function.
 It will setup the authentication headers/parameters according to the client config.
 
 <a name="Client.SetIdempotencyKeyGenerator"></a>
-### func \(\*Client\) [SetIdempotencyKeyGenerator](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L170>)
+### func \(\*Client\) [SetIdempotencyKeyGenerator](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L160>)
 
 ```go
 func (c *Client) SetIdempotencyKeyGenerator(kg idempotency.KeyGenerator)
@@ -1439,7 +1439,7 @@ func (c *Client) SetIdempotencyKeyGenerator(kg idempotency.KeyGenerator)
 SetIdempotencyKeyGenerator allows you to pass your own idempotency key generator.
 
 <a name="Client.WithAuthenticationValue"></a>
-### func \(\*Client\) [WithAuthenticationValue](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L149>)
+### func \(\*Client\) [WithAuthenticationValue](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L139>)
 
 ```go
 func (c *Client) WithAuthenticationValue(k string) error
@@ -5115,7 +5115,7 @@ ListPaymentRefunds retrieves all refunds for a specific payment.
 See: https://docs.mollie.com/reference/v2/refunds-api/list-payment-refunds
 
 <a name="Response"></a>
-## type [Response](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L350-L353>)
+## type [Response](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L340-L343>)
 
 Response is a Mollie API response. This wraps the standard http.Response returned from Mollie and provides convenient access to things like pagination links.
 
