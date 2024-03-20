@@ -84,10 +84,11 @@ func TestNewClientWithEnvVars(t *testing.T) {
 
 func TestClient_NewAPIRequest(t *testing.T) {
 	type args struct {
-		ctx    context.Context
-		method string
-		uri    string
-		body   interface{}
+		ctx     context.Context
+		method  string
+		uri     string
+		body    interface{}
+		options interface{}
 	}
 
 	type testCtxKey string
@@ -102,10 +103,11 @@ func TestClient_NewAPIRequest(t *testing.T) {
 		{
 			"request with empty context works as expected",
 			args{
-				ctx:    nil,
-				method: http.MethodGet,
-				uri:    "test",
-				body:   []string{"hello", "world"},
+				ctx:     nil,
+				method:  http.MethodGet,
+				uri:     "test",
+				body:    []string{"hello", "world"},
+				options: nil,
 			},
 			`["hello","world"]` + "\n",
 			"/test",
@@ -114,10 +116,11 @@ func TestClient_NewAPIRequest(t *testing.T) {
 		{
 			"request with context works and the same as without context",
 			args{
-				ctx:    context.WithValue(context.Background(), testCtxKey("test-key"), "I will make it to the other side"),
-				method: http.MethodGet,
-				uri:    "test",
-				body:   "some simple string",
+				ctx:     context.WithValue(context.Background(), testCtxKey("test-key"), "I will make it to the other side"),
+				method:  http.MethodGet,
+				uri:     "test",
+				body:    "some simple string",
+				options: nil,
 			},
 			"\"some simple string\"\n",
 			"/test",
@@ -432,6 +435,42 @@ func TestClient_Do(t *testing.T) {
 				r.URL = nil
 			},
 		},
+		{
+			"error when request response is non successful",
+			args{
+				context.Background(),
+				http.MethodGet,
+				"/test",
+				nil,
+			},
+			true,
+			fmt.Errorf("500 500 Internal Server Error: "),
+			http.StatusOK,
+			func(w http.ResponseWriter, r *http.Request) {
+				testMethod(t, r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				w.WriteHeader(http.StatusInternalServerError)
+			},
+			func(r *http.Request) {},
+		},
+		{
+			"execute returns an error during the response creation request",
+			args{
+				context.Background(),
+				http.MethodGet,
+				"/test",
+				nil,
+			},
+			true,
+			fmt.Errorf("unexpected EOF"),
+			http.StatusOK,
+			func(w http.ResponseWriter, r *http.Request) {
+				testMethod(t, r, "GET")
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				w.Header().Set("Content-Length", "1")
+			},
+			func(r *http.Request) {},
+		},
 	}
 
 	for _, c := range cases {
@@ -501,6 +540,89 @@ func TestCheckResponse(t *testing.T) {
 				if !strings.Contains(err.Error(), tt.code) {
 					t.Error(err)
 				}
+			}
+		})
+	}
+}
+
+func TestClient_newResponse(t *testing.T) {
+	type args struct {
+		res *http.Response
+	}
+
+	cases := []struct {
+		name    string
+		args    args
+		want    *Response
+		wantErr bool
+		err     error
+	}{
+		{
+			"new response fails on read operation",
+			args{
+				&http.Response{
+					Body: closedReader(),
+				},
+			},
+			&Response{},
+			true,
+			fmt.Errorf("unexpected EOF"),
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			got, err := newResponse(c.args.res)
+			if c.wantErr {
+				assert.EqualError(t, err, c.err.Error())
+			} else {
+				assert.Nil(t, err)
+				assert.Equal(t, c.want, got)
+			}
+		})
+	}
+}
+
+func TestClient_newError(t *testing.T) {
+	type args struct {
+		res *Response
+	}
+
+	cases := []struct {
+		name    string
+		args    args
+		want    *BaseError
+		wantErr bool
+		err     error
+	}{
+		{
+			"new error fails on read operation",
+			args{
+				&Response{Response: &http.Response{Body: closedReader(), ContentLength: 1}},
+			},
+			&BaseError{},
+			true,
+			fmt.Errorf("unexpected end of JSON input"),
+		},
+		{
+			"new error is constructed based on response",
+			args{
+				&Response{Response: &http.Response{Body: closedReader()}},
+			},
+			&BaseError{},
+			false,
+			nil,
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			err := newError(c.args.res)
+			if c.wantErr {
+				assert.EqualError(t, err, c.err.Error())
+			} else {
+				assert.IsType(t, &BaseError{}, err)
+				assert.EqualValues(t, c.want, err)
 			}
 		})
 	}
@@ -577,6 +699,20 @@ func errorHandler(w http.ResponseWriter, r *http.Request) {
 func encodingHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write([]byte(`{hello: [{},]}`))
+}
+
+type readCloserErr struct{}
+
+func (r *readCloserErr) Read(p []byte) (n int, err error) {
+	return 0, io.ErrUnexpectedEOF
+}
+
+func (r *readCloserErr) Close() error {
+	return nil
+}
+
+func closedReader() io.ReadCloser {
+	return &readCloserErr{}
 }
 
 // <----- .Testing helpers ----->
