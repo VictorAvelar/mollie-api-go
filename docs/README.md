@@ -408,7 +408,7 @@ const (
     RequestContentType   string = "application/json"
     IdempotencyKeyHeader string = "Idempotency-Key"
     ClientName           string = "MollieGoClient"
-    Version              string = "3.14.0"
+    Version              string = "4.0.0"
 )
 ```
 
