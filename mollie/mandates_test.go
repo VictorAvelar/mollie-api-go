@@ -155,6 +155,28 @@ func TestMandatesService_Create(t *testing.T) {
 			},
 		},
 		{
+			"create mandates works as expected when using access tokens",
+			args{
+				context.Background(),
+				CreateMandate{
+					Method: PayPal,
+				},
+				"cst_4qqhO89gsT",
+			},
+			false,
+			nil,
+			setAccessToken,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(t, r, AuthHeader, "Bearer access_token_test")
+				testMethod(t, r, "POST")
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				w.WriteHeader(http.StatusCreated)
+				_, _ = w.Write([]byte(testdata.CreateMandateResponse))
+			},
+		},
+		{
 			"create mandate, an error is returned from the server",
 			args{
 				context.Background(),

@@ -109,15 +109,10 @@ func (c *Client) post(ctx context.Context, uri string, body interface{}, options
 	return c.Do(req)
 }
 
-func (c *Client) patch(ctx context.Context, uri string, body interface{}, options interface{}) (
+func (c *Client) patch(ctx context.Context, uri string, body interface{}) (
 	res *Response,
 	err error,
 ) {
-	if options != nil {
-		v, _ := query.Values(options)
-		uri = fmt.Sprintf("%s?%s", uri, v.Encode())
-	}
-
 	req, err := c.NewAPIRequest(ctx, http.MethodPatch, uri, body)
 	if err != nil {
 		return
@@ -126,12 +121,7 @@ func (c *Client) patch(ctx context.Context, uri string, body interface{}, option
 	return c.Do(req)
 }
 
-func (c *Client) delete(ctx context.Context, uri string, options interface{}) (res *Response, err error) {
-	if options != nil {
-		v, _ := query.Values(options)
-		uri = fmt.Sprintf("%s?%s", uri, v.Encode())
-	}
-
+func (c *Client) delete(ctx context.Context, uri string) (res *Response, err error) {
 	req, err := c.NewAPIRequest(ctx, http.MethodDelete, uri, nil)
 	if err != nil {
 		return

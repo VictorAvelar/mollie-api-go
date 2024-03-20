@@ -113,7 +113,7 @@ func (cs *CustomersService) Update(ctx context.Context, id string, c UpdateCusto
 ) {
 	u := fmt.Sprintf("v2/customers/%s", id)
 
-	res, err = cs.client.patch(ctx, u, c, nil)
+	res, err = cs.client.patch(ctx, u, c)
 	if err != nil {
 		return
 	}
@@ -133,7 +133,7 @@ func (cs *CustomersService) Update(ctx context.Context, id string, c UpdateCusto
 func (cs *CustomersService) Delete(ctx context.Context, id string) (res *Response, err error) {
 	u := fmt.Sprintf("v2/customers/%s", id)
 
-	res, err = cs.client.delete(ctx, u, nil)
+	res, err = cs.client.delete(ctx, u)
 	if err != nil {
 		return
 	}

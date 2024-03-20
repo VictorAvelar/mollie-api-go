@@ -142,7 +142,7 @@ func (ss *ShipmentsService) Update(ctx context.Context, order string, shipment s
 ) {
 	u := fmt.Sprintf("v2/orders/%s/shipments/%s", order, shipment)
 
-	res, err = ss.client.patch(ctx, u, us, nil)
+	res, err = ss.client.patch(ctx, u, us)
 	if err != nil {
 		return
 	}

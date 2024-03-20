@@ -164,7 +164,7 @@ func (ss *SubscriptionsService) Update(ctx context.Context, customer, subscripti
 ) {
 	u := fmt.Sprintf("v2/customers/%s/subscriptions/%s", customer, subscription)
 
-	res, err = ss.client.patch(ctx, u, sc, nil)
+	res, err = ss.client.patch(ctx, u, sc)
 	if err != nil {
 		return
 	}
@@ -186,7 +186,7 @@ func (ss *SubscriptionsService) Cancel(ctx context.Context, customer, subscripti
 ) {
 	u := fmt.Sprintf("v2/customers/%s/subscriptions/%s", customer, subscription)
 
-	res, err = ss.client.delete(ctx, u, nil)
+	res, err = ss.client.delete(ctx, u)
 	if err != nil {
 		return
 	}
