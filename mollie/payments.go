@@ -74,6 +74,9 @@ type CreatePayment struct {
 	Method                          []PaymentMethod `json:"method,omitempty"`
 	Metadata                        any             `json:"metadata,omitempty"`
 
+	// Beta fields
+	Lines []PaymentLines `json:"lines,omitempty"`
+
 	// PaymentMethods specific fields
 	DigitalGoods         bool       `json:"digitalGoods,omitempty"`
 	ApplePayPaymentToken string     `json:"applePayPaymentToken,omitempty"`
@@ -137,6 +140,37 @@ type CreateMollieConnectPaymentFields struct {
 	Routing        []*PaymentRouting `json:"routing,omitempty"`
 }
 
+// PaymentLineType reflects the type of product bought.
+type PaymentLineType string
+
+// Supported payment line types.
+const (
+	PhysicalProductLine PaymentLineType = "physical"
+	DiscountProductLine PaymentLineType = "discount"
+	DigitalProductLine  PaymentLineType = "digital"
+	ShippingFeeLine     PaymentLineType = "shipping_fee"
+	StoreCreditLine     PaymentLineType = "store_credit"
+	GiftCardLine        PaymentLineType = "gift_card"
+	SurchargeLine       PaymentLineType = "surcharge"
+)
+
+// PaymentLines describes the payment lines to be sent to the Mollie API when
+// creating a new payment.
+type PaymentLines struct {
+	Quantity       int             `json:"quantity,omitempty"`
+	Description    string          `json:"description,omitempty"`
+	QuantityUnit   string          `json:"quantityUnit,omitempty"`
+	SKU            string          `json:"sku,omitempty"`
+	ImageURL       string          `json:"imageUrl,omitempty"`
+	ProductURL     string          `json:"productUrl,omitempty"`
+	VATRate        string          `json:"vatRate,omitempty"`
+	UnitPrice      *Amount         `json:"unitPrice,omitempty"`
+	DiscountAmount *Amount         `json:"discountAmount,omitempty"`
+	TotalAmount    *Amount         `json:"totalAmount,omitempty"`
+	VATAmount      *Amount         `json:"vatAmount,omitempty"`
+	Type           PaymentLineType `json:"type,omitempty"`
+}
+
 // UpdatePayment describes the payload to be sent to the Mollie API when
 // updating a payment.
 //
@@ -190,6 +224,9 @@ type Payment struct {
 	AmountCaptured                  *Amount       `json:"amountCaptured,omitempty"`
 	AmountChargedBack               *Amount       `json:"amountChargeback,omitempty"`
 	SettlementAmount                *Amount       `json:"settlementAmount,omitempty"`
+
+	// Beta fields
+	Lines []PaymentLines `json:"lines,omitempty"`
 
 	// PaymentMethods specific fields
 	Details PaymentDetails `json:"details,omitempty"`
