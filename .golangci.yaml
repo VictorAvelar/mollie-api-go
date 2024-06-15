@@ -5,12 +5,14 @@ run:
   timeout: 20s
   issues-exit-code: 2
   tests: false
-  skip-dirs-use-default: true
   modules-download-mode: readonly
-  go: "1.17"
+  go: "1.22"
 
 output:
-  format: tab
+  formats:
+    - path: stdout
+      format: tab
+    - format: colored-line-number
   sort-results: true
 
 linters:
