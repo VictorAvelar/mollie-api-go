@@ -124,7 +124,8 @@
     "install-zsh-plugins": "git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions",
     "modules": "go mod download",
     "taskfile": "go install github.com/go-task/task/v3/cmd/task@latest",
-    "gomarkdoc": "go install github.com/princjef/gomarkdoc/cmd/gomarkdoc@latest"
+    "gomarkdoc": "go install github.com/princjef/gomarkdoc/cmd/gomarkdoc@latest",
+    "goreleaser": "go install github.com/goreleaser/goreleaser/v2@latest"
   },
   "remoteUser": "root",
   "containerUser": "root",
