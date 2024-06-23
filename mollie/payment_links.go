@@ -58,6 +58,13 @@ type PaymentLinksList struct {
 	} `json:"_embedded,omitempty"`
 }
 
+// UpdatePaymentLinks describes certain details of an existing payment link
+// that can be updated.
+type UpdatePaymentLinks struct {
+	Description string `json:"description,omitempty"`
+	Archived    bool   `json:"archived,omitempty"`
+}
+
 // PaymentLinksService operates over the payment link resource.
 type PaymentLinksService service
 
@@ -107,6 +114,26 @@ func (pls *PaymentLinksService) List(ctx context.Context, opts *PaymentLinkOptio
 	err error,
 ) {
 	res, err = pls.client.get(ctx, "v2/payment-links", opts)
+	if err != nil {
+		return
+	}
+
+	if err = json.Unmarshal(res.content, &pl); err != nil {
+		return
+	}
+
+	return
+}
+
+// Update changes certain details of an existing payment link.
+//
+// See: https://docs.mollie.com/reference/update-payment-link
+func (pls *PaymentLinksService) Update(ctx context.Context, id string, p UpdatePaymentLinks) (
+	res *Response,
+	pl *PaymentLink,
+	err error,
+) {
+	res, err = pls.client.patch(ctx, fmt.Sprintf("v2/payment-links/%s", id), p)
 	if err != nil {
 		return
 	}
