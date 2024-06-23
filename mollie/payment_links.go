@@ -144,3 +144,15 @@ func (pls *PaymentLinksService) Update(ctx context.Context, id string, p UpdateP
 
 	return
 }
+
+// Delete removes a payment link from the website profile.
+//
+// See: https://docs.mollie.com/reference/delete-payment-link
+func (pls *PaymentLinksService) Delete(ctx context.Context, id string) (res *Response, err error) {
+	res, err = pls.client.delete(ctx, fmt.Sprintf("v2/payment-links/%s", id))
+	if err != nil {
+		return
+	}
+
+	return
+}
