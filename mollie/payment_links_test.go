@@ -320,3 +320,182 @@ func TestPaymentLinkService_List(t *testing.T) {
 		})
 	}
 }
+
+func TestPaymentLinkService_Update(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
+	type args struct {
+		ctx         context.Context
+		paymentLink string
+		pl          UpdatePaymentLinks
+	}
+
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"update payment links works as expected.",
+			args{
+				context.Background(),
+				"pl_ka21123129",
+				UpdatePaymentLinks{
+					Archived: true,
+				},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "PATCH")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.UpdatePaymentLinksResponse))
+			},
+		},
+		{
+			"update payment links, an error is returned from the server",
+			args{
+				context.Background(),
+				"pl_ka21123129",
+				UpdatePaymentLinks{},
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"update payment links, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"pl_ka21123129",
+				UpdatePaymentLinks{},
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"update payment links, invalid url when building request",
+			args{
+				context.Background(),
+				"pl_ka21123129",
+				UpdatePaymentLinks{},
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		t.Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/payment-links/%s", c.args.paymentLink), c.handler)
+
+			res, m, err := tClient.PaymentLinks.Update(c.args.ctx, c.args.paymentLink, c.args.pl)
+			if c.wantErr {
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
+			} else {
+				assert.Nil(t, err)
+				assert.IsType(t, &PaymentLink{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
+			}
+		})
+	}
+}
+
+func TestPaymentLinkService_Delete(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
+	type args struct {
+		ctx         context.Context
+		paymentLink string
+	}
+
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"delete payment links works as expected.",
+			args{
+				context.Background(),
+				"pl_ka21123129",
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "DELETE")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				w.WriteHeader(http.StatusNoContent)
+			},
+		},
+		{
+			"delete payment links, an error is returned from the server",
+			args{
+				context.Background(),
+				"pl_ka21123129",
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"delete payment links, invalid url when building request",
+			args{
+				context.Background(),
+				"pl_ka21123129",
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		t.Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/payment-links/%s", c.args.paymentLink), c.handler)
+
+			res, err := tClient.PaymentLinks.Delete(c.args.ctx, c.args.paymentLink)
+			if c.wantErr {
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
+			} else {
+				assert.Nil(t, err)
+				assert.IsType(t, &http.Response{}, res.Response)
+			}
+		})
+	}
+}

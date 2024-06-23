@@ -119,3 +119,35 @@ const ListPaymentLinksResponse = `{
         }
     }
 }`
+
+// UpdatePaymentLinksResponse example.
+const UpdatePaymentLinksResponse = `{
+  "resource": "payment-link",
+  "id": "pl_4Y0eZitmBnQ6IDoMqZQKh",
+  "mode": "live",
+  "description": "Bicycle tires",
+  "amount": {
+    "currency": "EUR",
+    "value": "24.95"
+  },
+  "archived": true,
+  "redirectUrl": "https://webshop.example.org/thanks",
+  "webhookUrl": "https://webshop.example.org/payment-links/webhook",
+  "profileId": "pfl_QkEhN94Ba",
+  "createdAt": "2021-03-20T09:29:56+00:00",
+  "expiresAt": "2023-06-06T11:00:00+00:00",
+  "_links": {
+    "self": {
+      "href": "...",
+      "type": "application/hal+json"
+    },
+    "paymentLink": {
+      "href": "https://paymentlink.mollie.com/payment/4Y0eZitmBnQ6IDoMqZQKh",
+      "type": "text/html"
+    },
+    "documentation": {
+      "href": "...",
+      "type": "text/html"
+    }
+  }
+}`
