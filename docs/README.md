@@ -248,8 +248,10 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type PaymentLinksList](<#PaymentLinksList>)
 - [type PaymentLinksService](<#PaymentLinksService>)
   - [func \(pls \*PaymentLinksService\) Create\(ctx context.Context, p PaymentLink, opts \*PaymentLinkOptions\) \(res \*Response, np \*PaymentLink, err error\)](<#PaymentLinksService.Create>)
+  - [func \(pls \*PaymentLinksService\) Delete\(ctx context.Context, id string\) \(res \*Response, err error\)](<#PaymentLinksService.Delete>)
   - [func \(pls \*PaymentLinksService\) Get\(ctx context.Context, id string\) \(res \*Response, pl \*PaymentLink, err error\)](<#PaymentLinksService.Get>)
   - [func \(pls \*PaymentLinksService\) List\(ctx context.Context, opts \*PaymentLinkOptions\) \(res \*Response, pl \*PaymentLinksList, err error\)](<#PaymentLinksService.List>)
+  - [func \(pls \*PaymentLinksService\) Update\(ctx context.Context, id string, p UpdatePaymentLinks\) \(res \*Response, pl \*PaymentLink, err error\)](<#PaymentLinksService.Update>)
 - [type PaymentList](<#PaymentList>)
 - [type PaymentMethod](<#PaymentMethod>)
 - [type PaymentMethodDetails](<#PaymentMethodDetails>)
@@ -383,6 +385,7 @@ REST also implies a nice and clean structure for URLs or endpoints. This means y
 - [type UpdateOrder](<#UpdateOrder>)
 - [type UpdateOrderLine](<#UpdateOrderLine>)
 - [type UpdatePayment](<#UpdatePayment>)
+- [type UpdatePaymentLinks](<#UpdatePaymentLinks>)
 - [type UpdateShipment](<#UpdateShipment>)
 - [type UpdateSubscription](<#UpdateSubscription>)
 - [type UsedGiftCard](<#UsedGiftCard>)
@@ -4178,7 +4181,7 @@ type PaymentLinksList struct {
 ```
 
 <a name="PaymentLinksService"></a>
-## type [PaymentLinksService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_links.go#L62>)
+## type [PaymentLinksService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_links.go#L69>)
 
 PaymentLinksService operates over the payment link resource.
 
@@ -4187,7 +4190,7 @@ type PaymentLinksService service
 ```
 
 <a name="PaymentLinksService.Create"></a>
-### func \(\*PaymentLinksService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_links.go#L83-L87>)
+### func \(\*PaymentLinksService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_links.go#L90-L94>)
 
 ```go
 func (pls *PaymentLinksService) Create(ctx context.Context, p PaymentLink, opts *PaymentLinkOptions) (res *Response, np *PaymentLink, err error)
@@ -4197,8 +4200,19 @@ Create generates payment links that by default, unlike regular payments, do not 
 
 See: https://docs.mollie.com/reference/v2/payment-links-api/create-payment-link
 
+<a name="PaymentLinksService.Delete"></a>
+### func \(\*PaymentLinksService\) [Delete](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_links.go#L151>)
+
+```go
+func (pls *PaymentLinksService) Delete(ctx context.Context, id string) (res *Response, err error)
+```
+
+Delete removes a payment link from the website profile.
+
+See: https://docs.mollie.com/reference/delete-payment-link
+
 <a name="PaymentLinksService.Get"></a>
-### func \(\*PaymentLinksService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_links.go#L67>)
+### func \(\*PaymentLinksService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_links.go#L74>)
 
 ```go
 func (pls *PaymentLinksService) Get(ctx context.Context, id string) (res *Response, pl *PaymentLink, err error)
@@ -4209,7 +4223,7 @@ Get retrieves a single payment link object by its id/token.
 See: https://docs.mollie.com/reference/v2/payment-links-api/get-payment-link
 
 <a name="PaymentLinksService.List"></a>
-### func \(\*PaymentLinksService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_links.go#L104-L108>)
+### func \(\*PaymentLinksService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_links.go#L111-L115>)
 
 ```go
 func (pls *PaymentLinksService) List(ctx context.Context, opts *PaymentLinkOptions) (res *Response, pl *PaymentLinksList, err error)
@@ -4218,6 +4232,17 @@ func (pls *PaymentLinksService) List(ctx context.Context, opts *PaymentLinkOptio
 List retrieves all payments links created with the current website profile, ordered from newest to oldest.
 
 See: https://docs.mollie.com/reference/v2/payment-links-api/list-payment-links
+
+<a name="PaymentLinksService.Update"></a>
+### func \(\*PaymentLinksService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_links.go#L131-L135>)
+
+```go
+func (pls *PaymentLinksService) Update(ctx context.Context, id string, p UpdatePaymentLinks) (res *Response, pl *PaymentLink, err error)
+```
+
+Update changes certain details of an existing payment link.
+
+See: https://docs.mollie.com/reference/update-payment-link
 
 <a name="PaymentList"></a>
 ## type [PaymentList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L385-L391>)
@@ -6035,6 +6060,18 @@ type UpdatePayment struct {
     BillingEmail string     `json:"billingEmail,omitempty"`
     DueDate      *ShortDate `json:"dueDate,omitempty"`
     Issuer       string     `json:"issuer,omitempty"`
+}
+```
+
+<a name="UpdatePaymentLinks"></a>
+## type [UpdatePaymentLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_links.go#L63-L66>)
+
+UpdatePaymentLinks describes certain details of an existing payment link that can be updated.
+
+```go
+type UpdatePaymentLinks struct {
+    Description string `json:"description,omitempty"`
+    Archived    bool   `json:"archived,omitempty"`
 }
 ```
 
