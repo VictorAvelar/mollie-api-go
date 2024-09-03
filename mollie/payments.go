@@ -222,7 +222,7 @@ type Payment struct {
 	AmountRefunded                  *Amount       `json:"amountRefunded,omitempty"`
 	AmountRemaining                 *Amount       `json:"amountRemaining,omitempty"`
 	AmountCaptured                  *Amount       `json:"amountCaptured,omitempty"`
-	AmountChargedBack               *Amount       `json:"amountChargeback,omitempty"`
+	AmountChargedBack               *Amount       `json:"amountChargedback,omitempty"`
 	SettlementAmount                *Amount       `json:"settlementAmount,omitempty"`
 
 	// Beta fields
