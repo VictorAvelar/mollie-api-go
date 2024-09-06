@@ -82,15 +82,8 @@ if err != nil {
 
 ## Upgrade guide
 
-If you want to upgrade from v2 -> v3, the list of breaking and notable changes can be found in the [docs](docs/v3-upgrade.md).
-
-## :warning: Notice for v3.4 & v3.5
-
-These versions contain breaking changes in the `mollie.NewConfig` method, the  number of parameters
-increased thus breaking any previous implementation and requiring manual changes when updating.
-
-The issue is patched for v3.6 which also includes a bunch of helper methods in the `mollie.Config` struct
-to make the usage and changes in the values more manageable.
+- If you want to upgrade from v2 -> v3, the list of breaking and notable changes can be found in the [docs](docs/v3-upgrade.md).
+- If you want to upgrade from v3 -> v4, the list of breaking and notable changes can be found in the [docs](docs/v4-upgrade.md).
 
 ## API parity
 
