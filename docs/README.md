@@ -5405,7 +5405,7 @@ func (ss *SettlementsService) GetCaptures(ctx context.Context, settlement string
 
 GetCaptures retrieves all captures included in a settlement.
 
-See: https://docs.mollie.com/reference/list-settlement-captures
+See: https://docs.mollie.com/reference/get-settlement-captures
 
 <a name="SettlementsService.GetChargebacks"></a>
 ### func \(\*SettlementsService\) [GetChargebacks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L185-L189>)
@@ -5416,7 +5416,7 @@ func (ss *SettlementsService) GetChargebacks(ctx context.Context, settlement str
 
 GetChargebacks retrieves all chargebacks included in a settlement.
 
-See: https://docs.mollie.com/reference/list-settlement-chargebacks
+See: https://docs.mollie.com/reference/get-settlement-chargebacks
 
 <a name="SettlementsService.GetRefunds"></a>
 ### func \(\*SettlementsService\) [GetRefunds](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L165-L169>)
@@ -5427,7 +5427,7 @@ func (ss *SettlementsService) GetRefunds(ctx context.Context, settlement string,
 
 GetRefunds retrieves all refunds included in a settlement.
 
-See: https://docs.mollie.com/reference/list-settlement-refunds
+See: https://docs.mollie.com/reference/get-settlement-refunds
 
 <a name="SettlementsService.List"></a>
 ### func \(\*SettlementsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L124-L128>)
@@ -5449,7 +5449,7 @@ func (ss *SettlementsService) ListPayments(ctx context.Context, settlement strin
 
 ListPayments retrieves all payments included in a settlement. This API is an alias of the List payments.
 
-See: https://docs.mollie.com/reference/list-settlement-payments
+See: https://docs.mollie.com/reference/get-settlement-payments
 
 <a name="SettlementsService.Next"></a>
 ### func \(\*SettlementsService\) [Next](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L109>)
