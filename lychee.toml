@@ -1,0 +1,6 @@
+exclude_path = ["testdata", ".github", ".devcontainer", "wiki"]
+exclude = ['^https://github\.com']
+cache = true
+max_redirects = 3
+require_https = true
+timeout = 10
