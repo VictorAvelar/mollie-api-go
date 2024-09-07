@@ -4871,7 +4871,7 @@ func (ps *ProfilesService) DisableGiftCardIssuer(ctx context.Context, profileID 
 
 DisableGiftCardIssuer deactivates the requested gift card issuer for the provided profile id when using Organization tokens or App Access tokens.
 
-See: https://docs.mollie.com/reference/disable-gift-card-issuer
+See: https://docs.mollie.com/reference/disable-method-issuer
 
 <a name="ProfilesService.DisableGiftCardIssuerForCurrent"></a>
 ### func \(\*ProfilesService\) [DisableGiftCardIssuerForCurrent](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L287-L290>)
@@ -4882,7 +4882,7 @@ func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(ctx context.Context, 
 
 DisableGiftCardIssuerForCurrent deactivates the specified issuer for the current profile when using API tokens.
 
-See: https://docs.mollie.com/reference/disable-gift-card-issuer
+See: https://docs.mollie.com/reference/disable-method-issuer
 
 <a name="ProfilesService.DisablePaymentMethod"></a>
 ### func \(\*ProfilesService\) [DisablePaymentMethod](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L213-L216>)
@@ -4902,7 +4902,7 @@ func (ps *ProfilesService) DisableVoucherIssuer(ctx context.Context, profileID s
 
 DisableVoucherIssuer deactivates the requested voucher issuer for the provided profile id when using Organization tokens or App Access tokens.
 
-See: https://docs.mollie.com/reference/disable-voucher-issuer
+See: https://docs.mollie.com/reference/disable-method-issuer
 
 <a name="ProfilesService.DisableVoucherIssuerForCurrent"></a>
 ### func \(\*ProfilesService\) [DisableVoucherIssuerForCurrent](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L362-L365>)
@@ -4922,7 +4922,7 @@ func (ps *ProfilesService) EnableGiftCardIssuer(ctx context.Context, profileID s
 
 EnableGiftCardIssuer activates the requested gift card issuer for the provided profile id when using Organization tokens or App Access tokens.
 
-See: https://docs.mollie.com/reference/enable-gift-card-issuer
+See: https://docs.mollie.com/reference/enable-method-issuer
 
 <a name="ProfilesService.EnableGiftCardIssuerForCurrent"></a>
 ### func \(\*ProfilesService\) [EnableGiftCardIssuerForCurrent](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L266-L270>)
@@ -4933,7 +4933,7 @@ func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(ctx context.Context, i
 
 EnableGiftCardIssuerForCurrent activates the specified issuer for the current profile when using API tokens.
 
-See: https://docs.mollie.com/reference/enable-gift-card-issuer
+See: https://docs.mollie.com/reference/enable-method-issuer
 
 <a name="ProfilesService.EnablePaymentMethod"></a>
 ### func \(\*ProfilesService\) [EnablePaymentMethod](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L194-L198>)
@@ -4953,7 +4953,7 @@ func (ps *ProfilesService) EnableVoucherIssuer(ctx context.Context, profileID st
 
 EnableVoucherIssuer activates the requested voucher issuer for the provided profile id when using Organization tokens or App Access tokens.
 
-See: https://docs.mollie.com/reference/enable-voucher-issuer
+See: https://docs.mollie.com/reference/enable-method-issuer
 
 <a name="ProfilesService.EnableVoucherIssuerForCurrent"></a>
 ### func \(\*ProfilesService\) [EnableVoucherIssuerForCurrent](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L343-L347>)
@@ -5791,7 +5791,7 @@ func (ss *SubscriptionsService) ListPayments(ctx context.Context, customer, subs
 
 ListPayments retrieves all payments of a specific subscriptions of a customer
 
-See: https://docs.mollie.com/reference/list-subscriptions-payments
+See: https://docs.mollie.com/reference/list-subscription-payments
 
 <a name="SubscriptionsService.Update"></a>
 ### func \(\*SubscriptionsService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L160-L164>)

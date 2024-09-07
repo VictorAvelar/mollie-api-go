@@ -246,7 +246,7 @@ func (ss *SubscriptionsService) List(ctx context.Context, customer string, opts 
 
 // ListPayments retrieves all payments of a specific subscriptions of a customer
 //
-// See: https://docs.mollie.com/reference/list-subscriptions-payments
+// See: https://docs.mollie.com/reference/list-subscription-payments
 func (ss *SubscriptionsService) ListPayments(
 	ctx context.Context,
 	customer, subscription string,
