@@ -68,7 +68,7 @@ type CaptureLinks struct {
 
 // CaptureOptions describes the query params available to use when retrieving captures.
 //
-// See: https://docs.mollie.com/reference/v2/captures-api/get-capture#embedding-of-related-resources
+// See: https://docs.mollie.com/reference/get-capture#embedding-of-related-resources
 type CaptureOptions struct {
 	Embed []EmbedValue `url:"embed,omitempty"`
 }
@@ -88,7 +88,7 @@ type CapturesService service
 // Get retrieves a single capture by its ID.
 // Note the original payment’s ID is needed as well.
 //
-// See: https://docs.mollie.com/reference/v2/captures-api/get-capture
+// See: https://docs.mollie.com/reference/get-capture
 func (cs *CapturesService) Get(ctx context.Context, payment, capture string, options *CaptureOptions) (
 	res *Response,
 	c *Capture,
@@ -110,7 +110,7 @@ func (cs *CapturesService) Get(ctx context.Context, payment, capture string, opt
 
 // Create creates a new capture for a payment.
 //
-// See: https://docs.mollie.com/reference/v2/captures-api/create-capture
+// See: https://docs.mollie.com/reference/create-capture
 func (cs *CapturesService) Create(ctx context.Context, payment string, capture CreateCapture) (
 	res *Response,
 	c *Capture,
@@ -136,7 +136,7 @@ func (cs *CapturesService) Create(ctx context.Context, payment string, capture C
 
 // List retrieves all captures for a certain payment.
 //
-// See: https://docs.mollie.com/reference/v2/captures-api/list-captures
+// See: https://docs.mollie.com/reference/list-captures
 func (cs *CapturesService) List(ctx context.Context, payment string, options *CaptureOptions) (
 	res *Response,
 	cl *CapturesList,

@@ -108,7 +108,7 @@ type SubscriptionsService service
 
 // Get retrieves a customer's subscription
 //
-// See: https://docs.mollie.com/reference/v2/subscriptions-api/get-subscription
+// See: https://docs.mollie.com/reference/get-subscription
 func (ss *SubscriptionsService) Get(ctx context.Context, customer, subscription string) (
 	res *Response,
 	s *Subscription,
@@ -130,7 +130,7 @@ func (ss *SubscriptionsService) Get(ctx context.Context, customer, subscription 
 
 // Create stores a new subscription for a given customer
 //
-// See: https://docs.mollie.com/reference/v2/subscriptions-api/create-subscription
+// See: https://docs.mollie.com/reference/create-subscription
 func (ss *SubscriptionsService) Create(ctx context.Context, customer string, sc CreateSubscription) (
 	res *Response,
 	s *Subscription,
@@ -156,7 +156,7 @@ func (ss *SubscriptionsService) Create(ctx context.Context, customer string, sc 
 
 // Update changes fields on a subscription object
 //
-// See: https://docs.mollie.com/reference/v2/subscriptions-api/update-subscription
+// See: https://docs.mollie.com/reference/update-subscription
 func (ss *SubscriptionsService) Update(ctx context.Context, customer, subscription string, sc UpdateSubscription) (
 	res *Response,
 	s *Subscription,
@@ -178,7 +178,7 @@ func (ss *SubscriptionsService) Update(ctx context.Context, customer, subscripti
 
 // Cancel cancels a subscription.
 //
-// See: https://docs.mollie.com/reference/v2/subscriptions-api/cancel-subscription
+// See: https://docs.mollie.com/reference/cancel-subscription
 func (ss *SubscriptionsService) Cancel(ctx context.Context, customer, subscription string) (
 	res *Response,
 	s *Subscription,
@@ -202,7 +202,7 @@ func (ss *SubscriptionsService) Cancel(ctx context.Context, customer, subscripti
 // By using an API key all the subscriptions created with the current website profile will be returned.
 // In the case of an OAuth Access Token relies the website profile on the profileId field
 //
-// See: https://docs.mollie.com/reference/v2/subscriptions-api/list-all-subscriptions
+// See: https://docs.mollie.com/reference/list-all-subscriptions
 func (ss *SubscriptionsService) All(ctx context.Context, opts *ListSubscriptionsOptions) (
 	res *Response,
 	sl *SubscriptionsList,
@@ -224,7 +224,7 @@ func (ss *SubscriptionsService) All(ctx context.Context, opts *ListSubscriptions
 
 // List retrieves all subscriptions of a customer
 //
-// See: https://docs.mollie.com/reference/v2/subscriptions-api/list-subscriptions
+// See: https://docs.mollie.com/reference/list-subscriptions
 func (ss *SubscriptionsService) List(ctx context.Context, customer string, opts *ListSubscriptionsOptions) (
 	res *Response,
 	sl *SubscriptionsList,
@@ -246,7 +246,7 @@ func (ss *SubscriptionsService) List(ctx context.Context, customer string, opts 
 
 // ListPayments retrieves all payments of a specific subscriptions of a customer
 //
-// See: https://docs.mollie.com/reference/v2/subscriptions-api/list-subscriptions-payments
+// See: https://docs.mollie.com/reference/list-subscription-payments
 func (ss *SubscriptionsService) ListPayments(
 	ctx context.Context,
 	customer, subscription string,

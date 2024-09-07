@@ -29,7 +29,7 @@ const ListPartnerClientsResponse = `{
                   "type":"application/hal+json"
                },
                "documentation":{
-                  "href":"https://docs.mollie.com/reference/v2/partners-api/get-client",
+                  "href":"https://docs.mollie.com/reference/partners-api/get-client",
                   "type":"text/html"
                }
             }
@@ -47,7 +47,7 @@ const ListPartnerClientsResponse = `{
          "type":"application/hal+json"
       },
       "documentation":{
-         "href":"https://docs.mollie.com/reference/v2/partners-api/list-clients",
+         "href":"https://docs.mollie.com/reference/partners-api/list-clients",
          "type":"text/html"
       }
    }
@@ -78,7 +78,7 @@ const GetPartnerClientResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/partners-api/get-client",
+            "href": "https://docs.mollie.com/reference/partners-api/get-client",
             "type": "text/html"
         }
     }

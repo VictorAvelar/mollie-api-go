@@ -97,7 +97,7 @@ const ListMethodsResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/methods-api/list-methods",
+            "href": "https://docs.mollie.com/reference/methods-api/list-methods",
             "type": "text/html"
         }
     }
@@ -161,7 +161,7 @@ const GetMethodResponse = `{
              "type": "application/hal+json"
          },
          "documentation": {
-             "href": "https://docs.mollie.com/reference/v2/methods-api/get-method",
+             "href": "https://docs.mollie.com/reference/methods-api/get-method",
              "type": "text/html"
          }
      }

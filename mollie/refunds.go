@@ -122,7 +122,7 @@ type RefundsService service
 
 // List retrieves all refunds.
 //
-// See https://docs.mollie.com/reference/v2/refunds-api/list-refunds.
+// See https://docs.mollie.com/reference/list-all-refunds.
 func (rs *RefundsService) List(ctx context.Context, opts *ListRefundsOptions) (
 	res *Response,
 	rl *RefundsList,
@@ -142,7 +142,7 @@ func (rs *RefundsService) List(ctx context.Context, opts *ListRefundsOptions) (
 
 // GetPaymentRefund retrieves a specific refund for a specific payment.
 //
-// See: https://docs.mollie.com/reference/v2/refunds-api/get-payment-refund
+// See: https://docs.mollie.com/reference/get-refund
 func (rs *RefundsService) GetPaymentRefund(
 	ctx context.Context,
 	paymentID, refundID string,
@@ -168,7 +168,7 @@ func (rs *RefundsService) GetPaymentRefund(
 
 // ListPaymentRefunds retrieves all refunds for a specific payment.
 //
-// See: https://docs.mollie.com/reference/v2/refunds-api/list-payment-refunds
+// See: https://docs.mollie.com/reference/list-refunds
 func (rs *RefundsService) ListPaymentRefunds(
 	ctx context.Context,
 	paymentID string,
@@ -194,7 +194,7 @@ func (rs *RefundsService) ListPaymentRefunds(
 
 // Create a refund payment request.
 //
-// See https://docs.mollie.com/reference/v2/refunds-api/create-payment-refund
+// See https://docs.mollie.com/reference/create-refund
 func (rs *RefundsService) CreatePaymentRefund(
 	ctx context.Context,
 	paymentID string,
@@ -225,7 +225,7 @@ func (rs *RefundsService) CreatePaymentRefund(
 
 // CancelPaymentRefund cancels a refund for a specific payment.
 //
-// See https://docs.mollie.com/reference/v2/refunds-api/cancel-payment-refund
+// See https://docs.mollie.com/reference/cancel-refund
 func (rs *RefundsService) CancelPaymentRefund(
 	ctx context.Context, paymentID, refundID string,
 ) (res *Response, err error) {
@@ -234,7 +234,7 @@ func (rs *RefundsService) CancelPaymentRefund(
 
 // CreateOrderRefund creates a refund for a specific order.
 //
-// See https://docs.mollie.com/reference/v2/refunds-api/create-order-refund
+// See https://docs.mollie.com/reference/create-order-refund
 func (rs *RefundsService) CreateOrderRefund(
 	ctx context.Context,
 	orderID string,
@@ -264,7 +264,7 @@ func (rs *RefundsService) CreateOrderRefund(
 
 // ListOrderRefunds retrieves all refunds for a specific order.
 //
-// See https://docs.mollie.com/reference/v2/refunds-api/list-order-refunds
+// See https://docs.mollie.com/reference/list-order-refunds
 func (rs *RefundsService) ListOrderRefunds(
 	ctx context.Context,
 	orderID string,

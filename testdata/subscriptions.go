@@ -41,7 +41,7 @@ const GetSubscriptionResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/subscriptions-api/get-subscription",
+            "href": "https://docs.mollie.com/reference/subscriptions-api/get-subscription",
             "type": "text/html"
         }
     }
@@ -76,7 +76,7 @@ const DeleteSubscriptionResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/subscriptions-api/cancel-subscription",
+            "href": "https://docs.mollie.com/reference/subscriptions-api/cancel-subscription",
             "type": "text/html"
         }
     }
@@ -133,7 +133,7 @@ const ListAllSubscriptionsResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/subscriptions-api/list-all-subscriptions",
+            "href": "https://docs.mollie.com/reference/subscriptions-api/list-all-subscriptions",
             "type": "text/html"
         }
     }

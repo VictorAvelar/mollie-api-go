@@ -70,7 +70,7 @@ type CustomersService service
 
 // Get finds a customer by its ID.
 //
-// See: https://docs.mollie.com/reference/v2/customers-api/get-customer
+// See: https://docs.mollie.com/reference/get-customer
 func (cs *CustomersService) Get(ctx context.Context, id string) (res *Response, c *Customer, err error) {
 	u := fmt.Sprintf("v2/customers/%s", id)
 
@@ -89,7 +89,7 @@ func (cs *CustomersService) Get(ctx context.Context, id string) (res *Response, 
 // Create creates a simple minimal representation of a customer in the Mollie API
 // to use for the Mollie Checkout and Recurring features.
 //
-// See: https://docs.mollie.com/reference/v2/customers-api/create-customer
+// See: https://docs.mollie.com/reference/create-customer
 func (cs *CustomersService) Create(ctx context.Context, c CreateCustomer) (res *Response, cc *Customer, err error) {
 	res, err = cs.client.post(ctx, "v2/customers", c, nil)
 	if err != nil {
@@ -105,7 +105,7 @@ func (cs *CustomersService) Create(ctx context.Context, c CreateCustomer) (res *
 
 // Update an existing customer.
 //
-// See: https://docs.mollie.com/reference/v2/customers-api/update-customer
+// See: https://docs.mollie.com/reference/update-customer
 func (cs *CustomersService) Update(ctx context.Context, id string, c UpdateCustomer) (
 	res *Response,
 	cc *Customer,
@@ -129,7 +129,7 @@ func (cs *CustomersService) Update(ctx context.Context, id string, c UpdateCusto
 //
 // All mandates and subscriptions created for this customer will be canceled as well.
 //
-// See: https://docs.mollie.com/reference/v2/customers-api/delete-customer
+// See: https://docs.mollie.com/reference/delete-customer
 func (cs *CustomersService) Delete(ctx context.Context, id string) (res *Response, err error) {
 	u := fmt.Sprintf("v2/customers/%s", id)
 
@@ -143,7 +143,7 @@ func (cs *CustomersService) Delete(ctx context.Context, id string) (res *Respons
 
 // List retrieves all customers created.
 //
-// See: https://docs.mollie.com/reference/v2/customers-api/list-customers
+// See: https://docs.mollie.com/reference/list-customers
 func (cs *CustomersService) List(ctx context.Context, options *ListCustomersOptions) (
 	res *Response,
 	cl *CustomersList,
@@ -163,7 +163,7 @@ func (cs *CustomersService) List(ctx context.Context, options *ListCustomersOpti
 
 // GetPayments retrieves all payments linked to the customer.
 //
-// See: https://docs.mollie.com/reference/v2/customers-api/list-customer-payments
+// See: https://docs.mollie.com/reference/list-customer-payments
 func (cs *CustomersService) GetPayments(ctx context.Context, id string, options *ListCustomersOptions) (
 	res *Response,
 	pl *PaymentList,
@@ -185,7 +185,7 @@ func (cs *CustomersService) GetPayments(ctx context.Context, id string, options 
 
 // CreatePayment creates a payment for the customer.
 //
-// See: https://docs.mollie.com/reference/v2/customers-api/create-customer-payment
+// See: https://docs.mollie.com/reference/create-customer-payment
 func (cs *CustomersService) CreatePayment(ctx context.Context, id string, p CreatePayment) (
 	res *Response,
 	pp *Payment,

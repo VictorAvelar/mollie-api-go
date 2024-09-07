@@ -25,7 +25,7 @@ const CreatePaymentRefundResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/refunds-api/create-payment-refund",
+            "href": "https://docs.mollie.com/reference/refunds-api/create-payment-refund",
             "type": "text/html"
         }
     }
@@ -56,7 +56,7 @@ const GetPaymentRefundResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/refunds-api/get-payment-refund",
+            "href": "https://docs.mollie.com/reference/refunds-api/get-payment-refund",
             "type": "text/html"
         }
     }
@@ -91,7 +91,7 @@ const ListPaymentRefundsResponse = `{
                         "type": "application/hal+json"
                     },
                     "documentation": {
-                        "href": "https://docs.mollie.com/reference/v2/refunds-api/get-payment-refund",
+                        "href": "https://docs.mollie.com/reference/refunds-api/get-payment-refund",
                         "type": "text/html"
                     }
                 }
@@ -109,7 +109,7 @@ const ListPaymentRefundsResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/refunds-api/list-payment-refunds",
+            "href": "https://docs.mollie.com/reference/refunds-api/list-payment-refunds",
             "type": "text/html"
         }
     }
@@ -191,7 +191,7 @@ const ListOrderRefundsResponse = `
                         "type": "application/hal+json"
                     },
                     "documentation": {
-                        "href": "https://docs.mollie.com/reference/v2/refunds-api/get-order-refund",
+                        "href": "https://docs.mollie.com/reference/refunds-api/get-order-refund",
                         "type": "text/html"
                     }
                 }
@@ -209,7 +209,7 @@ const ListOrderRefundsResponse = `
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/refunds-api/list-order-refunds",
+            "href": "https://docs.mollie.com/reference/refunds-api/list-order-refunds",
             "type": "text/html"
         }
     }
@@ -244,7 +244,7 @@ const ListRefundsResponse = `{
                         "type": "application/hal+json"
                     },
                     "documentation": {
-                        "href": "https://docs.mollie.com/reference/v2/refunds-api/get-payment-refund",
+                        "href": "https://docs.mollie.com/reference/refunds-api/get-payment-refund",
                         "type": "text/html"
                     }
                 }
@@ -262,7 +262,7 @@ const ListRefundsResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/refunds-api/list-refunds",
+            "href": "https://docs.mollie.com/reference/refunds-api/list-refunds",
             "type": "text/html"
         }
     }

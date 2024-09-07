@@ -108,7 +108,7 @@ const ListTerminalsResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/terminals-api/list-terminals",
+            "href": "https://docs.mollie.com/reference/terminals-api/list-terminals",
             "type": "text/html"
         }
     }
@@ -132,7 +132,7 @@ const GetTerminalResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/terminals-api/get-terminal",
+            "href": "https://docs.mollie.com/reference/terminals-api/get-terminal",
             "type": "text/html"
         }
     }

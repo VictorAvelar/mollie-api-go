@@ -10,7 +10,7 @@ const CreateClientLinkResponse = `{
             "type": "text/html"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/clients-api/create-client-link",
+            "href": "https://docs.mollie.com/reference/clients-api/create-client-link",
             "type": "text/html"
         }
     }

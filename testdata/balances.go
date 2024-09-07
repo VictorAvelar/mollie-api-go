@@ -34,7 +34,7 @@ const GetBalanceResponse = `{
       "type": "application/hal+json"
     },
     "documentation": {
-      "href": "https://docs.mollie.com/reference/v2/balances-api/get-balance",
+      "href": "https://docs.mollie.com/reference/balances-api/get-balance",
       "type": "text/html"
     }
   }
@@ -116,7 +116,7 @@ const ListBalancesResponse = `{
   },
   "_links": {
     "documentation": {
-      "href": "https://docs.mollie.com/reference/v2/balances-api/list-balances",
+      "href": "https://docs.mollie.com/reference/balances-api/list-balances",
       "type": "text/html"
     },
     "self": {
@@ -388,7 +388,7 @@ const GetBalanceReportResponse = `{
     },
     "_links": {
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/balances-api/get-balance-report",
+            "href": "https://docs.mollie.com/reference/balances-api/get-balance-report",
             "type": "text/html"
         },
         "self": {
@@ -465,7 +465,7 @@ const GetBalanceReportByStatus = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/balances-api/get-primary-balance-report",
+            "href": "https://docs.mollie.com/reference/balances-api/get-primary-balance-report",
             "type": "text/html"
         }
     }
@@ -655,7 +655,7 @@ const GetBalanceReportByCategory = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/balances-api/get-primary-balance-report",
+            "href": "https://docs.mollie.com/reference/balances-api/get-primary-balance-report",
             "type": "text/html"
         }
     }
@@ -713,7 +713,7 @@ const ListBalanceTransactionsResponse = `{
   },
   "_links": {
     "documentation": {
-      "href": "https://docs.mollie.com/reference/v2/balances-api/list-balance-transactions",
+      "href": "https://docs.mollie.com/reference/balances-api/list-balance-transactions",
       "type": "text/html"
     },
     "self": {

@@ -62,7 +62,7 @@ type PaymentDestination struct {
 // Some fields are only valid for specific payment methods, and are
 // documented in the Mollie API reference.
 //
-// See: https://docs.mollie.com/reference/v2/payments-api/create-payment#payment-method-specific-parameters
+// See: https://docs.mollie.com/reference/create-payment#payment-method-specific-parameters
 type CreatePayment struct {
 	Description                     string          `json:"description,omitempty"`
 	RedirectURL                     string          `json:"redirectUrl,omitempty"`
@@ -106,7 +106,7 @@ type CreatePayment struct {
 // CreateRecurrentPaymentFields describes the fields to be sent to the Mollie API when
 // creating a new recurrent payment.
 //
-// See: https://docs.mollie.com/reference/v2/payments-api/create-payment#parameters-for-recurring-payments
+// See: https://docs.mollie.com/reference/create-payment#parameters-for-recurring-payments
 type CreateRecurrentPaymentFields struct {
 	CustomerID   string       `json:"customerId,omitempty"`
 	MandateID    string       `json:"mandateId,omitempty"`
@@ -116,7 +116,7 @@ type CreateRecurrentPaymentFields struct {
 // CreatePreAuthorizedPaymentFields describes the fields to be sent to the Mollie API when
 // creating a new pre-authorized payment.
 //
-// See: https://docs.mollie.com/reference/v2/payments-api/create-payment#parameters-for-pre-authorized-payments
+// See: https://docs.mollie.com/reference/create-payment#parameters-for-pre-authorized-payments
 type CreatePreAuthorizedPaymentFields struct {
 	CaptureDelay string      `json:"captureDelay,omitempty"`
 	CaptureMode  CaptureMode `json:"captureMode,omitempty"`
@@ -125,7 +125,7 @@ type CreatePreAuthorizedPaymentFields struct {
 // CreatePaymentAccessTokenFields describes the fields to be sent to the Mollie API when
 // creating a new payment using an access token.
 //
-// See: https://docs.mollie.com/reference/v2/payments-api/create-payment#access-token-parameters
+// See: https://docs.mollie.com/reference/create-payment#access-token-parameters
 type CreatePaymentAccessTokenFields struct {
 	ProfileID string `json:"profileId,omitempty"`
 	Testmode  bool   `json:"testmode,omitempty"`
@@ -134,7 +134,7 @@ type CreatePaymentAccessTokenFields struct {
 // CreateMollieConnectPaymentFields describes the fields to be sent to the Mollie API when
 // creating a new payment using Mollie Connect.
 //
-// See: https://docs.mollie.com/reference/v2/payments-api/create-payment#mollie-connect-parameters
+// See: https://docs.mollie.com/reference/create-payment#mollie-connect-parameters
 type CreateMollieConnectPaymentFields struct {
 	ApplicationFee *ApplicationFee   `json:"applicationFee,omitempty"`
 	Routing        []*PaymentRouting `json:"routing,omitempty"`
@@ -174,8 +174,8 @@ type PaymentLines struct {
 // UpdatePayment describes the payload to be sent to the Mollie API when
 // updating a payment.
 //
-// See: https://docs.mollie.com/reference/v2/payments-api/update-payment
-// See: https://docs.mollie.com/reference/v2/payments-api/update-payment#payment-method-specific-parameters
+// See: https://docs.mollie.com/reference/update-payment
+// See: https://docs.mollie.com/reference/update-payment#payment-method-specific-parameters
 type UpdatePayment struct {
 	Description                     string        `json:"description,omitempty"`
 	RedirectURL                     string        `json:"redirectUrl,omitempty"`
@@ -285,7 +285,7 @@ type PaymentLinks struct {
 
 // PaymentOptions describes payments endpoint valid query string parameters.
 //
-// See: https://docs.mollie.com/reference/v2/payments-api/get-payment
+// See: https://docs.mollie.com/reference/get-payment
 type PaymentOptions struct {
 	Include []IncludeValue `url:"include,omitempty"`
 	Embed   []EmbedValue   `url:"embed,omitempty"`
@@ -323,7 +323,7 @@ func (ps *PaymentsService) Get(ctx context.Context, id string, opts *PaymentOpti
 
 // Create stores a new payment object attached to your Mollie account.
 //
-// See: https://docs.mollie.com/reference/v2/payments-api/create-payment#
+// See: https://docs.mollie.com/reference/create-payment#
 func (ps *PaymentsService) Create(ctx context.Context, p CreatePayment, opts *PaymentOptions) (
 	res *Response,
 	np *Payment,
@@ -347,7 +347,7 @@ func (ps *PaymentsService) Create(ctx context.Context, p CreatePayment, opts *Pa
 
 // Cancel removes a payment (if possible) from your Mollie account.
 //
-// See: https://docs.mollie.com/reference/v2/payments-api/cancel-payment
+// See: https://docs.mollie.com/reference/cancel-payment
 func (ps *PaymentsService) Cancel(ctx context.Context, id string) (res *Response, p *Payment, err error) {
 	res, err = ps.client.delete(ctx, fmt.Sprintf("v2/payments/%s", id))
 	if err != nil {
@@ -363,7 +363,7 @@ func (ps *PaymentsService) Cancel(ctx context.Context, id string) (res *Response
 
 // Update can be used to update some details of a created payment.
 //
-// See: https://docs.mollie.com/reference/v2/payments-api/update-payment
+// See: https://docs.mollie.com/reference/update-payment
 func (ps *PaymentsService) Update(ctx context.Context, id string, up UpdatePayment) (
 	res *Response,
 	p *Payment,
@@ -392,7 +392,7 @@ type PaymentList struct {
 
 // List retrieves a list of payments associated with your account/organization.
 //
-// See: https://docs.mollie.com/reference/v2/payments-api/list-payments
+// See: https://docs.mollie.com/reference/list-payments
 func (ps *PaymentsService) List(ctx context.Context, opts *ListPaymentsOptions) (
 	res *Response,
 	pl *PaymentList,

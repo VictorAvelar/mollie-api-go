@@ -38,7 +38,7 @@ const ListCapturesResponse = `{
                         "type": "application/hal+json"
                     },
                     "documentation": {
-                        "href": "https://docs.mollie.com/reference/v2/captures-api/get-capture",
+                        "href": "https://docs.mollie.com/reference/captures-api/get-capture",
                         "type": "text/html"
                     }
                 }
@@ -48,7 +48,7 @@ const ListCapturesResponse = `{
     "count": 1,
     "_links": {
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/captures-api/list-captures",
+            "href": "https://docs.mollie.com/reference/captures-api/list-captures",
             "type": "text/html"
         },
         "self": {
@@ -95,7 +95,7 @@ const GetCaptureResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/captures-api/get-capture",
+            "href": "https://docs.mollie.com/reference/captures-api/get-capture",
             "type": "text/html"
         }
     }
@@ -123,7 +123,7 @@ const CreateCaptureResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/captures-api/create-capture",
+            "href": "https://docs.mollie.com/reference/captures-api/create-capture",
             "type": "text/html"
         }
     }
@@ -152,7 +152,7 @@ const CreateCaptureWithAccessTokenResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/captures-api/create-capture",
+            "href": "https://docs.mollie.com/reference/captures-api/create-capture",
             "type": "text/html"
         }
     }

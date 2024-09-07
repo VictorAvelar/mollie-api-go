@@ -11,7 +11,7 @@ import (
 // and will redirect them to them the payment page where they can
 // complete the payment.
 //
-// See: https://docs.mollie.com/reference/v2/payment-links-api/get-payment-link
+// See: https://docs.mollie.com/reference/get-payment-link
 type PaymentLink struct {
 	ID          string           `json:"id,omitempty"`
 	Resource    string           `json:"resource,omitempty"`
@@ -31,7 +31,7 @@ type PaymentLink struct {
 // PaymentLinkLinks describes all the possible links returned with
 // a payment link struct.
 //
-// See: https://docs.mollie.com/reference/v2/payment-links-api/get-payment-link
+// See: https://docs.mollie.com/reference/get-payment-link
 type PaymentLinkLinks struct {
 	Self          *URL `json:"self,omitempty"`
 	Documentation *URL `json:"documentation,omitempty"`
@@ -70,7 +70,7 @@ type PaymentLinksService service
 
 // Get retrieves a single payment link object by its id/token.
 //
-// See: https://docs.mollie.com/reference/v2/payment-links-api/get-payment-link
+// See: https://docs.mollie.com/reference/get-payment-link
 func (pls *PaymentLinksService) Get(ctx context.Context, id string) (res *Response, pl *PaymentLink, err error) {
 	res, err = pls.client.get(ctx, fmt.Sprintf("v2/payment-links/%s", id), nil)
 	if err != nil {
@@ -86,7 +86,7 @@ func (pls *PaymentLinksService) Get(ctx context.Context, id string) (res *Respon
 
 // Create generates payment links that by default, unlike regular payments, do not expire.
 //
-// See: https://docs.mollie.com/reference/v2/payment-links-api/create-payment-link
+// See: https://docs.mollie.com/reference/create-payment-link
 func (pls *PaymentLinksService) Create(ctx context.Context, p PaymentLink, opts *PaymentLinkOptions) (
 	res *Response,
 	np *PaymentLink,
@@ -107,7 +107,7 @@ func (pls *PaymentLinksService) Create(ctx context.Context, p PaymentLink, opts 
 // List retrieves all payments links created with the current website profile,
 // ordered from newest to oldest.
 //
-// See: https://docs.mollie.com/reference/v2/payment-links-api/list-payment-links
+// See: https://docs.mollie.com/reference/list-payment-links
 func (pls *PaymentLinksService) List(ctx context.Context, opts *PaymentLinkOptions) (
 	res *Response,
 	pl *PaymentLinksList,

@@ -38,7 +38,7 @@ type ClientLinksService service
 
 // Create a client link based on the provided CreateClientLink values.
 //
-// See: https://docs.mollie.com/reference/v2/client-links-api/create-client-link
+// See: https://docs.mollie.com/reference/create-client-link
 func (cls *ClientLinksService) Create(ctx context.Context, cd CreateClientLink) (
 	res *Response,
 	cl *ClientLink,

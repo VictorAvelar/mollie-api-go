@@ -117,7 +117,7 @@ type MandatesList struct {
 //
 // Mandates allow you to charge a customer’s credit card or bank account recurrently.
 //
-// See: https://docs.mollie.com/reference/v2/mandates-api/create-mandate
+// See: https://docs.mollie.com/reference/create-mandate
 func (ms *MandatesService) Create(ctx context.Context, customer string, mandate CreateMandate) (
 	res *Response,
 	mr *Mandate,
@@ -145,7 +145,7 @@ func (ms *MandatesService) Create(ctx context.Context, customer string, mandate 
 // The mandate will either contain IBAN or credit card details,
 // depending on the type of mandate.
 //
-// See: https://docs.mollie.com/reference/v2/mandates-api/get-mandate
+// See: https://docs.mollie.com/reference/get-mandate
 func (ms *MandatesService) Get(ctx context.Context, customer, mandate string) (res *Response, mr *Mandate, err error) {
 	u := fmt.Sprintf("v2/customers/%s/mandates/%s", customer, mandate)
 
@@ -166,7 +166,7 @@ func (ms *MandatesService) Get(ctx context.Context, customer, mandate string) (r
 // You will no longer be able to charge the consumer’s bank account
 // or credit card with this mandate and all connected subscriptions will be canceled.
 //
-// See: https://docs.mollie.com/reference/v2/mandates-api/revoke-mandate
+// See: https://docs.mollie.com/reference/revoke-mandate
 func (ms *MandatesService) Revoke(ctx context.Context, customer, mandate string) (res *Response, err error) {
 	u := fmt.Sprintf("v2/customers/%s/mandates/%s", customer, mandate)
 
@@ -181,7 +181,7 @@ func (ms *MandatesService) Revoke(ctx context.Context, customer, mandate string)
 // List retrieves all mandates for the given customerId,
 // ordered from newest to oldest.
 //
-// See: https://docs.mollie.com/reference/v2/mandates-api/list-mandates
+// See: https://docs.mollie.com/reference/list-mandates
 func (ms *MandatesService) List(ctx context.Context, customer string, options *ListMandatesOptions) (
 	res *Response,
 	ml *MandatesList,

@@ -72,7 +72,7 @@ type PermissionsService service
 
 // Get returns a permission by its id.
 //
-// See: https://docs.mollie.com/reference/v2/permissions-api/get-permission
+// See: https://docs.mollie.com/reference/get-permission
 func (ps *PermissionsService) Get(ctx context.Context, id PermissionGrant) (res *Response, p *Permission, err error) {
 	res, err = ps.client.get(ctx, fmt.Sprintf("v2/permissions/%s", id), nil)
 	if err != nil {
@@ -89,7 +89,7 @@ func (ps *PermissionsService) Get(ctx context.Context, id PermissionGrant) (res 
 // List retrieves all permissions available with the current app access token.
 // The list is not paginated.
 //
-// See: https://docs.mollie.com/reference/v2/permissions-api/list-permissions
+// See: https://docs.mollie.com/reference/list-permissions
 func (ps *PermissionsService) List(ctx context.Context) (res *Response, pl *PermissionsList, err error) {
 	res, err = ps.client.get(ctx, "v2/permissions", nil)
 	if err != nil {

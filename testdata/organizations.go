@@ -20,7 +20,7 @@ const GetOrganizationResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/organizations-api/get-organization",
+            "href": "https://docs.mollie.com/reference/organizations-api/get-organization",
             "type": "text/html"
         }
     }
@@ -74,7 +74,7 @@ const GetCurrentOrganizationResponse = `{
              "type": "application/hal+json"
          },
          "documentation": {
-             "href": "https://docs.mollie.com/reference/v2/organizations-api/current-organization",
+             "href": "https://docs.mollie.com/reference/organizations-api/current-organization",
              "type": "text/html"
          }
      }
@@ -90,7 +90,7 @@ const GetPartnerStatusResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/partners-api/get-partner",
+            "href": "https://docs.mollie.com/reference/partners-api/get-partner",
             "type": "text/html"
         },
         "signuplink": {

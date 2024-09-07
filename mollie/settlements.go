@@ -98,14 +98,14 @@ type SettlementsService service
 
 // Get returns a settlement by its id or the bank reference id
 //
-// See: https://docs.mollie.com/reference/v2/settlements-api/get-settlement
+// See: https://docs.mollie.com/reference/get-settlement
 func (ss *SettlementsService) Get(ctx context.Context, settlement string) (res *Response, s *Settlement, err error) {
 	return ss.get(ctx, settlement)
 }
 
 // Next retrieves the details of the current settlement that has not yet been paid out.
 //
-// See: https://docs.mollie.com/reference/v2/settlements-api/get-next-settlement
+// See: https://docs.mollie.com/reference/get-next-settlement
 func (ss *SettlementsService) Next(ctx context.Context) (res *Response, s *Settlement, err error) {
 	return ss.get(ctx, "next")
 }
@@ -113,14 +113,14 @@ func (ss *SettlementsService) Next(ctx context.Context) (res *Response, s *Settl
 // Open retrieves the details of the open balance of the organization.
 // This will return a settlement object representing your organization’s balance.
 //
-// See: https://docs.mollie.com/reference/v2/settlements-api/get-open-settlement
+// See: https://docs.mollie.com/reference/get-open-settlement
 func (ss *SettlementsService) Open(ctx context.Context) (res *Response, s *Settlement, err error) {
 	return ss.get(ctx, "open")
 }
 
 // List retrieves all settlements, ordered from new to old
 //
-// See: https://docs.mollie.com/reference/v2/settlements-api/list-settlements
+// See: https://docs.mollie.com/reference/list-settlements
 func (ss *SettlementsService) List(ctx context.Context, slo *ListSettlementsOptions) (
 	res *Response,
 	sl *SettlementsList,
@@ -141,7 +141,7 @@ func (ss *SettlementsService) List(ctx context.Context, slo *ListSettlementsOpti
 // ListPayments retrieves all payments included in a settlement.
 // This API is an alias of the List payments.
 //
-// See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-payments
+// See: https://docs.mollie.com/reference/get-settlement-payments
 func (ss *SettlementsService) ListPayments(ctx context.Context, settlement string, options *ListPaymentsOptions) (
 	res *Response,
 	pl *PaymentList,
@@ -161,7 +161,7 @@ func (ss *SettlementsService) ListPayments(ctx context.Context, settlement strin
 
 // GetRefunds retrieves all refunds included in a settlement.
 //
-// See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-refunds
+// See: https://docs.mollie.com/reference/get-settlement-refunds
 func (ss *SettlementsService) GetRefunds(ctx context.Context, settlement string, slo *ListSettlementsOptions) (
 	res *Response,
 	rl *RefundsList,
@@ -181,7 +181,7 @@ func (ss *SettlementsService) GetRefunds(ctx context.Context, settlement string,
 
 // GetChargebacks retrieves all chargebacks included in a settlement.
 //
-// See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-chargebacks
+// See: https://docs.mollie.com/reference/get-settlement-chargebacks
 func (ss *SettlementsService) GetChargebacks(ctx context.Context, settlement string, slo *ListChargebacksOptions) (
 	res *Response,
 	cl *ChargebacksList,
@@ -201,7 +201,7 @@ func (ss *SettlementsService) GetChargebacks(ctx context.Context, settlement str
 
 // GetCaptures retrieves all captures included in a settlement.
 //
-// See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-captures
+// See: https://docs.mollie.com/reference/get-settlement-captures
 func (ss *SettlementsService) GetCaptures(ctx context.Context, settlement string, slo *ListSettlementsOptions) (
 	res *Response,
 	cl *CapturesList,

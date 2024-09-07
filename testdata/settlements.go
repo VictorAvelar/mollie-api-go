@@ -125,7 +125,7 @@ const GetSettlementsResponse = `{
              "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/settlements-api/get-settlement",
+            "href": "https://docs.mollie.com/reference/settlements-api/get-settlement",
             "type": "text/html"
         }
     }
@@ -235,7 +235,7 @@ const GetNextSettlementResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/settlements-api/get-next-settlement",
+            "href": "https://docs.mollie.com/reference/settlements-api/get-next-settlement",
             "type": "text/html"
         }
     }
@@ -345,7 +345,7 @@ const GetOpenSettlementResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/settlements-api/get-next-settlement",
+            "href": "https://docs.mollie.com/reference/settlements-api/get-next-settlement",
             "type": "text/html"
         }
     }
@@ -397,7 +397,7 @@ const ListSettlementsResponse = `
                         "type": "application/hal+json"
                     },
                     "documentation": {
-                        "href": "https://docs.mollie.com/reference/v2/settlements-api/get-settlement",
+                        "href": "https://docs.mollie.com/reference/settlements-api/get-settlement",
                         "type": "text/html"
                     }
                 }
@@ -415,7 +415,7 @@ const ListSettlementsResponse = `
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/settlements-api/list-settlements",
+            "href": "https://docs.mollie.com/reference/settlements-api/list-settlements",
             "type": "text/html"
         }
     }

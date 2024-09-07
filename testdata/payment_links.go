@@ -27,7 +27,7 @@ const GetPaymentLinkResponse = `{
             "type": "text/html"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/payment-links-api/get-payment-link",
+            "href": "https://docs.mollie.com/reference/payment-links-api/get-payment-link",
             "type": "text/html"
         }
     }
@@ -60,7 +60,7 @@ const CreatePaymentLinkResponse = `{
             "type": "text/html"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/payment-links-api/create-payment-link",
+            "href": "https://docs.mollie.com/reference/payment-links-api/create-payment-link",
             "type": "text/html"
         }
     }
@@ -96,7 +96,7 @@ const ListPaymentLinksResponse = `{
                           "type": "text/html"
                       },
                       "documentation": {
-                          "href": "https://docs.mollie.com/reference/v2/payment-links-api/get-payment-link",
+                          "href": "https://docs.mollie.com/reference/payment-links-api/get-payment-link",
                           "type": "text/html"
                       }
                   }
@@ -114,7 +114,7 @@ const ListPaymentLinksResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/payment-links-api/list-payment-links",
+            "href": "https://docs.mollie.com/reference/payment-links-api/list-payment-links",
             "type": "text/html"
         }
     }
