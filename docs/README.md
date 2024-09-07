@@ -5124,7 +5124,7 @@ func (rs *RefundsService) CancelPaymentRefund(ctx context.Context, paymentID, re
 
 CancelPaymentRefund cancels a refund for a specific payment.
 
-See https://docs.mollie.com/reference/cancel-payment-refund
+See https://docs.mollie.com/reference/cancel-refund
 
 <a name="RefundsService.CreateOrderRefund"></a>
 ### func \(\*RefundsService\) [CreateOrderRefund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L238-L246>)
@@ -5146,7 +5146,7 @@ func (rs *RefundsService) CreatePaymentRefund(ctx context.Context, paymentID str
 
 Create a refund payment request.
 
-See https://docs.mollie.com/reference/create-payment-refund
+See https://docs.mollie.com/reference/create-refund
 
 <a name="RefundsService.GetPaymentRefund"></a>
 ### func \(\*RefundsService\) [GetPaymentRefund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L146-L154>)
@@ -5157,7 +5157,7 @@ func (rs *RefundsService) GetPaymentRefund(ctx context.Context, paymentID, refun
 
 GetPaymentRefund retrieves a specific refund for a specific payment.
 
-See: https://docs.mollie.com/reference/get-payment-refund
+See: https://docs.mollie.com/reference/get-refund
 
 <a name="RefundsService.List"></a>
 ### func \(\*RefundsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L126-L130>)
@@ -5168,7 +5168,7 @@ func (rs *RefundsService) List(ctx context.Context, opts *ListRefundsOptions) (r
 
 List retrieves all refunds.
 
-See https://docs.mollie.com/reference/list-refunds.
+See https://docs.mollie.com/reference/list-all-refunds.
 
 <a name="RefundsService.ListOrderRefunds"></a>
 ### func \(\*RefundsService\) [ListOrderRefunds](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L268-L276>)
@@ -5190,7 +5190,7 @@ func (rs *RefundsService) ListPaymentRefunds(ctx context.Context, paymentID stri
 
 ListPaymentRefunds retrieves all refunds for a specific payment.
 
-See: https://docs.mollie.com/reference/list-payment-refunds
+See: https://docs.mollie.com/reference/list-refunds
 
 <a name="Response"></a>
 ## type [Response](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L340-L343>)
