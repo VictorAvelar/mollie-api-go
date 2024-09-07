@@ -32,7 +32,7 @@ const GetCustomerResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/customers-api/get-customer",
+            "href": "https://docs.mollie.com/reference/customers-api/get-customer",
             "type": "text/html"
         }
     }
@@ -54,7 +54,7 @@ const CreateCustomerResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/customers-api/create-customer",
+            "href": "https://docs.mollie.com/reference/customers-api/create-customer",
             "type": "text/html"
         }
     }
@@ -76,7 +76,7 @@ const UpdateCustomerResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/customers-api/get-customer",
+            "href": "https://docs.mollie.com/reference/customers-api/get-customer",
             "type": "text/html"
         }
     }
@@ -102,7 +102,7 @@ const ListCustomersResponse = `{
                         "type": "application/hal+json"
                     },
                     "documentation": {
-                        "href": "https://docs.mollie.com/reference/v2/customers-api/get-customer",
+                        "href": "https://docs.mollie.com/reference/customers-api/get-customer",
                         "type": "text/html"
                     }
                 }
@@ -122,7 +122,7 @@ const ListCustomersResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/customers-api/list-customers",
+            "href": "https://docs.mollie.com/reference/customers-api/list-customers",
             "type": "text/html"
         }
     }

@@ -12,7 +12,7 @@ const GetPermissionsResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/permissions-api/get-permission",
+            "href": "https://docs.mollie.com/reference/permissions-api/get-permission",
             "type": "text/html"
         }
     }
@@ -52,7 +52,7 @@ const ListPermissionsResponse = `{
     "count": 15,
     "_links": {
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/permissions-api/list-permissions",
+            "href": "https://docs.mollie.com/reference/permissions-api/list-permissions",
             "type": "text/html"
         },
         "self": {

@@ -29,7 +29,7 @@ const (
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/chargebacks-api/get-payment-chargeback",
+            "href": "https://docs.mollie.com/reference/chargebacks-api/get-payment-chargeback",
             "type": "text/html"
         }
     }
@@ -62,7 +62,7 @@ const (
                         "type": "application/hal+json"
                     },
                     "documentation": {
-                        "href": "https://docs.mollie.com/reference/v2/chargebacks-api/get-chargeback",
+                        "href": "https://docs.mollie.com/reference/chargebacks-api/get-chargeback",
                         "type": "text/html"
                     }
                 }
@@ -77,7 +77,7 @@ const (
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks",
+            "href": "https://docs.mollie.com/reference/chargebacks-api/list-chargebacks",
             "type": "text/html"
         }
     }

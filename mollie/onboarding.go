@@ -74,7 +74,7 @@ type OnboardingService service
 
 // GetOnboardingStatus gets the status of onboarding of the authenticated organization.
 //
-// See: https://docs.mollie.com/reference/v2/onboarding-api/get-onboarding-status
+// See: https://docs.mollie.com/reference/get-onboarding-status
 func (os *OnboardingService) GetOnboardingStatus(ctx context.Context) (res *Response, o *Onboarding, err error) {
 	res, err = os.client.get(ctx, onboardingURLPath, nil)
 	if err != nil {
@@ -94,7 +94,7 @@ func (os *OnboardingService) GetOnboardingStatus(ctx context.Context) (res *Resp
 // This endpoint has been deprecated. It will be supported for the foreseeable future, but new implementations should
 // use the Create client link endpoint to create new clients and submit their organization’s details in one go.
 //
-// See: https://docs.mollie.com/reference/v2/onboarding-api/submit-onboarding-data
+// See: https://docs.mollie.com/reference/submit-onboarding-data
 func (os *OnboardingService) SubmitOnboardingData(ctx context.Context, d *OnboardingData) (res *Response, err error) {
 	res, err = os.client.post(ctx, onboardingURLPath, d, nil)
 	if err != nil {

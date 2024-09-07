@@ -25,7 +25,7 @@ const CreateMandateResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/mandates-api/create-mandate",
+            "href": "https://docs.mollie.com/reference/mandates-api/create-mandate",
             "type": "text/html"
         }
     }
@@ -56,7 +56,7 @@ const GetMandateResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/mandates-api/get-mandate",
+            "href": "https://docs.mollie.com/reference/mandates-api/get-mandate",
             "type": "text/html"
         }
     }
@@ -138,7 +138,7 @@ const ListMandatesResponse = `
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/mandates-api/revoke-mandate",
+            "href": "https://docs.mollie.com/reference/mandates-api/revoke-mandate",
             "type": "text/html"
         }
     }

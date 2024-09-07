@@ -49,7 +49,7 @@ type ClientsService service
 
 // List retrieves all clients.
 //
-// See: https://docs.mollie.com/reference/v2/partners-api/list-clients
+// See: https://docs.mollie.com/reference/list-clients
 func (ps *ClientsService) List(ctx context.Context, opts *ListLinkedClientsOptions) (
 	res *Response,
 	pc *LinkedClientList,
@@ -69,7 +69,7 @@ func (ps *ClientsService) List(ctx context.Context, opts *ListLinkedClientsOptio
 
 // Get retrieves a single client, linked to your partner account, by its ID.
 //
-// See: https://docs.mollie.com/reference/v2/partners-api/get-client
+// See: https://docs.mollie.com/reference/get-client
 func (ps *ClientsService) Get(ctx context.Context, id string, opts *GetLinkedClientOptions) (
 	res *Response,
 	pc *LinkedClient,

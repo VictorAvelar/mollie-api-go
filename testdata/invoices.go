@@ -108,7 +108,7 @@ const ListInvoicesResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/invoices-api/list-invoices",
+            "href": "https://docs.mollie.com/reference/invoices-api/list-invoices",
             "type": "text/html"
         }
     }

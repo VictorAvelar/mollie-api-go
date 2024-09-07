@@ -99,7 +99,7 @@ const GetShipmentsResponse = `{
              "type": "application/hal+json"
          },
          "documentation": {
-             "href": "https://docs.mollie.com/reference/v2/shipments-api/get-shipment",
+             "href": "https://docs.mollie.com/reference/shipments-api/get-shipment",
              "type": "text/html"
          }
      }
@@ -173,7 +173,7 @@ const ListShipmentsResponse = `{
                         "type": "application/hal+json"
                     },
                     "documentation": {
-                        "href": "https://docs.mollie.com/reference/v2/shipments-api/get-shipment",
+                        "href": "https://docs.mollie.com/reference/shipments-api/get-shipment",
                         "type": "text/html"
                     }
                 }
@@ -187,7 +187,7 @@ const ListShipmentsResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/shipments-api/list-shipments",
+            "href": "https://docs.mollie.com/reference/shipments-api/list-shipments",
             "type": "text/html"
         }
     }

@@ -98,7 +98,7 @@ type PaymentMethodsService service
 // it also receives a pointer to the method options containing applicable
 // query string parameters.
 //
-// See: https://docs.mollie.com/reference/v2/methods-api/get-method
+// See: https://docs.mollie.com/reference/get-method
 func (ms *PaymentMethodsService) Get(ctx context.Context, id PaymentMethod, options *PaymentMethodOptions) (
 	res *Response,
 	pmd *PaymentMethodDetails,
@@ -120,7 +120,7 @@ func (ms *PaymentMethodsService) Get(ctx context.Context, id PaymentMethod, opti
 
 // All retrieves all the payment methods enabled for your account/organization.
 //
-// See: https://docs.mollie.com/reference/v2/methods-api/list-all-methods
+// See: https://docs.mollie.com/reference/list-all-methods
 func (ms *PaymentMethodsService) All(ctx context.Context, options *ListPaymentMethodsOptions) (
 	res *Response,
 	pm *PaymentMethodsList,
@@ -133,7 +133,7 @@ func (ms *PaymentMethodsService) All(ctx context.Context, options *ListPaymentMe
 //
 // The results are not paginated.
 //
-// See: https://docs.mollie.com/reference/v2/methods-api/list-methods
+// See: https://docs.mollie.com/reference/list-methods
 func (ms *PaymentMethodsService) List(ctx context.Context, options *ListPaymentMethodsOptions) (
 	res *Response,
 	pm *PaymentMethodsList,

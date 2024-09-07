@@ -39,7 +39,7 @@ const GetPaymentResponse = `{
             "type": "application/json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/payments-api/get-payment",
+            "href": "https://docs.mollie.com/reference/payments-api/get-payment",
             "type": "text/html"
         }
     }
@@ -75,7 +75,7 @@ const CancelPaymentResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/payments-api/cancel-payment",
+            "href": "https://docs.mollie.com/reference/payments-api/cancel-payment",
             "type": "text/html"
         }
     }
@@ -114,7 +114,7 @@ const UpdatePaymentResponse = `{
             "type": "text/html"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/payments-api/update-payment",
+            "href": "https://docs.mollie.com/reference/payments-api/update-payment",
             "type": "text/html"
         }
     }
@@ -168,7 +168,7 @@ const ListPaymentsResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/payments-api/list-payments",
+            "href": "https://docs.mollie.com/reference/payments-api/list-payments",
             "type": "text/html"
         }
     }

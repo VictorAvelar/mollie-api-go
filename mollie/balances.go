@@ -219,12 +219,12 @@ type ListBalanceTransactionsOptions struct {
 //
 // Works with Organization access tokens and App access tokens.
 //
-// See: https://docs.mollie.com/reference/v2/balances-api/overview
+// See: https://docs.mollie.com/reference/balances-api
 type BalancesService service
 
 // GetBalance retrieves a balance by its id.
 //
-// See: https://docs.mollie.com/reference/v2/balances-api/get-balance
+// See: https://docs.mollie.com/reference/get-balance
 func (bs *BalancesService) Get(ctx context.Context, balance string) (res *Response, b *Balance, err error) {
 	return bs.get(ctx, balance)
 }
@@ -232,7 +232,7 @@ func (bs *BalancesService) Get(ctx context.Context, balance string) (res *Respon
 // Primary retrieves the primary balance. This is the balance of your account’s
 // primary currency, where all payments are settled to by default.
 //
-// See: https://docs.mollie.com/reference/v2/balances-api/get-primary-balance
+// See: https://docs.mollie.com/reference/get-primary-balance
 func (bs *BalancesService) Primary(ctx context.Context) (res *Response, b *Balance, err error) {
 	const id = "primary"
 
@@ -242,7 +242,7 @@ func (bs *BalancesService) Primary(ctx context.Context) (res *Response, b *Balan
 // List retrieves all the organization’s balances, including the primary
 // balance, ordered from newest to oldest.
 //
-// See: https://docs.mollie.com/reference/v2/balances-api/list-balances
+// See: https://docs.mollie.com/reference/list-balances
 func (bs *BalancesService) List(ctx context.Context, options *ListBalancesOptions) (
 	res *Response,
 	bl *BalancesList,
@@ -253,7 +253,7 @@ func (bs *BalancesService) List(ctx context.Context, options *ListBalancesOption
 
 // GetReport returns the balance report for the specified balance id.
 //
-// See: https://docs.mollie.com/reference/v2/balances-api/get-balance-report
+// See: https://docs.mollie.com/reference/get-balance-report
 func (bs *BalancesService) GetReport(ctx context.Context, balance string, options *BalanceReportOptions) (
 	res *Response,
 	br *BalanceReport,
@@ -264,7 +264,7 @@ func (bs *BalancesService) GetReport(ctx context.Context, balance string, option
 
 // GetPrimaryReport returns the report for the primary balance.
 //
-// See: https://docs.mollie.com/reference/v2/balances-api/get-primary-balance-report
+// See: https://docs.mollie.com/reference/get-primary-balance-report
 func (bs *BalancesService) GetPrimaryReport(ctx context.Context, options *BalanceReportOptions) (
 	res *Response,
 	br *BalanceReport,
@@ -276,7 +276,7 @@ func (bs *BalancesService) GetPrimaryReport(ctx context.Context, options *Balanc
 // GetTransactionsList retrieves a list of movements (transactions) for the
 // specified balance.
 //
-// See: https://docs.mollie.com/reference/v2/balances-api/list-balance-transactions
+// See: https://docs.mollie.com/reference/list-balance-transactions
 func (bs *BalancesService) GetTransactionsList(
 	ctx context.Context,
 	balance string,
@@ -292,7 +292,7 @@ func (bs *BalancesService) GetTransactionsList(
 // GetPrimaryTransactionsList retrieves the list of movements (transactions) for the
 // primary balance of the account.
 //
-// See: https://docs.mollie.com/reference/v2/balances-api/list-primary-balance-transactions
+// See: https://docs.mollie.com/reference/list-primary-balance-transactions
 func (bs *BalancesService) GetPrimaryTransactionsList(ctx context.Context, options *ListBalanceTransactionsOptions) (
 	res *Response,
 	btl *BalanceTransactionsList,

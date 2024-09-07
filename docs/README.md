@@ -746,7 +746,7 @@ BalancesService allows you to retrieve real\-time as well as historical informat
 
 Works with Organization access tokens and App access tokens.
 
-See: https://docs.mollie.com/reference/v2/balances-api/overview
+See: https://docs.mollie.com/reference/balances-api
 
 ```go
 type BalancesService service
@@ -761,7 +761,7 @@ func (bs *BalancesService) Get(ctx context.Context, balance string) (res *Respon
 
 GetBalance retrieves a balance by its id.
 
-See: https://docs.mollie.com/reference/v2/balances-api/get-balance
+See: https://docs.mollie.com/reference/get-balance
 
 <a name="BalancesService.GetPrimaryReport"></a>
 ### func \(\*BalancesService\) [GetPrimaryReport](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L268-L272>)
@@ -772,7 +772,7 @@ func (bs *BalancesService) GetPrimaryReport(ctx context.Context, options *Balanc
 
 GetPrimaryReport returns the report for the primary balance.
 
-See: https://docs.mollie.com/reference/v2/balances-api/get-primary-balance-report
+See: https://docs.mollie.com/reference/get-primary-balance-report
 
 <a name="BalancesService.GetPrimaryTransactionsList"></a>
 ### func \(\*BalancesService\) [GetPrimaryTransactionsList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L296-L300>)
@@ -783,7 +783,7 @@ func (bs *BalancesService) GetPrimaryTransactionsList(ctx context.Context, optio
 
 GetPrimaryTransactionsList retrieves the list of movements \(transactions\) for the primary balance of the account.
 
-See: https://docs.mollie.com/reference/v2/balances-api/list-primary-balance-transactions
+See: https://docs.mollie.com/reference/list-primary-balance-transactions
 
 <a name="BalancesService.GetReport"></a>
 ### func \(\*BalancesService\) [GetReport](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L257-L261>)
@@ -794,7 +794,7 @@ func (bs *BalancesService) GetReport(ctx context.Context, balance string, option
 
 GetReport returns the balance report for the specified balance id.
 
-See: https://docs.mollie.com/reference/v2/balances-api/get-balance-report
+See: https://docs.mollie.com/reference/get-balance-report
 
 <a name="BalancesService.GetTransactionsList"></a>
 ### func \(\*BalancesService\) [GetTransactionsList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L280-L288>)
@@ -805,7 +805,7 @@ func (bs *BalancesService) GetTransactionsList(ctx context.Context, balance stri
 
 GetTransactionsList retrieves a list of movements \(transactions\) for the specified balance.
 
-See: https://docs.mollie.com/reference/v2/balances-api/list-balance-transactions
+See: https://docs.mollie.com/reference/list-balance-transactions
 
 <a name="BalancesService.List"></a>
 ### func \(\*BalancesService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L246-L250>)
@@ -816,7 +816,7 @@ func (bs *BalancesService) List(ctx context.Context, options *ListBalancesOption
 
 List retrieves all the organization’s balances, including the primary balance, ordered from newest to oldest.
 
-See: https://docs.mollie.com/reference/v2/balances-api/list-balances
+See: https://docs.mollie.com/reference/list-balances
 
 <a name="BalancesService.Primary"></a>
 ### func \(\*BalancesService\) [Primary](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L236>)
@@ -827,7 +827,7 @@ func (bs *BalancesService) Primary(ctx context.Context) (res *Response, b *Balan
 
 Primary retrieves the primary balance. This is the balance of your account’s primary currency, where all payments are settled to by default.
 
-See: https://docs.mollie.com/reference/v2/balances-api/get-primary-balance
+See: https://docs.mollie.com/reference/get-primary-balance
 
 <a name="BaseError"></a>
 ## type [BaseError](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/errors.go#L13-L19>)
@@ -1077,7 +1077,7 @@ const (
 
 CaptureOptions describes the query params available to use when retrieving captures.
 
-See: https://docs.mollie.com/reference/v2/captures-api/get-capture#embedding-of-related-resources
+See: https://docs.mollie.com/reference/get-capture#embedding-of-related-resources
 
 ```go
 type CaptureOptions struct {
@@ -1137,7 +1137,7 @@ func (cs *CapturesService) Create(ctx context.Context, payment string, capture C
 
 Create creates a new capture for a payment.
 
-See: https://docs.mollie.com/reference/v2/captures-api/create-capture
+See: https://docs.mollie.com/reference/create-capture
 
 <a name="CapturesService.Get"></a>
 ### func \(\*CapturesService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L92-L96>)
@@ -1148,7 +1148,7 @@ func (cs *CapturesService) Get(ctx context.Context, payment, capture string, opt
 
 Get retrieves a single capture by its ID. Note the original payment’s ID is needed as well.
 
-See: https://docs.mollie.com/reference/v2/captures-api/get-capture
+See: https://docs.mollie.com/reference/get-capture
 
 <a name="CapturesService.List"></a>
 ### func \(\*CapturesService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/captures.go#L140-L144>)
@@ -1159,7 +1159,7 @@ func (cs *CapturesService) List(ctx context.Context, payment string, options *Ca
 
 List retrieves all captures for a certain payment.
 
-See: https://docs.mollie.com/reference/v2/captures-api/list-captures
+See: https://docs.mollie.com/reference/list-captures
 
 <a name="CardLabel"></a>
 ## type [CardLabel](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L68>)
@@ -1330,7 +1330,7 @@ func (cs *ChargebacksService) Get(ctx context.Context, payment, chargeback strin
 
 Get retrieves a single chargeback by its ID. Note the original payment’s ID is needed as well.
 
-See: https://docs.mollie.com/reference/v2/chargebacks-api/get-chargeback
+See: https://docs.mollie.com/reference/get-chargeback
 
 <a name="ChargebacksService.List"></a>
 ### func \(\*ChargebacksService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/chargebacks.go#L98-L102>)
@@ -1341,7 +1341,7 @@ func (cs *ChargebacksService) List(ctx context.Context, options *ListChargebacks
 
 List retrieves a list of chargebacks associated with your account/organization.
 
-See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
+See: https://docs.mollie.com/reference/list-chargebacks
 
 <a name="ChargebacksService.ListForPayment"></a>
 ### func \(\*ChargebacksService\) [ListForPayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/chargebacks.go#L109-L113>)
@@ -1352,7 +1352,7 @@ func (cs *ChargebacksService) ListForPayment(ctx context.Context, payment string
 
 ListForPayment retrieves a list of chargebacks associated with a single payment.
 
-See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
+See: https://docs.mollie.com/reference/list-chargebacks
 
 <a name="Client"></a>
 ## type [Client](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L43-L75>)
@@ -1511,7 +1511,7 @@ func (cls *ClientLinksService) Create(ctx context.Context, cd CreateClientLink) 
 
 Create a client link based on the provided CreateClientLink values.
 
-See: https://docs.mollie.com/reference/v2/client-links-api/create-client-link
+See: https://docs.mollie.com/reference/create-client-link
 
 <a name="ClientLinksService.GetFinalClientLink"></a>
 ### func \(\*ClientLinksService\) [GetFinalClientLink](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/client_links.go#L78-L84>)
@@ -1540,7 +1540,7 @@ func (ps *ClientsService) Get(ctx context.Context, id string, opts *GetLinkedCli
 
 Get retrieves a single client, linked to your partner account, by its ID.
 
-See: https://docs.mollie.com/reference/v2/partners-api/get-client
+See: https://docs.mollie.com/reference/get-client
 
 <a name="ClientsService.List"></a>
 ### func \(\*ClientsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/clients.go#L53-L57>)
@@ -1551,7 +1551,7 @@ func (ps *ClientsService) List(ctx context.Context, opts *ListLinkedClientsOptio
 
 List retrieves all clients.
 
-See: https://docs.mollie.com/reference/v2/partners-api/list-clients
+See: https://docs.mollie.com/reference/list-clients
 
 <a name="Company"></a>
 ## type [Company](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L52-L56>)
@@ -1891,7 +1891,7 @@ type CreateMandateAccessTokenFields struct {
 
 CreateMollieConnectPaymentFields describes the fields to be sent to the Mollie API when creating a new payment using Mollie Connect.
 
-See: https://docs.mollie.com/reference/v2/payments-api/create-payment#mollie-connect-parameters
+See: https://docs.mollie.com/reference/create-payment#mollie-connect-parameters
 
 ```go
 type CreateMollieConnectPaymentFields struct {
@@ -1965,7 +1965,7 @@ CreatePayment describes the payload to be sent to the Mollie API when creating o
 
 Some fields are only valid for specific payment methods, and are documented in the Mollie API reference.
 
-See: https://docs.mollie.com/reference/v2/payments-api/create-payment#payment-method-specific-parameters
+See: https://docs.mollie.com/reference/create-payment#payment-method-specific-parameters
 
 ```go
 type CreatePayment struct {
@@ -2014,7 +2014,7 @@ type CreatePayment struct {
 
 CreatePaymentAccessTokenFields describes the fields to be sent to the Mollie API when creating a new payment using an access token.
 
-See: https://docs.mollie.com/reference/v2/payments-api/create-payment#access-token-parameters
+See: https://docs.mollie.com/reference/create-payment#access-token-parameters
 
 ```go
 type CreatePaymentAccessTokenFields struct {
@@ -2043,7 +2043,7 @@ type CreatePaymentRefund struct {
 
 CreatePreAuthorizedPaymentFields describes the fields to be sent to the Mollie API when creating a new pre\-authorized payment.
 
-See: https://docs.mollie.com/reference/v2/payments-api/create-payment#parameters-for-pre-authorized-payments
+See: https://docs.mollie.com/reference/create-payment#parameters-for-pre-authorized-payments
 
 ```go
 type CreatePreAuthorizedPaymentFields struct {
@@ -2057,7 +2057,7 @@ type CreatePreAuthorizedPaymentFields struct {
 
 CreateRecurrentPaymentFields describes the fields to be sent to the Mollie API when creating a new recurrent payment.
 
-See: https://docs.mollie.com/reference/v2/payments-api/create-payment#parameters-for-recurring-payments
+See: https://docs.mollie.com/reference/create-payment#parameters-for-recurring-payments
 
 ```go
 type CreateRecurrentPaymentFields struct {
@@ -2168,7 +2168,7 @@ func (cs *CustomersService) Create(ctx context.Context, c CreateCustomer) (res *
 
 Create creates a simple minimal representation of a customer in the Mollie API to use for the Mollie Checkout and Recurring features.
 
-See: https://docs.mollie.com/reference/v2/customers-api/create-customer
+See: https://docs.mollie.com/reference/create-customer
 
 <a name="CustomersService.CreatePayment"></a>
 ### func \(\*CustomersService\) [CreatePayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L189-L193>)
@@ -2179,7 +2179,7 @@ func (cs *CustomersService) CreatePayment(ctx context.Context, id string, p Crea
 
 CreatePayment creates a payment for the customer.
 
-See: https://docs.mollie.com/reference/v2/customers-api/create-customer-payment
+See: https://docs.mollie.com/reference/create-customer-payment
 
 <a name="CustomersService.Delete"></a>
 ### func \(\*CustomersService\) [Delete](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L133>)
@@ -2192,7 +2192,7 @@ Delete a customer.
 
 All mandates and subscriptions created for this customer will be canceled as well.
 
-See: https://docs.mollie.com/reference/v2/customers-api/delete-customer
+See: https://docs.mollie.com/reference/delete-customer
 
 <a name="CustomersService.Get"></a>
 ### func \(\*CustomersService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L74>)
@@ -2203,7 +2203,7 @@ func (cs *CustomersService) Get(ctx context.Context, id string) (res *Response, 
 
 Get finds a customer by its ID.
 
-See: https://docs.mollie.com/reference/v2/customers-api/get-customer
+See: https://docs.mollie.com/reference/get-customer
 
 <a name="CustomersService.GetPayments"></a>
 ### func \(\*CustomersService\) [GetPayments](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L167-L171>)
@@ -2214,7 +2214,7 @@ func (cs *CustomersService) GetPayments(ctx context.Context, id string, options 
 
 GetPayments retrieves all payments linked to the customer.
 
-See: https://docs.mollie.com/reference/v2/customers-api/list-customer-payments
+See: https://docs.mollie.com/reference/list-customer-payments
 
 <a name="CustomersService.List"></a>
 ### func \(\*CustomersService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L147-L151>)
@@ -2225,7 +2225,7 @@ func (cs *CustomersService) List(ctx context.Context, options *ListCustomersOpti
 
 List retrieves all customers created.
 
-See: https://docs.mollie.com/reference/v2/customers-api/list-customers
+See: https://docs.mollie.com/reference/list-customers
 
 <a name="CustomersService.Update"></a>
 ### func \(\*CustomersService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/customers.go#L109-L113>)
@@ -2236,7 +2236,7 @@ func (cs *CustomersService) Update(ctx context.Context, id string, c UpdateCusto
 
 Update an existing customer.
 
-See: https://docs.mollie.com/reference/v2/customers-api/update-customer
+See: https://docs.mollie.com/reference/update-customer
 
 <a name="EligibilityReasons"></a>
 ## type [EligibilityReasons](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_details.go#L35>)
@@ -3056,7 +3056,7 @@ Create a mandate for a specific customer.
 
 Mandates allow you to charge a customer’s credit card or bank account recurrently.
 
-See: https://docs.mollie.com/reference/v2/mandates-api/create-mandate
+See: https://docs.mollie.com/reference/create-mandate
 
 <a name="MandatesService.Get"></a>
 ### func \(\*MandatesService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L149>)
@@ -3067,7 +3067,7 @@ func (ms *MandatesService) Get(ctx context.Context, customer, mandate string) (r
 
 Get retrieves a mandate by its ID and its customer’s ID. The mandate will either contain IBAN or credit card details, depending on the type of mandate.
 
-See: https://docs.mollie.com/reference/v2/mandates-api/get-mandate
+See: https://docs.mollie.com/reference/get-mandate
 
 <a name="MandatesService.List"></a>
 ### func \(\*MandatesService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L185-L189>)
@@ -3078,7 +3078,7 @@ func (ms *MandatesService) List(ctx context.Context, customer string, options *L
 
 List retrieves all mandates for the given customerId, ordered from newest to oldest.
 
-See: https://docs.mollie.com/reference/v2/mandates-api/list-mandates
+See: https://docs.mollie.com/reference/list-mandates
 
 <a name="MandatesService.Revoke"></a>
 ### func \(\*MandatesService\) [Revoke](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L170>)
@@ -3091,7 +3091,7 @@ Revoke a customer’s mandate.
 
 You will no longer be able to charge the consumer’s bank account or credit card with this mandate and all connected subscriptions will be canceled.
 
-See: https://docs.mollie.com/reference/v2/mandates-api/revoke-mandate
+See: https://docs.mollie.com/reference/revoke-mandate
 
 <a name="MethodsLinks"></a>
 ## type [MethodsLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_methods.go#L38-L41>)
@@ -3226,7 +3226,7 @@ func (os *OnboardingService) GetOnboardingStatus(ctx context.Context) (res *Resp
 
 GetOnboardingStatus gets the status of onboarding of the authenticated organization.
 
-See: https://docs.mollie.com/reference/v2/onboarding-api/get-onboarding-status
+See: https://docs.mollie.com/reference/get-onboarding-status
 
 <a name="OnboardingService.SubmitOnboardingData"></a>
 ### func \(\*OnboardingService\) [SubmitOnboardingData](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/onboarding.go#L98>)
@@ -3239,7 +3239,7 @@ SubmitOnboardingData sends data that will be prefilled in the merchant’s onboa
 
 This endpoint has been deprecated. It will be supported for the foreseeable future, but new implementations should use the Create client link endpoint to create new clients and submit their organization’s details in one go.
 
-See: https://docs.mollie.com/reference/v2/onboarding-api/submit-onboarding-data
+See: https://docs.mollie.com/reference/submit-onboarding-data
 
 <a name="OnboardingStatus"></a>
 ## type [OnboardingStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/onboarding.go#L12>)
@@ -3635,7 +3635,7 @@ func (ors *OrdersService) Cancel(ctx context.Context, orderID string) (res *Resp
 
 Cancel try to cancel the order that fulfill certain requirements.
 
-See https://docs.mollie.com/reference/v2/orders-api/cancel-order
+See https://docs.mollie.com/reference/cancel-order
 
 <a name="OrdersService.CancelOrderLines"></a>
 ### func \(\*OrdersService\) [CancelOrderLines](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L465-L468>)
@@ -3646,7 +3646,7 @@ func (ors *OrdersService) CancelOrderLines(ctx context.Context, orderID string, 
 
 CancelOrderLines can be used to cancel one or more order lines that were previously authorized using a pay after delivery payment method. Use the Cancel Order API if you want to cancel the entire order or the remainder of the order.
 
-See https://docs.mollie.com/reference/v2/orders-api/cancel-order-lines
+See https://docs.mollie.com/reference/cancel-order-lines
 
 <a name="OrdersService.Create"></a>
 ### func \(\*OrdersService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L349-L353>)
@@ -3657,7 +3657,7 @@ func (ors *OrdersService) Create(ctx context.Context, ord CreateOrder, opts *Ord
 
 Create an order will automatically create the required payment to allow your customer to pay for the order.
 
-See https://docs.mollie.com/reference/v2/orders-api/create-order
+See https://docs.mollie.com/reference/create-order
 
 <a name="OrdersService.CreateOrderPayment"></a>
 ### func \(\*OrdersService\) [CreateOrderPayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L483-L487>)
@@ -3668,7 +3668,7 @@ func (ors *OrdersService) CreateOrderPayment(ctx context.Context, orderID string
 
 CreateOrderPayment can only be created while the status of the order is created, and when the status of the existing payment is either expired, canceled or failed.
 
-See https://docs.mollie.com/reference/v2/orders-api/create-order-payment
+See https://docs.mollie.com/reference/create-order-payment
 
 <a name="OrdersService.CreateOrderRefund"></a>
 ### func \(\*OrdersService\) [CreateOrderRefund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L505-L509>)
@@ -3679,7 +3679,7 @@ func (ors *OrdersService) CreateOrderRefund(ctx context.Context, orderID string,
 
 CreateOrderRefund using the Orders API, refunds should be made against the order.
 
-See https://docs.mollie.com/reference/v2/orders-api/create-order-refund
+See https://docs.mollie.com/reference/create-order-refund
 
 <a name="OrdersService.Get"></a>
 ### func \(\*OrdersService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L329-L333>)
@@ -3690,7 +3690,7 @@ func (ors *OrdersService) Get(ctx context.Context, orID string, opts *OrderOptio
 
 Get retrieve a single order by its ID.
 
-See https://docs.mollie.com/reference/v2/orders-api/get-order
+See https://docs.mollie.com/reference/get-order
 
 <a name="OrdersService.List"></a>
 ### func \(\*OrdersService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L413-L417>)
@@ -3701,7 +3701,7 @@ func (ors *OrdersService) List(ctx context.Context, opts *ListOrdersOptions) (re
 
 List is to retrieve all orders.
 
-See https://docs.mollie.com/reference/v2/orders-api/list-orders
+See https://docs.mollie.com/reference/list-orders
 
 <a name="OrdersService.ListOrderRefunds"></a>
 ### func \(\*OrdersService\) [ListOrderRefunds](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L527-L531>)
@@ -3712,7 +3712,7 @@ func (ors *OrdersService) ListOrderRefunds(ctx context.Context, orderID string, 
 
 ListOrderRefunds retrieve all order refunds.
 
-See https://docs.mollie.com/reference/v2/orders-api/list-order-refunds
+See https://docs.mollie.com/reference/list-order-refunds
 
 <a name="OrdersService.ManageOrderLines"></a>
 ### func \(\*OrdersService\) [ManageOrderLines](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L549-L553>)
@@ -3723,7 +3723,7 @@ func (ors *OrdersService) ManageOrderLines(ctx context.Context, orderID string, 
 
 ManageOrderLines allows to update, cancel, or add one or more order lines.
 
-See: https://docs.mollie.com/reference/v2/orders-api/manage-order-lines
+See: https://docs.mollie.com/reference/manage-order-lines
 
 <a name="OrdersService.Update"></a>
 ### func \(\*OrdersService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L373-L377>)
@@ -3734,7 +3734,7 @@ func (ors *OrdersService) Update(ctx context.Context, orderID string, ord Update
 
 Update is used to update the billing and/or shipping address of an order.
 
-See https://docs.mollie.com/reference/v2/orders-api/update-order
+See https://docs.mollie.com/reference/update-order
 
 <a name="OrdersService.UpdateOrderLine"></a>
 ### func \(\*OrdersService\) [UpdateOrderLine](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L433-L441>)
@@ -3745,7 +3745,7 @@ func (ors *OrdersService) UpdateOrderLine(ctx context.Context, orderID string, o
 
 UpdateOrderLine can be used to update an order line.
 
-See https://docs.mollie.com/reference/v2/orders-api/update-orderline
+See https://docs.mollie.com/reference/update-orderline
 
 <a name="Organization"></a>
 ## type [Organization](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/organizations.go#L11-L22>)
@@ -3853,7 +3853,7 @@ func (os *OrganizationsService) GetPartnerStatus(ctx context.Context) (res *Resp
 
 GetPartnerStatus retrieves details about the partner status of the currently authenticated organization.
 
-See: https://docs.mollie.com/reference/v2/organizations-api/get-partner
+See: https://docs.mollie.com/reference/get-partner
 
 <a name="Owner"></a>
 ## type [Owner](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L363-L368>)
@@ -4090,7 +4090,7 @@ type PaymentLines struct {
 
 PaymentLink is a resource that can be shared with your customers and will redirect them to them the payment page where they can complete the payment.
 
-See: https://docs.mollie.com/reference/v2/payment-links-api/get-payment-link
+See: https://docs.mollie.com/reference/get-payment-link
 
 ```go
 type PaymentLink struct {
@@ -4115,7 +4115,7 @@ type PaymentLink struct {
 
 PaymentLinkLinks describes all the possible links returned with a payment link struct.
 
-See: https://docs.mollie.com/reference/v2/payment-links-api/get-payment-link
+See: https://docs.mollie.com/reference/get-payment-link
 
 ```go
 type PaymentLinkLinks struct {
@@ -4198,7 +4198,7 @@ func (pls *PaymentLinksService) Create(ctx context.Context, p PaymentLink, opts 
 
 Create generates payment links that by default, unlike regular payments, do not expire.
 
-See: https://docs.mollie.com/reference/v2/payment-links-api/create-payment-link
+See: https://docs.mollie.com/reference/create-payment-link
 
 <a name="PaymentLinksService.Delete"></a>
 ### func \(\*PaymentLinksService\) [Delete](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_links.go#L151>)
@@ -4220,7 +4220,7 @@ func (pls *PaymentLinksService) Get(ctx context.Context, id string) (res *Respon
 
 Get retrieves a single payment link object by its id/token.
 
-See: https://docs.mollie.com/reference/v2/payment-links-api/get-payment-link
+See: https://docs.mollie.com/reference/get-payment-link
 
 <a name="PaymentLinksService.List"></a>
 ### func \(\*PaymentLinksService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_links.go#L111-L115>)
@@ -4231,7 +4231,7 @@ func (pls *PaymentLinksService) List(ctx context.Context, opts *PaymentLinkOptio
 
 List retrieves all payments links created with the current website profile, ordered from newest to oldest.
 
-See: https://docs.mollie.com/reference/v2/payment-links-api/list-payment-links
+See: https://docs.mollie.com/reference/list-payment-links
 
 <a name="PaymentLinksService.Update"></a>
 ### func \(\*PaymentLinksService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_links.go#L131-L135>)
@@ -4410,7 +4410,7 @@ func (ms *PaymentMethodsService) All(ctx context.Context, options *ListPaymentMe
 
 All retrieves all the payment methods enabled for your account/organization.
 
-See: https://docs.mollie.com/reference/v2/methods-api/list-all-methods
+See: https://docs.mollie.com/reference/list-all-methods
 
 <a name="PaymentMethodsService.Get"></a>
 ### func \(\*PaymentMethodsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_methods.go#L102-L106>)
@@ -4421,7 +4421,7 @@ func (ms *PaymentMethodsService) Get(ctx context.Context, id PaymentMethod, opti
 
 Get returns information about the payment method specified by id, it also receives a pointer to the method options containing applicable query string parameters.
 
-See: https://docs.mollie.com/reference/v2/methods-api/get-method
+See: https://docs.mollie.com/reference/get-method
 
 <a name="PaymentMethodsService.List"></a>
 ### func \(\*PaymentMethodsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_methods.go#L137-L141>)
@@ -4434,14 +4434,14 @@ List retrieves all enabled payment methods.
 
 The results are not paginated.
 
-See: https://docs.mollie.com/reference/v2/methods-api/list-methods
+See: https://docs.mollie.com/reference/list-methods
 
 <a name="PaymentOptions"></a>
 ## type [PaymentOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L289-L292>)
 
 PaymentOptions describes payments endpoint valid query string parameters.
 
-See: https://docs.mollie.com/reference/v2/payments-api/get-payment
+See: https://docs.mollie.com/reference/get-payment
 
 ```go
 type PaymentOptions struct {
@@ -4515,7 +4515,7 @@ func (ps *PaymentsService) Cancel(ctx context.Context, id string) (res *Response
 
 Cancel removes a payment \(if possible\) from your Mollie account.
 
-See: https://docs.mollie.com/reference/v2/payments-api/cancel-payment
+See: https://docs.mollie.com/reference/cancel-payment
 
 <a name="PaymentsService.Create"></a>
 ### func \(\*PaymentsService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L327-L331>)
@@ -4526,7 +4526,7 @@ func (ps *PaymentsService) Create(ctx context.Context, p CreatePayment, opts *Pa
 
 Create stores a new payment object attached to your Mollie account.
 
-See: https://docs.mollie.com/reference/v2/payments-api/create-payment#
+See: https://docs.mollie.com/reference/create-payment#
 
 <a name="PaymentsService.Get"></a>
 ### func \(\*PaymentsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L307-L311>)
@@ -4546,7 +4546,7 @@ func (ps *PaymentsService) List(ctx context.Context, opts *ListPaymentsOptions) 
 
 List retrieves a list of payments associated with your account/organization.
 
-See: https://docs.mollie.com/reference/v2/payments-api/list-payments
+See: https://docs.mollie.com/reference/list-payments
 
 <a name="PaymentsService.Update"></a>
 ### func \(\*PaymentsService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L367-L371>)
@@ -4557,7 +4557,7 @@ func (ps *PaymentsService) Update(ctx context.Context, id string, up UpdatePayme
 
 Update can be used to update some details of a created payment.
 
-See: https://docs.mollie.com/reference/v2/payments-api/update-payment
+See: https://docs.mollie.com/reference/update-payment
 
 <a name="Permission"></a>
 ## type [Permission](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L45-L51>)
@@ -4662,7 +4662,7 @@ func (ps *PermissionsService) Get(ctx context.Context, id PermissionGrant) (res 
 
 Get returns a permission by its id.
 
-See: https://docs.mollie.com/reference/v2/permissions-api/get-permission
+See: https://docs.mollie.com/reference/get-permission
 
 <a name="PermissionsService.List"></a>
 ### func \(\*PermissionsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L93>)
@@ -4673,7 +4673,7 @@ func (ps *PermissionsService) List(ctx context.Context) (res *Response, pl *Perm
 
 List retrieves all permissions available with the current app access token. The list is not paginated.
 
-See: https://docs.mollie.com/reference/v2/permissions-api/list-permissions
+See: https://docs.mollie.com/reference/list-permissions
 
 <a name="PhoneNumber"></a>
 ## type [PhoneNumber](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L118>)
@@ -4871,7 +4871,7 @@ func (ps *ProfilesService) DisableGiftCardIssuer(ctx context.Context, profileID 
 
 DisableGiftCardIssuer deactivates the requested gift card issuer for the provided profile id when using Organization tokens or App Access tokens.
 
-See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
+See: https://docs.mollie.com/reference/disable-gift-card-issuer
 
 <a name="ProfilesService.DisableGiftCardIssuerForCurrent"></a>
 ### func \(\*ProfilesService\) [DisableGiftCardIssuerForCurrent](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L287-L290>)
@@ -4882,7 +4882,7 @@ func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(ctx context.Context, 
 
 DisableGiftCardIssuerForCurrent deactivates the specified issuer for the current profile when using API tokens.
 
-See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
+See: https://docs.mollie.com/reference/disable-gift-card-issuer
 
 <a name="ProfilesService.DisablePaymentMethod"></a>
 ### func \(\*ProfilesService\) [DisablePaymentMethod](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L213-L216>)
@@ -4902,7 +4902,7 @@ func (ps *ProfilesService) DisableVoucherIssuer(ctx context.Context, profileID s
 
 DisableVoucherIssuer deactivates the requested voucher issuer for the provided profile id when using Organization tokens or App Access tokens.
 
-See: https://docs.mollie.com/reference/v2/profiles-api/disable-voucher-issuer
+See: https://docs.mollie.com/reference/disable-voucher-issuer
 
 <a name="ProfilesService.DisableVoucherIssuerForCurrent"></a>
 ### func \(\*ProfilesService\) [DisableVoucherIssuerForCurrent](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L362-L365>)
@@ -4922,7 +4922,7 @@ func (ps *ProfilesService) EnableGiftCardIssuer(ctx context.Context, profileID s
 
 EnableGiftCardIssuer activates the requested gift card issuer for the provided profile id when using Organization tokens or App Access tokens.
 
-See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
+See: https://docs.mollie.com/reference/enable-gift-card-issuer
 
 <a name="ProfilesService.EnableGiftCardIssuerForCurrent"></a>
 ### func \(\*ProfilesService\) [EnableGiftCardIssuerForCurrent](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L266-L270>)
@@ -4933,7 +4933,7 @@ func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(ctx context.Context, i
 
 EnableGiftCardIssuerForCurrent activates the specified issuer for the current profile when using API tokens.
 
-See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
+See: https://docs.mollie.com/reference/enable-gift-card-issuer
 
 <a name="ProfilesService.EnablePaymentMethod"></a>
 ### func \(\*ProfilesService\) [EnablePaymentMethod](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L194-L198>)
@@ -4953,7 +4953,7 @@ func (ps *ProfilesService) EnableVoucherIssuer(ctx context.Context, profileID st
 
 EnableVoucherIssuer activates the requested voucher issuer for the provided profile id when using Organization tokens or App Access tokens.
 
-See: https://docs.mollie.com/reference/v2/profiles-api/enable-voucher-issuer
+See: https://docs.mollie.com/reference/enable-voucher-issuer
 
 <a name="ProfilesService.EnableVoucherIssuerForCurrent"></a>
 ### func \(\*ProfilesService\) [EnableVoucherIssuerForCurrent](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/profiles.go#L343-L347>)
@@ -5124,7 +5124,7 @@ func (rs *RefundsService) CancelPaymentRefund(ctx context.Context, paymentID, re
 
 CancelPaymentRefund cancels a refund for a specific payment.
 
-See https://docs.mollie.com/reference/v2/refunds-api/cancel-payment-refund
+See https://docs.mollie.com/reference/cancel-payment-refund
 
 <a name="RefundsService.CreateOrderRefund"></a>
 ### func \(\*RefundsService\) [CreateOrderRefund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L238-L246>)
@@ -5135,7 +5135,7 @@ func (rs *RefundsService) CreateOrderRefund(ctx context.Context, orderID string,
 
 CreateOrderRefund creates a refund for a specific order.
 
-See https://docs.mollie.com/reference/v2/refunds-api/create-order-refund
+See https://docs.mollie.com/reference/create-order-refund
 
 <a name="RefundsService.CreatePaymentRefund"></a>
 ### func \(\*RefundsService\) [CreatePaymentRefund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L198-L207>)
@@ -5146,7 +5146,7 @@ func (rs *RefundsService) CreatePaymentRefund(ctx context.Context, paymentID str
 
 Create a refund payment request.
 
-See https://docs.mollie.com/reference/v2/refunds-api/create-payment-refund
+See https://docs.mollie.com/reference/create-payment-refund
 
 <a name="RefundsService.GetPaymentRefund"></a>
 ### func \(\*RefundsService\) [GetPaymentRefund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L146-L154>)
@@ -5157,7 +5157,7 @@ func (rs *RefundsService) GetPaymentRefund(ctx context.Context, paymentID, refun
 
 GetPaymentRefund retrieves a specific refund for a specific payment.
 
-See: https://docs.mollie.com/reference/v2/refunds-api/get-payment-refund
+See: https://docs.mollie.com/reference/get-payment-refund
 
 <a name="RefundsService.List"></a>
 ### func \(\*RefundsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L126-L130>)
@@ -5168,7 +5168,7 @@ func (rs *RefundsService) List(ctx context.Context, opts *ListRefundsOptions) (r
 
 List retrieves all refunds.
 
-See https://docs.mollie.com/reference/v2/refunds-api/list-refunds.
+See https://docs.mollie.com/reference/list-refunds.
 
 <a name="RefundsService.ListOrderRefunds"></a>
 ### func \(\*RefundsService\) [ListOrderRefunds](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L268-L276>)
@@ -5179,7 +5179,7 @@ func (rs *RefundsService) ListOrderRefunds(ctx context.Context, orderID string, 
 
 ListOrderRefunds retrieves all refunds for a specific order.
 
-See https://docs.mollie.com/reference/v2/refunds-api/list-order-refunds
+See https://docs.mollie.com/reference/list-order-refunds
 
 <a name="RefundsService.ListPaymentRefunds"></a>
 ### func \(\*RefundsService\) [ListPaymentRefunds](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L172-L180>)
@@ -5190,7 +5190,7 @@ func (rs *RefundsService) ListPaymentRefunds(ctx context.Context, paymentID stri
 
 ListPaymentRefunds retrieves all refunds for a specific payment.
 
-See: https://docs.mollie.com/reference/v2/refunds-api/list-payment-refunds
+See: https://docs.mollie.com/reference/list-payment-refunds
 
 <a name="Response"></a>
 ## type [Response](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L340-L343>)
@@ -5394,7 +5394,7 @@ func (ss *SettlementsService) Get(ctx context.Context, settlement string) (res *
 
 Get returns a settlement by its id or the bank reference id
 
-See: https://docs.mollie.com/reference/v2/settlements-api/get-settlement
+See: https://docs.mollie.com/reference/get-settlement
 
 <a name="SettlementsService.GetCaptures"></a>
 ### func \(\*SettlementsService\) [GetCaptures](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L205-L209>)
@@ -5405,7 +5405,7 @@ func (ss *SettlementsService) GetCaptures(ctx context.Context, settlement string
 
 GetCaptures retrieves all captures included in a settlement.
 
-See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-captures
+See: https://docs.mollie.com/reference/list-settlement-captures
 
 <a name="SettlementsService.GetChargebacks"></a>
 ### func \(\*SettlementsService\) [GetChargebacks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L185-L189>)
@@ -5416,7 +5416,7 @@ func (ss *SettlementsService) GetChargebacks(ctx context.Context, settlement str
 
 GetChargebacks retrieves all chargebacks included in a settlement.
 
-See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-chargebacks
+See: https://docs.mollie.com/reference/list-settlement-chargebacks
 
 <a name="SettlementsService.GetRefunds"></a>
 ### func \(\*SettlementsService\) [GetRefunds](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L165-L169>)
@@ -5427,7 +5427,7 @@ func (ss *SettlementsService) GetRefunds(ctx context.Context, settlement string,
 
 GetRefunds retrieves all refunds included in a settlement.
 
-See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-refunds
+See: https://docs.mollie.com/reference/list-settlement-refunds
 
 <a name="SettlementsService.List"></a>
 ### func \(\*SettlementsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L124-L128>)
@@ -5438,7 +5438,7 @@ func (ss *SettlementsService) List(ctx context.Context, slo *ListSettlementsOpti
 
 List retrieves all settlements, ordered from new to old
 
-See: https://docs.mollie.com/reference/v2/settlements-api/list-settlements
+See: https://docs.mollie.com/reference/list-settlements
 
 <a name="SettlementsService.ListPayments"></a>
 ### func \(\*SettlementsService\) [ListPayments](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L145-L149>)
@@ -5449,7 +5449,7 @@ func (ss *SettlementsService) ListPayments(ctx context.Context, settlement strin
 
 ListPayments retrieves all payments included in a settlement. This API is an alias of the List payments.
 
-See: https://docs.mollie.com/reference/v2/settlements-api/list-settlement-payments
+See: https://docs.mollie.com/reference/list-settlement-payments
 
 <a name="SettlementsService.Next"></a>
 ### func \(\*SettlementsService\) [Next](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L109>)
@@ -5460,7 +5460,7 @@ func (ss *SettlementsService) Next(ctx context.Context) (res *Response, s *Settl
 
 Next retrieves the details of the current settlement that has not yet been paid out.
 
-See: https://docs.mollie.com/reference/v2/settlements-api/get-next-settlement
+See: https://docs.mollie.com/reference/get-next-settlement
 
 <a name="SettlementsService.Open"></a>
 ### func \(\*SettlementsService\) [Open](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/settlements.go#L117>)
@@ -5471,7 +5471,7 @@ func (ss *SettlementsService) Open(ctx context.Context) (res *Response, s *Settl
 
 Open retrieves the details of the open balance of the organization. This will return a settlement object representing your organization’s balance.
 
-See: https://docs.mollie.com/reference/v2/settlements-api/get-open-settlement
+See: https://docs.mollie.com/reference/get-open-settlement
 
 <a name="Shipment"></a>
 ## type [Shipment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L25-L34>)
@@ -5561,7 +5561,7 @@ func (ss *ShipmentsService) Create(ctx context.Context, order string, cs CreateS
 
 Create can be used to ship order lines.
 
-See: https://docs.mollie.com/reference/v2/shipments-api/create-shipment
+See: https://docs.mollie.com/reference/create-shipment
 
 <a name="ShipmentsService.Get"></a>
 ### func \(\*ShipmentsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L72-L76>)
@@ -5572,7 +5572,7 @@ func (ss *ShipmentsService) Get(ctx context.Context, order string, shipment stri
 
 Get retrieves a single shipment and the order lines shipped by a shipment’s ID.
 
-See: https://docs.mollie.com/reference/v2/shipments-api/get-shipment#
+See: https://docs.mollie.com/reference/get-shipment#
 
 <a name="ShipmentsService.List"></a>
 ### func \(\*ShipmentsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L120>)
@@ -5583,7 +5583,7 @@ func (ss *ShipmentsService) List(ctx context.Context, order string) (res *Respon
 
 List retrieves all shipments for an order.
 
-See: https://docs.mollie.com/reference/v2/shipments-api/list-shipments
+See: https://docs.mollie.com/reference/list-shipments
 
 <a name="ShipmentsService.Update"></a>
 ### func \(\*ShipmentsService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/shipments.go#L138-L142>)
@@ -5594,7 +5594,7 @@ func (ss *ShipmentsService) Update(ctx context.Context, order string, shipment s
 
 Update can be used to update the tracking information of a shipment
 
-See: https://docs.mollie.com/reference/v2/shipments-api/update-shipment
+See: https://docs.mollie.com/reference/update-shipment
 
 <a name="ShortDate"></a>
 ## type [ShortDate](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L59-L61>)
@@ -5736,7 +5736,7 @@ func (ss *SubscriptionsService) All(ctx context.Context, opts *ListSubscriptions
 
 All retrieves all subscriptions, ordered from newest to oldest. By using an API key all the subscriptions created with the current website profile will be returned. In the case of an OAuth Access Token relies the website profile on the profileId field
 
-See: https://docs.mollie.com/reference/v2/subscriptions-api/list-all-subscriptions
+See: https://docs.mollie.com/reference/list-all-subscriptions
 
 <a name="SubscriptionsService.Cancel"></a>
 ### func \(\*SubscriptionsService\) [Cancel](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L182-L186>)
@@ -5747,7 +5747,7 @@ func (ss *SubscriptionsService) Cancel(ctx context.Context, customer, subscripti
 
 Cancel cancels a subscription.
 
-See: https://docs.mollie.com/reference/v2/subscriptions-api/cancel-subscription
+See: https://docs.mollie.com/reference/cancel-subscription
 
 <a name="SubscriptionsService.Create"></a>
 ### func \(\*SubscriptionsService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L134-L138>)
@@ -5758,7 +5758,7 @@ func (ss *SubscriptionsService) Create(ctx context.Context, customer string, sc 
 
 Create stores a new subscription for a given customer
 
-See: https://docs.mollie.com/reference/v2/subscriptions-api/create-subscription
+See: https://docs.mollie.com/reference/create-subscription
 
 <a name="SubscriptionsService.Get"></a>
 ### func \(\*SubscriptionsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L112-L116>)
@@ -5769,7 +5769,7 @@ func (ss *SubscriptionsService) Get(ctx context.Context, customer, subscription 
 
 Get retrieves a customer's subscription
 
-See: https://docs.mollie.com/reference/v2/subscriptions-api/get-subscription
+See: https://docs.mollie.com/reference/get-subscription
 
 <a name="SubscriptionsService.List"></a>
 ### func \(\*SubscriptionsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L228-L232>)
@@ -5780,7 +5780,7 @@ func (ss *SubscriptionsService) List(ctx context.Context, customer string, opts 
 
 List retrieves all subscriptions of a customer
 
-See: https://docs.mollie.com/reference/v2/subscriptions-api/list-subscriptions
+See: https://docs.mollie.com/reference/list-subscriptions
 
 <a name="SubscriptionsService.ListPayments"></a>
 ### func \(\*SubscriptionsService\) [ListPayments](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L250-L258>)
@@ -5791,7 +5791,7 @@ func (ss *SubscriptionsService) ListPayments(ctx context.Context, customer, subs
 
 ListPayments retrieves all payments of a specific subscriptions of a customer
 
-See: https://docs.mollie.com/reference/v2/subscriptions-api/list-subscriptions-payments
+See: https://docs.mollie.com/reference/list-subscriptions-payments
 
 <a name="SubscriptionsService.Update"></a>
 ### func \(\*SubscriptionsService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/subscriptions.go#L160-L164>)
@@ -5802,7 +5802,7 @@ func (ss *SubscriptionsService) Update(ctx context.Context, customer, subscripti
 
 Update changes fields on a subscription object
 
-See: https://docs.mollie.com/reference/v2/subscriptions-api/update-subscription
+See: https://docs.mollie.com/reference/update-subscription
 
 <a name="Subtotal"></a>
 ## type [Subtotal](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L103-L108>)
@@ -6043,7 +6043,7 @@ type UpdateOrderLine struct {
 
 UpdatePayment describes the payload to be sent to the Mollie API when updating a payment.
 
-See: https://docs.mollie.com/reference/v2/payments-api/update-payment See: https://docs.mollie.com/reference/v2/payments-api/update-payment#payment-method-specific-parameters
+See: https://docs.mollie.com/reference/update-payment See: https://docs.mollie.com/reference/update-payment#payment-method-specific-parameters
 
 ```go
 type UpdatePayment struct {
@@ -6236,6 +6236,6 @@ func (ms *WalletsService) ApplePaymentSession(ctx context.Context, asr *ApplePay
 
 ApplePaymentSession returns an Apple Payment Session object valid for one transaction.
 
-See: https://docs.mollie.com/reference/v2/wallets-api/request-apple-pay-payment-session
+See: https://docs.mollie.com/reference/request-apple-pay-payment-session
 
 Generated by [gomarkdoc](<https://github.com/princjef/gomarkdoc>)

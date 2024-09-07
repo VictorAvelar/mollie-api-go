@@ -225,7 +225,7 @@ func (ps *ProfilesService) DisablePaymentMethod(ctx context.Context, id string, 
 // EnableGiftCardIssuer activates the requested gift card issuer for the provided
 // profile id when using Organization tokens or App Access tokens.
 //
-// See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
+// See: https://docs.mollie.com/reference/enable-gift-card-issuer
 func (ps *ProfilesService) EnableGiftCardIssuer(ctx context.Context, profileID string, issuer GiftCardIssuer) (
 	res *Response,
 	gc *GiftCardEnabled,
@@ -246,7 +246,7 @@ func (ps *ProfilesService) EnableGiftCardIssuer(ctx context.Context, profileID s
 // DisableGiftCardIssuer deactivates the requested gift card issuer for the provided
 // profile id when using Organization tokens or App Access tokens.
 //
-// See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
+// See: https://docs.mollie.com/reference/disable-gift-card-issuer
 func (ps *ProfilesService) DisableGiftCardIssuer(ctx context.Context, profileID string, issuer GiftCardIssuer) (
 	res *Response,
 	err error,
@@ -262,7 +262,7 @@ func (ps *ProfilesService) DisableGiftCardIssuer(ctx context.Context, profileID 
 // EnableGiftCardIssuerForCurrent activates the specified issuer for the
 // current profile when using API tokens.
 //
-// See: https://docs.mollie.com/reference/v2/profiles-api/enable-gift-card-issuer
+// See: https://docs.mollie.com/reference/enable-gift-card-issuer
 func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(ctx context.Context, issuer GiftCardIssuer) (
 	res *Response,
 	gc *GiftCardEnabled,
@@ -283,7 +283,7 @@ func (ps *ProfilesService) EnableGiftCardIssuerForCurrent(ctx context.Context, i
 // DisableGiftCardIssuerForCurrent deactivates the specified issuer for the
 // current profile when using API tokens.
 //
-// See: https://docs.mollie.com/reference/v2/profiles-api/disable-gift-card-issuer
+// See: https://docs.mollie.com/reference/disable-gift-card-issuer
 func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(ctx context.Context, issuer GiftCardIssuer) (
 	res *Response,
 	err error,
@@ -299,7 +299,7 @@ func (ps *ProfilesService) DisableGiftCardIssuerForCurrent(ctx context.Context, 
 // EnableVoucherIssuer activates the requested voucher issuer for the provided
 // profile id when using Organization tokens or App Access tokens.
 //
-// See: https://docs.mollie.com/reference/v2/profiles-api/enable-voucher-issuer
+// See: https://docs.mollie.com/reference/enable-voucher-issuer
 func (ps *ProfilesService) EnableVoucherIssuer(
 	ctx context.Context,
 	profileID string,
@@ -325,7 +325,7 @@ func (ps *ProfilesService) EnableVoucherIssuer(
 // DisableVoucherIssuer deactivates the requested voucher issuer for the provided
 // profile id when using Organization tokens or App Access tokens.
 //
-// See: https://docs.mollie.com/reference/v2/profiles-api/disable-voucher-issuer
+// See: https://docs.mollie.com/reference/disable-voucher-issuer
 func (ps *ProfilesService) DisableVoucherIssuer(ctx context.Context, profileID string, issuer VoucherIssuer) (
 	res *Response,
 	err error,

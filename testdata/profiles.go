@@ -45,7 +45,7 @@ const GetProfileResponse = `{
             "type": "text/html"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/profiles-api/create-profile",
+            "href": "https://docs.mollie.com/reference/profiles-api/create-profile",
             "type": "text/html"
         }
     }
@@ -95,7 +95,7 @@ const GetProfilesListResponse = `{
                         "type": "text/html"
                     },
                     "documentation": {
-                        "href": "https://docs.mollie.com/reference/v2/profiles-api/create-profile",
+                        "href": "https://docs.mollie.com/reference/profiles-api/create-profile",
                         "type": "text/html"
                     }
                 }
@@ -105,7 +105,7 @@ const GetProfilesListResponse = `{
     "count": 5,
     "_links": {
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/profiles-api/list-profiles",
+            "href": "https://docs.mollie.com/reference/profiles-api/list-profiles",
             "type": "text/html"
         },
         "self": {
@@ -159,7 +159,7 @@ const CreateProfileResponse = `
             "type": "text/html"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/profiles-api/create-profile",
+            "href": "https://docs.mollie.com/reference/profiles-api/create-profile",
             "type": "text/html"
         }
     }
@@ -205,7 +205,7 @@ const UpdateProfileResponse = `{
             "type": "text/html"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/profiles-api/create-profile",
+            "href": "https://docs.mollie.com/reference/profiles-api/create-profile",
             "type": "text/html"
         }
     }
@@ -227,7 +227,7 @@ const EnablePaymentMethodResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/profiles-api/activate-method",
+            "href": "https://docs.mollie.com/reference/profiles-api/activate-method",
             "type": "text/html"
         }
     }
@@ -246,7 +246,7 @@ const EnableGiftCardIssuerResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/profiles-api/enable-giftcard-issuer",
+            "href": "https://docs.mollie.com/reference/profiles-api/enable-giftcard-issuer",
             "type": "text/html"
         }
     }
@@ -275,7 +275,7 @@ const EnableVoucherIssuerResponse = `{
              "type": "application/hal+json"
          },
          "documentation": {
-             "href": "https://docs.mollie.com/reference/v2/profiles-api/enable-voucher-issuer",
+             "href": "https://docs.mollie.com/reference/profiles-api/enable-voucher-issuer",
              "type": "text/html"
          }
      }

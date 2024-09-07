@@ -281,7 +281,7 @@ const GetOrderResponse = `{
             "type": "text/html"
         },
          "documentation": {
-             "href": "https://docs.mollie.com/reference/v2/orders-api/get-order",
+             "href": "https://docs.mollie.com/reference/orders-api/get-order",
              "type": "text/html"
          }
      }
@@ -560,7 +560,7 @@ const CreateOrderResponse = `{
             "type": "text/html"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/orders-api/get-order",
+            "href": "https://docs.mollie.com/reference/orders-api/get-order",
             "type": "text/html"
         }
     }
@@ -749,7 +749,7 @@ const UpdateOrderResponse = `{
 			"type": "text/html"
 		},
 		"documentation": {
-			"href": "https://docs.mollie.com/reference/v2/orders-api/get-order",
+			"href": "https://docs.mollie.com/reference/orders-api/get-order",
 			"type": "text/html"
 		}
 	}
@@ -917,7 +917,7 @@ const CancelOrderResponse = `{
 			"type": "text/html"
 		},
 		"documentation": {
-			"href": "https://docs.mollie.com/reference/v2/orders-api/get-order",
+			"href": "https://docs.mollie.com/reference/orders-api/get-order",
 			"type": "text/html"
 		}
 	}
@@ -948,7 +948,7 @@ const OrderListResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/orders-api/list-orders",
+            "href": "https://docs.mollie.com/reference/orders-api/list-orders",
             "type": "text/html"
         }
     }
@@ -1144,7 +1144,7 @@ const UpdateOrderLineResponse = `{
 		  "type":"text/html"
 	   },
 	   "documentation":{
-		  "href":"https://docs.mollie.com/reference/v2/orders-api/get-order",
+		  "href":"https://docs.mollie.com/reference/orders-api/get-order",
 		  "type":"text/html"
 	   }
 	}
@@ -1194,7 +1194,7 @@ const CancelOrderLinesResponseAmountRequired = `{
 	},
 	"_links": {
 		"documentation": {
-			"href": "https://docs.mollie.com/reference/v2/orders-api/cancel-order-lines",
+			"href": "https://docs.mollie.com/reference/orders-api/cancel-order-lines",
 			"type": "text/html"
 		}
 	}
@@ -1263,7 +1263,7 @@ const CreateOrderPaymentResponse = `{
             "type": "text/html"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/orders-api/create-order-payment",
+            "href": "https://docs.mollie.com/reference/orders-api/create-order-payment",
             "type": "text/html"
         }
     }
@@ -1276,7 +1276,7 @@ const CreateOrderPaymentResponseFailed = `{
 	"detail": "Cannot create a new payment for order ord_stTC2WHAuS when the order status is \"completed\".",
 	"_links": {
 		"documentation": {
-			"href": "https://docs.mollie.com/reference/v2/orders-api/create-order-payment",
+			"href": "https://docs.mollie.com/reference/orders-api/create-order-payment",
 			"type": "text/html"
 		}
 	}
@@ -1367,7 +1367,7 @@ const CreateOrderRefundResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/orders-api/create-order-refund",
+            "href": "https://docs.mollie.com/reference/orders-api/create-order-refund",
             "type": "text/html"
         }
     }
@@ -1391,7 +1391,7 @@ const CreateOrderRefundResponseFailed = `{
 	},
 	"_links": {
 		"documentation": {
-			"href": "https://docs.mollie.com/reference/v2/orders-api/create-order-refund",
+			"href": "https://docs.mollie.com/reference/orders-api/create-order-refund",
 			"type": "text/html"
 		}
 	}
@@ -1472,7 +1472,7 @@ const ListOrderRefundResponse = `{
                         "type": "application/hal+json"
                     },
                     "documentation": {
-                        "href": "https://docs.mollie.com/reference/v2/refunds-api/get-refund",
+                        "href": "https://docs.mollie.com/reference/refunds-api/get-refund",
                         "type": "text/html"
                     }
                 }
@@ -1490,7 +1490,7 @@ const ListOrderRefundResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/orders-api/list-order-refunds",
+            "href": "https://docs.mollie.com/reference/orders-api/list-order-refunds",
             "type": "text/html"
         }
     }
@@ -1674,7 +1674,7 @@ const ManageOrderLinesResponse = `{
          "type": "text/html"
      },
      "documentation": {
-         "href": "https://docs.mollie.com/reference/v2/orders-api/get-order",
+         "href": "https://docs.mollie.com/reference/orders-api/get-order",
          "type": "text/html"
      }
  }

@@ -38,7 +38,7 @@ type ApplePaymentSessionRequest struct {
 
 // ApplePaymentSession returns an Apple Payment Session object valid for one transaction.
 //
-// See: https://docs.mollie.com/reference/v2/wallets-api/request-apple-pay-payment-session
+// See: https://docs.mollie.com/reference/request-apple-pay-payment-session
 func (ms *WalletsService) ApplePaymentSession(ctx context.Context, asr *ApplePaymentSessionRequest) (
 	res *Response,
 	aps *ApplePaymentSession,

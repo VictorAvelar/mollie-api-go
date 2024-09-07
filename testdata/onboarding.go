@@ -22,7 +22,7 @@ const GetOnboardingStatusResponse = `{
             "type": "application/hal+json"
         },
         "documentation": {
-            "href": "https://docs.mollie.com/reference/v2/onboarding-api/get-onboarding-status",
+            "href": "https://docs.mollie.com/reference/onboarding-api/get-onboarding-status",
             "type": "text/html"
         }
     }

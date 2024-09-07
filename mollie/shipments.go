@@ -68,7 +68,7 @@ type ShipmentsService service
 
 // Get retrieves a single shipment and the order lines shipped by a shipment’s ID.
 //
-// See: https://docs.mollie.com/reference/v2/shipments-api/get-shipment#
+// See: https://docs.mollie.com/reference/get-shipment#
 func (ss *ShipmentsService) Get(ctx context.Context, order string, shipment string) (
 	res *Response,
 	s *Shipment,
@@ -90,7 +90,7 @@ func (ss *ShipmentsService) Get(ctx context.Context, order string, shipment stri
 
 // Create can be used to ship order lines.
 //
-// See: https://docs.mollie.com/reference/v2/shipments-api/create-shipment
+// See: https://docs.mollie.com/reference/create-shipment
 func (ss *ShipmentsService) Create(ctx context.Context, order string, cs CreateShipment) (
 	res *Response,
 	s *Shipment,
@@ -116,7 +116,7 @@ func (ss *ShipmentsService) Create(ctx context.Context, order string, cs CreateS
 
 // List retrieves all shipments for an order.
 //
-// See: https://docs.mollie.com/reference/v2/shipments-api/list-shipments
+// See: https://docs.mollie.com/reference/list-shipments
 func (ss *ShipmentsService) List(ctx context.Context, order string) (res *Response, sl *ShipmentsList, err error) {
 	u := fmt.Sprintf("v2/orders/%s/shipments", order)
 
@@ -134,7 +134,7 @@ func (ss *ShipmentsService) List(ctx context.Context, order string) (res *Respon
 
 // Update can be used to update the tracking information of a shipment
 //
-// See: https://docs.mollie.com/reference/v2/shipments-api/update-shipment
+// See: https://docs.mollie.com/reference/update-shipment
 func (ss *ShipmentsService) Update(ctx context.Context, order string, shipment string, us UpdateShipment) (
 	res *Response,
 	s *Shipment,

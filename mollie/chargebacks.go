@@ -72,7 +72,7 @@ type ChargebacksService service
 // Get retrieves a single chargeback by its ID.
 // Note the original payment’s ID is needed as well.
 //
-// See: https://docs.mollie.com/reference/v2/chargebacks-api/get-chargeback
+// See: https://docs.mollie.com/reference/get-chargeback
 func (cs *ChargebacksService) Get(ctx context.Context, payment, chargeback string, opts *ChargebackOptions) (
 	res *Response,
 	p *Chargeback,
@@ -94,7 +94,7 @@ func (cs *ChargebacksService) Get(ctx context.Context, payment, chargeback strin
 
 // List retrieves a list of chargebacks associated with your account/organization.
 //
-// See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
+// See: https://docs.mollie.com/reference/list-chargebacks
 func (cs *ChargebacksService) List(ctx context.Context, options *ListChargebacksOptions) (
 	res *Response,
 	cl *ChargebacksList,
@@ -105,7 +105,7 @@ func (cs *ChargebacksService) List(ctx context.Context, options *ListChargebacks
 
 // ListForPayment retrieves a list of chargebacks associated with a single payment.
 //
-// See: https://docs.mollie.com/reference/v2/chargebacks-api/list-chargebacks
+// See: https://docs.mollie.com/reference/list-chargebacks
 func (cs *ChargebacksService) ListForPayment(ctx context.Context, payment string, options *ListChargebacksOptions) (
 	res *Response,
 	cl *ChargebacksList,
