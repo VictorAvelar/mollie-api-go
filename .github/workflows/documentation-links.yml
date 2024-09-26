@@ -23,6 +23,16 @@ jobs:
       - name: Link Checker
         id: lychee
         uses: lycheeverse/lychee-action@2b973e86fc7b1f6b36a93795fe2c9c6ae1118621
+        
+      - name: Find the last open report issue
+        id: last-issue
+        uses: micalevisk/last-issue-action@044e1cb7e9a4dde20e22969cb67818bfca0797be
+        with:
+          state: open
+          # Find the last updated open issue that has these labels:
+          labels: |
+            report
+            automated issue
 
       - name: Create Issue From File
         if: env.lychee_exit_code != 0
@@ -30,8 +40,8 @@ jobs:
         with:
           title: Link Checker Report
           content-filepath: ./lychee/out.md
+          issue-number: ${{ steps.last-issue.outputs.issue_number }}
           labels: |
             report
             automated-issue
-            help-wanted
           assignees: VictorAvelar
