@@ -32,7 +32,7 @@ jobs:
           # Find the last updated open issue that has these labels:
           labels: |
             report
-            automated issue
+            automated-issue
 
       - name: Create Issue From File
         if: env.lychee_exit_code != 0
