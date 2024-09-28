@@ -8,10 +8,12 @@ on:
     paths:
       - "docs/**"
       - ".github/workflows/documentation-links.yml"
+      - "README.md"
   pull_request:
     paths:
       - "docs/**"
       - ".github/workflows/documentation-links.yml"
+      - "README.md"
 
 jobs:
   linkChecker:
@@ -30,8 +32,8 @@ jobs:
         with:
           title: Link Checker Report
           content-filepath: ./lychee/out.md
+          issue-number: ${{ steps.last-issue.outputs.issue_number }}
           labels: |
             report
             automated-issue
-            help-wanted
           assignees: VictorAvelar
