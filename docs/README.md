@@ -14,7 +14,7 @@ The Mollie API implements a Representational state transfer \(REST\) architectur
 
 Sounds technical, but it’s really quite easy. It mainly breaks down to HTTP\-methods GET, PATCH, POST and DELETE matching the operations to read, update, create and delete.
 
-REST also implies a nice and clean structure for URLs or endpoints. This means you can reach any part of the Mollie API on https://api.mollie.com/v2/ adding the name of the resource you want to interact with.
+REST also implies a nice and clean structure for URLs or endpoints. This means you can reach any part of the Mollie API on https://api.mollie.com adding the name of the resource you want to interact with.
 
 ## Index
 
@@ -772,7 +772,7 @@ func (bs *BalancesService) GetPrimaryReport(ctx context.Context, options *Balanc
 
 GetPrimaryReport returns the report for the primary balance.
 
-See: https://docs.mollie.com/reference/get-primary-balance-report
+See: https://docs.mollie.com/reference/get-balance-report
 
 <a name="BalancesService.GetPrimaryTransactionsList"></a>
 ### func \(\*BalancesService\) [GetPrimaryTransactionsList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L296-L300>)
@@ -783,7 +783,7 @@ func (bs *BalancesService) GetPrimaryTransactionsList(ctx context.Context, optio
 
 GetPrimaryTransactionsList retrieves the list of movements \(transactions\) for the primary balance of the account.
 
-See: https://docs.mollie.com/reference/list-primary-balance-transactions
+See: https://docs.mollie.com/reference/list-balance-transactions
 
 <a name="BalancesService.GetReport"></a>
 ### func \(\*BalancesService\) [GetReport](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L257-L261>)
@@ -3745,7 +3745,7 @@ func (ors *OrdersService) UpdateOrderLine(ctx context.Context, orderID string, o
 
 UpdateOrderLine can be used to update an order line.
 
-See https://docs.mollie.com/reference/update-orderline
+See https://docs.mollie.com/reference/update-order-line
 
 <a name="Organization"></a>
 ## type [Organization](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/organizations.go#L11-L22>)
@@ -3853,7 +3853,7 @@ func (os *OrganizationsService) GetPartnerStatus(ctx context.Context) (res *Resp
 
 GetPartnerStatus retrieves details about the partner status of the currently authenticated organization.
 
-See: https://docs.mollie.com/reference/get-partner
+See: https://docs.mollie.com/reference/get-partner-status
 
 <a name="Owner"></a>
 ## type [Owner](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L363-L368>)
