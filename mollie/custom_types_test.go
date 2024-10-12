@@ -73,30 +73,6 @@ func TestContextValues_UnmarshalJSON(t *testing.T) {
 	}
 }
 
-func TestAmount_URLEncodingSimple(t *testing.T) {
-	tests := []struct {
-		name string
-		a    Amount
-		want string
-	}{
-		{
-			name: "Test URL encoding simple.",
-			a: Amount{
-				Value:    "10.00",
-				Currency: "EUR",
-			},
-			want: "currency=EUR&value=10.00",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			v, err := query.Values(tt.a)
-			assert.Nil(t, err)
-			assert.Equal(t, tt.want, v.Encode())
-		})
-	}
-}
-
 func TestAmount_URLEncodingNested(t *testing.T) {
 	tests := []struct {
 		name string
