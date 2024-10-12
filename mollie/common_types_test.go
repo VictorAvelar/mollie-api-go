@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/go-querystring/query"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -48,4 +49,25 @@ func TestShortDate_MarshalJSON(t *testing.T) {
 		_, err := d.MarshalJSON()
 		assert.Nil(t, err)
 	})
+}
+
+func TestURLQueryEncode(t *testing.T) {
+	cases := []struct {
+		name     string
+		in       any
+		expected string
+	}{
+		{
+			"test amount encode",
+			&Amount{Currency: "EUR", Value: "10.00"},
+			"amount%5Bcurrency%5D=EUR&amount%5Bvalue%5D=10.00",
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			v, _ := query.Values(c.in)
+			assert.Equal(t, c.expected, v.Encode())
+		})
+	}
 }

@@ -9,8 +9,8 @@ import (
 
 // Amount represents a currency and value pair.
 type Amount struct {
-	Currency string `json:"currency,omitempty" url:"currency,omitempty"`
-	Value    string `json:"value,omitempty"    url:"value,omitempty"`
+	Currency string `json:"currency,omitempty" url:"amount[currency],omitempty"`
+	Value    string `json:"value,omitempty"    url:"amount[value],omitempty"`
 }
 
 // Address provides a human friendly representation of a geographical space.
