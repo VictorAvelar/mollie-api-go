@@ -1,5 +1,5 @@
 exclude_path = [".github", ".devcontainer", "wiki", "mollie", "testdata"]
-exclude = ['^https://github\.com']
+exclude = ['^https://github\.com', '^https://api\.mollie\.com']
 cache = true
 max_redirects = 3
 require_https = true
