@@ -88,7 +88,7 @@ func (os *OrganizationsService) GetCurrent(ctx context.Context) (res *Response, 
 // GetPartnerStatus retrieves details about the partner status
 // of the currently authenticated organization.
 //
-// See: https://docs.mollie.com/reference/get-partner
+// See: https://docs.mollie.com/reference/get-partner-status
 func (os *OrganizationsService) GetPartnerStatus(ctx context.Context) (
 	res *Response,
 	ops *OrganizationPartnerStatus,

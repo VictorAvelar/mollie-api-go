@@ -429,7 +429,7 @@ func (ors *OrdersService) List(ctx context.Context, opts *ListOrdersOptions) (
 
 // UpdateOrderLine can be used to update an order line.
 //
-// See https://docs.mollie.com/reference/update-orderline
+// See https://docs.mollie.com/reference/update-order-line
 func (ors *OrdersService) UpdateOrderLine(
 	ctx context.Context,
 	orderID string,

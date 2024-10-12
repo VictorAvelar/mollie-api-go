@@ -264,7 +264,9 @@ func (bs *BalancesService) GetReport(ctx context.Context, balance string, option
 
 // GetPrimaryReport returns the report for the primary balance.
 //
-// See: https://docs.mollie.com/reference/get-primary-balance-report
+// The alias `primary` is used instead of the balance ID to refer to the organization's primary balance.
+//
+// See: https://docs.mollie.com/reference/get-balance-report
 func (bs *BalancesService) GetPrimaryReport(ctx context.Context, options *BalanceReportOptions) (
 	res *Response,
 	br *BalanceReport,
@@ -292,7 +294,9 @@ func (bs *BalancesService) GetTransactionsList(
 // GetPrimaryTransactionsList retrieves the list of movements (transactions) for the
 // primary balance of the account.
 //
-// See: https://docs.mollie.com/reference/list-primary-balance-transactions
+// The alias primary is used instead of the balance ID to refer to the organization's primary balance.
+//
+// See: https://docs.mollie.com/reference/list-balance-transactions
 func (bs *BalancesService) GetPrimaryTransactionsList(ctx context.Context, options *ListBalanceTransactionsOptions) (
 	res *Response,
 	btl *BalanceTransactionsList,
