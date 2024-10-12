@@ -764,7 +764,7 @@ GetBalance retrieves a balance by its id.
 See: https://docs.mollie.com/reference/get-balance
 
 <a name="BalancesService.GetPrimaryReport"></a>
-### func \(\*BalancesService\) [GetPrimaryReport](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L268-L272>)
+### func \(\*BalancesService\) [GetPrimaryReport](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L270-L274>)
 
 ```go
 func (bs *BalancesService) GetPrimaryReport(ctx context.Context, options *BalanceReportOptions) (res *Response, br *BalanceReport, err error)
@@ -772,10 +772,12 @@ func (bs *BalancesService) GetPrimaryReport(ctx context.Context, options *Balanc
 
 GetPrimaryReport returns the report for the primary balance.
 
-See: https://docs.mollie.com/reference/get-primary-balance-report
+The alias \`primary\` is used instead of the balance ID to refer to the organization's primary balance.
+
+See: https://docs.mollie.com/reference/get-balance-report
 
 <a name="BalancesService.GetPrimaryTransactionsList"></a>
-### func \(\*BalancesService\) [GetPrimaryTransactionsList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L296-L300>)
+### func \(\*BalancesService\) [GetPrimaryTransactionsList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L300-L304>)
 
 ```go
 func (bs *BalancesService) GetPrimaryTransactionsList(ctx context.Context, options *ListBalanceTransactionsOptions) (res *Response, btl *BalanceTransactionsList, err error)
@@ -783,7 +785,9 @@ func (bs *BalancesService) GetPrimaryTransactionsList(ctx context.Context, optio
 
 GetPrimaryTransactionsList retrieves the list of movements \(transactions\) for the primary balance of the account.
 
-See: https://docs.mollie.com/reference/list-primary-balance-transactions
+The alias primary is used instead of the balance ID to refer to the organization's primary balance.
+
+See: https://docs.mollie.com/reference/list-balance-transactions
 
 <a name="BalancesService.GetReport"></a>
 ### func \(\*BalancesService\) [GetReport](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L257-L261>)
@@ -797,7 +801,7 @@ GetReport returns the balance report for the specified balance id.
 See: https://docs.mollie.com/reference/get-balance-report
 
 <a name="BalancesService.GetTransactionsList"></a>
-### func \(\*BalancesService\) [GetTransactionsList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L280-L288>)
+### func \(\*BalancesService\) [GetTransactionsList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L282-L290>)
 
 ```go
 func (bs *BalancesService) GetTransactionsList(ctx context.Context, balance string, options *ListBalanceTransactionsOptions) (res *Response, btl *BalanceTransactionsList, err error)
@@ -3745,7 +3749,7 @@ func (ors *OrdersService) UpdateOrderLine(ctx context.Context, orderID string, o
 
 UpdateOrderLine can be used to update an order line.
 
-See https://docs.mollie.com/reference/update-orderline
+See https://docs.mollie.com/reference/update-order-line
 
 <a name="Organization"></a>
 ## type [Organization](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/organizations.go#L11-L22>)
@@ -3853,7 +3857,7 @@ func (os *OrganizationsService) GetPartnerStatus(ctx context.Context) (res *Resp
 
 GetPartnerStatus retrieves details about the partner status of the currently authenticated organization.
 
-See: https://docs.mollie.com/reference/get-partner
+See: https://docs.mollie.com/reference/get-partner-status
 
 <a name="Owner"></a>
 ## type [Owner](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L363-L368>)
