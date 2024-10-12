@@ -110,7 +110,15 @@
         "editor.fontFamily": "'Fira Code', Menlo, Monaco, 'Courier New', monospace",
         "editor.fontLigatures": true,
         "files.insertFinalNewline": true,
-        "files.trimFinalNewlines": true
+        "files.trimFinalNewlines": true,
+        "cSpell.ignorePaths": [
+          ".devcontainer/*",
+          "mollie/*_test.go",
+          "testdata/*",
+          ".git/objects",
+          ".vscode",
+          ".github"
+        ]
       }
     }
   },
