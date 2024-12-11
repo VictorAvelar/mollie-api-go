@@ -152,6 +152,7 @@ const (
 	StoreCreditLine     PaymentLineType = "store_credit"
 	GiftCardLine        PaymentLineType = "gift_card"
 	SurchargeLine       PaymentLineType = "surcharge"
+	Tip                 PaymentLineType = "tip"
 )
 
 // PaymentLines describes the payment lines to be sent to the Mollie API when
