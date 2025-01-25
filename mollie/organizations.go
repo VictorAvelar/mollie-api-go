@@ -69,6 +69,7 @@ type OrganizationPartnerStatus struct {
 	PartnerType                    PartnerType              `json:"partnerType,omitempty"`
 	UserAgentTokens                []*UserAgentToken        `json:"userAgentTokens,omitempty"`
 	PartnerContractSignedAt        *time.Time               `json:"partnerContractSignedAt,omitempty"`
+	PartnerContractExpiresAt       *time.Time               `json:"partnerContractExpiresAt,omitempty"`
 	Links                          OrganizationPartnerLinks `json:"_links,omitempty"`
 }
 
