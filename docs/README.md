@@ -3801,7 +3801,7 @@ type OrganizationPartnerLinks struct {
 ```
 
 <a name="OrganizationPartnerStatus"></a>
-## type [OrganizationPartnerStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/organizations.go#L65-L73>)
+## type [OrganizationPartnerStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/organizations.go#L65-L74>)
 
 OrganizationPartnerStatus response descriptor.
 
@@ -3813,12 +3813,13 @@ type OrganizationPartnerStatus struct {
     PartnerType                    PartnerType              `json:"partnerType,omitempty"`
     UserAgentTokens                []*UserAgentToken        `json:"userAgentTokens,omitempty"`
     PartnerContractSignedAt        *time.Time               `json:"partnerContractSignedAt,omitempty"`
+    PartnerContractExpiresAt       *time.Time               `json:"partnerContractExpiresAt,omitempty"`
     Links                          OrganizationPartnerLinks `json:"_links,omitempty"`
 }
 ```
 
 <a name="OrganizationsService"></a>
-## type [OrganizationsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/organizations.go#L76>)
+## type [OrganizationsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/organizations.go#L77>)
 
 OrganizationsService instance operates over organization resources.
 
@@ -3827,7 +3828,7 @@ type OrganizationsService service
 ```
 
 <a name="OrganizationsService.Get"></a>
-### func \(\*OrganizationsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/organizations.go#L79>)
+### func \(\*OrganizationsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/organizations.go#L80>)
 
 ```go
 func (os *OrganizationsService) Get(ctx context.Context, id string) (res *Response, o *Organization, err error)
@@ -3836,7 +3837,7 @@ func (os *OrganizationsService) Get(ctx context.Context, id string) (res *Respon
 Get retrieve an organization by its id.
 
 <a name="OrganizationsService.GetCurrent"></a>
-### func \(\*OrganizationsService\) [GetCurrent](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/organizations.go#L84>)
+### func \(\*OrganizationsService\) [GetCurrent](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/organizations.go#L85>)
 
 ```go
 func (os *OrganizationsService) GetCurrent(ctx context.Context) (res *Response, o *Organization, err error)
@@ -3845,7 +3846,7 @@ func (os *OrganizationsService) GetCurrent(ctx context.Context) (res *Response, 
 GetCurrent retrieve the currently authenticated organization.
 
 <a name="OrganizationsService.GetPartnerStatus"></a>
-### func \(\*OrganizationsService\) [GetPartnerStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/organizations.go#L92-L96>)
+### func \(\*OrganizationsService\) [GetPartnerStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/organizations.go#L93-L97>)
 
 ```go
 func (os *OrganizationsService) GetPartnerStatus(ctx context.Context) (res *Response, ops *OrganizationPartnerStatus, err error)
