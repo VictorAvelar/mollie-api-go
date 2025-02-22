@@ -58,6 +58,24 @@ type PaymentLinksList struct {
 	} `json:"_embedded,omitempty"`
 }
 
+// PaymentLinkPaymentsList retrieves a list of payment associated with a specific
+// payment link.
+type PaymentLinkPaymentsList struct {
+	Count    int              `json:"count,omitempty"`
+	Links    PaymentLinkLinks `json:"_links,omitempty"`
+	Embedded struct {
+		Payments []*Payment `json:"payments,omitempty"`
+	} `json:"_embedded,omitempty"`
+}
+
+// PaymentLinkPaymentsListOptions represents query string parameters to modify
+// the payment link payments list requests.
+type PaymentLinkPaymentsListOptions struct {
+	Limit    int           `url:"limit,omitempty"`
+	Sort     SortDirection `url:"sort,omitempty"`
+	TestMode bool          `url:"testmode,omitempty"`
+}
+
 // UpdatePaymentLinks describes certain details of an existing payment link
 // that can be updated.
 type UpdatePaymentLinks struct {
@@ -151,6 +169,26 @@ func (pls *PaymentLinksService) Update(ctx context.Context, id string, p UpdateP
 func (pls *PaymentLinksService) Delete(ctx context.Context, id string) (res *Response, err error) {
 	res, err = pls.client.delete(ctx, fmt.Sprintf("v2/payment-links/%s", id))
 	if err != nil {
+		return
+	}
+
+	return
+}
+
+// Payments retrieves all payments associated with a specific payment link.
+//
+// See: https://docs.mollie.com/reference/get-payment-link-payments
+func (pls *PaymentLinksService) Payments(ctx context.Context, id string, opts *PaymentLinkPaymentsListOptions) (
+	res *Response,
+	pl *PaymentLinkPaymentsList,
+	err error,
+) {
+	res, err = pls.client.get(ctx, fmt.Sprintf("v2/payment-links/%s/payments", id), opts)
+	if err != nil {
+		return
+	}
+
+	if err = json.Unmarshal(res.content, &pl); err != nil {
 		return
 	}
 
