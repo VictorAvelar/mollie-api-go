@@ -366,3 +366,12 @@ type Owner struct {
 	FamilyName string `json:"familyName,omitempty"`
 	Locale     Locale `json:"locale,omitempty"`
 }
+
+// SortDirection describes the direction of sorting when querying a list of resources.
+type SortDirection string
+
+// Supported sort directions.
+const (
+	Ascending  SortDirection = "asc"
+	Descending SortDirection = "desc"
+)

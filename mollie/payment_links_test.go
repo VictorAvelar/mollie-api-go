@@ -499,3 +499,121 @@ func TestPaymentLinkService_Delete(t *testing.T) {
 		})
 	}
 }
+
+func TestPaymentLinkService_Payments(t *testing.T) {
+	setEnv()
+	defer unsetEnv()
+
+	type args struct {
+		ctx         context.Context
+		paymentLink string
+		opts        *PaymentLinkPaymentsListOptions
+	}
+
+	cases := []struct {
+		name    string
+		args    args
+		wantErr bool
+		err     error
+		pre     func()
+		handler http.HandlerFunc
+	}{
+		{
+			"list payment link payments works as expected.",
+			args{
+				context.Background(),
+				"pl_ka21123129",
+				nil,
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.ListPaymentLinkPaymentsResponse))
+			},
+		},
+		{
+			"list payment link payments with options works as expected.",
+			args{
+				context.Background(),
+				"pl_ka21123129",
+				&PaymentLinkPaymentsListOptions{Limit: 10},
+			},
+			false,
+			nil,
+			noPre,
+			func(w http.ResponseWriter, r *http.Request) {
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "GET")
+				testQuery(t, r, "limit=10")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+				}
+				_, _ = w.Write([]byte(testdata.ListPaymentLinkPaymentsResponse))
+			},
+		},
+		{
+			"list payment link payments, an error is returned from the server",
+			args{
+				context.Background(),
+				"pl_ka21123129",
+				nil,
+			},
+			true,
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			noPre,
+			errorHandler,
+		},
+		{
+			"list payment link payments, an error occurs when parsing json",
+			args{
+				context.Background(),
+				"pl_ka21123129",
+				nil,
+			},
+			true,
+			fmt.Errorf("invalid character 'h' looking for beginning of object key string"),
+			noPre,
+			encodingHandler,
+		},
+		{
+			"list payment link payments, invalid url when building request",
+			args{
+				context.Background(),
+				"pl_ka21123129",
+				nil,
+			},
+			true,
+			errBadBaseURL,
+			crashSrv,
+			errorHandler,
+		},
+	}
+
+	for _, c := range cases {
+		setup()
+		defer teardown()
+
+		t.Run(c.name, func(t *testing.T) {
+			c.pre()
+			tMux.HandleFunc(fmt.Sprintf("/v2/payment-links/%s/payments", c.args.paymentLink), c.handler)
+
+			res, m, err := tClient.PaymentLinks.Payments(c.args.ctx, c.args.paymentLink, c.args.opts)
+			if c.wantErr {
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, c.err.Error())
+			} else {
+				assert.Nil(t, err)
+				assert.IsType(t, &PaymentLinkPaymentsList{}, m)
+				assert.IsType(t, &http.Response{}, res.Response)
+			}
+		})
+	}
+}
