@@ -31,6 +31,12 @@ For leveraging [Mollie Connect](https://docs.mollie.com/oauth/overview) (advance
 go get -u github.com/VictorAvelar/mollie-api-go/v4/mollie
 ```
 
+## Notice
+
+> Version 4.6.0 raises the minimum go version to v1.23, patches will likely be backported to v4.5.x but new features will only be available in versions > v4.6.0.
+
+The above notice aligns with the go [EOL](https://endoflife.date/go) policy schedule.
+
 ## Usage
 
 ### Testing using API tokens
