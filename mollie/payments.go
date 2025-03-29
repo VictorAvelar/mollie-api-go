@@ -235,7 +235,7 @@ type Payment struct {
 	// Other case specific fields
 	RecurrentPaymentFields
 	PreAuthorizedPaymentFields
-	MollieConnectPaymentFields
+	ConnectPaymentFields
 	AccessTokenPaymentFields
 }
 
@@ -254,8 +254,8 @@ type PreAuthorizedPaymentFields struct {
 	CaptureBefore *time.Time  `json:"captureBefore,omitempty"`
 }
 
-// MollieConnectPaymentFields describes the fields specific to Mollie Connect payments.
-type MollieConnectPaymentFields struct {
+// ConnectPaymentFields describes the fields specific to Mollie Connect payments.
+type ConnectPaymentFields struct {
 	ApplicationFee *ApplicationFee `json:"applicationFee,omitempty"`
 }
 

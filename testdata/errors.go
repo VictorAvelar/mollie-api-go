@@ -44,7 +44,7 @@ const UnprocessableEntityErrorResponse = `{
 const InternalServerErrorResponse = `{
     "status": 500,
     "title": "Internal Server Error",
-    "detail": "An internal server error occurred while processing your request.",
+    "detail": "An internal server error occurred while processing your request",
     "_links": {
         "documentation": {
             "href": "https://docs.mollie.com/overview/authentication",

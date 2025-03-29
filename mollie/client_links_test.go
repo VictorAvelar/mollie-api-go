@@ -53,7 +53,7 @@ func TestClientLinkService_Create(t *testing.T) {
 				CreateClientLink{},
 			},
 			true,
-			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request"),
 			errorHandler,
 			noPre,
 		},

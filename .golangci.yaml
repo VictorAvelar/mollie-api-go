@@ -1,59 +1,106 @@
-# golangci-lint configuration
-
+version: "2"
 run:
   concurrency: 4
-  timeout: 20s
+  go: "1.23"
+  modules-download-mode: readonly
   issues-exit-code: 2
   tests: false
-  modules-download-mode: readonly
-  go: "1.22"
-
 output:
   formats:
-    - path: stdout
-      format: tab
-    - format: colored-line-number
-  sort-results: true
-
+    text:
+      path: stdout
+    tab:
+      path: stdout
+      colors: false
 linters:
+  enable:
+    - asciicheck
+    - bidichk
+    - copyloopvar
+    - cyclop
+    - decorder
+    - depguard
+    - dogsled
+    - dupl
+    - dupword
+    - funlen
+    - gocheckcompilerdirectives
+    - gochecknoinits
+    - gocognit
+    - goconst
+    - gocyclo
+    - godot
+    - godox
+    - goheader
+    - gomoddirectives
+    - gomodguard
+    - goprintffuncname
+    - grouper
+    - inamedparam
+    - interfacebloat
+    - lll
+    - maintidx
+    - misspell
+    - mnd
+    - nakedret
+    - nestif
+    - nlreturn
+    - nolintlint
+    - nosprintfhostport
+    - prealloc
+    - predeclared
+    - promlinter
+    - tagalign
+    - testpackage
+    - usestdlibvars
+    - whitespace
+    - wsl
   disable:
     - tagliatelle
-  presets:
-    - bugs
-    - comment
-    - complexity
-    - error
-    - format
-    - import
-    - metalinter
-    - module
-    - performance
-    - sql
-    - style
-
-  fast: true
-
-issues:
-  exclude-rules:
-    - linters:
-        - lll
-      source: "BusinessCategory"
-  fix: true
-  new: true
-
-linters-settings:
-  depguard:
+    - unused
+  settings:
+    depguard:
+      rules:
+        main:
+          files:
+            - $all
+          allow:
+            - $gostd
+            - github.com/google
+            - golang.org/x/oauth2
+            - github.com/VictorAvelar/mollie-api-go/v4/
+        tests:
+          files:
+            - $test
+          allow:
+            - github.com/stretchr/testify
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
     rules:
-      main:
-        files:
-          - "$all"
-        allow:
-          - "$gostd"
-          - "github.com/google"
-          - "golang.org/x/oauth2"
-          - "github.com/VictorAvelar/mollie-api-go/v4/"
-      tests:
-        files:
-          - "$test"
-        allow:
-          - "github.com/stretchr/testify"
+      - linters:
+          - lll
+        source: BusinessCategory
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+issues:
+  new: true
+  fix: true
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

@@ -63,7 +63,7 @@ type OnboardingDataProfile struct {
 	BusinessCategory BusinessCategory `json:"businessCategory,omitempty"`
 }
 
-// Full onboarding data to be submitted.
+// OnboardingData describes the information to be submitted.
 type OnboardingData struct {
 	Organization OnboardingDataOrganization `json:"organization,omitempty"`
 	Profile      OnboardingDataProfile      `json:"profile,omitempty"`

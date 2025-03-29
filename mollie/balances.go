@@ -222,7 +222,7 @@ type ListBalanceTransactionsOptions struct {
 // See: https://docs.mollie.com/reference/balances-api
 type BalancesService service
 
-// GetBalance retrieves a balance by its id.
+// Get retrieves a balance by its id.
 //
 // See: https://docs.mollie.com/reference/get-balance
 func (bs *BalancesService) Get(ctx context.Context, balance string) (res *Response, b *Balance, err error) {

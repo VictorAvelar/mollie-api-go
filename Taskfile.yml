@@ -16,19 +16,13 @@ tasks:
   ci-lint:
     desc: "Run all linters used in the CI pipeline"
     cmds:
-      - golangci-lint run --out-format=tab --issues-exit-code=0 --sort-results --tests=false --presets=bugs,complexity,format,performance,style,unused
+      - golangci-lint run --output.tab.path stdout -n --uniq-by-line
     silent: true
 
-  pr-lint:
-    desc: "Run all linters used in the PR pipeline"
+  ci-lint-all:
+    desc: "Run all linters used in the CI pipeline"
     cmds:
-      - golangci-lint run --issues-exit-code=0 --out-format=colored-line-number --new=true --sort-results  --tests=false --presets=bugs,complexity,format,performance,style,unused
-    silent: true
-
-  ci-all-presets:
-    desc: "Run all linters' presets available in golangci-lint"
-    cmds:
-      - golangci-lint run --out-format=tab --issues-exit-code=0 --sort-results --tests=false --presets=bugs,comment,complexity,error,format,import,metalinter,module,performance,sql,style,test,unused
+      - golangci-lint run --output.tab.path stdout --uniq-by-line
     silent: true
 
   lint:

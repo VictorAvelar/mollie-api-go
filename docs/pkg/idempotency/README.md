@@ -6,7 +6,7 @@
 import "github.com/VictorAvelar/mollie-api-go/v4/pkg/idempotency"
 ```
 
-package idempotency contains the services in charge of generating a unique keys to be passed in POST requests to ensure operation uniqueness.
+Package idempotency contains the services in charge of generating a unique keys to be passed in POST requests to ensure operation uniqueness.
 
 See: https://docs.mollie.com/overview/api-idempotency
 
@@ -24,7 +24,7 @@ You can build your own generator and pass it to the library by implementing the 
 
 ## Constants
 
-<a name="TestKeyExpected"></a>
+<a name="TestKeyExpected"></a>TestKeyExpected is the default value for the NOpGenerator.
 
 ```go
 const (
@@ -48,7 +48,7 @@ type KeyGenerator interface {
 ```
 
 <a name="NewNopGenerator"></a>
-### func [NewNopGenerator](<https://github.com/VictorAvelar/mollie-api-go/blob/master/pkg/idempotency/nop.go#L28>)
+### func [NewNopGenerator](<https://github.com/VictorAvelar/mollie-api-go/blob/master/pkg/idempotency/nop.go#L29>)
 
 ```go
 func NewNopGenerator(exp string) KeyGenerator
