@@ -55,7 +55,7 @@ func TestMiscellaneousService_ApplePaymentSession(t *testing.T) {
 				nil,
 			},
 			true,
-			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request."),
+			fmt.Errorf("500 Internal Server Error: An internal server error occurred while processing your request"),
 			noPre,
 			errorHandler,
 		},
