@@ -96,6 +96,7 @@ The Mollie API is a straightforward REST API. This means all endpoints either cr
   - [func \(c \*Config\) SwitchAuthStrategy\(auth string\) string](<#Config.SwitchAuthStrategy>)
   - [func \(c \*Config\) ToggleIdempotency\(\) bool](<#Config.ToggleIdempotency>)
   - [func \(c \*Config\) ToggleTesting\(\) bool](<#Config.ToggleTesting>)
+- [type ConnectPaymentFields](<#ConnectPaymentFields>)
 - [type ContextValue](<#ContextValue>)
 - [type ContextValues](<#ContextValues>)
   - [func \(cv \*ContextValues\) UnmarshalJSON\(data \[\]byte\) error](<#ContextValues.UnmarshalJSON>)
@@ -180,7 +181,6 @@ The Mollie API is a straightforward REST API. This means all endpoints either cr
   - [func \(ms \*MandatesService\) Revoke\(ctx context.Context, customer, mandate string\) \(res \*Response, err error\)](<#MandatesService.Revoke>)
 - [type MethodsLinks](<#MethodsLinks>)
 - [type Mode](<#Mode>)
-- [type MollieConnectPaymentFields](<#MollieConnectPaymentFields>)
 - [type Onboarding](<#Onboarding>)
 - [type OnboardingData](<#OnboardingData>)
 - [type OnboardingDataOrganization](<#OnboardingDataOrganization>)
@@ -759,7 +759,7 @@ type BalancesService service
 func (bs *BalancesService) Get(ctx context.Context, balance string) (res *Response, b *Balance, err error)
 ```
 
-GetBalance retrieves a balance by its id.
+Get retrieves a balance by its id.
 
 See: https://docs.mollie.com/reference/get-balance
 
@@ -1787,6 +1787,17 @@ func (c *Config) ToggleTesting() bool
 ```
 
 ToggleTesting enables/disables the test\-mode in the current Config.
+
+<a name="ConnectPaymentFields"></a>
+## type [ConnectPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L258-L260>)
+
+ConnectPaymentFields describes the fields specific to Mollie Connect payments.
+
+```go
+type ConnectPaymentFields struct {
+    ApplicationFee *ApplicationFee `json:"applicationFee,omitempty"`
+}
+```
 
 <a name="ContextValue"></a>
 ## type [ContextValue](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/balances.go#L177>)
@@ -3127,17 +3138,6 @@ const (
 )
 ```
 
-<a name="MollieConnectPaymentFields"></a>
-## type [MollieConnectPaymentFields](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L258-L260>)
-
-MollieConnectPaymentFields describes the fields specific to Mollie Connect payments.
-
-```go
-type MollieConnectPaymentFields struct {
-    ApplicationFee *ApplicationFee `json:"applicationFee,omitempty"`
-}
-```
-
 <a name="Onboarding"></a>
 ## type [Onboarding](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/onboarding.go#L30-L38>)
 
@@ -3158,7 +3158,7 @@ type Onboarding struct {
 <a name="OnboardingData"></a>
 ## type [OnboardingData](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/onboarding.go#L67-L70>)
 
-Full onboarding data to be submitted.
+OnboardingData describes the information to be submitted.
 
 ```go
 type OnboardingData struct {
@@ -3863,7 +3863,7 @@ See: https://docs.mollie.com/reference/get-partner-status
 <a name="Owner"></a>
 ## type [Owner](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/common_types.go#L363-L368>)
 
-Personal data of your customer.
+Owner contains personal data of your customer.
 
 ```go
 type Owner struct {
@@ -3954,7 +3954,7 @@ type Payment struct {
     // Other case specific fields
     RecurrentPaymentFields
     PreAuthorizedPaymentFields
-    MollieConnectPaymentFields
+    ConnectPaymentFields
     AccessTokenPaymentFields
 }
 ```
@@ -5189,7 +5189,7 @@ See https://docs.mollie.com/reference/create-order-refund
 func (rs *RefundsService) CreatePaymentRefund(ctx context.Context, paymentID string, re CreatePaymentRefund, options *PaymentRefundOptions) (res *Response, rf *Refund, err error)
 ```
 
-Create a refund payment request.
+CreatePaymentRefund performs a refund payment request.
 
 See https://docs.mollie.com/reference/create-refund
 
