@@ -359,7 +359,7 @@ type Image struct {
 	Svg    string `json:"svg,omitempty"`
 }
 
-// Personal data of your customer.
+// Owner contains personal data of your customer.
 type Owner struct {
 	Email      string `json:"email,omitempty"`
 	GivenName  string `json:"givenName,omitempty"`

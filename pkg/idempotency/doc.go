@@ -1,4 +1,4 @@
-// package idempotency contains the services in charge
+// Package idempotency contains the services in charge
 // of generating a unique keys to be passed in
 // POST requests to ensure operation uniqueness.
 //

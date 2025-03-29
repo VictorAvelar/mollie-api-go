@@ -8,6 +8,7 @@ type nOpIdempotencyGenerator struct {
 	expected string
 }
 
+// TestKeyExpected is the default value for the NOpGenerator.
 const (
 	TestKeyExpected = "test_ikg_key"
 )

@@ -192,7 +192,7 @@ func (rs *RefundsService) ListPaymentRefunds(
 	return
 }
 
-// Create a refund payment request.
+// CreatePaymentRefund performs a refund payment request.
 //
 // See https://docs.mollie.com/reference/create-refund
 func (rs *RefundsService) CreatePaymentRefund(
