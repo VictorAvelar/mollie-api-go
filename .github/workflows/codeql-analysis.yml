@@ -16,22 +16,6 @@ on:
       - ".github/workflows/main.yml"
       - ".github/workflows/release.yml"
       - ".devcontainers/**"
-  pull_request:
-    paths-ignore:
-      - "**.md"
-      - "*.yml"
-      - "Makefile"
-      - "docs/*.md"
-      - ".gitignore"
-      - "LICENSE"
-      - ".github/*.yml"
-      - ".github/ISSUE_TEMPLATE/*.md"
-      - ".github/*.md"
-      - ".github/workflows/main.yml"
-      - ".github/workflows/release.yml"
-      - ".devcontainers/**"
-    # The branches below must be a subset of the branches above
-    branches: [master]
   schedule:
     - cron: "21 11 * * 4"
 
