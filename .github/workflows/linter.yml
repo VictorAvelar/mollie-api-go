@@ -1,4 +1,3 @@
-name: Linting with golangci-lint
 on:
   push:
     branches:
@@ -42,7 +41,7 @@ jobs:
           fetch-depth: '0'
       - uses: actions/setup-go@3041bf56c941b39c61721a86cd11f3bb1338122a
         with:
-          go-version: 1.23.X
+          go-version: 1.x
       - uses: golangci/golangci-lint-action@1481404843c368bc19ca9406f87d6e0fc97bdcfd
         with:
           version: latest
