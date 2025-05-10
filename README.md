@@ -1,5 +1,9 @@
 # Mollie API Golang client
 
+## Deepwiki
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/VictorAvelar/mollie-api-go)
+
 ## Actions
 
 [![testing](https://github.com/VictorAvelar/mollie-api-go/actions/workflows/tests.yml/badge.svg)](https://github.com/VictorAvelar/mollie-api-go/actions/workflows/tests.yml)
