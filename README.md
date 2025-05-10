@@ -2,8 +2,8 @@
 
 ## Actions
 
-[![Testing](https://github.com/VictorAvelar/mollie-api-go/actions/workflows/main.yml/badge.svg)](https://github.com/VictorAvelar/mollie-api-go/actions/workflows/main.yml)
-[![Linter](https://github.com/VictorAvelar/mollie-api-go/actions/workflows/golangci-lint.yml/badge.svg)](https://github.com/VictorAvelar/mollie-api-go/actions/workflows/golangci-lint.yml)
+[![testing](https://github.com/VictorAvelar/mollie-api-go/actions/workflows/tests.yml/badge.svg)](https://github.com/VictorAvelar/mollie-api-go/actions/workflows/tests.yml)
+[![Linting](https://github.com/VictorAvelar/mollie-api-go/actions/workflows/linter.yml/badge.svg)](https://github.com/VictorAvelar/mollie-api-go/actions/workflows/linter.yml)
 [![CodeQL](https://github.com/VictorAvelar/mollie-api-go/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/VictorAvelar/mollie-api-go/actions/workflows/codeql-analysis.yml)
 
 ## Go ecosystem
