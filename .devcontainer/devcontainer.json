@@ -27,7 +27,7 @@
     }
   ],
   "features": {
-    "ghcr.io/devcontainers-contrib/features/act-asdf:2": {},
+    "ghcr.io/devcontainers-extra/features/act-asdf:2": {},
     "ghcr.io/devcontainers/features/docker-in-docker:2": {
       "dockerDashComposeVersion": "v2"
     },
@@ -35,31 +35,15 @@
       "configureZshAsDefaultShell": true,
       "username": "root"
     },
-    "ghcr.io/devcontainers-contrib/features/starship:1": {},
-    "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
-      "packages": "exa,bat,curl",
-      "upgradePackages": true
-    }
+    "ghcr.io/devcontainers-extra/features/starship:1": {}
   },
   "customizations": {
     "vscode": {
       "extensions": [
-        "GitHub.vscode-pull-request-github",
-        "jasonlhy.hungry-delete",
-        "formulahendry.auto-rename-tag",
-        "DavidAnson.vscode-markdownlint",
-        "aaron-bond.better-comments",
         "streetsidesoftware.code-spell-checker",
-        "PKief.material-icon-theme",
         "ms-azuretools.vscode-docker",
-        "shardulm94.trailing-spaces",
         "tamasfe.even-better-toml",
-        "GitHub.copilot",
-        "GitHub.vscode-github-actions",
-        "GitHub.copilot-chat",
-        "golang.Go",
-        "usernamehw.errorlens",
-        "redhat.vscode-yaml"
+        "golang.Go"
       ],
       "settings": {
         "files.eol": "\n",
@@ -106,7 +90,7 @@
         "editor.formatOnPaste": true,
         "editor.bracketPairColorization.enabled": true,
         "editor.guides.bracketPairs": "active",
-        "workbench.iconTheme": "material-icon-theme",
+        "workbench.iconTheme": "catppuccin-mocha",
         "editor.fontFamily": "'Fira Code', Menlo, Monaco, 'Courier New', monospace",
         "editor.fontLigatures": true,
         "files.insertFinalNewline": true,
@@ -114,18 +98,8 @@
       }
     }
   },
-  "portsAttributes": {
-    "9000": {
-      "label": "Hello Remote World",
-      "onAutoForward": "notify"
-    }
-  },
   "postCreateCommand": {
-    "install-zsh-plugins": "git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions",
-    "modules": "go mod download",
-    "taskfile": "go install github.com/go-task/task/v3/cmd/task@latest",
-    "gomarkdoc": "go install github.com/princjef/gomarkdoc/cmd/gomarkdoc@latest",
-    "goreleaser": "go install github.com/goreleaser/goreleaser/v2@latest"
+    "modules": "go mod download"
   },
   "remoteUser": "root",
   "containerUser": "root",
