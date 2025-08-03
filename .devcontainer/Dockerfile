@@ -1,7 +1,7 @@
-ARG GO_VERSION=1-bookworm
+ARG GO_VERSION=1
+ARG VARIANT=bookworm
 
-ARG VARIANT=1-bullseye
-FROM mcr.microsoft.com/vscode/devcontainers/go:${GO_VERSION}
+FROM mcr.microsoft.com/vscode/devcontainers/go:${GO_VERSION}-${VARIANT}
 
 RUN apt-get update && apt-get install -y exa bat curl && apt-get clean
 
