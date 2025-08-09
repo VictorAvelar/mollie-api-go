@@ -1345,7 +1345,7 @@ func (cs *ChargebacksService) List(ctx context.Context, options *ListChargebacks
 
 List retrieves a list of chargebacks associated with your account/organization.
 
-See: https://docs.mollie.com/reference/list-chargebacks
+See: https://docs.mollie.com/reference/list-all-chargebacks
 
 <a name="ChargebacksService.ListForPayment"></a>
 ### func \(\*ChargebacksService\) [ListForPayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/chargebacks.go#L109-L113>)
@@ -1356,7 +1356,7 @@ func (cs *ChargebacksService) ListForPayment(ctx context.Context, payment string
 
 ListForPayment retrieves a list of chargebacks associated with a single payment.
 
-See: https://docs.mollie.com/reference/list-all-chargebacks
+See: https://docs.mollie.com/reference/list-payment-chargebacks
 
 <a name="Client"></a>
 ## type [Client](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L43-L75>)
@@ -5227,7 +5227,7 @@ func (rs *RefundsService) ListOrderRefunds(ctx context.Context, orderID string, 
 
 ListOrderRefunds retrieves all refunds for a specific order.
 
-See https://docs.mollie.com/reference/list-order-refunds
+See https://docs.mollie.com/reference/list-order-refunds-1
 
 <a name="RefundsService.ListPaymentRefunds"></a>
 ### func \(\*RefundsService\) [ListPaymentRefunds](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/refunds.go#L172-L180>)
