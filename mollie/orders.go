@@ -523,7 +523,7 @@ func (ors *OrdersService) CreateOrderRefund(ctx context.Context, orderID string,
 
 // ListOrderRefunds retrieve all order refunds.
 //
-// See https://docs.mollie.com/reference/list-order-refunds
+// See https://docs.mollie.com/reference/list-order-refunds-1
 func (ors *OrdersService) ListOrderRefunds(ctx context.Context, orderID string, opts *ListOrderRefundsOptions) (
 	res *Response,
 	orderListRefund *OrderRefundsList,

@@ -105,7 +105,7 @@ func (cs *ChargebacksService) List(ctx context.Context, options *ListChargebacks
 
 // ListForPayment retrieves a list of chargebacks associated with a single payment.
 //
-// See: https://docs.mollie.com/reference/list-chargebacks
+// See: https://docs.mollie.com/reference/list-all-chargebacks
 func (cs *ChargebacksService) ListForPayment(ctx context.Context, payment string, options *ListChargebacksOptions) (
 	res *Response,
 	cl *ChargebacksList,
