@@ -38,14 +38,14 @@ jobs:
         uses: micalevisk/last-issue-action@0d40124cc99ac8601c2516007f0c98ef3d27537b # v2.3.0
         with:
           state: open
-          labels: lychee
+          labels: lychee, automated-issue
 
       - name: Create Issue From File
         if: steps.lychee.outputs.exit_code != 0
         uses: peter-evans/create-issue-from-file@e8ef132d6df98ed982188e460ebb3b5d4ef3a9cd # 5.0.1
         with:
             title: Link Checker Report
-            issue-number: ${{ steps.last-issue.outputs.issue_number }}
+            issue-number: "${{ steps.last-issue.outputs.issue_number }}"
             content-filepath: ./lychee/out.md
             labels: report, automated-issue, lychee
             assignees: VictorAvelar
