@@ -6,6 +6,7 @@ on:
     paths-ignore:
       - "**.md"
       - "*.yml"
+      - "*.yaml"
       - "Makefile"
       - "docs/*.md"
       - ".gitignore"
