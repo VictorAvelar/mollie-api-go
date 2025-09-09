@@ -6,29 +6,21 @@ updates:
       interval: weekly
       time: "04:00"
     open-pull-requests-limit: 10
-    reviewers:
-      - VictorAvelar
 
   - package-ecosystem: github-actions
     directory: ".github/workflows"
     schedule:
       interval: daily
     target-branch: master
-    reviewers:
-      - VictorAvelar
 
   - package-ecosystem: docker
     directory: "/"
     schedule:
       interval: weekly
     target-branch: master
-    reviewers:
-      - VictorAvelar
 
   - package-ecosystem: docker
     directory: ".devcontainer"
     schedule:
       interval: weekly
     target-branch: master
-    reviewers:
-      - VictorAvelar

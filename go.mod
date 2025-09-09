@@ -1,6 +1,6 @@
 module github.com/VictorAvelar/mollie-api-go/v4
 
-go 1.23.0
+go 1.24.0
 
 require (
 	github.com/google/go-querystring v1.1.0
