@@ -10,7 +10,7 @@ import (
 // SalesInvoiceStatus represents the status for the invoice to end up in.
 type SalesInvoiceStatus string
 
-// Possible values for SalesInvoiceStatus
+// Possible values for SalesInvoiceStatus.
 const (
 	// DraftSalesInvoiceStatus indicates that the invoice is not paid or not sent and can be updated after creation.
 	DraftSalesInvoiceStatus SalesInvoiceStatus = "draft"
@@ -23,7 +23,7 @@ const (
 // SalesInvoiceSource is the way through which the invoice is to be set to paid.
 type SalesInvoiceSource string
 
-// Possible values for SalesInvoiceSource
+// Possible values for SalesInvoiceSource.
 const (
 	ManualSalesInvoiceSource      SalesInvoiceSource = "manual"
 	PaymentLinkSalesInvoiceSource SalesInvoiceSource = "payment_link"
@@ -33,7 +33,7 @@ const (
 // SalesInvoiceVATScheme represents the VAT scheme for the sales invoice.
 type SalesInvoiceVATScheme string
 
-// Possible values for SalesInvoiceVATScheme
+// Possible values for SalesInvoiceVATScheme.
 const (
 	StandardSalesInvoiceVATScheme SalesInvoiceVATScheme = "standard"
 	// OneStopShopSalesInvoiceVATScheme indicates that the One Stop Shop (OSS) VAT scheme is used.
@@ -44,7 +44,7 @@ const (
 // SalesInvoiceVATMode represents the VAT mode for the sales invoice.
 type SalesInvoiceVATMode string
 
-// Possible values for SalesInvoiceVATMode
+// Possible values for SalesInvoiceVATMode.
 const (
 	// VAT is added on top of the prices.
 	ExclusiveSalesInvoiceVATMode SalesInvoiceVATMode = "exclusive"
@@ -56,7 +56,7 @@ const (
 // Defaults to 30 days.
 type SalesInvoicePaymentTerm string
 
-// Possible values for SalesInvoicePaymentTerm
+// Possible values for SalesInvoicePaymentTerm.
 const (
 	PaymentTerm7Days  SalesInvoicePaymentTerm = "7 days"
 	PaymentTerm14Days SalesInvoicePaymentTerm = "14 days"
@@ -221,7 +221,11 @@ type SalesInvoiceService service
 // List retrieves a list of sales invoices.
 //
 // See: https://docs.mollie.com/reference/list-sales-invoices
-func (s *SalesInvoiceService) List(ctx context.Context, opts *ListSalesInvoicesOptions) (res *Response, sil *SalesInvoiceList, err error) {
+func (s *SalesInvoiceService) List(ctx context.Context, opts *ListSalesInvoicesOptions) (
+	res *Response,
+	sil *SalesInvoiceList,
+	err error,
+) {
 	res, err = s.client.get(ctx, "sales-invoices", opts)
 	if err != nil {
 		return
@@ -237,7 +241,11 @@ func (s *SalesInvoiceService) List(ctx context.Context, opts *ListSalesInvoicesO
 // Get retrieves a single sales invoice by its ID.
 //
 // See: https://docs.mollie.com/reference/get-sales-invoice
-func (s *SalesInvoiceService) Get(ctx context.Context, salesInvoice string) (res *Response, si *SalesInvoice, err error) {
+func (s *SalesInvoiceService) Get(ctx context.Context, salesInvoice string) (
+	res *Response,
+	si *SalesInvoice,
+	err error,
+) {
 	u := fmt.Sprintf("/sales-invoices/%s", salesInvoice)
 
 	res, err = s.client.get(ctx, u, nil)
@@ -255,7 +263,11 @@ func (s *SalesInvoiceService) Get(ctx context.Context, salesInvoice string) (res
 // Create creates a new sales invoice.
 //
 // See: https://docs.mollie.com/reference/create-sales-invoice
-func (s *SalesInvoiceService) Create(ctx context.Context, csi CreateSalesInvoice) (res *Response, si *SalesInvoice, err error) {
+func (s *SalesInvoiceService) Create(ctx context.Context, csi CreateSalesInvoice) (
+	res *Response,
+	si *SalesInvoice,
+	err error,
+) {
 	res, err = s.client.post(ctx, "sales-invoices", csi, nil)
 	if err != nil {
 		return
@@ -271,7 +283,11 @@ func (s *SalesInvoiceService) Create(ctx context.Context, csi CreateSalesInvoice
 // Update updates an existing sales invoice.
 //
 // See: https://docs.mollie.com/reference/update-sales-invoice
-func (s *SalesInvoiceService) Update(ctx context.Context, salesInvoice string, usi UpdateSalesInvoice) (res *Response, si *SalesInvoice, err error) {
+func (s *SalesInvoiceService) Update(ctx context.Context, salesInvoice string, usi UpdateSalesInvoice) (
+	res *Response,
+	si *SalesInvoice,
+	err error,
+) {
 	u := fmt.Sprintf("/sales-invoices/%s", salesInvoice)
 
 	res, err = s.client.patch(ctx, u, usi)
