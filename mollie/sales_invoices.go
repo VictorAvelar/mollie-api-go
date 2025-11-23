@@ -119,7 +119,7 @@ type SalesInvoiceRecipient struct {
 type SalesInvoiceLineItem struct {
 	Description string                `json:"description"`
 	Quantity    int                   `json:"quantity"`
-	VATRate     float64               `json:"vatRate"`
+	VATRate     string                `json:"vatRate"`
 	UnitPrice   Amount                `json:"unitPrice"`
 	Discount    *SalesInvoiceDiscount `json:"discount,omitempty"`
 }
@@ -215,18 +215,18 @@ type ListSalesInvoicesOptions struct {
 	TestMode bool   `url:"testmode,omitempty"`
 }
 
-// SalesInvoiceService handles API operations for sales invoices.
-type SalesInvoiceService service
+// SalesInvoicesService handles API operations for sales invoices.
+type SalesInvoicesService service
 
 // List retrieves a list of sales invoices.
 //
 // See: https://docs.mollie.com/reference/list-sales-invoices
-func (s *SalesInvoiceService) List(ctx context.Context, opts *ListSalesInvoicesOptions) (
+func (s *SalesInvoicesService) List(ctx context.Context, opts *ListSalesInvoicesOptions) (
 	res *Response,
 	sil *SalesInvoiceList,
 	err error,
 ) {
-	res, err = s.client.get(ctx, "sales-invoices", opts)
+	res, err = s.client.get(ctx, "/v2/sales-invoices", opts)
 	if err != nil {
 		return
 	}
@@ -241,12 +241,12 @@ func (s *SalesInvoiceService) List(ctx context.Context, opts *ListSalesInvoicesO
 // Get retrieves a single sales invoice by its ID.
 //
 // See: https://docs.mollie.com/reference/get-sales-invoice
-func (s *SalesInvoiceService) Get(ctx context.Context, salesInvoice string) (
+func (s *SalesInvoicesService) Get(ctx context.Context, salesInvoice string) (
 	res *Response,
 	si *SalesInvoice,
 	err error,
 ) {
-	u := fmt.Sprintf("/sales-invoices/%s", salesInvoice)
+	u := fmt.Sprintf("/v2/sales-invoices/%s", salesInvoice)
 
 	res, err = s.client.get(ctx, u, nil)
 	if err != nil {
@@ -263,12 +263,16 @@ func (s *SalesInvoiceService) Get(ctx context.Context, salesInvoice string) (
 // Create creates a new sales invoice.
 //
 // See: https://docs.mollie.com/reference/create-sales-invoice
-func (s *SalesInvoiceService) Create(ctx context.Context, csi CreateSalesInvoice) (
+func (s *SalesInvoicesService) Create(ctx context.Context, csi CreateSalesInvoice) (
 	res *Response,
 	si *SalesInvoice,
 	err error,
 ) {
-	res, err = s.client.post(ctx, "sales-invoices", csi, nil)
+	if s.client.HasAccessToken() && s.client.config.testing {
+		csi.TestMode = true
+	}
+
+	res, err = s.client.post(ctx, "/v2/sales-invoices", csi, nil)
 	if err != nil {
 		return
 	}
@@ -283,12 +287,12 @@ func (s *SalesInvoiceService) Create(ctx context.Context, csi CreateSalesInvoice
 // Update updates an existing sales invoice.
 //
 // See: https://docs.mollie.com/reference/update-sales-invoice
-func (s *SalesInvoiceService) Update(ctx context.Context, salesInvoice string, usi UpdateSalesInvoice) (
+func (s *SalesInvoicesService) Update(ctx context.Context, salesInvoice string, usi UpdateSalesInvoice) (
 	res *Response,
 	si *SalesInvoice,
 	err error,
 ) {
-	u := fmt.Sprintf("/sales-invoices/%s", salesInvoice)
+	u := fmt.Sprintf("/v2/sales-invoices/%s", salesInvoice)
 
 	res, err = s.client.patch(ctx, u, usi)
 	if err != nil {
@@ -305,8 +309,8 @@ func (s *SalesInvoiceService) Update(ctx context.Context, salesInvoice string, u
 // Delete deletes a sales invoice by its ID.
 //
 // See: https://docs.mollie.com/reference/delete-sales-invoice
-func (s *SalesInvoiceService) Delete(ctx context.Context, salesInvoice string) (res *Response, err error) {
-	u := fmt.Sprintf("/sales-invoices/%s", salesInvoice)
+func (s *SalesInvoicesService) Delete(ctx context.Context, salesInvoice string) (res *Response, err error) {
+	u := fmt.Sprintf("/v2/sales-invoices/%s", salesInvoice)
 
 	res, err = s.client.delete(ctx, u)
 	if err != nil {
