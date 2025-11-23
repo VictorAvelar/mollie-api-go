@@ -114,6 +114,7 @@ The Mollie API is a straightforward REST API. This means all endpoints either cr
 - [type CreatePaymentRefund](<#CreatePaymentRefund>)
 - [type CreatePreAuthorizedPaymentFields](<#CreatePreAuthorizedPaymentFields>)
 - [type CreateRecurrentPaymentFields](<#CreateRecurrentPaymentFields>)
+- [type CreateSalesInvoice](<#CreateSalesInvoice>)
 - [type CreateShipment](<#CreateShipment>)
 - [type CreateSubscription](<#CreateSubscription>)
 - [type Customer](<#Customer>)
@@ -165,6 +166,7 @@ The Mollie API is a straightforward REST API. This means all endpoints either cr
 - [type ListPaymentsOptions](<#ListPaymentsOptions>)
 - [type ListProfilesOptions](<#ListProfilesOptions>)
 - [type ListRefundsOptions](<#ListRefundsOptions>)
+- [type ListSalesInvoicesOptions](<#ListSalesInvoicesOptions>)
 - [type ListSettlementsOptions](<#ListSettlementsOptions>)
 - [type ListSubscriptionsOptions](<#ListSubscriptionsOptions>)
 - [type ListTerminalsOptions](<#ListTerminalsOptions>)
@@ -325,6 +327,27 @@ The Mollie API is a straightforward REST API. This means all endpoints either cr
 - [type Response](<#Response>)
 - [type RoutingReversal](<#RoutingReversal>)
 - [type RoutingSource](<#RoutingSource>)
+- [type SalesInvoice](<#SalesInvoice>)
+- [type SalesInvoiceDiscount](<#SalesInvoiceDiscount>)
+- [type SalesInvoiceDiscountType](<#SalesInvoiceDiscountType>)
+- [type SalesInvoiceEmailDetails](<#SalesInvoiceEmailDetails>)
+- [type SalesInvoiceLineItem](<#SalesInvoiceLineItem>)
+- [type SalesInvoiceLinks](<#SalesInvoiceLinks>)
+- [type SalesInvoiceList](<#SalesInvoiceList>)
+- [type SalesInvoicePaymentDetails](<#SalesInvoicePaymentDetails>)
+- [type SalesInvoicePaymentTerm](<#SalesInvoicePaymentTerm>)
+- [type SalesInvoiceRecipient](<#SalesInvoiceRecipient>)
+- [type SalesInvoiceRecipientType](<#SalesInvoiceRecipientType>)
+- [type SalesInvoiceSource](<#SalesInvoiceSource>)
+- [type SalesInvoiceStatus](<#SalesInvoiceStatus>)
+- [type SalesInvoiceVATMode](<#SalesInvoiceVATMode>)
+- [type SalesInvoiceVATScheme](<#SalesInvoiceVATScheme>)
+- [type SalesInvoicesService](<#SalesInvoicesService>)
+  - [func \(s \*SalesInvoicesService\) Create\(ctx context.Context, csi CreateSalesInvoice\) \(res \*Response, si \*SalesInvoice, err error\)](<#SalesInvoicesService.Create>)
+  - [func \(s \*SalesInvoicesService\) Delete\(ctx context.Context, salesInvoice string\) \(res \*Response, err error\)](<#SalesInvoicesService.Delete>)
+  - [func \(s \*SalesInvoicesService\) Get\(ctx context.Context, salesInvoice string\) \(res \*Response, si \*SalesInvoice, err error\)](<#SalesInvoicesService.Get>)
+  - [func \(s \*SalesInvoicesService\) List\(ctx context.Context, opts \*ListSalesInvoicesOptions\) \(res \*Response, sil \*SalesInvoiceList, err error\)](<#SalesInvoicesService.List>)
+  - [func \(s \*SalesInvoicesService\) Update\(ctx context.Context, salesInvoice string, usi UpdateSalesInvoice\) \(res \*Response, si \*SalesInvoice, err error\)](<#SalesInvoicesService.Update>)
 - [type SequenceType](<#SequenceType>)
 - [type Settlement](<#Settlement>)
 - [type SettlementCosts](<#SettlementCosts>)
@@ -386,6 +409,7 @@ The Mollie API is a straightforward REST API. This means all endpoints either cr
 - [type UpdateOrderLine](<#UpdateOrderLine>)
 - [type UpdatePayment](<#UpdatePayment>)
 - [type UpdatePaymentLinks](<#UpdatePaymentLinks>)
+- [type UpdateSalesInvoice](<#UpdateSalesInvoice>)
 - [type UpdateShipment](<#UpdateShipment>)
 - [type UpdateSubscription](<#UpdateSubscription>)
 - [type UsedGiftCard](<#UsedGiftCard>)
@@ -418,7 +442,7 @@ const (
 ```
 
 <a name="CheckResponse"></a>
-## func [CheckResponse](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L366>)
+## func [CheckResponse](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L368>)
 
 ```go
 func CheckResponse(r *Response) error
@@ -1359,7 +1383,7 @@ ListForPayment retrieves a list of chargebacks associated with a single payment.
 See: https://docs.mollie.com/reference/list-payment-chargebacks
 
 <a name="Client"></a>
-## type [Client](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L43-L75>)
+## type [Client](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L43-L76>)
 
 Client manages communication with Mollie's API.
 
@@ -1390,12 +1414,13 @@ type Client struct {
     Balances       *BalancesService
     ClientLinks    *ClientLinksService
     Terminals      *TerminalsService
+    SalesInvoices  *SalesInvoicesService
     // contains filtered or unexported fields
 }
 ```
 
 <a name="NewClient"></a>
-### func [NewClient](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L258>)
+### func [NewClient](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L259>)
 
 ```go
 func NewClient(baseClient *http.Client, conf *Config) (mollie *Client, err error)
@@ -1408,7 +1433,7 @@ NewClient will lookup the environment for values to assign to the API token \(\`
 You can also set the token values programmatically by using the Client WithAPIKey and WithOrganizationKey functions.
 
 <a name="Client.Do"></a>
-### func \(\*Client\) [Do](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L228>)
+### func \(\*Client\) [Do](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L229>)
 
 ```go
 func (c *Client) Do(req *http.Request) (*Response, error)
@@ -1417,7 +1442,7 @@ func (c *Client) Do(req *http.Request) (*Response, error)
 Do sends an API request and returns the API response or returned as an error if an API error has occurred.
 
 <a name="Client.HasAccessToken"></a>
-### func \(\*Client\) [HasAccessToken](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L154>)
+### func \(\*Client\) [HasAccessToken](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L155>)
 
 ```go
 func (c *Client) HasAccessToken() bool
@@ -1428,7 +1453,7 @@ HasAccessToken will return true when the provided authentication token complies 
 See: https://github.com/VictorAvelar/mollie-api-go/issues/123
 
 <a name="Client.NewAPIRequest"></a>
-### func \(\*Client\) [NewAPIRequest](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L167-L170>)
+### func \(\*Client\) [NewAPIRequest](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L168-L171>)
 
 ```go
 func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, body interface{}) (req *http.Request, err error)
@@ -1439,7 +1464,7 @@ NewAPIRequest is a wrapper around the http.NewRequest function.
 It will setup the authentication headers/parameters according to the client config.
 
 <a name="Client.SetIdempotencyKeyGenerator"></a>
-### func \(\*Client\) [SetIdempotencyKeyGenerator](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L160>)
+### func \(\*Client\) [SetIdempotencyKeyGenerator](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L161>)
 
 ```go
 func (c *Client) SetIdempotencyKeyGenerator(kg idempotency.KeyGenerator)
@@ -1448,7 +1473,7 @@ func (c *Client) SetIdempotencyKeyGenerator(kg idempotency.KeyGenerator)
 SetIdempotencyKeyGenerator allows you to pass your own idempotency key generator.
 
 <a name="Client.WithAuthenticationValue"></a>
-### func \(\*Client\) [WithAuthenticationValue](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L139>)
+### func \(\*Client\) [WithAuthenticationValue](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L140>)
 
 ```go
 func (c *Client) WithAuthenticationValue(k string) error
@@ -2079,6 +2104,32 @@ type CreateRecurrentPaymentFields struct {
     CustomerID   string       `json:"customerId,omitempty"`
     MandateID    string       `json:"mandateId,omitempty"`
     SequenceType SequenceType `json:"sequenceType,omitempty"`
+}
+```
+
+<a name="CreateSalesInvoice"></a>
+## type [CreateSalesInvoice](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L138-L155>)
+
+CreateSalesInvoice represents the payload to create a sales invoice.
+
+```go
+type CreateSalesInvoice struct {
+    TestMode            bool                       `json:"testmode,omitempty"`
+    ProfileID           string                     `json:"profileId,omitempty"`
+    CustomerID          string                     `json:"customerId,omitempty"`
+    MandateID           string                     `json:"mandateId,omitempty"`
+    RecipientIdentifier string                     `json:"recipientIdentifier,omitempty"`
+    Memo                string                     `json:"memo,omitempty"`
+    Metadata            map[string]string          `json:"metadata,omitempty"`
+    Status              SalesInvoiceStatus         `json:"status,omitempty"`
+    VATScheme           SalesInvoiceVATScheme      `json:"vatScheme,omitempty"`
+    VATMode             SalesInvoiceVATMode        `json:"vatMode,omitempty"`
+    PaymentTerm         SalesInvoicePaymentTerm    `json:"paymentTerm,omitempty"`
+    PaymentDetails      SalesInvoicePaymentDetails `json:"paymentDetails,omitempty"`
+    EmailDetails        SalesInvoiceEmailDetails   `json:"emailDetails,omitempty"`
+    Recipient           SalesInvoiceRecipient      `json:"recipient,omitempty"`
+    Lines               []SalesInvoiceLineItem     `json:"lines,omitempty"`
+    Discount            *SalesInvoiceDiscount      `json:"discount,omitempty"`
 }
 ```
 
@@ -2879,6 +2930,19 @@ type ListRefundsOptions struct {
     From      string       `url:"from,omitempty"`
     ProfileID string       `url:"profileId,omitempty"`
     Embed     []EmbedValue `url:"embed,omitempty"`
+}
+```
+
+<a name="ListSalesInvoicesOptions"></a>
+## type [ListSalesInvoicesOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L214-L218>)
+
+ListSalesInvoicesOptions specifies the optional parameters to the List method.
+
+```go
+type ListSalesInvoicesOptions struct {
+    From     string `url:"from,omitempty"`
+    Limit    int    `url:"limit,omitempty"`
+    TestMode bool   `url:"testmode,omitempty"`
 }
 ```
 
@@ -4631,7 +4695,7 @@ Update can be used to update some details of a created payment.
 See: https://docs.mollie.com/reference/update-payment
 
 <a name="Permission"></a>
-## type [Permission](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L45-L51>)
+## type [Permission](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L47-L53>)
 
 Permission represents an action that can be performed by any API actor.
 
@@ -4685,11 +4749,13 @@ const (
     BalancesRead       PermissionGrant = "balances.read"
     TerminalsRead      PermissionGrant = "terminals.read"
     TerminalsWrite     PermissionGrant = "terminals.write"
+    SalesInvoicesRead  PermissionGrant = "sales-invoices.read"
+    SalesInvoicesWrite PermissionGrant = "sales-invoices.write"
 )
 ```
 
 <a name="PermissionLinks"></a>
-## type [PermissionLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L55-L58>)
+## type [PermissionLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L57-L60>)
 
 PermissionLinks contains URL objects that make reference to an http address related to permissions.
 
@@ -4701,7 +4767,7 @@ type PermissionLinks struct {
 ```
 
 <a name="PermissionsList"></a>
-## type [PermissionsList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L62-L68>)
+## type [PermissionsList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L64-L70>)
 
 PermissionsList lists all the permissions given to an API actor.
 
@@ -4716,7 +4782,7 @@ type PermissionsList struct {
 ```
 
 <a name="PermissionsService"></a>
-## type [PermissionsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L71>)
+## type [PermissionsService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L73>)
 
 PermissionsService operates over permission resources.
 
@@ -4725,7 +4791,7 @@ type PermissionsService service
 ```
 
 <a name="PermissionsService.Get"></a>
-### func \(\*PermissionsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L76>)
+### func \(\*PermissionsService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L78>)
 
 ```go
 func (ps *PermissionsService) Get(ctx context.Context, id PermissionGrant) (res *Response, p *Permission, err error)
@@ -4736,7 +4802,7 @@ Get returns a permission by its id.
 See: https://docs.mollie.com/reference/get-permission
 
 <a name="PermissionsService.List"></a>
-### func \(\*PermissionsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L93>)
+### func \(\*PermissionsService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/permissions.go#L95>)
 
 ```go
 func (ps *PermissionsService) List(ctx context.Context) (res *Response, pl *PermissionsList, err error)
@@ -5264,7 +5330,7 @@ ListPaymentRefunds retrieves all refunds for a specific payment.
 See: https://docs.mollie.com/reference/list-refunds
 
 <a name="Response"></a>
-## type [Response](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L340-L343>)
+## type [Response](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L342-L345>)
 
 Response is a Mollie API response. This wraps the standard http.Response returned from Mollie and provides convenient access to things like pagination links.
 
@@ -5298,6 +5364,350 @@ type RoutingSource struct {
     OrganizationID string `json:"organizationId,omitempty"`
 }
 ```
+
+<a name="SalesInvoice"></a>
+## type [SalesInvoice](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L171-L202>)
+
+SalesInvoice represents a sales invoice resource.
+
+```go
+type SalesInvoice struct {
+    Resource                 string                     `json:"resource,omitempty"`
+    ID                       string                     `json:"id,omitempty"`
+    ProfileID                string                     `json:"profileId,omitempty"`
+    Currency                 string                     `json:"currency,omitempty"`
+    InvoiceNumber            string                     `json:"invoiceNumber,omitempty"`
+    Memo                     string                     `json:"memo,omitempty"`
+    CustomerID               string                     `json:"customerId,omitempty"`
+    MandateID                string                     `json:"mandateId,omitempty"`
+    RecipientIdentifier      string                     `json:"recipientIdentifier,omitempty"`
+    Metadata                 map[string]string          `json:"metadata,omitempty"`
+    Mode                     Mode                       `json:"mode,omitempty"`
+    AmountDue                Amount                     `json:"amountDue,omitempty"`
+    SubtotalAmount           Amount                     `json:"subtotalAmount,omitempty"`
+    TotalAmount              Amount                     `json:"totalAmount,omitempty"`
+    TotalVATAmount           Amount                     `json:"totalVatAmount,omitempty"`
+    DiscountedSubtotalAmount Amount                     `json:"discountedSubtotalAmount,omitempty"`
+    Status                   SalesInvoiceStatus         `json:"status,omitempty"`
+    VATScheme                SalesInvoiceVATScheme      `json:"vatScheme,omitempty"`
+    VATMode                  SalesInvoiceVATMode        `json:"vatMode,omitempty"`
+    PaymentTerm              SalesInvoicePaymentTerm    `json:"paymentTerm,omitempty"`
+    PaymentDetails           SalesInvoicePaymentDetails `json:"paymentDetails,omitempty"`
+    EmailDetails             SalesInvoiceEmailDetails   `json:"emailDetails,omitempty"`
+    Recipient                SalesInvoiceRecipient      `json:"recipient,omitempty"`
+    Links                    SalesInvoiceLinks          `json:"_links,omitempty"`
+    Lines                    []SalesInvoiceLineItem     `json:"lines,omitempty"`
+    Discount                 *SalesInvoiceDiscount      `json:"discount,omitempty"`
+    CreatedAt                *time.Time                 `json:"createdAt,omitempty"`
+    IssuedAt                 *time.Time                 `json:"issuedAt,omitempty"`
+    PaidAt                   *time.Time                 `json:"paidAt,omitempty"`
+    DueAt                    *time.Time                 `json:"dueAt,omitempty"`
+}
+```
+
+<a name="SalesInvoiceDiscount"></a>
+## type [SalesInvoiceDiscount](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L88-L91>)
+
+SalesInvoiceDiscount represents the discount to be applied to the line item.
+
+```go
+type SalesInvoiceDiscount struct {
+    Type  SalesInvoiceDiscountType `json:"type,omitempty"`
+    Value string                   `json:"value,omitempty"`
+}
+```
+
+<a name="SalesInvoiceDiscountType"></a>
+## type [SalesInvoiceDiscountType](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L79>)
+
+SalesInvoiceDiscountType represents the type of discount applied to the sales invoice.
+
+```go
+type SalesInvoiceDiscountType string
+```
+
+<a name="FixedAmountSalesInvoiceDiscountType"></a>Possible values for SalesInvoiceDiscountType.
+
+```go
+const (
+    FixedAmountSalesInvoiceDiscountType SalesInvoiceDiscountType = "amount"
+    PercentageSalesInvoiceDiscountType  SalesInvoiceDiscountType = "percentage"
+)
+```
+
+<a name="SalesInvoiceEmailDetails"></a>
+## type [SalesInvoiceEmailDetails](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L100-L103>)
+
+SalesInvoiceEmailDetails contains details about the email sent with the sales invoice.
+
+```go
+type SalesInvoiceEmailDetails struct {
+    Subject string `json:"subject,omitempty"`
+    Body    string `json:"body,omitempty"`
+}
+```
+
+<a name="SalesInvoiceLineItem"></a>
+## type [SalesInvoiceLineItem](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L119-L125>)
+
+SalesInvoiceLineItem represents a line item on the sales invoice.
+
+```go
+type SalesInvoiceLineItem struct {
+    Description string                `json:"description"`
+    Quantity    int                   `json:"quantity"`
+    VATRate     string                `json:"vatRate"`
+    UnitPrice   Amount                `json:"unitPrice"`
+    Discount    *SalesInvoiceDiscount `json:"discount,omitempty"`
+}
+```
+
+<a name="SalesInvoiceLinks"></a>
+## type [SalesInvoiceLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L128-L135>)
+
+SalesInvoiceLinks contains links related to the sales invoice.
+
+```go
+type SalesInvoiceLinks struct {
+    Self           *URL `json:"self,omitempty"`
+    InvoicePayment *URL `json:"invoicePayment,omitempty"`
+    PDF            *URL `json:"pdfLink,omitempty"`
+    Documentation  *URL `json:"documentation,omitempty"`
+    Next           *URL `json:"next,omitempty"`
+    Previous       *URL `json:"previous,omitempty"`
+}
+```
+
+<a name="SalesInvoiceList"></a>
+## type [SalesInvoiceList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L205-L211>)
+
+SalesInvoiceList represents a paginated list of sales invoices.
+
+```go
+type SalesInvoiceList struct {
+    Count    int `json:"count,omitempty"`
+    Embedded struct {
+        SalesInvoices []SalesInvoice `json:"sales_invoices,omitempty"`
+    }   `json:"_embedded,omitempty"`
+    Links PaginationLinks `json:"_links,omitempty"`
+}
+```
+
+<a name="SalesInvoicePaymentDetails"></a>
+## type [SalesInvoicePaymentDetails](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L94-L97>)
+
+SalesInvoicePaymentDetails contains details about how the sales invoice was or will be paid.
+
+```go
+type SalesInvoicePaymentDetails struct {
+    SourceReference string             `json:"sourceReference,omitempty"`
+    Source          SalesInvoiceSource `json:"source,omitempty"`
+}
+```
+
+<a name="SalesInvoicePaymentTerm"></a>
+## type [SalesInvoicePaymentTerm](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L57>)
+
+SalesInvoicePaymentTerm represents the payment term for the sales invoice. Defaults to 30 days.
+
+```go
+type SalesInvoicePaymentTerm string
+```
+
+<a name="PaymentTerm7Days"></a>Possible values for SalesInvoicePaymentTerm.
+
+```go
+const (
+    PaymentTerm7Days  SalesInvoicePaymentTerm = "7 days"
+    PaymentTerm14Days SalesInvoicePaymentTerm = "14 days"
+    PaymentTerm30Days SalesInvoicePaymentTerm = "30 days"
+    PaymentTerm45Days SalesInvoicePaymentTerm = "45 days"
+    PaymentTerm60Days SalesInvoicePaymentTerm = "60 days"
+    PaymentTerm90Days SalesInvoicePaymentTerm = "90 days"
+)
+```
+
+<a name="SalesInvoiceRecipient"></a>
+## type [SalesInvoiceRecipient](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L106-L116>)
+
+SalesInvoiceRecipient represents the recipient of the sales invoice.
+
+```go
+type SalesInvoiceRecipient struct {
+    Address
+    Type               SalesInvoiceRecipientType `json:"type,omitempty"`
+    Title              string                    `json:"title,omitempty"`
+    Email              string                    `json:"email,omitempty"`
+    Phone              string                    `json:"phone,omitempty"`
+    OrganizationName   string                    `json:"organizationName,omitempty"`
+    OrganizationNumber string                    `json:"organizationNumber,omitempty"`
+    VATNumber          string                    `json:"vatNumber,omitempty"`
+    Locale             Locale                    `json:"locale,omitempty"`
+}
+```
+
+<a name="SalesInvoiceRecipientType"></a>
+## type [SalesInvoiceRecipientType](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L70>)
+
+SalesInvoiceRecipientType represents the type of recipient for the sales invoice.
+
+```go
+type SalesInvoiceRecipientType string
+```
+
+<a name="ConsumerSalesInvoiceRecipientType"></a>Possible values for SalesInvoiceRecipientType.
+
+```go
+const (
+    ConsumerSalesInvoiceRecipientType SalesInvoiceRecipientType = "consumer"
+    BusinessSalesInvoiceRecipientType SalesInvoiceRecipientType = "business"
+)
+```
+
+<a name="SalesInvoiceSource"></a>
+## type [SalesInvoiceSource](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L24>)
+
+SalesInvoiceSource is the way through which the invoice is to be set to paid.
+
+```go
+type SalesInvoiceSource string
+```
+
+<a name="ManualSalesInvoiceSource"></a>Possible values for SalesInvoiceSource.
+
+```go
+const (
+    ManualSalesInvoiceSource      SalesInvoiceSource = "manual"
+    PaymentLinkSalesInvoiceSource SalesInvoiceSource = "payment_link"
+    PaymentSalesInvoiceSource     SalesInvoiceSource = "payment"
+)
+```
+
+<a name="SalesInvoiceStatus"></a>
+## type [SalesInvoiceStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L11>)
+
+SalesInvoiceStatus represents the status for the invoice to end up in.
+
+```go
+type SalesInvoiceStatus string
+```
+
+<a name="DraftSalesInvoiceStatus"></a>Possible values for SalesInvoiceStatus.
+
+```go
+const (
+    // DraftSalesInvoiceStatus indicates that the invoice is not paid or not sent and can be updated after creation.
+    DraftSalesInvoiceStatus SalesInvoiceStatus = "draft"
+    // IssuedSalesInvoiceStatus sends it to the recipient so they may then pay through our payment system.
+    IssuedSalesInvoiceStatus SalesInvoiceStatus = "issued"
+    // PaidSalesInvoiceStatus marks the invoice as paid.
+    PaidSalesInvoiceStatus SalesInvoiceStatus = "paid"
+)
+```
+
+<a name="SalesInvoiceVATMode"></a>
+## type [SalesInvoiceVATMode](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L45>)
+
+SalesInvoiceVATMode represents the VAT mode for the sales invoice.
+
+```go
+type SalesInvoiceVATMode string
+```
+
+<a name="ExclusiveSalesInvoiceVATMode"></a>Possible values for SalesInvoiceVATMode.
+
+```go
+const (
+    // VAT is added on top of the prices.
+    ExclusiveSalesInvoiceVATMode SalesInvoiceVATMode = "exclusive"
+    // VAT is included in the prices.
+    InclusiveSalesInvoiceVATMode SalesInvoiceVATMode = "inclusive"
+)
+```
+
+<a name="SalesInvoiceVATScheme"></a>
+## type [SalesInvoiceVATScheme](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L34>)
+
+SalesInvoiceVATScheme represents the VAT scheme for the sales invoice.
+
+```go
+type SalesInvoiceVATScheme string
+```
+
+<a name="StandardSalesInvoiceVATScheme"></a>Possible values for SalesInvoiceVATScheme.
+
+```go
+const (
+    StandardSalesInvoiceVATScheme SalesInvoiceVATScheme = "standard"
+    // OneStopShopSalesInvoiceVATScheme indicates that the One Stop Shop (OSS) VAT scheme is used.
+    // You must be enrolled with One Stop Shop enabled to use it.
+    OneStopShopSalesInvoiceVATScheme SalesInvoiceVATScheme = "one-stop-shop"
+)
+```
+
+<a name="SalesInvoicesService"></a>
+## type [SalesInvoicesService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L221>)
+
+SalesInvoicesService handles API operations for sales invoices.
+
+```go
+type SalesInvoicesService service
+```
+
+<a name="SalesInvoicesService.Create"></a>
+### func \(\*SalesInvoicesService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L268-L272>)
+
+```go
+func (s *SalesInvoicesService) Create(ctx context.Context, csi CreateSalesInvoice) (res *Response, si *SalesInvoice, err error)
+```
+
+Create creates a new sales invoice.
+
+See: https://docs.mollie.com/reference/create-sales-invoice
+
+<a name="SalesInvoicesService.Delete"></a>
+### func \(\*SalesInvoicesService\) [Delete](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L318>)
+
+```go
+func (s *SalesInvoicesService) Delete(ctx context.Context, salesInvoice string) (res *Response, err error)
+```
+
+Delete deletes a sales invoice by its ID.
+
+See: https://docs.mollie.com/reference/delete-sales-invoice
+
+<a name="SalesInvoicesService.Get"></a>
+### func \(\*SalesInvoicesService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L246-L250>)
+
+```go
+func (s *SalesInvoicesService) Get(ctx context.Context, salesInvoice string) (res *Response, si *SalesInvoice, err error)
+```
+
+Get retrieves a single sales invoice by its ID.
+
+See: https://docs.mollie.com/reference/get-sales-invoice
+
+<a name="SalesInvoicesService.List"></a>
+### func \(\*SalesInvoicesService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L226-L230>)
+
+```go
+func (s *SalesInvoicesService) List(ctx context.Context, opts *ListSalesInvoicesOptions) (res *Response, sil *SalesInvoiceList, err error)
+```
+
+List retrieves a list of sales invoices.
+
+See: https://docs.mollie.com/reference/list-sales-invoices
+
+<a name="SalesInvoicesService.Update"></a>
+### func \(\*SalesInvoicesService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L292-L296>)
+
+```go
+func (s *SalesInvoicesService) Update(ctx context.Context, salesInvoice string, usi UpdateSalesInvoice) (res *Response, si *SalesInvoice, err error)
+```
+
+Update updates an existing sales invoice.
+
+See: https://docs.mollie.com/reference/update-sales-invoice
 
 <a name="SequenceType"></a>
 ## type [SequenceType](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L68>)
@@ -6161,6 +6571,25 @@ UpdatePaymentLinks describes certain details of an existing payment link that ca
 type UpdatePaymentLinks struct {
     Description string `json:"description,omitempty"`
     Archived    bool   `json:"archived,omitempty"`
+}
+```
+
+<a name="UpdateSalesInvoice"></a>
+## type [UpdateSalesInvoice](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L158-L168>)
+
+UpdateSalesInvoice represents the payload to update a sales invoice.
+
+```go
+type UpdateSalesInvoice struct {
+    TestMode            bool                     `json:"testmode,omitempty"`
+    Memo                string                   `json:"memo,omitempty"`
+    RecipientIdentifier string                   `json:"recipientIdentifier,omitempty"`
+    Status              SalesInvoiceStatus       `json:"status,omitempty"`
+    PaymentTerm         SalesInvoicePaymentTerm  `json:"paymentTerm,omitempty"`
+    EmailDetails        SalesInvoiceEmailDetails `json:"emailDetails,omitempty"`
+    Recipient           SalesInvoiceRecipient    `json:"recipient,omitempty"`
+    Lines               []SalesInvoiceLineItem   `json:"lines,omitempty"`
+    Discount            *SalesInvoiceDiscount    `json:"discount,omitempty"`
 }
 ```
 

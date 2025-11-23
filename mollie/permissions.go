@@ -38,6 +38,8 @@ const (
 	BalancesRead       PermissionGrant = "balances.read"
 	TerminalsRead      PermissionGrant = "terminals.read"
 	TerminalsWrite     PermissionGrant = "terminals.write"
+	SalesInvoicesRead  PermissionGrant = "sales-invoices.read"
+	SalesInvoicesWrite PermissionGrant = "sales-invoices.write"
 )
 
 // Permission represents an action that

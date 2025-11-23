@@ -1,4 +1,4 @@
-ARG GO_VERSION=1
+ARG GO_VERSION=dev-1.25
 ARG VARIANT=bookworm
 
 FROM mcr.microsoft.com/vscode/devcontainers/go:${GO_VERSION}-${VARIANT}
