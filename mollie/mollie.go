@@ -73,6 +73,7 @@ type Client struct {
 	ClientLinks    *ClientLinksService
 	Terminals      *TerminalsService
 	SalesInvoices  *SalesInvoicesService
+	DelayedRouting *DelayedRoutingService
 }
 
 type service struct {
@@ -300,6 +301,7 @@ func NewClient(baseClient *http.Client, conf *Config) (mollie *Client, err error
 	mollie.ClientLinks = (*ClientLinksService)(&mollie.common)
 	mollie.Terminals = (*TerminalsService)(&mollie.common)
 	mollie.SalesInvoices = (*SalesInvoicesService)(&mollie.common)
+	mollie.DelayedRouting = (*DelayedRoutingService)(&mollie.common)
 
 	mollie.userAgent = strings.Join([]string{
 		ClientName,
