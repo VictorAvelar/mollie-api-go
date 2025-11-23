@@ -5500,8 +5500,8 @@ SalesInvoicePaymentDetails contains details about how the sales invoice was or w
 
 ```go
 type SalesInvoicePaymentDetails struct {
-    Source          string `json:"source,omitempty"`
-    SourceReference string `json:"sourceReference,omitempty"`
+    SourceReference string             `json:"sourceReference,omitempty"`
+    Source          SalesInvoiceSource `json:"source,omitempty"`
 }
 ```
 
@@ -5666,7 +5666,7 @@ Create creates a new sales invoice.
 See: https://docs.mollie.com/reference/create-sales-invoice
 
 <a name="SalesInvoicesService.Delete"></a>
-### func \(\*SalesInvoicesService\) [Delete](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L314>)
+### func \(\*SalesInvoicesService\) [Delete](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/sales_invoices.go#L318>)
 
 ```go
 func (s *SalesInvoicesService) Delete(ctx context.Context, salesInvoice string) (res *Response, err error)
