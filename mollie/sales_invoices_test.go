@@ -571,7 +571,7 @@ func TestSalesInvoicesService_Update(t *testing.T) {
 				}
 
 				w.WriteHeader(http.StatusOK)
-				w.Write([]byte(testdata.GetSalesInvoicesResponse))
+				_, _ = w.Write([]byte(testdata.GetSalesInvoicesResponse))
 			},
 		},
 		{
