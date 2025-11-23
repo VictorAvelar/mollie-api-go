@@ -103,6 +103,7 @@ The Mollie API is a straightforward REST API. This means all endpoints either cr
 - [type CreateCapture](<#CreateCapture>)
 - [type CreateClientLink](<#CreateClientLink>)
 - [type CreateCustomer](<#CreateCustomer>)
+- [type CreateDelayedRouting](<#CreateDelayedRouting>)
 - [type CreateMandate](<#CreateMandate>)
 - [type CreateMandateAccessTokenFields](<#CreateMandateAccessTokenFields>)
 - [type CreateMollieConnectPaymentFields](<#CreateMollieConnectPaymentFields>)
@@ -128,6 +129,11 @@ The Mollie API is a straightforward REST API. This means all endpoints either cr
   - [func \(cs \*CustomersService\) GetPayments\(ctx context.Context, id string, options \*ListCustomersOptions\) \(res \*Response, pl \*PaymentList, err error\)](<#CustomersService.GetPayments>)
   - [func \(cs \*CustomersService\) List\(ctx context.Context, options \*ListCustomersOptions\) \(res \*Response, cl \*CustomersList, err error\)](<#CustomersService.List>)
   - [func \(cs \*CustomersService\) Update\(ctx context.Context, id string, c UpdateCustomer\) \(res \*Response, cc \*Customer, err error\)](<#CustomersService.Update>)
+- [type DelayedRoutingDestination](<#DelayedRoutingDestination>)
+- [type DelayedRoutingDestinationType](<#DelayedRoutingDestinationType>)
+- [type DelayedRoutingService](<#DelayedRoutingService>)
+  - [func \(s \*DelayedRoutingService\) Create\(ctx context.Context, payment string, dr CreateDelayedRouting\) \(res \*Response, r \*Route, err error\)](<#DelayedRoutingService.Create>)
+  - [func \(s \*DelayedRoutingService\) List\(ctx context.Context, payment string\) \(res \*Response, prl \*PaymentRoutesList, err error\)](<#DelayedRoutingService.List>)
 - [type EligibilityReasons](<#EligibilityReasons>)
 - [type EmbedValue](<#EmbedValue>)
 - [type EnableVoucherIssuer](<#EnableVoucherIssuer>)
@@ -269,6 +275,7 @@ The Mollie API is a straightforward REST API. This means all endpoints either cr
 - [type PaymentRefundAccessTokenFields](<#PaymentRefundAccessTokenFields>)
 - [type PaymentRefundMollieConnectFields](<#PaymentRefundMollieConnectFields>)
 - [type PaymentRefundOptions](<#PaymentRefundOptions>)
+- [type PaymentRoutesList](<#PaymentRoutesList>)
 - [type PaymentRouting](<#PaymentRouting>)
 - [type PaymentsService](<#PaymentsService>)
   - [func \(ps \*PaymentsService\) Cancel\(ctx context.Context, id string\) \(res \*Response, p \*Payment, err error\)](<#PaymentsService.Cancel>)
@@ -325,6 +332,8 @@ The Mollie API is a straightforward REST API. This means all endpoints either cr
   - [func \(rs \*RefundsService\) ListOrderRefunds\(ctx context.Context, orderID string, opts \*ListRefundsOptions\) \(res \*Response, rl \*RefundsList, err error\)](<#RefundsService.ListOrderRefunds>)
   - [func \(rs \*RefundsService\) ListPaymentRefunds\(ctx context.Context, paymentID string, opts \*ListRefundsOptions\) \(res \*Response, rl \*RefundsList, err error\)](<#RefundsService.ListPaymentRefunds>)
 - [type Response](<#Response>)
+- [type Route](<#Route>)
+- [type RouteLinks](<#RouteLinks>)
 - [type RoutingReversal](<#RoutingReversal>)
 - [type RoutingSource](<#RoutingSource>)
 - [type SalesInvoice](<#SalesInvoice>)
@@ -442,7 +451,7 @@ const (
 ```
 
 <a name="CheckResponse"></a>
-## func [CheckResponse](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L368>)
+## func [CheckResponse](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L370>)
 
 ```go
 func CheckResponse(r *Response) error
@@ -1383,7 +1392,7 @@ ListForPayment retrieves a list of chargebacks associated with a single payment.
 See: https://docs.mollie.com/reference/list-payment-chargebacks
 
 <a name="Client"></a>
-## type [Client](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L43-L76>)
+## type [Client](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L43-L77>)
 
 Client manages communication with Mollie's API.
 
@@ -1415,12 +1424,13 @@ type Client struct {
     ClientLinks    *ClientLinksService
     Terminals      *TerminalsService
     SalesInvoices  *SalesInvoicesService
+    DelayedRouting *DelayedRoutingService
     // contains filtered or unexported fields
 }
 ```
 
 <a name="NewClient"></a>
-### func [NewClient](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L259>)
+### func [NewClient](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L260>)
 
 ```go
 func NewClient(baseClient *http.Client, conf *Config) (mollie *Client, err error)
@@ -1433,7 +1443,7 @@ NewClient will lookup the environment for values to assign to the API token \(\`
 You can also set the token values programmatically by using the Client WithAPIKey and WithOrganizationKey functions.
 
 <a name="Client.Do"></a>
-### func \(\*Client\) [Do](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L229>)
+### func \(\*Client\) [Do](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L230>)
 
 ```go
 func (c *Client) Do(req *http.Request) (*Response, error)
@@ -1442,7 +1452,7 @@ func (c *Client) Do(req *http.Request) (*Response, error)
 Do sends an API request and returns the API response or returned as an error if an API error has occurred.
 
 <a name="Client.HasAccessToken"></a>
-### func \(\*Client\) [HasAccessToken](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L155>)
+### func \(\*Client\) [HasAccessToken](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L156>)
 
 ```go
 func (c *Client) HasAccessToken() bool
@@ -1453,7 +1463,7 @@ HasAccessToken will return true when the provided authentication token complies 
 See: https://github.com/VictorAvelar/mollie-api-go/issues/123
 
 <a name="Client.NewAPIRequest"></a>
-### func \(\*Client\) [NewAPIRequest](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L168-L171>)
+### func \(\*Client\) [NewAPIRequest](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L169-L172>)
 
 ```go
 func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, body interface{}) (req *http.Request, err error)
@@ -1464,7 +1474,7 @@ NewAPIRequest is a wrapper around the http.NewRequest function.
 It will setup the authentication headers/parameters according to the client config.
 
 <a name="Client.SetIdempotencyKeyGenerator"></a>
-### func \(\*Client\) [SetIdempotencyKeyGenerator](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L161>)
+### func \(\*Client\) [SetIdempotencyKeyGenerator](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L162>)
 
 ```go
 func (c *Client) SetIdempotencyKeyGenerator(kg idempotency.KeyGenerator)
@@ -1473,7 +1483,7 @@ func (c *Client) SetIdempotencyKeyGenerator(kg idempotency.KeyGenerator)
 SetIdempotencyKeyGenerator allows you to pass your own idempotency key generator.
 
 <a name="Client.WithAuthenticationValue"></a>
-### func \(\*Client\) [WithAuthenticationValue](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L140>)
+### func \(\*Client\) [WithAuthenticationValue](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L141>)
 
 ```go
 func (c *Client) WithAuthenticationValue(k string) error
@@ -1896,6 +1906,20 @@ type CreateCustomer struct {
 }
 ```
 
+<a name="CreateDelayedRouting"></a>
+## type [CreateDelayedRouting](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/delayed_routing.go#L52-L57>)
+
+CreateDelayedRouting represents the payload to create a delayed routing.
+
+```go
+type CreateDelayedRouting struct {
+    TestMode    bool                      `json:"testmode,omitempty"`
+    Description string                    `json:"description,omitempty"`
+    Amount      Amount                    `json:"amount,omitempty"`
+    Destination DelayedRoutingDestination `json:"destination,omitempty"`
+}
+```
+
 <a name="CreateMandate"></a>
 ## type [CreateMandate](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mandates.go#L11-L21>)
 
@@ -2303,6 +2327,66 @@ func (cs *CustomersService) Update(ctx context.Context, id string, c UpdateCusto
 Update an existing customer.
 
 See: https://docs.mollie.com/reference/update-customer
+
+<a name="DelayedRoutingDestination"></a>
+## type [DelayedRoutingDestination](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/delayed_routing.go#L19-L22>)
+
+DelayedRoutingDestination represents the destination for delayed routing.
+
+```go
+type DelayedRoutingDestination struct {
+    Type           DelayedRoutingDestinationType `json:"type,omitempty"`
+    OrganizationID string                        `json:"organizationId,omitempty"`
+}
+```
+
+<a name="DelayedRoutingDestinationType"></a>
+## type [DelayedRoutingDestinationType](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/delayed_routing.go#L11>)
+
+DelayedRoutingDestinationType indicates the destination of the delayed routing.
+
+```go
+type DelayedRoutingDestinationType string
+```
+
+<a name="DelayedRoutingDestinationOrganization"></a>Possible values for DelayedRoutingDestination.
+
+```go
+const (
+    DelayedRoutingDestinationOrganization DelayedRoutingDestinationType = "organization"
+)
+```
+
+<a name="DelayedRoutingService"></a>
+## type [DelayedRoutingService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/delayed_routing.go#L60>)
+
+DelayedRoutingService handles delayed routing related operations.
+
+```go
+type DelayedRoutingService service
+```
+
+<a name="DelayedRoutingService.Create"></a>
+### func \(\*DelayedRoutingService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/delayed_routing.go#L65-L69>)
+
+```go
+func (s *DelayedRoutingService) Create(ctx context.Context, payment string, dr CreateDelayedRouting) (res *Response, r *Route, err error)
+```
+
+Create creates a new delayed routing for a payment.
+
+See: https://docs.mollie.com/reference/payment-create-route
+
+<a name="DelayedRoutingService.List"></a>
+### func \(\*DelayedRoutingService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/delayed_routing.go#L91-L95>)
+
+```go
+func (s *DelayedRoutingService) List(ctx context.Context, payment string) (res *Response, prl *PaymentRoutesList, err error)
+```
+
+List retrieves all delayed routings for a specific payment.
+
+See: https://docs.mollie.com/reference/payment-list-routes
 
 <a name="EligibilityReasons"></a>
 ## type [EligibilityReasons](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payment_details.go#L35>)
@@ -4619,6 +4703,21 @@ type PaymentRefundOptions struct {
 }
 ```
 
+<a name="PaymentRoutesList"></a>
+## type [PaymentRoutesList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/delayed_routing.go#L43-L49>)
+
+PaymentRoutesList represents a list of delayed routings for a payment.
+
+```go
+type PaymentRoutesList struct {
+    Count    int `json:"count,omitempty"`
+    Embedded struct {
+        Routes []Route `json:"routes,omitempty"`
+    }   `json:"_embedded,omitempty"`
+    Links RouteLinks `json:"_links,omitempty"`
+}
+```
+
 <a name="PaymentRouting"></a>
 ## type [PaymentRouting](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/payments.go#L78-L82>)
 
@@ -5330,7 +5429,7 @@ ListPaymentRefunds retrieves all refunds for a specific payment.
 See: https://docs.mollie.com/reference/list-refunds
 
 <a name="Response"></a>
-## type [Response](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L342-L345>)
+## type [Response](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L344-L347>)
 
 Response is a Mollie API response. This wraps the standard http.Response returned from Mollie and provides convenient access to things like pagination links.
 
@@ -5338,6 +5437,36 @@ Response is a Mollie API response. This wraps the standard http.Response returne
 type Response struct {
     *http.Response
     // contains filtered or unexported fields
+}
+```
+
+<a name="Route"></a>
+## type [Route](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/delayed_routing.go#L25-L34>)
+
+Route represents a delayed routing associated with a payment.
+
+```go
+type Route struct {
+    Resource    string                    `json:"resource,omitempty"`
+    ID          string                    `json:"id,omitempty"`
+    PaymentID   string                    `json:"paymentId,omitempty"`
+    Description string                    `json:"description,omitempty"`
+    Amount      Amount                    `json:"amount,omitempty"`
+    Destination DelayedRoutingDestination `json:"destination,omitempty"`
+    Links       RouteLinks                `json:"_links,omitempty"`
+    CreatedAt   *time.Time                `json:"createdAt,omitempty"`
+}
+```
+
+<a name="RouteLinks"></a>
+## type [RouteLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/delayed_routing.go#L37-L40>)
+
+RouteLinks represents the links related to a delayed routing.
+
+```go
+type RouteLinks struct {
+    Self          *URL `json:"self,omitempty"`
+    Documentation *URL `json:"documentation,omitempty"`
 }
 ```
 
