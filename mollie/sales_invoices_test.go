@@ -100,7 +100,7 @@ func TestSalesInvoicesService_Create(t *testing.T) {
 				}
 
 				w.WriteHeader(http.StatusCreated)
-				w.Write([]byte(testdata.CreateSalesInvoicesResponse))
+				_, _ = w.Write([]byte(testdata.CreateSalesInvoicesResponse))
 			},
 		},
 		{
@@ -230,7 +230,7 @@ func TestSalesInvoicesService_Get(t *testing.T) {
 				}
 
 				w.WriteHeader(http.StatusOK)
-				w.Write([]byte(testdata.GetSalesInvoicesResponse))
+				_, _ = w.Write([]byte(testdata.GetSalesInvoicesResponse))
 			},
 		},
 		{
@@ -349,7 +349,7 @@ func TestSalesInvoicesService_List(t *testing.T) {
 				}
 
 				w.WriteHeader(http.StatusOK)
-				w.Write([]byte(testdata.ListSalesInvoicesResponse))
+				_, _ = w.Write([]byte(testdata.ListSalesInvoicesResponse))
 			},
 		},
 		{

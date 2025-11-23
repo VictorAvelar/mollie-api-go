@@ -92,8 +92,8 @@ type SalesInvoiceDiscount struct {
 
 // SalesInvoicePaymentDetails contains details about how the sales invoice was or will be paid.
 type SalesInvoicePaymentDetails struct {
-	Source          string `json:"source,omitempty"`
-	SourceReference string `json:"sourceReference,omitempty"`
+	SourceReference string             `json:"sourceReference,omitempty"`
+	Source          SalesInvoiceSource `json:"source,omitempty"`
 }
 
 // SalesInvoiceEmailDetails contains details about the email sent with the sales invoice.
@@ -295,6 +295,10 @@ func (s *SalesInvoicesService) Update(ctx context.Context, salesInvoice string, 
 	err error,
 ) {
 	u := fmt.Sprintf("/v2/sales-invoices/%s", salesInvoice)
+
+	if s.client.HasAccessToken() && s.client.config.testing {
+		usi.TestMode = true
+	}
 
 	res, err = s.client.patch(ctx, u, usi)
 	if err != nil {
