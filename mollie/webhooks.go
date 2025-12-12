@@ -3,6 +3,7 @@ package mollie
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"time"
 )
 
@@ -49,6 +50,11 @@ type UpdateWebhook struct {
 
 // DeleteWebhook represents the payload to delete a webhook.
 type DeleteWebhook struct {
+	TestMode bool `json:"testmode,omitempty"`
+}
+
+// TestWebhook represents the payload to ping a webhook.
+type TestWebhook struct {
 	TestMode bool `json:"testmode,omitempty"`
 }
 
@@ -124,7 +130,7 @@ func (s *WebhookService) Get(ctx context.Context, webhook string) (
 	w *Webhook,
 	err error,
 ) {
-	res, err = s.client.get(ctx, "/v2/webhooks/"+webhook, nil)
+	res, err = s.client.get(ctx, fmt.Sprintf("/v2/webhooks/%s", webhook), nil)
 	if err != nil {
 		return
 	}
@@ -148,7 +154,7 @@ func (s *WebhookService) Update(ctx context.Context, webhook string, uw UpdateWe
 		uw.TestMode = true
 	}
 
-	res, err = s.client.patch(ctx, "/v2/webhooks/"+webhook, uw)
+	res, err = s.client.patch(ctx, fmt.Sprintf("/v2/webhooks/%s", webhook), uw)
 	if err != nil {
 		return
 	}
@@ -187,7 +193,7 @@ func (s *WebhookService) Delete(ctx context.Context, webhook string) (
 	res *Response,
 	err error,
 ) {
-	res, err = s.client.delete(ctx, "/v2/webhooks/"+webhook)
+	res, err = s.client.delete(ctx, fmt.Sprintf("/v2/webhooks/%s", webhook))
 	if err != nil {
 		return
 	}
@@ -202,16 +208,14 @@ func (s *WebhookService) Test(ctx context.Context, webhook string) (
 	res *Response,
 	err error,
 ) {
-	var dw DeleteWebhook
-	{
-		if s.client.HasAccessToken() && s.client.config.testing {
-			dw = DeleteWebhook{
-				TestMode: true,
-			}
+	var dw TestWebhook
+	if s.client.HasAccessToken() && s.client.config.testing {
+		dw = TestWebhook{
+			TestMode: true,
 		}
 	}
 
-	res, err = s.client.post(ctx, "/v2/webhooks/"+webhook+"/ping", dw, nil)
+	res, err = s.client.post(ctx, fmt.Sprintf("/v2/webhooks/%s/ping", webhook), dw, nil)
 	if err != nil {
 		return
 	}

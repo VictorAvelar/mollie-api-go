@@ -135,7 +135,7 @@ func TestWebhookService_Create(t *testing.T) {
 
 				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(http.StatusCreated)
-				_, _ = w.Write([]byte(testdata.GetWebhookExample))
+				_, _ = w.Write([]byte(testdata.CreateWebhookExample))
 			},
 		},
 		{
