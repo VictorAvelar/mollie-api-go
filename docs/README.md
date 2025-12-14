@@ -6954,22 +6954,23 @@ ApplePaymentSession returns an Apple Payment Session object valid for one transa
 See: https://docs.mollie.com/reference/request-apple-pay-payment-session
 
 <a name="Webhook"></a>
-## type [Webhook](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhooks.go#L62-L73>)
+## type [Webhook](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhooks.go#L62-L74>)
 
 Webhook describes a webhook object registered in the Mollie system.
 
 ```go
 type Webhook struct {
-    Resource   string             `json:"resource,omitempty"`
-    ID         string             `json:"id,omitempty"`
-    URL        string             `json:"url,omitempty"`
-    ProfileID  string             `json:"profileId,omitempty"`
-    Name       string             `json:"name,omitempty"`
-    Mode       Mode               `json:"mode,omitempty"`
-    Status     WebhookStatus      `json:"status,omitempty"`
-    Links      WebhookLinks       `json:"_links,omitempty"`
-    EventTypes []WebhookEventType `json:"eventTypes,omitempty"`
-    CreatedAt  *time.Time         `json:"createdAt,omitempty"`
+    Resource      string             `json:"resource,omitempty"`
+    ID            string             `json:"id,omitempty"`
+    URL           string             `json:"url,omitempty"`
+    ProfileID     string             `json:"profileId,omitempty"`
+    Name          string             `json:"name,omitempty"`
+    WebhookSecret string             `json:"webhookSecret,omitempty"`
+    Mode          Mode               `json:"mode,omitempty"`
+    Status        WebhookStatus      `json:"status,omitempty"`
+    Links         WebhookLinks       `json:"_links,omitempty"`
+    EventTypes    []WebhookEventType `json:"eventTypes,omitempty"`
+    CreatedAt     *time.Time         `json:"createdAt,omitempty"`
 }
 ```
 
@@ -6997,7 +6998,7 @@ const (
 ```
 
 <a name="WebhookLinks"></a>
-## type [WebhookLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhooks.go#L76-L79>)
+## type [WebhookLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhooks.go#L77-L80>)
 
 WebhookLinks represents the links related to a webhook.
 
@@ -7009,7 +7010,7 @@ type WebhookLinks struct {
 ```
 
 <a name="WebhookList"></a>
-## type [WebhookList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhooks.go#L90-L96>)
+## type [WebhookList](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhooks.go#L91-L97>)
 
 WebhookList represents a paginated list of webhooks.
 
@@ -7024,7 +7025,7 @@ type WebhookList struct {
 ```
 
 <a name="WebhookService"></a>
-## type [WebhookService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhooks.go#L99>)
+## type [WebhookService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhooks.go#L100>)
 
 WebhookService handles webhook\-related operations.
 
@@ -7033,7 +7034,7 @@ type WebhookService service
 ```
 
 <a name="WebhookService.Create"></a>
-### func \(\*WebhookService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhooks.go#L104-L108>)
+### func \(\*WebhookService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhooks.go#L105-L109>)
 
 ```go
 func (s *WebhookService) Create(ctx context.Context, wh CreateWebhook) (res *Response, w *Webhook, err error)
@@ -7044,7 +7045,7 @@ Create creates a new webhook.
 See: https://docs.mollie.com/reference/create-webhook
 
 <a name="WebhookService.Delete"></a>
-### func \(\*WebhookService\) [Delete](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhooks.go#L192-L195>)
+### func \(\*WebhookService\) [Delete](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhooks.go#L193-L196>)
 
 ```go
 func (s *WebhookService) Delete(ctx context.Context, webhook string) (res *Response, err error)
@@ -7055,7 +7056,7 @@ Delete removes a webhook by its ID.
 See: https://docs.mollie.com/reference/delete-webhook
 
 <a name="WebhookService.Get"></a>
-### func \(\*WebhookService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhooks.go#L128-L132>)
+### func \(\*WebhookService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhooks.go#L129-L133>)
 
 ```go
 func (s *WebhookService) Get(ctx context.Context, webhook string) (res *Response, w *Webhook, err error)
@@ -7066,7 +7067,7 @@ Get retrieves a webhook by its ID.
 See: https://docs.mollie.com/reference/get-webhook
 
 <a name="WebhookService.List"></a>
-### func \(\*WebhookService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhooks.go#L172-L176>)
+### func \(\*WebhookService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhooks.go#L173-L177>)
 
 ```go
 func (s *WebhookService) List(ctx context.Context, options *WebhooksListOptions) (res *Response, wl *WebhookList, err error)
@@ -7077,7 +7078,7 @@ List retrieves a list of webhooks with optional filtering.
 See: https://docs.mollie.com/reference/list-webhooks
 
 <a name="WebhookService.Test"></a>
-### func \(\*WebhookService\) [Test](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhooks.go#L207-L210>)
+### func \(\*WebhookService\) [Test](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhooks.go#L215-L218>)
 
 ```go
 func (s *WebhookService) Test(ctx context.Context, webhook string) (res *Response, err error)
@@ -7088,7 +7089,7 @@ Test sends a test ping to the specified webhook.
 See: https://docs.mollie.com/reference/test-webhook
 
 <a name="WebhookService.Update"></a>
-### func \(\*WebhookService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhooks.go#L148-L152>)
+### func \(\*WebhookService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhooks.go#L149-L153>)
 
 ```go
 func (s *WebhookService) Update(ctx context.Context, webhook string, uw UpdateWebhook) (res *Response, w *Webhook, err error)
@@ -7119,7 +7120,7 @@ const (
 ```
 
 <a name="WebhooksListOptions"></a>
-## type [WebhooksListOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhooks.go#L82-L87>)
+## type [WebhooksListOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhooks.go#L83-L88>)
 
 WebhooksListOptions represents the query parameters for listing webhooks.
 
