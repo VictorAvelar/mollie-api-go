@@ -186,7 +186,7 @@ func (ss *SubscriptionsService) Cancel(ctx context.Context, customer, subscripti
 ) {
 	u := fmt.Sprintf("v2/customers/%s/subscriptions/%s", customer, subscription)
 
-	res, err = ss.client.delete(ctx, u)
+	res, err = ss.client.delete(ctx, u, nil)
 	if err != nil {
 		return
 	}

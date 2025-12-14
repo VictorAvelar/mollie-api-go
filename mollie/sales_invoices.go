@@ -318,7 +318,7 @@ func (s *SalesInvoicesService) Update(ctx context.Context, salesInvoice string, 
 func (s *SalesInvoicesService) Delete(ctx context.Context, salesInvoice string) (res *Response, err error) {
 	u := fmt.Sprintf("/v2/sales-invoices/%s", salesInvoice)
 
-	res, err = s.client.delete(ctx, u)
+	res, err = s.client.delete(ctx, u, nil)
 	if err != nil {
 		return
 	}

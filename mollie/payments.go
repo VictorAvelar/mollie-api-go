@@ -381,7 +381,7 @@ func (ps *PaymentsService) Create(ctx context.Context, p CreatePayment, opts *Pa
 //
 // See: https://docs.mollie.com/reference/cancel-payment
 func (ps *PaymentsService) Cancel(ctx context.Context, id string) (res *Response, p *Payment, err error) {
-	res, err = ps.client.delete(ctx, fmt.Sprintf("v2/payments/%s", id))
+	res, err = ps.client.delete(ctx, fmt.Sprintf("v2/payments/%s", id), nil)
 	if err != nil {
 		return
 	}

@@ -60,16 +60,17 @@ type TestWebhook struct {
 
 // Webhook describes a webhook object registered in the Mollie system.
 type Webhook struct {
-	Resource   string             `json:"resource,omitempty"`
-	ID         string             `json:"id,omitempty"`
-	URL        string             `json:"url,omitempty"`
-	ProfileID  string             `json:"profileId,omitempty"`
-	Name       string             `json:"name,omitempty"`
-	Mode       Mode               `json:"mode,omitempty"`
-	Status     WebhookStatus      `json:"status,omitempty"`
-	Links      WebhookLinks       `json:"_links,omitempty"`
-	EventTypes []WebhookEventType `json:"eventTypes,omitempty"`
-	CreatedAt  *time.Time         `json:"createdAt,omitempty"`
+	Resource      string             `json:"resource,omitempty"`
+	ID            string             `json:"id,omitempty"`
+	URL           string             `json:"url,omitempty"`
+	ProfileID     string             `json:"profileId,omitempty"`
+	Name          string             `json:"name,omitempty"`
+	WebhookSecret string             `json:"webhookSecret,omitempty"`
+	Mode          Mode               `json:"mode,omitempty"`
+	Status        WebhookStatus      `json:"status,omitempty"`
+	Links         WebhookLinks       `json:"_links,omitempty"`
+	EventTypes    []WebhookEventType `json:"eventTypes,omitempty"`
+	CreatedAt     *time.Time         `json:"createdAt,omitempty"`
 }
 
 // WebhookLinks represents the links related to a webhook.
@@ -193,7 +194,14 @@ func (s *WebhookService) Delete(ctx context.Context, webhook string) (
 	res *Response,
 	err error,
 ) {
-	res, err = s.client.delete(ctx, fmt.Sprintf("/v2/webhooks/%s", webhook))
+	var dw DeleteWebhook
+	if s.client.HasAccessToken() && s.client.config.testing {
+		dw = DeleteWebhook{
+			TestMode: true,
+		}
+	}
+
+	res, err = s.client.delete(ctx, fmt.Sprintf("/v2/webhooks/%s", webhook), dw)
 	if err != nil {
 		return
 	}

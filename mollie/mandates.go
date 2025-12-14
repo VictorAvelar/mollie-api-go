@@ -170,7 +170,7 @@ func (ms *MandatesService) Get(ctx context.Context, customer, mandate string) (r
 func (ms *MandatesService) Revoke(ctx context.Context, customer, mandate string) (res *Response, err error) {
 	u := fmt.Sprintf("v2/customers/%s/mandates/%s", customer, mandate)
 
-	res, err = ms.client.delete(ctx, u)
+	res, err = ms.client.delete(ctx, u, nil)
 	if err != nil {
 		return
 	}

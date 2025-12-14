@@ -124,7 +124,7 @@ func (c *Client) patch(ctx context.Context, uri string, body interface{}) (
 	return c.Do(req)
 }
 
-func (c *Client) delete(ctx context.Context, uri string) (res *Response, err error) {
+func (c *Client) delete(ctx context.Context, uri string, body interface{}) (res *Response, err error) {
 	req, err := c.NewAPIRequest(ctx, http.MethodDelete, uri, nil)
 	if err != nil {
 		return
