@@ -216,14 +216,14 @@ func (s *WebhookService) Test(ctx context.Context, webhook string) (
 	res *Response,
 	err error,
 ) {
-	var dw TestWebhook
+	var tw TestWebhook
 	if s.client.HasAccessToken() && s.client.config.testing {
-		dw = TestWebhook{
+		tw = TestWebhook{
 			TestMode: true,
 		}
 	}
 
-	res, err = s.client.post(ctx, fmt.Sprintf("/v2/webhooks/%s/ping", webhook), dw, nil)
+	res, err = s.client.post(ctx, fmt.Sprintf("/v2/webhooks/%s/ping", webhook), tw, nil)
 	if err != nil {
 		return
 	}
