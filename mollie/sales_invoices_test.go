@@ -2,6 +2,7 @@ package mollie
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"testing"
@@ -41,6 +42,45 @@ func TestSalesInvoicesService_Create(t *testing.T) {
 			},
 			VATRate: "21.00",
 		},
+	}
+
+	issuedCreateHandler := func(w http.ResponseWriter, r *http.Request) {
+		testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+		testMethod(t, r, "POST")
+
+		if _, ok := r.Header[AuthHeader]; !ok {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
+		var payload map[string]any
+		if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		status, _ := payload["status"].(string)
+		paymentDetails, hasPaymentDetails := payload["paymentDetails"].(map[string]any)
+
+		if hasPaymentDetails {
+			if source, ok := paymentDetails["source"].(string); !ok || source == "" {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(http.StatusUnprocessableEntity)
+				_, _ = w.Write([]byte(`{"status":422,"title":"Unprocessable Entity","detail":"The 'source' field is required when providing paymentDetails.","field":"paymentDetails.source"}`))
+				return
+			}
+
+			if status == string(IssuedSalesInvoiceStatus) {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(http.StatusUnprocessableEntity)
+				_, _ = w.Write([]byte(`{"status":422,"title":"Unprocessable Entity","detail":"The 'paymentDetails' field is not allowed when status is 'issued'.","field":"paymentDetails"}`))
+				return
+			}
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+		_, _ = w.Write([]byte(testdata.CreateSalesInvoicesResponse))
 	}
 
 	cases := []struct {
@@ -150,6 +190,68 @@ func TestSalesInvoicesService_Create(t *testing.T) {
 			errBadBaseURL,
 			crashSrv,
 			errorHandler,
+		},
+		{
+			name: "create issued sales invoice, without payment details",
+			args: args{
+				ctx: context.Background(),
+				req: CreateSalesInvoice{
+					Status:              IssuedSalesInvoiceStatus,
+					RecipientIdentifier: "customer_123456789",
+					Recipient:           recipient,
+					Lines:               lines,
+				},
+			},
+			wantErr: false,
+			err:     nil,
+			pre:     noPre,
+			handler: issuedCreateHandler,
+		},
+		{
+			name: "create issued sales invoice, payment details without source returns error",
+			args: args{
+				ctx: context.Background(),
+				req: CreateSalesInvoice{
+					Status:              IssuedSalesInvoiceStatus,
+					RecipientIdentifier: "customer_123456789",
+					Recipient:           recipient,
+					Lines:               lines,
+					PaymentDetails:      &SalesInvoicePaymentDetails{},
+				},
+			},
+			wantErr: true,
+			err: &BaseError{
+				Status: http.StatusUnprocessableEntity,
+				Title:  "Unprocessable Entity",
+				Detail: "The 'source' field is required when providing paymentDetails.",
+				Field:  "paymentDetails.source",
+			},
+			pre:     noPre,
+			handler: issuedCreateHandler,
+		},
+		{
+			name: "create issued sales invoice, payment details with source returns error",
+			args: args{
+				ctx: context.Background(),
+				req: CreateSalesInvoice{
+					Status:              IssuedSalesInvoiceStatus,
+					RecipientIdentifier: "customer_123456789",
+					Recipient:           recipient,
+					Lines:               lines,
+					PaymentDetails: &SalesInvoicePaymentDetails{
+						Source: ManualSalesInvoiceSource,
+					},
+				},
+			},
+			wantErr: true,
+			err: &BaseError{
+				Status: http.StatusUnprocessableEntity,
+				Title:  "Unprocessable Entity",
+				Detail: "The 'paymentDetails' field is not allowed when status is 'issued'.",
+				Field:  "paymentDetails",
+			},
+			pre:     noPre,
+			handler: issuedCreateHandler,
 		},
 	}
 

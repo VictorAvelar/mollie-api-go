@@ -136,22 +136,22 @@ type SalesInvoiceLinks struct {
 
 // CreateSalesInvoice represents the payload to create a sales invoice.
 type CreateSalesInvoice struct {
-	TestMode            bool                       `json:"testmode,omitempty"`
-	ProfileID           string                     `json:"profileId,omitempty"`
-	CustomerID          string                     `json:"customerId,omitempty"`
-	MandateID           string                     `json:"mandateId,omitempty"`
-	RecipientIdentifier string                     `json:"recipientIdentifier,omitempty"`
-	Memo                string                     `json:"memo,omitempty"`
-	Metadata            map[string]string          `json:"metadata,omitempty"`
-	Status              SalesInvoiceStatus         `json:"status,omitempty"`
-	VATScheme           SalesInvoiceVATScheme      `json:"vatScheme,omitempty"`
-	VATMode             SalesInvoiceVATMode        `json:"vatMode,omitempty"`
-	PaymentTerm         SalesInvoicePaymentTerm    `json:"paymentTerm,omitempty"`
-	PaymentDetails      SalesInvoicePaymentDetails `json:"paymentDetails,omitempty"`
-	EmailDetails        SalesInvoiceEmailDetails   `json:"emailDetails,omitempty"`
-	Recipient           SalesInvoiceRecipient      `json:"recipient,omitempty"`
-	Lines               []SalesInvoiceLineItem     `json:"lines,omitempty"`
-	Discount            *SalesInvoiceDiscount      `json:"discount,omitempty"`
+	TestMode            bool                        `json:"testmode,omitempty"`
+	ProfileID           string                      `json:"profileId,omitempty"`
+	CustomerID          string                      `json:"customerId,omitempty"`
+	MandateID           string                      `json:"mandateId,omitempty"`
+	RecipientIdentifier string                      `json:"recipientIdentifier,omitempty"`
+	Memo                string                      `json:"memo,omitempty"`
+	Metadata            map[string]string           `json:"metadata,omitempty"`
+	Status              SalesInvoiceStatus          `json:"status,omitempty"`
+	VATScheme           SalesInvoiceVATScheme       `json:"vatScheme,omitempty"`
+	VATMode             SalesInvoiceVATMode         `json:"vatMode,omitempty"`
+	PaymentTerm         SalesInvoicePaymentTerm     `json:"paymentTerm,omitempty"`
+	PaymentDetails      *SalesInvoicePaymentDetails `json:"paymentDetails,omitempty"`
+	EmailDetails        SalesInvoiceEmailDetails    `json:"emailDetails,omitempty"`
+	Recipient           SalesInvoiceRecipient       `json:"recipient,omitempty"`
+	Lines               []SalesInvoiceLineItem      `json:"lines,omitempty"`
+	Discount            *SalesInvoiceDiscount       `json:"discount,omitempty"`
 }
 
 // UpdateSalesInvoice represents the payload to update a sales invoice.
