@@ -169,36 +169,36 @@ type UpdateSalesInvoice struct {
 
 // SalesInvoice represents a sales invoice resource.
 type SalesInvoice struct {
-	Resource                 string                     `json:"resource,omitempty"`
-	ID                       string                     `json:"id,omitempty"`
-	ProfileID                string                     `json:"profileId,omitempty"`
-	Currency                 string                     `json:"currency,omitempty"`
-	InvoiceNumber            string                     `json:"invoiceNumber,omitempty"`
-	Memo                     string                     `json:"memo,omitempty"`
-	CustomerID               string                     `json:"customerId,omitempty"`
-	MandateID                string                     `json:"mandateId,omitempty"`
-	RecipientIdentifier      string                     `json:"recipientIdentifier,omitempty"`
-	Metadata                 map[string]string          `json:"metadata,omitempty"`
-	Mode                     Mode                       `json:"mode,omitempty"`
-	AmountDue                Amount                     `json:"amountDue,omitempty"`
-	SubtotalAmount           Amount                     `json:"subtotalAmount,omitempty"`
-	TotalAmount              Amount                     `json:"totalAmount,omitempty"`
-	TotalVATAmount           Amount                     `json:"totalVatAmount,omitempty"`
-	DiscountedSubtotalAmount Amount                     `json:"discountedSubtotalAmount,omitempty"`
-	Status                   SalesInvoiceStatus         `json:"status,omitempty"`
-	VATScheme                SalesInvoiceVATScheme      `json:"vatScheme,omitempty"`
-	VATMode                  SalesInvoiceVATMode        `json:"vatMode,omitempty"`
-	PaymentTerm              SalesInvoicePaymentTerm    `json:"paymentTerm,omitempty"`
-	PaymentDetails           SalesInvoicePaymentDetails `json:"paymentDetails,omitempty"`
-	EmailDetails             SalesInvoiceEmailDetails   `json:"emailDetails,omitempty"`
-	Recipient                SalesInvoiceRecipient      `json:"recipient,omitempty"`
-	Links                    SalesInvoiceLinks          `json:"_links,omitempty"`
-	Lines                    []SalesInvoiceLineItem     `json:"lines,omitempty"`
-	Discount                 *SalesInvoiceDiscount      `json:"discount,omitempty"`
-	CreatedAt                *time.Time                 `json:"createdAt,omitempty"`
-	IssuedAt                 *time.Time                 `json:"issuedAt,omitempty"`
-	PaidAt                   *time.Time                 `json:"paidAt,omitempty"`
-	DueAt                    *time.Time                 `json:"dueAt,omitempty"`
+	Resource                 string                       `json:"resource,omitempty"`
+	ID                       string                       `json:"id,omitempty"`
+	ProfileID                string                       `json:"profileId,omitempty"`
+	Currency                 string                       `json:"currency,omitempty"`
+	InvoiceNumber            string                       `json:"invoiceNumber,omitempty"`
+	Memo                     string                       `json:"memo,omitempty"`
+	CustomerID               string                       `json:"customerId,omitempty"`
+	MandateID                string                       `json:"mandateId,omitempty"`
+	RecipientIdentifier      string                       `json:"recipientIdentifier,omitempty"`
+	Metadata                 map[string]string            `json:"metadata,omitempty"`
+	Mode                     Mode                         `json:"mode,omitempty"`
+	AmountDue                Amount                       `json:"amountDue,omitempty"`
+	SubtotalAmount           Amount                       `json:"subtotalAmount,omitempty"`
+	TotalAmount              Amount                       `json:"totalAmount,omitempty"`
+	TotalVATAmount           Amount                       `json:"totalVatAmount,omitempty"`
+	DiscountedSubtotalAmount Amount                       `json:"discountedSubtotalAmount,omitempty"`
+	Status                   SalesInvoiceStatus           `json:"status,omitempty"`
+	VATScheme                SalesInvoiceVATScheme        `json:"vatScheme,omitempty"`
+	VATMode                  SalesInvoiceVATMode          `json:"vatMode,omitempty"`
+	PaymentTerm              SalesInvoicePaymentTerm      `json:"paymentTerm,omitempty"`
+	PaymentDetails           []SalesInvoicePaymentDetails `json:"paymentDetails,omitempty"`
+	EmailDetails             SalesInvoiceEmailDetails     `json:"emailDetails,omitempty"`
+	Recipient                SalesInvoiceRecipient        `json:"recipient,omitempty"`
+	Links                    SalesInvoiceLinks            `json:"_links,omitempty"`
+	Lines                    []SalesInvoiceLineItem       `json:"lines,omitempty"`
+	Discount                 *SalesInvoiceDiscount        `json:"discount,omitempty"`
+	CreatedAt                *time.Time                   `json:"createdAt,omitempty"`
+	IssuedAt                 *time.Time                   `json:"issuedAt,omitempty"`
+	PaidAt                   *time.Time                   `json:"paidAt,omitempty"`
+	DueAt                    *time.Time                   `json:"dueAt,omitempty"`
 }
 
 // SalesInvoiceList represents a paginated list of sales invoices.
