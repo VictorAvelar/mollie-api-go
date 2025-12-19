@@ -13,7 +13,7 @@ type WebhookEventService service
 // WebhookEntityLinks represents the links related to the entity received with a webhook event.
 type WebhookEntityLinks struct {
 	Self        *URL `json:"self,omitempty"`
-	PaymentLink *URL `json:"payment,omitempty"`
+	PaymentLink *URL `json:"paymentLink,omitempty"`
 }
 
 // WebhookEntity represents the entity received with a webhook event.
