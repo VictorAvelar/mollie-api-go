@@ -440,9 +440,10 @@ The Mollie API is a straightforward REST API. This means all endpoints either cr
 - [type WebhookEntityLine](<#WebhookEntityLine>)
 - [type WebhookEntityLinks](<#WebhookEntityLinks>)
 - [type WebhookEvent](<#WebhookEvent>)
+- [type WebhookEventEmbedded](<#WebhookEventEmbedded>)
 - [type WebhookEventLinks](<#WebhookEventLinks>)
 - [type WebhookEventService](<#WebhookEventService>)
-  - [func \(s \*WebhookEventService\) Get\(ctx context.Context, webhook string\) \(res \*Response, we \*WebhookEvent, err error\)](<#WebhookEventService.Get>)
+  - [func \(s \*WebhookEventService\) Get\(ctx context.Context, eventID string\) \(res \*Response, we \*WebhookEvent, err error\)](<#WebhookEventService.Get>)
 - [type WebhookEventType](<#WebhookEventType>)
 - [type WebhookLinks](<#WebhookLinks>)
 - [type WebhookList](<#WebhookList>)
@@ -2225,9 +2226,9 @@ CreateWebhook represents the payload to create a new webhook.
 ```go
 type CreateWebhook struct {
     TestMode   bool               `json:"testmode,omitempty"`
-    Name       string             `json:"name"`
-    URL        string             `json:"url"`
-    EventTypes []WebhookEventType `json:"eventTypes"`
+    Name       string             `json:"name,omitempty"`
+    URL        string             `json:"url,omitempty"`
+    EventTypes []WebhookEventType `json:"eventTypes,omitempty"`
 }
 ```
 
@@ -7069,24 +7070,35 @@ WebhookEntityLinks represents the links related to the entity received with a we
 ```go
 type WebhookEntityLinks struct {
     Self        *URL `json:"self,omitempty"`
-    PaymentLink *URL `json:"payment,omitempty"`
+    PaymentLink *URL `json:"paymentLink,omitempty"`
 }
 ```
 
 <a name="WebhookEvent"></a>
-## type [WebhookEvent](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhook_events.go#L70-L78>)
+## type [WebhookEvent](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhook_events.go#L75-L83>)
 
 WebhookEvent represents a webhook event received from Mollie.
 
 ```go
 type WebhookEvent struct {
-    Resource  string            `json:"resource,omitempty"`
-    ID        string            `json:"id,omitempty"`
-    Type      string            `json:"type,omitempty"`
-    EntityID  string            `json:"entityId,omitempty"`
-    Embedded  WebhookEntity     `json:"_embedded,omitempty"`
-    Links     WebhookEventLinks `json:"_links,omitempty"`
-    CreatedAt *time.Time        `json:"createdAt,omitempty"`
+    Resource  string               `json:"resource,omitempty"`
+    ID        string               `json:"id,omitempty"`
+    Type      string               `json:"type,omitempty"`
+    EntityID  string               `json:"entityId,omitempty"`
+    Embedded  WebhookEventEmbedded `json:"_embedded,omitempty"`
+    Links     WebhookEventLinks    `json:"_links,omitempty"`
+    CreatedAt *time.Time           `json:"createdAt,omitempty"`
+}
+```
+
+<a name="WebhookEventEmbedded"></a>
+## type [WebhookEventEmbedded](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhook_events.go#L70-L72>)
+
+WebhookEventEmbedded represents the embedded entity object in a webhook event.
+
+```go
+type WebhookEventEmbedded struct {
+    Entity WebhookEntity `json:"entity,omitempty"`
 }
 ```
 
@@ -7113,10 +7125,10 @@ type WebhookEventService service
 ```
 
 <a name="WebhookEventService.Get"></a>
-### func \(\*WebhookEventService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhook_events.go#L83>)
+### func \(\*WebhookEventService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhook_events.go#L88>)
 
 ```go
-func (s *WebhookEventService) Get(ctx context.Context, webhook string) (res *Response, we *WebhookEvent, err error)
+func (s *WebhookEventService) Get(ctx context.Context, eventID string) (res *Response, we *WebhookEvent, err error)
 ```
 
 Get retrieves a webhook event by its ID.
