@@ -19,6 +19,18 @@ const (
 	PluxeeLunchVoucher              VoucherIssuer = "sodexo-lunchpass"
 )
 
+type VoucherCategory string
+
+// List of known voucher categories.
+const (
+	EcoVoucher           VoucherCategory = "eco"
+	MealVoucher          VoucherCategory = "meal"
+	GiftVoucher          VoucherCategory = "gift"
+	SportsCultureVoucher VoucherCategory = "sports_culture"
+	AdditionalVoucher    VoucherCategory = "additional"
+	ConsumeVoucher       VoucherCategory = "consume"
+)
+
 // VoucherIssuerEnabled describes the response of a voucher enable operation.
 type VoucherIssuerEnabled struct {
 	ID          string            `json:"id,omitempty"`

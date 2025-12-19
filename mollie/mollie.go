@@ -74,6 +74,8 @@ type Client struct {
 	Terminals      *TerminalsService
 	SalesInvoices  *SalesInvoicesService
 	DelayedRouting *DelayedRoutingService
+	Webhooks       *WebhookService
+	WebhookEvents  *WebhookEventService
 }
 
 type service struct {
@@ -123,8 +125,8 @@ func (c *Client) patch(ctx context.Context, uri string, body interface{}) (
 	return c.Do(req)
 }
 
-func (c *Client) delete(ctx context.Context, uri string) (res *Response, err error) {
-	req, err := c.NewAPIRequest(ctx, http.MethodDelete, uri, nil)
+func (c *Client) delete(ctx context.Context, uri string, body interface{}) (res *Response, err error) {
+	req, err := c.NewAPIRequest(ctx, http.MethodDelete, uri, body)
 	if err != nil {
 		return
 	}
@@ -302,6 +304,8 @@ func NewClient(baseClient *http.Client, conf *Config) (mollie *Client, err error
 	mollie.Terminals = (*TerminalsService)(&mollie.common)
 	mollie.SalesInvoices = (*SalesInvoicesService)(&mollie.common)
 	mollie.DelayedRouting = (*DelayedRoutingService)(&mollie.common)
+	mollie.Webhooks = (*WebhookService)(&mollie.common)
+	mollie.WebhookEvents = (*WebhookEventService)(&mollie.common)
 
 	mollie.userAgent = strings.Join([]string{
 		ClientName,

@@ -229,7 +229,7 @@ func (rs *RefundsService) CreatePaymentRefund(
 func (rs *RefundsService) CancelPaymentRefund(
 	ctx context.Context, paymentID, refundID string,
 ) (res *Response, err error) {
-	return rs.client.delete(ctx, fmt.Sprintf("v2/payments/%s/refunds/%s", paymentID, refundID))
+	return rs.client.delete(ctx, fmt.Sprintf("v2/payments/%s/refunds/%s", paymentID, refundID), nil)
 }
 
 // CreateOrderRefund creates a refund for a specific order.

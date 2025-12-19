@@ -181,7 +181,7 @@ func (ps *ProfilesService) Update(ctx context.Context, id string, up CreateOrUpd
 // Delete  enables profile deletions, rendering the profile unavailable
 // for further API calls and transactions.
 func (ps *ProfilesService) Delete(ctx context.Context, id string) (res *Response, err error) {
-	res, err = ps.client.delete(ctx, fmt.Sprintf("v2/profiles/%s", id))
+	res, err = ps.client.delete(ctx, fmt.Sprintf("v2/profiles/%s", id), nil)
 	if err != nil {
 		return
 	}
@@ -214,7 +214,7 @@ func (ps *ProfilesService) DisablePaymentMethod(ctx context.Context, id string, 
 	res *Response,
 	err error,
 ) {
-	res, err = ps.client.delete(ctx, fmt.Sprintf("v2/profiles/%s/methods/%s", id, pm))
+	res, err = ps.client.delete(ctx, fmt.Sprintf("v2/profiles/%s/methods/%s", id, pm), nil)
 	if err != nil {
 		return
 	}
@@ -383,7 +383,7 @@ func (ps *ProfilesService) toggleGiftCardIssuerStatus(
 
 	switch method {
 	case http.MethodDelete:
-		r, err = ps.client.delete(ctx, u)
+		r, err = ps.client.delete(ctx, u, nil)
 	case http.MethodPost:
 		r, err = ps.client.post(ctx, u, nil, nil)
 	}
@@ -407,7 +407,7 @@ func (ps *ProfilesService) toggleVoucherIssuerStatus(
 
 	switch method {
 	case http.MethodDelete:
-		r, err = ps.client.delete(ctx, u)
+		r, err = ps.client.delete(ctx, u, nil)
 	case http.MethodPost:
 		r, err = ps.client.post(ctx, u, nil, nil)
 	}
