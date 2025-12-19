@@ -427,6 +427,7 @@ The Mollie API is a straightforward REST API. This means all endpoints either cr
 - [type UpdateWebhook](<#UpdateWebhook>)
 - [type UsedGiftCard](<#UsedGiftCard>)
 - [type UserAgentToken](<#UserAgentToken>)
+- [type VoucherCategory](<#VoucherCategory>)
 - [type VoucherContractor](<#VoucherContractor>)
 - [type VoucherIssuer](<#VoucherIssuer>)
 - [type VoucherIssuerEnabled](<#VoucherIssuerEnabled>)
@@ -435,6 +436,13 @@ The Mollie API is a straightforward REST API. This means all endpoints either cr
 - [type WalletsService](<#WalletsService>)
   - [func \(ms \*WalletsService\) ApplePaymentSession\(ctx context.Context, asr \*ApplePaymentSessionRequest\) \(res \*Response, aps \*ApplePaymentSession, err error\)](<#WalletsService.ApplePaymentSession>)
 - [type Webhook](<#Webhook>)
+- [type WebhookEntity](<#WebhookEntity>)
+- [type WebhookEntityLine](<#WebhookEntityLine>)
+- [type WebhookEntityLinks](<#WebhookEntityLinks>)
+- [type WebhookEvent](<#WebhookEvent>)
+- [type WebhookEventLinks](<#WebhookEventLinks>)
+- [type WebhookEventService](<#WebhookEventService>)
+  - [func \(s \*WebhookEventService\) Get\(ctx context.Context, webhook string\) \(res \*Response, we \*WebhookEvent, err error\)](<#WebhookEventService.Get>)
 - [type WebhookEventType](<#WebhookEventType>)
 - [type WebhookLinks](<#WebhookLinks>)
 - [type WebhookList](<#WebhookList>)
@@ -468,7 +476,7 @@ const (
 ```
 
 <a name="CheckResponse"></a>
-## func [CheckResponse](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L372>)
+## func [CheckResponse](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L374>)
 
 ```go
 func CheckResponse(r *Response) error
@@ -1409,7 +1417,7 @@ ListForPayment retrieves a list of chargebacks associated with a single payment.
 See: https://docs.mollie.com/reference/list-payment-chargebacks
 
 <a name="Client"></a>
-## type [Client](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L43-L78>)
+## type [Client](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L43-L79>)
 
 Client manages communication with Mollie's API.
 
@@ -1443,12 +1451,13 @@ type Client struct {
     SalesInvoices  *SalesInvoicesService
     DelayedRouting *DelayedRoutingService
     Webhooks       *WebhookService
+    WebhookEvents  *WebhookEventService
     // contains filtered or unexported fields
 }
 ```
 
 <a name="NewClient"></a>
-### func [NewClient](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L261>)
+### func [NewClient](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L262>)
 
 ```go
 func NewClient(baseClient *http.Client, conf *Config) (mollie *Client, err error)
@@ -1461,7 +1470,7 @@ NewClient will lookup the environment for values to assign to the API token \(\`
 You can also set the token values programmatically by using the Client WithAPIKey and WithOrganizationKey functions.
 
 <a name="Client.Do"></a>
-### func \(\*Client\) [Do](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L231>)
+### func \(\*Client\) [Do](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L232>)
 
 ```go
 func (c *Client) Do(req *http.Request) (*Response, error)
@@ -1470,7 +1479,7 @@ func (c *Client) Do(req *http.Request) (*Response, error)
 Do sends an API request and returns the API response or returned as an error if an API error has occurred.
 
 <a name="Client.HasAccessToken"></a>
-### func \(\*Client\) [HasAccessToken](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L157>)
+### func \(\*Client\) [HasAccessToken](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L158>)
 
 ```go
 func (c *Client) HasAccessToken() bool
@@ -1481,7 +1490,7 @@ HasAccessToken will return true when the provided authentication token complies 
 See: https://github.com/VictorAvelar/mollie-api-go/issues/123
 
 <a name="Client.NewAPIRequest"></a>
-### func \(\*Client\) [NewAPIRequest](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L170-L173>)
+### func \(\*Client\) [NewAPIRequest](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L171-L174>)
 
 ```go
 func (c *Client) NewAPIRequest(ctx context.Context, method string, uri string, body interface{}) (req *http.Request, err error)
@@ -1492,7 +1501,7 @@ NewAPIRequest is a wrapper around the http.NewRequest function.
 It will setup the authentication headers/parameters according to the client config.
 
 <a name="Client.SetIdempotencyKeyGenerator"></a>
-### func \(\*Client\) [SetIdempotencyKeyGenerator](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L163>)
+### func \(\*Client\) [SetIdempotencyKeyGenerator](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L164>)
 
 ```go
 func (c *Client) SetIdempotencyKeyGenerator(kg idempotency.KeyGenerator)
@@ -1501,7 +1510,7 @@ func (c *Client) SetIdempotencyKeyGenerator(kg idempotency.KeyGenerator)
 SetIdempotencyKeyGenerator allows you to pass your own idempotency key generator.
 
 <a name="Client.WithAuthenticationValue"></a>
-### func \(\*Client\) [WithAuthenticationValue](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L142>)
+### func \(\*Client\) [WithAuthenticationValue](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L143>)
 
 ```go
 func (c *Client) WithAuthenticationValue(k string) error
@@ -2156,22 +2165,22 @@ CreateSalesInvoice represents the payload to create a sales invoice.
 
 ```go
 type CreateSalesInvoice struct {
-    TestMode            bool                       `json:"testmode,omitempty"`
-    ProfileID           string                     `json:"profileId,omitempty"`
-    CustomerID          string                     `json:"customerId,omitempty"`
-    MandateID           string                     `json:"mandateId,omitempty"`
-    RecipientIdentifier string                     `json:"recipientIdentifier,omitempty"`
-    Memo                string                     `json:"memo,omitempty"`
-    Metadata            map[string]string          `json:"metadata,omitempty"`
-    Status              SalesInvoiceStatus         `json:"status,omitempty"`
-    VATScheme           SalesInvoiceVATScheme      `json:"vatScheme,omitempty"`
-    VATMode             SalesInvoiceVATMode        `json:"vatMode,omitempty"`
-    PaymentTerm         SalesInvoicePaymentTerm    `json:"paymentTerm,omitempty"`
-    PaymentDetails      SalesInvoicePaymentDetails `json:"paymentDetails,omitempty"`
-    EmailDetails        SalesInvoiceEmailDetails   `json:"emailDetails,omitempty"`
-    Recipient           SalesInvoiceRecipient      `json:"recipient,omitempty"`
-    Lines               []SalesInvoiceLineItem     `json:"lines,omitempty"`
-    Discount            *SalesInvoiceDiscount      `json:"discount,omitempty"`
+    TestMode            bool                        `json:"testmode,omitempty"`
+    ProfileID           string                      `json:"profileId,omitempty"`
+    CustomerID          string                      `json:"customerId,omitempty"`
+    MandateID           string                      `json:"mandateId,omitempty"`
+    RecipientIdentifier string                      `json:"recipientIdentifier,omitempty"`
+    Memo                string                      `json:"memo,omitempty"`
+    Metadata            map[string]string           `json:"metadata,omitempty"`
+    Status              SalesInvoiceStatus          `json:"status,omitempty"`
+    VATScheme           SalesInvoiceVATScheme       `json:"vatScheme,omitempty"`
+    VATMode             SalesInvoiceVATMode         `json:"vatMode,omitempty"`
+    PaymentTerm         SalesInvoicePaymentTerm     `json:"paymentTerm,omitempty"`
+    PaymentDetails      *SalesInvoicePaymentDetails `json:"paymentDetails,omitempty"`
+    EmailDetails        SalesInvoiceEmailDetails    `json:"emailDetails,omitempty"`
+    Recipient           SalesInvoiceRecipient       `json:"recipient,omitempty"`
+    Lines               []SalesInvoiceLineItem      `json:"lines,omitempty"`
+    Discount            *SalesInvoiceDiscount       `json:"discount,omitempty"`
 }
 ```
 
@@ -2973,7 +2982,7 @@ type ListMandatesOptions struct {
 ```
 
 <a name="ListOrderRefundsOptions"></a>
-## type [ListOrderRefundsOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L317-L321>)
+## type [ListOrderRefundsOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L318-L322>)
 
 ListOrderRefundsOptions describes order endpoint valid query string parameters.
 
@@ -2986,7 +2995,7 @@ type ListOrderRefundsOptions struct {
 ```
 
 <a name="ListOrdersOptions"></a>
-## type [ListOrdersOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L309-L314>)
+## type [ListOrdersOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L310-L315>)
 
 ListOrdersOptions describes order endpoint valid query string parameters.
 
@@ -3667,7 +3676,7 @@ type OrderLineOperations struct {
 ```
 
 <a name="OrderLineStatus"></a>
-## type [OrderLineStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L290>)
+## type [OrderLineStatus](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L291>)
 
 OrderLineStatus describes status of the order line.
 
@@ -3703,7 +3712,7 @@ type OrderLinks struct {
 ```
 
 <a name="OrderOptions"></a>
-## type [OrderOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L303-L306>)
+## type [OrderOptions](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L304-L307>)
 
 OrderOptions describes order endpoint valid query string parameters.
 
@@ -3813,7 +3822,7 @@ type OrdersList struct {
 ```
 
 <a name="OrdersService"></a>
-## type [OrdersService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L324>)
+## type [OrdersService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L325>)
 
 OrdersService instance operates over refund resources.
 
@@ -3822,7 +3831,7 @@ type OrdersService service
 ```
 
 <a name="OrdersService.Cancel"></a>
-### func \(\*OrdersService\) [Cancel](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L397>)
+### func \(\*OrdersService\) [Cancel](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L398>)
 
 ```go
 func (ors *OrdersService) Cancel(ctx context.Context, orderID string) (res *Response, order *Order, err error)
@@ -3833,7 +3842,7 @@ Cancel try to cancel the order that fulfill certain requirements.
 See https://docs.mollie.com/reference/cancel-order
 
 <a name="OrdersService.CancelOrderLines"></a>
-### func \(\*OrdersService\) [CancelOrderLines](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L465-L468>)
+### func \(\*OrdersService\) [CancelOrderLines](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L466-L469>)
 
 ```go
 func (ors *OrdersService) CancelOrderLines(ctx context.Context, orderID string, orderLines []OrderLine) (res *Response, err error)
@@ -3844,7 +3853,7 @@ CancelOrderLines can be used to cancel one or more order lines that were previou
 See https://docs.mollie.com/reference/cancel-order-lines
 
 <a name="OrdersService.Create"></a>
-### func \(\*OrdersService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L349-L353>)
+### func \(\*OrdersService\) [Create](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L350-L354>)
 
 ```go
 func (ors *OrdersService) Create(ctx context.Context, ord CreateOrder, opts *OrderOptions) (res *Response, order *Order, err error)
@@ -3855,7 +3864,7 @@ Create an order will automatically create the required payment to allow your cus
 See https://docs.mollie.com/reference/create-order
 
 <a name="OrdersService.CreateOrderPayment"></a>
-### func \(\*OrdersService\) [CreateOrderPayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L483-L487>)
+### func \(\*OrdersService\) [CreateOrderPayment](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L484-L488>)
 
 ```go
 func (ors *OrdersService) CreateOrderPayment(ctx context.Context, orderID string, ordPay *OrderPayment) (res *Response, payment *Payment, err error)
@@ -3866,7 +3875,7 @@ CreateOrderPayment can only be created while the status of the order is created,
 See https://docs.mollie.com/reference/create-order-payment
 
 <a name="OrdersService.CreateOrderRefund"></a>
-### func \(\*OrdersService\) [CreateOrderRefund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L505-L509>)
+### func \(\*OrdersService\) [CreateOrderRefund](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L506-L510>)
 
 ```go
 func (ors *OrdersService) CreateOrderRefund(ctx context.Context, orderID string, order *Order) (res *Response, refund *Refund, err error)
@@ -3877,7 +3886,7 @@ CreateOrderRefund using the Orders API, refunds should be made against the order
 See https://docs.mollie.com/reference/create-order-refund
 
 <a name="OrdersService.Get"></a>
-### func \(\*OrdersService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L329-L333>)
+### func \(\*OrdersService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L330-L334>)
 
 ```go
 func (ors *OrdersService) Get(ctx context.Context, orID string, opts *OrderOptions) (res *Response, order *Order, err error)
@@ -3888,7 +3897,7 @@ Get retrieve a single order by its ID.
 See https://docs.mollie.com/reference/get-order
 
 <a name="OrdersService.List"></a>
-### func \(\*OrdersService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L413-L417>)
+### func \(\*OrdersService\) [List](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L414-L418>)
 
 ```go
 func (ors *OrdersService) List(ctx context.Context, opts *ListOrdersOptions) (res *Response, ordList *OrdersList, err error)
@@ -3899,7 +3908,7 @@ List is to retrieve all orders.
 See https://docs.mollie.com/reference/list-orders
 
 <a name="OrdersService.ListOrderRefunds"></a>
-### func \(\*OrdersService\) [ListOrderRefunds](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L527-L531>)
+### func \(\*OrdersService\) [ListOrderRefunds](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L528-L532>)
 
 ```go
 func (ors *OrdersService) ListOrderRefunds(ctx context.Context, orderID string, opts *ListOrderRefundsOptions) (res *Response, orderListRefund *OrderRefundsList, err error)
@@ -3910,7 +3919,7 @@ ListOrderRefunds retrieve all order refunds.
 See https://docs.mollie.com/reference/list-order-refunds-1
 
 <a name="OrdersService.ManageOrderLines"></a>
-### func \(\*OrdersService\) [ManageOrderLines](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L549-L553>)
+### func \(\*OrdersService\) [ManageOrderLines](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L550-L554>)
 
 ```go
 func (ors *OrdersService) ManageOrderLines(ctx context.Context, orderID string, operations *OrderLineOperations) (res *Response, order *Order, err error)
@@ -3921,7 +3930,7 @@ ManageOrderLines allows to update, cancel, or add one or more order lines.
 See: https://docs.mollie.com/reference/manage-order-lines
 
 <a name="OrdersService.Update"></a>
-### func \(\*OrdersService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L373-L377>)
+### func \(\*OrdersService\) [Update](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L374-L378>)
 
 ```go
 func (ors *OrdersService) Update(ctx context.Context, orderID string, ord UpdateOrder) (res *Response, order *Order, err error)
@@ -3932,7 +3941,7 @@ Update is used to update the billing and/or shipping address of an order.
 See https://docs.mollie.com/reference/update-order
 
 <a name="OrdersService.UpdateOrderLine"></a>
-### func \(\*OrdersService\) [UpdateOrderLine](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L433-L441>)
+### func \(\*OrdersService\) [UpdateOrderLine](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/orders.go#L434-L442>)
 
 ```go
 func (ors *OrdersService) UpdateOrderLine(ctx context.Context, orderID string, orderLineID string, orderLine UpdateOrderLine) (res *Response, order *Order, err error)
@@ -4996,6 +5005,7 @@ const (
     StoreCreditProduct     ProductKind = "store_credit"
     GiftCardProductProduct ProductKind = "gift_card"
     SurchargeProduct       ProductKind = "surcharge"
+    TipProduct             ProductKind = "tip"
 )
 ```
 
@@ -5472,7 +5482,7 @@ ListPaymentRefunds retrieves all refunds for a specific payment.
 See: https://docs.mollie.com/reference/list-refunds
 
 <a name="Response"></a>
-## type [Response](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L346-L349>)
+## type [Response](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/mollie.go#L348-L351>)
 
 Response is a Mollie API response. This wraps the standard http.Response returned from Mollie and provides convenient access to things like pagination links.
 
@@ -5544,36 +5554,36 @@ SalesInvoice represents a sales invoice resource.
 
 ```go
 type SalesInvoice struct {
-    Resource                 string                     `json:"resource,omitempty"`
-    ID                       string                     `json:"id,omitempty"`
-    ProfileID                string                     `json:"profileId,omitempty"`
-    Currency                 string                     `json:"currency,omitempty"`
-    InvoiceNumber            string                     `json:"invoiceNumber,omitempty"`
-    Memo                     string                     `json:"memo,omitempty"`
-    CustomerID               string                     `json:"customerId,omitempty"`
-    MandateID                string                     `json:"mandateId,omitempty"`
-    RecipientIdentifier      string                     `json:"recipientIdentifier,omitempty"`
-    Metadata                 map[string]string          `json:"metadata,omitempty"`
-    Mode                     Mode                       `json:"mode,omitempty"`
-    AmountDue                Amount                     `json:"amountDue,omitempty"`
-    SubtotalAmount           Amount                     `json:"subtotalAmount,omitempty"`
-    TotalAmount              Amount                     `json:"totalAmount,omitempty"`
-    TotalVATAmount           Amount                     `json:"totalVatAmount,omitempty"`
-    DiscountedSubtotalAmount Amount                     `json:"discountedSubtotalAmount,omitempty"`
-    Status                   SalesInvoiceStatus         `json:"status,omitempty"`
-    VATScheme                SalesInvoiceVATScheme      `json:"vatScheme,omitempty"`
-    VATMode                  SalesInvoiceVATMode        `json:"vatMode,omitempty"`
-    PaymentTerm              SalesInvoicePaymentTerm    `json:"paymentTerm,omitempty"`
-    PaymentDetails           SalesInvoicePaymentDetails `json:"paymentDetails,omitempty"`
-    EmailDetails             SalesInvoiceEmailDetails   `json:"emailDetails,omitempty"`
-    Recipient                SalesInvoiceRecipient      `json:"recipient,omitempty"`
-    Links                    SalesInvoiceLinks          `json:"_links,omitempty"`
-    Lines                    []SalesInvoiceLineItem     `json:"lines,omitempty"`
-    Discount                 *SalesInvoiceDiscount      `json:"discount,omitempty"`
-    CreatedAt                *time.Time                 `json:"createdAt,omitempty"`
-    IssuedAt                 *time.Time                 `json:"issuedAt,omitempty"`
-    PaidAt                   *time.Time                 `json:"paidAt,omitempty"`
-    DueAt                    *time.Time                 `json:"dueAt,omitempty"`
+    Resource                 string                       `json:"resource,omitempty"`
+    ID                       string                       `json:"id,omitempty"`
+    ProfileID                string                       `json:"profileId,omitempty"`
+    Currency                 string                       `json:"currency,omitempty"`
+    InvoiceNumber            string                       `json:"invoiceNumber,omitempty"`
+    Memo                     string                       `json:"memo,omitempty"`
+    CustomerID               string                       `json:"customerId,omitempty"`
+    MandateID                string                       `json:"mandateId,omitempty"`
+    RecipientIdentifier      string                       `json:"recipientIdentifier,omitempty"`
+    Metadata                 map[string]string            `json:"metadata,omitempty"`
+    Mode                     Mode                         `json:"mode,omitempty"`
+    AmountDue                Amount                       `json:"amountDue,omitempty"`
+    SubtotalAmount           Amount                       `json:"subtotalAmount,omitempty"`
+    TotalAmount              Amount                       `json:"totalAmount,omitempty"`
+    TotalVATAmount           Amount                       `json:"totalVatAmount,omitempty"`
+    DiscountedSubtotalAmount Amount                       `json:"discountedSubtotalAmount,omitempty"`
+    Status                   SalesInvoiceStatus           `json:"status,omitempty"`
+    VATScheme                SalesInvoiceVATScheme        `json:"vatScheme,omitempty"`
+    VATMode                  SalesInvoiceVATMode          `json:"vatMode,omitempty"`
+    PaymentTerm              SalesInvoicePaymentTerm      `json:"paymentTerm,omitempty"`
+    PaymentDetails           []SalesInvoicePaymentDetails `json:"paymentDetails,omitempty"`
+    EmailDetails             SalesInvoiceEmailDetails     `json:"emailDetails,omitempty"`
+    Recipient                SalesInvoiceRecipient        `json:"recipient,omitempty"`
+    Links                    SalesInvoiceLinks            `json:"_links,omitempty"`
+    Lines                    []SalesInvoiceLineItem       `json:"lines,omitempty"`
+    Discount                 *SalesInvoiceDiscount        `json:"discount,omitempty"`
+    CreatedAt                *time.Time                   `json:"createdAt,omitempty"`
+    IssuedAt                 *time.Time                   `json:"issuedAt,omitempty"`
+    PaidAt                   *time.Time                   `json:"paidAt,omitempty"`
+    DueAt                    *time.Time                   `json:"dueAt,omitempty"`
 }
 ```
 
@@ -6848,8 +6858,30 @@ type UserAgentToken struct {
 }
 ```
 
+<a name="VoucherCategory"></a>
+## type [VoucherCategory](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/vouchers.go#L22>)
+
+
+
+```go
+type VoucherCategory string
+```
+
+<a name="EcoVoucher"></a>List of known voucher categories.
+
+```go
+const (
+    EcoVoucher           VoucherCategory = "eco"
+    MealVoucher          VoucherCategory = "meal"
+    GiftVoucher          VoucherCategory = "gift"
+    SportsCultureVoucher VoucherCategory = "sports_culture"
+    AdditionalVoucher    VoucherCategory = "additional"
+    ConsumeVoucher       VoucherCategory = "consume"
+)
+```
+
 <a name="VoucherContractor"></a>
-## type [VoucherContractor](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/vouchers.go#L38-L42>)
+## type [VoucherContractor](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/vouchers.go#L50-L54>)
 
 VoucherContractor represents a contractor for a voucher.
 
@@ -6890,7 +6922,7 @@ const (
 ```
 
 <a name="VoucherIssuerEnabled"></a>
-## type [VoucherIssuerEnabled](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/vouchers.go#L23-L29>)
+## type [VoucherIssuerEnabled](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/vouchers.go#L35-L41>)
 
 VoucherIssuerEnabled describes the response of a voucher enable operation.
 
@@ -6905,7 +6937,7 @@ type VoucherIssuerEnabled struct {
 ```
 
 <a name="VoucherLinks"></a>
-## type [VoucherLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/vouchers.go#L32-L35>)
+## type [VoucherLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/vouchers.go#L44-L47>)
 
 VoucherLinks are links embedded when a voucher is enabled.
 
@@ -6973,6 +7005,123 @@ type Webhook struct {
     CreatedAt     *time.Time         `json:"createdAt,omitempty"`
 }
 ```
+
+<a name="WebhookEntity"></a>
+## type [WebhookEntity](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhook_events.go#L20-L43>)
+
+WebhookEntity represents the entity received with a webhook event.
+
+```go
+type WebhookEntity struct {
+    Archived        bool                `json:"archived,omitempty"`
+    Reusable        bool                `json:"reusable,omitempty"`
+    CustomerID      string              `json:"customerId,omitempty"`
+    ID              string              `json:"id,omitempty"`
+    Description     string              `json:"description,omitempty"`
+    ProfileID       string              `json:"profileId,omitempty"`
+    RedirectURL     string              `json:"redirectUrl,omitempty"`
+    Resource        string              `json:"resource,omitempty"`
+    WebhookURL      string              `json:"webhookUrl,omitempty"`
+    Amount          Amount              `json:"amount,omitempty"`
+    ApplicationFee  ApplicationFee      `json:"applicationFee,omitempty"`
+    MinimumAmount   Amount              `json:"minimumAmount,omitempty"`
+    Mode            Mode                `json:"mode,omitempty"`
+    SequenceType    SequenceType        `json:"sequenceType,omitempty"`
+    AllowedMethods  []PaymentMethod     `json:"allowedMethods,omitempty"`
+    Lines           []WebhookEntityLine `json:"lines,omitempty"`
+    Links           WebhookEntityLinks  `json:"_links,omitempty"`
+    BillingAddress  *Address            `json:"billingAddress,omitempty"`
+    ShippingAddress *Address            `json:"shippingAddress,omitempty"`
+    CreatedAt       *time.Time          `json:"createdAt,omitempty"`
+    ExpiresAt       *time.Time          `json:"expiresAt,omitempty"`
+    PaidAt          *time.Time          `json:"paidAt,omitempty"`
+}
+```
+
+<a name="WebhookEntityLine"></a>
+## type [WebhookEntityLine](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhook_events.go#L46-L60>)
+
+WebhookEntityLine represents a line item in the entity received with a webhook event.
+
+```go
+type WebhookEntityLine struct {
+    Quantity       int               `json:"quantity,omitempty"`
+    Description    string            `json:"description,omitempty"`
+    ImageURL       string            `json:"imageUrl,omitempty"`
+    ProductURL     string            `json:"productUrl,omitempty"`
+    QuantityUnit   string            `json:"quantityUnit,omitempty"`
+    SKU            string            `json:"sku,omitempty"`
+    VATRate        string            `json:"vatRate,omitempty"`
+    DiscountAmount Amount            `json:"discountAmount,omitempty"`
+    Type           ProductKind       `json:"type,omitempty"`
+    TotalAmount    Amount            `json:"totalAmount,omitempty"`
+    UnitPrice      Amount            `json:"unitPrice,omitempty"`
+    VATAmount      Amount            `json:"vatAmount,omitempty"`
+    Categories     []VoucherCategory `json:"categories,omitempty"`
+}
+```
+
+<a name="WebhookEntityLinks"></a>
+## type [WebhookEntityLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhook_events.go#L14-L17>)
+
+WebhookEntityLinks represents the links related to the entity received with a webhook event.
+
+```go
+type WebhookEntityLinks struct {
+    Self        *URL `json:"self,omitempty"`
+    PaymentLink *URL `json:"payment,omitempty"`
+}
+```
+
+<a name="WebhookEvent"></a>
+## type [WebhookEvent](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhook_events.go#L70-L78>)
+
+WebhookEvent represents a webhook event received from Mollie.
+
+```go
+type WebhookEvent struct {
+    Resource  string            `json:"resource,omitempty"`
+    ID        string            `json:"id,omitempty"`
+    Type      string            `json:"type,omitempty"`
+    EntityID  string            `json:"entityId,omitempty"`
+    Embedded  WebhookEntity     `json:"_embedded,omitempty"`
+    Links     WebhookEventLinks `json:"_links,omitempty"`
+    CreatedAt *time.Time        `json:"createdAt,omitempty"`
+}
+```
+
+<a name="WebhookEventLinks"></a>
+## type [WebhookEventLinks](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhook_events.go#L63-L67>)
+
+WebhookEventLinks represents the links related to a webhook event.
+
+```go
+type WebhookEventLinks struct {
+    Self          *URL `json:"self,omitempty"`
+    Documentation *URL `json:"documentation,omitempty"`
+    Entity        *URL `json:"entity,omitempty"`
+}
+```
+
+<a name="WebhookEventService"></a>
+## type [WebhookEventService](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhook_events.go#L11>)
+
+WebhookEventService handles webhook event API calls.
+
+```go
+type WebhookEventService service
+```
+
+<a name="WebhookEventService.Get"></a>
+### func \(\*WebhookEventService\) [Get](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhook_events.go#L83>)
+
+```go
+func (s *WebhookEventService) Get(ctx context.Context, webhook string) (res *Response, we *WebhookEvent, err error)
+```
+
+Get retrieves a webhook event by its ID.
+
+See: https://docs.mollie.com/reference/get-webhook-event
 
 <a name="WebhookEventType"></a>
 ## type [WebhookEventType](<https://github.com/VictorAvelar/mollie-api-go/blob/master/mollie/webhooks.go#L11>)
