@@ -35,9 +35,9 @@ const (
 // CreateWebhook represents the payload to create a new webhook.
 type CreateWebhook struct {
 	TestMode   bool               `json:"testmode,omitempty"`
-	Name       string             `json:"name"`
-	URL        string             `json:"url"`
-	EventTypes []WebhookEventType `json:"eventTypes"`
+	Name       string             `json:"name,omitempty"`
+	URL        string             `json:"url,omitempty"`
+	EventTypes []WebhookEventType `json:"eventTypes,omitempty"`
 }
 
 // UpdateWebhook represents the payload to update an existing webhook.
