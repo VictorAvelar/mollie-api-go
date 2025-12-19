@@ -284,6 +284,7 @@ const (
 	StoreCreditProduct     ProductKind = "store_credit"
 	GiftCardProductProduct ProductKind = "gift_card"
 	SurchargeProduct       ProductKind = "surcharge"
+	TipProduct             ProductKind = "tip"
 )
 
 // OrderLineStatus describes status of the order line.
