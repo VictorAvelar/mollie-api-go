@@ -344,6 +344,7 @@ const (
 	EmbedCaptures     EmbedValue = "captures"
 	EmbedOrganization EmbedValue = "organization"
 	EmbedOnboarding   EmbedValue = "onboarding"
+	EmbedCapabilities EmbedValue = "capabilities"
 )
 
 // Rate describes service rates, further divided into fixed and percentage costs.
