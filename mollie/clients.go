@@ -9,10 +9,12 @@ import (
 
 // LinkedClient describes a single client, linked to your partner account.
 type LinkedClient struct {
-	Resource              string            `json:"resource,omitempty"`
-	ID                    string            `json:"id,omitempty"`
-	OrganizationCreatedAt *time.Time        `json:"organizationCreatedAt,omitempty"`
-	Links                 LinkedClientLinks `json:"_links,omitempty"`
+	Resource              string                 `json:"resource,omitempty"`
+	ID                    string                 `json:"id,omitempty"`
+	Commission            LinkedClientCommission `json:"commission,omitempty"`
+	OrganizationCreatedAt *time.Time             `json:"organizationCreatedAt,omitempty"`
+	Links                 LinkedClientLinks      `json:"_links,omitempty"`
+	Embedded              *LinkedClientEmbedded  `json:"_embedded,omitempty"`
 }
 
 // LinkedClientLinks contains URL objects relevant to the client.
@@ -25,7 +27,7 @@ type LinkedClientLinks struct {
 
 // GetLinkedClientOptions contains valid query parameters for the get clients endpoint.
 type GetLinkedClientOptions struct {
-	Embed []EmbedValue `url:"embed,omitempty"`
+	Embed []EmbedValue `url:"embed,omitempty,comma"`
 }
 
 // LinkedClientList describes a list of partner clients.
@@ -37,11 +39,23 @@ type LinkedClientList struct {
 	Links PaginationLinks `json:"_links,omitempty"`
 }
 
+// LinkedClientCommission contains the commission object
+type LinkedClientCommission struct {
+	Count int `json:"count"`
+}
+
+// LinkedClientEmbedded contains embedded objects for the client.
+type LinkedClientEmbedded struct {
+	Organization *Organization `json:"organization,omitempty"`
+	Onboarding   *Onboarding   `json:"onboarding,omitempty"`
+	Capabilities *Capabilities `json:"capabilities,omitempty"`
+}
+
 // ListLinkedClientsOptions contains valid query parameters for the list clients endpoint.
 type ListLinkedClientsOptions struct {
 	Limit int          `url:"limit,omitempty"`
 	From  string       `url:"from,omitempty"`
-	Embed []EmbedValue `url:"embed,omitempty"`
+	Embed []EmbedValue `url:"embed,omitempty,comma"`
 }
 
 // ClientsService operates over the partners API.
