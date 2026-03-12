@@ -137,6 +137,7 @@ type SalesInvoiceLinks struct {
 // CreateSalesInvoice represents the payload to create a sales invoice.
 type CreateSalesInvoice struct {
 	TestMode            bool                        `json:"testmode,omitempty"`
+	IsEInvoice          bool                        `json:"isEInvoice,omitempty"`
 	ProfileID           string                      `json:"profileId,omitempty"`
 	CustomerID          string                      `json:"customerId,omitempty"`
 	MandateID           string                      `json:"mandateId,omitempty"`
@@ -157,6 +158,7 @@ type CreateSalesInvoice struct {
 // UpdateSalesInvoice represents the payload to update a sales invoice.
 type UpdateSalesInvoice struct {
 	TestMode            bool                     `json:"testmode,omitempty"`
+	IsEInvoice          bool                     `json:"isEInvoice,omitempty"`
 	Memo                string                   `json:"memo,omitempty"`
 	RecipientIdentifier string                   `json:"recipientIdentifier,omitempty"`
 	Status              SalesInvoiceStatus       `json:"status,omitempty"`
@@ -178,6 +180,7 @@ type SalesInvoice struct {
 	CustomerID               string                       `json:"customerId,omitempty"`
 	MandateID                string                       `json:"mandateId,omitempty"`
 	RecipientIdentifier      string                       `json:"recipientIdentifier,omitempty"`
+	IsEInvoice               bool                         `json:"isEInvoice,omitempty"`
 	Metadata                 map[string]string            `json:"metadata,omitempty"`
 	Mode                     Mode                         `json:"mode,omitempty"`
 	AmountDue                Amount                       `json:"amountDue,omitempty"`

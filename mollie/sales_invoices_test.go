@@ -228,6 +228,49 @@ func TestSalesInvoicesService_Create(t *testing.T) {
 			},
 		},
 		{
+			name: "create e-invoice sales invoice successfully",
+			args: args{
+				ctx: context.Background(),
+				req: CreateSalesInvoice{
+					IsEInvoice:          true,
+					Status:              DraftSalesInvoiceStatus,
+					RecipientIdentifier: "customer_123456789",
+					Recipient:           recipient,
+					Lines:               lines,
+				},
+			},
+			wantErr: false,
+			pre:     noPre,
+			handler: func(w http.ResponseWriter, r *http.Request) {
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "POST")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+					return
+				}
+
+				var payload map[string]any
+				if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+					w.WriteHeader(http.StatusBadRequest)
+					return
+				}
+
+				isEInvoice, ok := payload["isEInvoice"].(bool)
+				assert.True(t, ok)
+				assert.True(t, isEInvoice)
+
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(http.StatusCreated)
+				_, _ = w.Write([]byte(`{
+  "resource": "sales-invoice",
+  "id": "invoice_4Y0eZitmBnQ6IDoMqZQKh",
+  "status": "draft",
+  "isEInvoice": true
+}`))
+			},
+		},
+		{
 			name: "create issued sales invoice, without payment details",
 			args: args{
 				ctx: context.Background(),
