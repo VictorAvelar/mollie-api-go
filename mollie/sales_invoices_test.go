@@ -350,6 +350,10 @@ func TestSalesInvoicesService_Create(t *testing.T) {
 				assert.Nil(t, err)
 				assert.IsType(t, &SalesInvoice{}, m)
 				assert.IsType(t, &http.Response{}, res.Response)
+
+				if c.args.req.IsEInvoice {
+					assert.True(t, m.IsEInvoice)
+				}
 			}
 		})
 	}
@@ -465,6 +469,7 @@ func TestSalesInvoicesService_Get(t *testing.T) {
 				assert.Nil(t, err)
 				assert.IsType(t, &SalesInvoice{}, m)
 				assert.IsType(t, &http.Response{}, res.Response)
+				assert.True(t, m.IsEInvoice)
 			}
 		})
 	}
@@ -584,6 +589,7 @@ func TestSalesInvoicesService_List(t *testing.T) {
 				assert.Nil(t, err)
 				assert.IsType(t, &SalesInvoiceList{}, m)
 				assert.IsType(t, &http.Response{}, res.Response)
+				assert.True(t, m.Embedded.SalesInvoices[0].IsEInvoice)
 			}
 		})
 	}
