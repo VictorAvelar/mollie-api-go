@@ -26,7 +26,7 @@ type SalesInvoiceSource string
 // Possible values for SalesInvoiceSource.
 const (
 	ManualSalesInvoiceSource      SalesInvoiceSource = "manual"
-	PaymentLinkSalesInvoiceSource SalesInvoiceSource = "payment_link"
+	PaymentLinkSalesInvoiceSource SalesInvoiceSource = "payment-link"
 	PaymentSalesInvoiceSource     SalesInvoiceSource = "payment"
 )
 
@@ -63,7 +63,8 @@ const (
 	PaymentTerm30Days SalesInvoicePaymentTerm = "30 days"
 	PaymentTerm45Days SalesInvoicePaymentTerm = "45 days"
 	PaymentTerm60Days SalesInvoicePaymentTerm = "60 days"
-	PaymentTerm90Days SalesInvoicePaymentTerm = "90 days"
+	PaymentTerm90Days  SalesInvoicePaymentTerm = "90 days"
+	PaymentTerm120Days SalesInvoicePaymentTerm = "120 days"
 )
 
 // SalesInvoiceRecipientType represents the type of recipient for the sales invoice.
@@ -157,16 +158,17 @@ type CreateSalesInvoice struct {
 
 // UpdateSalesInvoice represents the payload to update a sales invoice.
 type UpdateSalesInvoice struct {
-	TestMode            bool                     `json:"testmode,omitempty"`
-	IsEInvoice          bool                     `json:"isEInvoice,omitempty"`
-	Memo                string                   `json:"memo,omitempty"`
-	RecipientIdentifier string                   `json:"recipientIdentifier,omitempty"`
-	Status              SalesInvoiceStatus       `json:"status,omitempty"`
-	PaymentTerm         SalesInvoicePaymentTerm  `json:"paymentTerm,omitempty"`
-	EmailDetails        SalesInvoiceEmailDetails `json:"emailDetails,omitempty"`
-	Recipient           SalesInvoiceRecipient    `json:"recipient,omitempty"`
-	Lines               []SalesInvoiceLineItem   `json:"lines,omitempty"`
-	Discount            *SalesInvoiceDiscount    `json:"discount,omitempty"`
+	TestMode            bool                        `json:"testmode,omitempty"`
+	IsEInvoice          bool                        `json:"isEInvoice,omitempty"`
+	Memo                string                      `json:"memo,omitempty"`
+	RecipientIdentifier string                      `json:"recipientIdentifier,omitempty"`
+	Status              SalesInvoiceStatus          `json:"status,omitempty"`
+	PaymentTerm         SalesInvoicePaymentTerm     `json:"paymentTerm,omitempty"`
+	PaymentDetails      *SalesInvoicePaymentDetails `json:"paymentDetails,omitempty"`
+	EmailDetails        SalesInvoiceEmailDetails    `json:"emailDetails,omitempty"`
+	Recipient           SalesInvoiceRecipient       `json:"recipient,omitempty"`
+	Lines               []SalesInvoiceLineItem      `json:"lines,omitempty"`
+	Discount            *SalesInvoiceDiscount       `json:"discount,omitempty"`
 }
 
 // SalesInvoice represents a sales invoice resource.
