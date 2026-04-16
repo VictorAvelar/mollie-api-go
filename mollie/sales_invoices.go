@@ -165,8 +165,8 @@ type UpdateSalesInvoice struct {
 	Status              SalesInvoiceStatus          `json:"status,omitempty"`
 	PaymentTerm         SalesInvoicePaymentTerm     `json:"paymentTerm,omitempty"`
 	PaymentDetails      *SalesInvoicePaymentDetails `json:"paymentDetails,omitempty"`
-	EmailDetails        SalesInvoiceEmailDetails    `json:"emailDetails,omitempty"`
-	Recipient           SalesInvoiceRecipient       `json:"recipient,omitempty"`
+	EmailDetails        *SalesInvoiceEmailDetails    `json:"emailDetails,omitempty"`
+	Recipient           *SalesInvoiceRecipient       `json:"recipient,omitempty"`
 	Lines               []SalesInvoiceLineItem      `json:"lines,omitempty"`
 	Discount            *SalesInvoiceDiscount       `json:"discount,omitempty"`
 }
