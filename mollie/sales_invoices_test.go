@@ -271,6 +271,84 @@ func TestSalesInvoicesService_Create(t *testing.T) {
 			},
 		},
 		{
+			name: "create sales invoice with email details",
+			args: args{
+				ctx: context.Background(),
+				req: CreateSalesInvoice{
+					Status:              DraftSalesInvoiceStatus,
+					RecipientIdentifier: "customer_123456789",
+					Recipient:           recipient,
+					Lines:               lines,
+					EmailDetails: &SalesInvoiceEmailDetails{
+						Subject: "Your invoice",
+						Body:    "Please find your invoice attached.",
+					},
+				},
+			},
+			wantErr: false,
+			pre:     noPre,
+			handler: func(w http.ResponseWriter, r *http.Request) {
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "POST")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+					return
+				}
+
+				var payload map[string]any
+				if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+					w.WriteHeader(http.StatusBadRequest)
+					return
+				}
+
+				emailDetails, ok := payload["emailDetails"].(map[string]any)
+				assert.True(t, ok)
+				assert.Equal(t, "Your invoice", emailDetails["subject"])
+				assert.Equal(t, "Please find your invoice attached.", emailDetails["body"])
+
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(http.StatusCreated)
+				_, _ = w.Write([]byte(testdata.CreateSalesInvoicesResponse))
+			},
+		},
+		{
+			name: "create sales invoice without email details omits field",
+			args: args{
+				ctx: context.Background(),
+				req: CreateSalesInvoice{
+					Status:              DraftSalesInvoiceStatus,
+					RecipientIdentifier: "customer_123456789",
+					Recipient:           recipient,
+					Lines:               lines,
+				},
+			},
+			wantErr: false,
+			pre:     noPre,
+			handler: func(w http.ResponseWriter, r *http.Request) {
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "POST")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+					return
+				}
+
+				var payload map[string]any
+				if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+					w.WriteHeader(http.StatusBadRequest)
+					return
+				}
+
+				_, hasEmailDetails := payload["emailDetails"]
+				assert.False(t, hasEmailDetails, "emailDetails should be omitted when nil")
+
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(http.StatusCreated)
+				_, _ = w.Write([]byte(testdata.CreateSalesInvoicesResponse))
+			},
+		},
+		{
 			name: "create issued sales invoice, without payment details",
 			args: args{
 				ctx: context.Background(),
