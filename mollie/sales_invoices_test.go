@@ -738,6 +738,46 @@ func TestSalesInvoicesService_Update(t *testing.T) {
 			},
 		},
 		{
+			name: "update sales invoice with payment details",
+			args: args{
+				ctx: context.Background(),
+				id:  "invoice_4Y0eZitmBnQ6IDoMqZQKh",
+				req: UpdateSalesInvoice{
+					Status: PaidSalesInvoiceStatus,
+					PaymentDetails: &SalesInvoicePaymentDetails{
+						Source:          ManualSalesInvoiceSource,
+						SourceReference: "ref_123",
+					},
+				},
+			},
+			wantErr: false,
+			pre:     noPre,
+			handler: func(w http.ResponseWriter, r *http.Request) {
+				testHeader(t, r, AuthHeader, "Bearer token_X12b31ggg23")
+				testMethod(t, r, "PATCH")
+
+				if _, ok := r.Header[AuthHeader]; !ok {
+					w.WriteHeader(http.StatusUnauthorized)
+					return
+				}
+
+				var payload map[string]any
+				if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+					w.WriteHeader(http.StatusBadRequest)
+					return
+				}
+
+				pd, ok := payload["paymentDetails"].(map[string]any)
+				assert.True(t, ok)
+				assert.Equal(t, "manual", pd["source"])
+				assert.Equal(t, "ref_123", pd["sourceReference"])
+
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(http.StatusOK)
+				_, _ = w.Write([]byte(testdata.GetSalesInvoicesResponse))
+			},
+		},
+		{
 			"update sales invoice works as expected with access tokens",
 			args{
 				context.Background(),
