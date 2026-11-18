@@ -149,7 +149,7 @@ type CreateSalesInvoice struct {
 	VATMode             SalesInvoiceVATMode         `json:"vatMode,omitempty"`
 	PaymentTerm         SalesInvoicePaymentTerm     `json:"paymentTerm,omitempty"`
 	PaymentDetails      *SalesInvoicePaymentDetails `json:"paymentDetails,omitempty"`
-	EmailDetails        SalesInvoiceEmailDetails    `json:"emailDetails,omitempty"`
+	EmailDetails        *SalesInvoiceEmailDetails   `json:"emailDetails,omitempty"`
 	Recipient           SalesInvoiceRecipient       `json:"recipient,omitempty"`
 	Lines               []SalesInvoiceLineItem      `json:"lines,omitempty"`
 	Discount            *SalesInvoiceDiscount       `json:"discount,omitempty"`
